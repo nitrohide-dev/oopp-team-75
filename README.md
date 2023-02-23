@@ -14,7 +14,7 @@ Add your own name (do not add the names for others!) to the section below.
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325) |Konrad Gniaz| K.Gniaz@student.tudelft.nl |
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325) |Robert Mertens| r.h.mertens@student.tudelft.nl |
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325) |Matus Leng| m.leng@student.tudelft.nl |
-| ![](https://secure.gravatar.com/avatar/741a20ea17fb4c39bacf9e91c96ec417?s=800&d=identicon) |Atanas Semov| a.m.semov@student.tudelft.nl |
+| ![](https://secure.gravatar.com/avatar/741a20ea17fb4c39bacf9e91c96ec417?s=800&d=identicon&length=4&size=50&color=DDD&background=777&font-size=0.325) |Atanas Semov| a.m.semov@student.tudelft.nl |
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
 <!-- - Mention your *student* email address -->
