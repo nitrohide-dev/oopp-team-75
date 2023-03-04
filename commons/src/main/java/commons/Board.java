@@ -1,6 +1,7 @@
 package commons;
 
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.List;
@@ -11,6 +12,7 @@ public class Board {
     @Id
     private Long id;
 
+    @ElementCollection
     private List<Page> pages;
 
     public Board(List<Page> pages) {

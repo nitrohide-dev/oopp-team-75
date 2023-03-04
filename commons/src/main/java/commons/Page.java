@@ -1,16 +1,16 @@
 package commons;
 
-
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.List;
-
 
 @Entity
 public class Page {
     @Id
     private Long id;
 
+    @ElementCollection
     private List<Task> tasks;
 
     public Page(List<Task> tasks) {
