@@ -13,7 +13,7 @@ public class TaskList {
     private Long id;
 
     @ElementCollection
-    private java.util.List<Task> tasks;
+    private List<Task> tasks;
 
     private Board board;
 
@@ -24,7 +24,7 @@ public class TaskList {
         this.tasks = new ArrayList<>();
     }
 
-    public TaskList(Board board, java.util.List<Task> tasks) {
+    public TaskList(Board board, List<Task> tasks) {
         this.board = board;
         this.tasks = tasks;
     }
@@ -39,11 +39,11 @@ public class TaskList {
         this.id = id;
     }
 
-    public java.util.List<Task> getTasks() {
+    public List<Task> getTasks() {
         return tasks;
     }
 
-    public void setTasks(java.util.List<Task> tasks) {
+    public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
 

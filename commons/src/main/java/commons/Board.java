@@ -14,7 +14,7 @@ public class Board {
     private Long id;
 
     @ElementCollection
-    private java.util.List<TaskList> taskLists;
+    private List<TaskList> taskLists;
 
 //    constructors
 
@@ -22,17 +22,17 @@ public class Board {
         this.taskLists = new ArrayList<>();
     }
 
-    public Board(java.util.List<TaskList> taskLists) {
+    public Board(List<TaskList> taskLists) {
         this.taskLists = taskLists;
     }
 
 //    setters and getters
 
-    public java.util.List<TaskList> getTaskLists() {
+    public List<TaskList> getTaskLists() {
         return taskLists;
     }
 
-    public void setTaskLists(java.util.List<TaskList> taskLists) {
+    public void setTaskLists(List<TaskList> taskLists) {
         this.taskLists = taskLists;
     }
 
