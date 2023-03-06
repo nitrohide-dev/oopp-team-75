@@ -4,7 +4,7 @@ package commons;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.List;
+import java.util.ArrayList;
 
 
 @Entity
@@ -13,30 +13,45 @@ public class Board {
     private Long id;
 
     @ElementCollection
-    private List<Page> pages;
+    private java.util.List<TaskList> taskLists;
 
-    public Board(List<Page> pages) {
-        this.pages = pages;
+//    constructors
+
+    public Board() {
+        this.taskLists = new ArrayList<>();
     }
 
-    public List<Page> getPages() {
-        return pages;
+    public Board(java.util.List<TaskList> taskLists) {
+        this.taskLists = taskLists;
     }
 
-    public void setPages(List<Page> pages) {
-        this.pages = pages;
+//    setters and getters
+
+    public java.util.List<TaskList> getTaskLists() {
+        return taskLists;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTaskLists(java.util.List<TaskList> taskLists) {
+        this.taskLists = taskLists;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void addPage(Page page) {
-        this.pages.add(page);
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+//    actual methods
+
+    public void addTaskList() {
+        this.taskLists.add(new TaskList(this));
+    }
+
+    public void removeTaskList(TaskList taskList) {
+        if (!this.taskLists.remove(taskList))
+            throw new IllegalArgumentException();
     }
 
 }
