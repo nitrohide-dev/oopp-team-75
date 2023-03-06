@@ -5,6 +5,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
