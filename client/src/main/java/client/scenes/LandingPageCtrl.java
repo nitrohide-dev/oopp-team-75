@@ -24,11 +24,16 @@ public class LandingPageCtrl {
 
     public void connect(){
         var q = server_ip.getText();
-        //need to implement some kind of connect thingy?
+        mainCtrl.showBoard();
+        //need to implement backend, hardcoded it for now
         clearFields();
     }
 
     private void clearFields() {
         server_ip.clear();
+    }
+
+    public void refresh() {
+        //make something to refresh the data from the databases.
     }
 }

@@ -7,19 +7,19 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../../css/styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LandingPageCtrl">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="anchor_page" stylesheets="@../../css/styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LandingPageCtrl">
    <children>
       <Label layoutX="176.0" layoutY="82.0" text="Welcome to Talio">
          <font>
             <Font size="32.0" />
          </font>
       </Label>
-      <Label layoutX="127.0" layoutY="193.0" text="Enter server ip:">
+      <Label layoutX="126.0" layoutY="171.0" text="Enter server ip:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <TextField fx:id="server_ip" layoutX="233.0" layoutY="186.0" prefHeight="35.0" prefWidth="208.0" />
-      <Button fx:id="connect_button" layoutX="270.0" layoutY="245.0" mnemonicParsing="false" onAction="#connect" styleClass="button-9" text="Connect" />
+      <TextField fx:id="server_ip" layoutX="253.0" layoutY="164.0" prefHeight="35.0" prefWidth="208.0" />
+      <Button fx:id="connect_button" layoutX="218.0" layoutY="238.0" mnemonicParsing="false" onAction="#connect" prefHeight="60.0" prefWidth="162.0" styleClass="button-9" text="Connect" textFill="WHITE" />
    </children>
 </AnchorPane>
