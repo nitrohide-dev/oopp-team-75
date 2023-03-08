@@ -2,6 +2,7 @@ package commons;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 
 @Entity
@@ -10,7 +11,7 @@ public class Task {
     private Long id;
 
     private String title;
-
+    @ManyToOne
     private TaskList taskList;
 
 //    constructors
@@ -24,6 +25,8 @@ public class Task {
         this.taskList = taskList;
         this.title = title;
     }
+
+    public Task() {}
 
 //    setters and getters
 
