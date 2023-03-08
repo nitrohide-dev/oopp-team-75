@@ -1,8 +1,10 @@
 package commons;
 
-import javax.persistence.ElementCollection;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,13 +14,16 @@ public class TaskList {
     @Id
     private Long id;
 
-    @ElementCollection
+    @OneToMany
     private List<Task> tasks;
 
+    @ManyToOne
     private Board board;
 
 //    constructors
-
+    public TaskList() {
+        this.tasks = new ArrayList<>();
+    }
     public TaskList(Board board) {
         this.board = board;
         this.tasks = new ArrayList<>();
