@@ -49,8 +49,8 @@ Conclusion
 Each subject should be summarized after it is concluded.
 
 
-NOTES: <br>
-do buddycheck until Friday 
+**NOTES:** <br>
+  -  do buddycheck until Friday 
   -	 TA tip: make the issue description more precise, more concrete(description, definition), more structure
   -	 discussion about Heuristic Usability Evaluation 
   -	 find a group/ask Elena
