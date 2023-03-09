@@ -13,7 +13,7 @@ public class TaskList {
     @Id
     private Long id;
 
-    @OneToMany
+    @OneToMany(mappedBy = "taskList")
     private List<Task> tasks;
 
     @ManyToOne
