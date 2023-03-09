@@ -23,6 +23,8 @@ import javafx.util.Pair;
 public class MainCtrl {
 
     private Stage primaryStage;
+    private LandingPageCtrl landingCtrl;
+    private Scene landing;
 
     private QuoteOverviewCtrl overviewCtrl;
     private Scene overview;
@@ -33,19 +35,22 @@ public class MainCtrl {
     private BoardCtrl boardCtrl;
     private Scene boardScene;
 
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add, Pair<BoardCtrl, Parent> board) {
+    public void initialize(Stage primaryStage, Pair<LandingPageCtrl, Parent> landing,
+//                           Pair<AddQuoteCtrl, Parent> add,
+                           Pair<BoardCtrl, Parent> board) {
         this.primaryStage = primaryStage;
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
-
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
+        this.landingCtrl = landing.getKey();
+        this.landing = new Scene(landing.getValue());
+//        this.overviewCtrl = overview.getKey();
+//        this.overview = new Scene(overview.getValue());
+//
+//        this.addCtrl = add.getKey();
+//        this.add = new Scene(add.getValue());
 
         this.boardCtrl = board.getKey();
         this.boardScene = new Scene(board.getValue());
 
-        showOverview();
+        showLanding();
         primaryStage.show();
     }
 
@@ -55,6 +60,16 @@ public class MainCtrl {
         overviewCtrl.refresh();
     }
 
+    public void showLanding(){
+        primaryStage.setTitle("Talio: Start");
+        primaryStage.setScene(landing);
+        landingCtrl.refresh();
+    }
+
+    public void showBoard(){
+        primaryStage.setTitle("Board: Your Board");
+        primaryStage.setScene(boardScene);
+    }
     public void showAdd() {
         primaryStage.setTitle("Quotes: Adding Quote");
         primaryStage.setScene(add);
