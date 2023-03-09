@@ -20,7 +20,9 @@ public class TaskList {
     private Board board;
 
 //    constructors
-
+    public TaskList() {
+        this.tasks = new ArrayList<>();
+    }
     public TaskList(Board board) {
         this.board = board;
         this.tasks = new ArrayList<>();

@@ -13,7 +13,6 @@ public class Task {
 
     @Column
     private String title;
-
     @ManyToOne
     private TaskList taskList;
 
@@ -28,6 +27,8 @@ public class Task {
         this.taskList = taskList;
         this.title = title;
     }
+
+    public Task() {}
 
 //    setters and getters
 
