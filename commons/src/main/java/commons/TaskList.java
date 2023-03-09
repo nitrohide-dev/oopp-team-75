@@ -33,10 +33,6 @@ public class TaskList {
         this.tasks = tasks;
     }
 
-    public TaskList() {
-
-    }
-
 //    setters and getters
 
     public Long getId() {
