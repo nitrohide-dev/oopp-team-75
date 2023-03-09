@@ -19,8 +19,7 @@ import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-
-import client.scenes.BoardCtrl;
+import client.scenes.BoardOverviewCtrl;
 import client.scenes.LandingPageCtrl;
 import client.scenes.MainCtrl;
 import com.google.inject.Injector;
@@ -43,7 +42,7 @@ public class Main extends Application {
 //        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
 //        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
         var landing = FXML.load(LandingPageCtrl.class, "client", "scenes", "LandingPage.fxml");
-        var board = FXML.load(BoardCtrl.class, "client", "scenes", "BoardPage.fxml");
+        var board = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "BoardOverview.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, landing, board);

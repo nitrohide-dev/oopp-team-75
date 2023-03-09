@@ -1,6 +1,5 @@
 package commons;
 
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -14,7 +13,7 @@ public class TaskList {
     @Id
     private Long id;
 
-    @OneToMany
+    @OneToMany(mappedBy = "taskList")
     private List<Task> tasks;
 
     @ManyToOne

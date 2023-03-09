@@ -1,30 +1,29 @@
 /* button landing page */
-.button-9 {
- -fx-text-fill: white;
- -fx-appearance: button;
- -fx-backface-visibility: hidden;
- -fx-background-color: #405cf5;
- -fx-border-radius: 6px;
- -fx-border-width: 0;
- -fx-box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0;
- -fx-box-sizing: border-box;
+.button {
  -fx-color: #fff;
  -fx-cursor: pointer;
  -fx-font-family: -apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif;
  -fx-font-size: 19px;
  -fx-height: 44px;
  -fx-line-height: 1.15;
+ -fx-text-align: center;
+}
+
+
+.button-9 {
+ -fx-text-fill: white;
+ -fx-appearance: button;
+ -fx-backface-visibility: hidden;
+ -fx-background-color: #405cf5;
+ -fx-border-radius: 6px;
+ -fx-box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0;
+ -fx-box-sizing: border-box;
  -fx-margin: 12px 0 0;
- -fx-outline: none;
  -fx-overflow: hidden;
  -fx-padding: 0 25px;
  -fx-position: relative;
- -fx-text-align: center;
  -fx-text-transform: none;
- /*-fx-transform: translateZ(0);*/
  -fx-transition: all .2s,box-shadow .08s ease-in;
- -fx-user-select: none;
- -fx--webkit-user-select: none;
  -fx-touch-action: manipulation;
  -fx-width: 100%;
 }
