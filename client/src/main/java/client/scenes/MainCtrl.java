@@ -33,7 +33,7 @@ public class MainCtrl {
     private Scene add;
 
     private BoardCtrl boardCtrl;
-    private Scene board;
+    private Scene boardScene;
 
     public void initialize(Stage primaryStage, Pair<LandingPageCtrl, Parent> landing,
 //                           Pair<AddQuoteCtrl, Parent> add,
@@ -48,7 +48,7 @@ public class MainCtrl {
 //        this.add = new Scene(add.getValue());
 
         this.boardCtrl = board.getKey();
-        this.board = new Scene(board.getValue());
+        this.boardScene = new Scene(board.getValue());
 
         showLanding();
         primaryStage.show();
@@ -68,7 +68,7 @@ public class MainCtrl {
 
     public void showBoard(){
         primaryStage.setTitle("Board: Your Board");
-        primaryStage.setScene(board);
+        primaryStage.setScene(boardScene);
     }
     public void showAdd() {
         primaryStage.setTitle("Quotes: Adding Quote");
