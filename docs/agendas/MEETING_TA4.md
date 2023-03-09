@@ -47,3 +47,23 @@ Conclusion
 
 
 Each subject should be summarized after it is concluded.
+
+
+**NOTES:** <br>
+  -  do buddycheck until Friday 
+  -	 TA tip: make the issue description more precise, more concrete(description, definition), more structure
+  -	 discussion about Heuristic Usability Evaluation 
+  -	 find a group/ask Elena
+  -	 read the feedback(important)
+  -	 showing the work 
+  -	 Backlog discussion
+  -	 Task division discussion 
+  -	 2 Groups this week:
+
+   List - Konrad, Jimmy, Arpi
+   
+   Task - Atanas, Matus, Robert
+  -	Meeting on sunday 7 pm - groups meet and discuss the code that we’ve done 
+  -	Build your project before pushing(for pipelines)
+
+

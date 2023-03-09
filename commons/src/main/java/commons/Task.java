@@ -1,5 +1,6 @@
 package commons;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -10,6 +11,7 @@ public class Task {
     @Id
     private Long id;
 
+    @Column
     private String title;
     @ManyToOne
     private TaskList taskList;

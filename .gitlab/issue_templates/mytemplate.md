@@ -1,7 +1,7 @@
 ## Description
 <!-- Discribe the issue here !-->
 
-## What Happened?
+## What is affected?
 <!-- A brief explanation of the classes/methods that are affected by this issue !-->
 
 ## Check List

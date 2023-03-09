@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardOverviewCtrl">
+   <children>
+      <ListView editable="true" layoutX="75.0" layoutY="75.0" prefHeight="350.0" prefWidth="160.0" />
+      <ListView editable="true" layoutX="295.0" layoutY="75.0" prefHeight="350.0" prefWidth="160.0" />
+      <ListView editable="true" layoutX="515.0" layoutY="75.0" prefHeight="350.0" prefWidth="160.0" />
+      <TextField alignment="CENTER" layoutX="75.0" layoutY="33.0" prefHeight="25.0" prefWidth="160.0" promptText="Name your list!" />
+      <TextField alignment="CENTER" layoutX="295.0" layoutY="33.0" prefHeight="25.0" prefWidth="160.0" promptText="Name your list!" />
+      <TextField alignment="CENTER" layoutX="515.0" layoutY="33.0" prefHeight="25.0" prefWidth="160.0" promptText="Name your list!" />
+   </children>
+</AnchorPane>
