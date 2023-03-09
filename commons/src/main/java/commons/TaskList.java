@@ -1,8 +1,9 @@
 package commons;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +13,10 @@ public class TaskList {
     @Id
     private Long id;
 
-    @ElementCollection
+    @OneToMany(mappedBy = "taskList")
     private List<Task> tasks;
 
+    @ManyToOne
     private Board board;
 
 //    constructors
@@ -27,6 +29,10 @@ public class TaskList {
     public TaskList(Board board, List<Task> tasks) {
         this.board = board;
         this.tasks = tasks;
+    }
+
+    public TaskList() {
+
     }
 
 //    setters and getters

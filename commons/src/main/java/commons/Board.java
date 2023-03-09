@@ -1,9 +1,10 @@
 package commons;
 
 
-import javax.persistence.ElementCollection;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,8 @@ public class Board {
     @Id
     private Long id;
 
-    @ElementCollection
+    @Column
+    @OneToMany(mappedBy = "board")
     private List<TaskList> taskLists;
 
 //    constructors
