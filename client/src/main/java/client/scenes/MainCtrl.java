@@ -32,12 +32,12 @@ public class MainCtrl {
     private AddQuoteCtrl addCtrl;
     private Scene add;
 
-    private BoardCtrl boardCtrl;
-    private Scene boardScene;
+    private BoardOverviewCtrl boardOverviewCtrl;
+    private Scene boardOverview;
 
     public void initialize(Stage primaryStage, Pair<LandingPageCtrl, Parent> landing,
 //                           Pair<AddQuoteCtrl, Parent> add,
-                           Pair<BoardCtrl, Parent> board) {
+                           Pair<BoardOverviewCtrl, Parent> boardOverview) {
         this.primaryStage = primaryStage;
         this.landingCtrl = landing.getKey();
         this.landing = new Scene(landing.getValue());
@@ -47,8 +47,8 @@ public class MainCtrl {
 //        this.addCtrl = add.getKey();
 //        this.add = new Scene(add.getValue());
 
-        this.boardCtrl = board.getKey();
-        this.boardScene = new Scene(board.getValue());
+        this.boardOverviewCtrl = boardOverview.getKey();
+        this.boardOverview = new Scene(boardOverview.getValue());
 
         showLanding();
         primaryStage.show();
@@ -68,7 +68,7 @@ public class MainCtrl {
 
     public void showBoard(){
         primaryStage.setTitle("Board: Your Board");
-        primaryStage.setScene(boardScene);
+        primaryStage.setScene(boardOverview);
     }
     public void showAdd() {
         primaryStage.setTitle("Quotes: Adding Quote");
