@@ -3,7 +3,15 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,18 +24,18 @@ public class TaskList {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique=true, nullable=false)
-    private long id;
+    public long id;
 
-    @Column(unique=false, nullable=false, length=MAX_TITLE_LENGTH)
-    private String title;
+    @Column(nullable=false, length=MAX_TITLE_LENGTH)
+    public String title;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Task> tasks;
+    @OneToMany(mappedBy = "taskList", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    public List<Task> tasks;
 
     @JsonBackReference
     @ManyToOne
-    private Board board;
+    public Board board;
 
 //    constructors
 
@@ -40,6 +48,14 @@ public class TaskList {
     }
 
 //    getters and setters
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

@@ -16,16 +16,13 @@
 package client.utils;
 
 import commons.Board;
-import commons.Quote;
+import commons.Task;
+import commons.TaskList;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import org.glassfish.jersey.client.ClientConfig;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.List;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -34,12 +31,15 @@ public class BoardUtils {
 
     private static final String SERVER = "http://localhost:8080/";
 
+//    BOARDS
+
     public Board getBoard(String key) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/boards/" + key) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<Board>() {});
+                .get(new GenericType<>() {
+                });
     }
 
     public Board saveBoard(Board board) {
@@ -55,6 +55,72 @@ public class BoardUtils {
                 .target(SERVER).path("api/boards/" + key) //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .delete(new GenericType<Board>() {});
+                .delete(new GenericType<>() {
+                });
+    }
+
+    public List<Board> getAllBoards(String adminKey) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("admin/" + adminKey) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .delete(new GenericType<>() {
+                });
+    }
+
+//    TASK LISTS
+
+    public TaskList getTaskList(long id) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasks/" + id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+    }
+
+    public TaskList saveTaskList(TaskList taskList) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasks") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(taskList, APPLICATION_JSON), TaskList.class);
+    }
+
+    public TaskList deleteTaskList(long id) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasks/" + id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .delete(new GenericType<>() {
+                });
+    }
+
+//    TASKS
+
+    public Task getTask(long id) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasks/" + id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<>() {
+                });
+    }
+
+    public Task saveTask(Task task) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasks") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(task, APPLICATION_JSON), Task.class);
+    }
+
+    public Task deleteTask(long id) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/tasks/" + id) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .delete(new GenericType<>() {
+                });
     }
 }

@@ -2,8 +2,12 @@ package commons;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import javax.persistence.*;
-import java.util.ArrayList;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 
@@ -17,7 +21,7 @@ public class Task {
     @Column(unique=true, nullable=false)
     public long id;
 
-    @Column(unique=false, nullable=false, length=MAX_TITLE_LENGTH)
+    @Column(nullable=false, length=MAX_TITLE_LENGTH)
     public String title;
 
     @JsonBackReference
@@ -35,7 +39,7 @@ public class Task {
 
 //    getters and setters
 
-    private long getId() {
+    public long getId() {
         return id;
     }
 

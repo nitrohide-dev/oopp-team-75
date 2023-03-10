@@ -3,7 +3,12 @@ package commons;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,11 +23,11 @@ public class Board {
     @Column(unique=true, nullable=false, length=MAX_KEY_LENGTH)
     public String key;
 
-    @Column(unique=false, nullable=false, length=MAX_TITLE_LENGTH)
+    @Column(nullable=false, length=MAX_TITLE_LENGTH)
     public String title;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     public List<TaskList> taskLists;
 
 //    constructors
