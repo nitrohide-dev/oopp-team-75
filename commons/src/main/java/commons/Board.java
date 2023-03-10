@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -47,6 +48,21 @@ public class Board {
 
     private void setTaskLists(List<TaskList> taskLists) {
         this.taskLists = taskLists;
+    }
+
+//    equals and hashcode
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Board board = (Board) o;
+        return key.equals(board.key) && taskLists.equals(board.taskLists);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, taskLists);
     }
 
 //    actual methods

@@ -42,7 +42,7 @@ public class BoardUtils {
                 .get(new GenericType<Board>() {});
     }
 
-    public Board updateBoard(Board board) {
+    public Board saveBoard(Board board) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/boards") //
                 .request(APPLICATION_JSON) //
