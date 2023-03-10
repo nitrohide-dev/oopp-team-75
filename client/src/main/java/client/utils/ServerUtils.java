@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Board;
 import commons.Task;
 import jakarta.ws.rs.core.Response;
