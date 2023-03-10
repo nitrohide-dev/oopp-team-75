@@ -17,8 +17,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-public class BoardOverviewCtrl {
 
+/**
+ * I added ListView everywhere with <String> attributes just for as a starter
+ * Later it should have <Task>
+ */
+public class BoardOverviewCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
 
