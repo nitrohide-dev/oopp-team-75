@@ -2,15 +2,20 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import commons.Task;
 import javafx.fxml.FXML;
-import javafx.scene.Group;
-import javafx.scene.control.Button;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.TextInputDialog;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -22,130 +27,138 @@ public class BoardOverviewCtrl {
     private final MainCtrl mainCtrl;
 
     @FXML
-    private Button addButton;
+    private ListView<Label> taskList1;
 
     @FXML
-    private ScrollBar scrollBar;
+    private ListView<Label> taskList2;
 
     @FXML
-    private HBox hBox;
+    private ListView<Label> taskList3;
 
-    private Group sampleGroup;
-    private int counter;
-    private ObservableList<ListOfTasks> Lists = FXCollections.observableArrayList();
+    @FXML
+    private TextField listName1;
+
+    @FXML
+    private TextField listName2;
+
+    @FXML
+    private TextField listName3;
+
+
+
+    private Map<ListView, String> allLists;
 
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        initialize();
+        setListsNames();
+    }
+
+    private void initialize() {
+        this.taskList1 = new ListView();
+        this.taskList2 = new ListView();
+        this.taskList3 = new ListView();
+        this.allLists = new HashMap<>();
+        this.listName1 = new TextField();
+        this.listName2 = new TextField();
+        this.listName3 = new TextField();
     }
 
     /**
-     * Initializer
-     * First I am getting all the children of hBox (which are the 3 groups)
-     * and then for each group I am getting its TextField and its ListField and adding them to a Lists array
+     * Connects all lists to their names
      */
-    @FXML
-    public void initialize(){
-        ObservableList children = hBox.getChildren();
-
-        sampleGroup = (Group) children.get(0);
-
-        for (Object child : children) {
-            if (child instanceof Group) {
-                Lists.add(new ListOfTasks(
-                    (TextField) ((Group) child).getChildren().get(0),
-                    (ListView<String>) ((Group) child).getChildren().get(1)));
-            }
-        }
-        counter = 3;
-        scroll();
-    }
-
-    /**Not the best implementation, will work on making the scroll bar appear only when needed and also
-     * so I will make the scroll bar proportionally larger.
-     *
-     */
-    public void scroll(){
-        scrollBar.valueProperty().addListener((observable, oldValue, newValue) -> {
-            double scrollWidth =  - Math.abs(hBox.getWidth()  - hBox.getScene().getWidth());
-            hBox.setTranslateX(newValue.doubleValue() * scrollWidth);
-        });
+    private void setListsNames() {
+        this.allLists.put(taskList1, listName1.getText());
+        this.allLists.put(taskList2, listName2.getText());
+        this.allLists.put(taskList3, listName3.getText());
     }
 
     /**
-     * This eventHandler is waiting for the addButton to be clicked, after that creates
-     * new ListOfTask, which is made of a textField and a listView
+     * Creates task and puts it in the first list
      */
-    public void handleAddButtonAction() {
-        ObservableList children = hBox.getChildren();
-        TextField sampleText = (TextField) sampleGroup.getChildren().get(0);
-        ListView<String> sampleList = (ListView<String>) sampleGroup.getChildren().get(1);
-        TextField textField = new TextField();
-        ListView<String> listView = new ListView<>();
-
-        textField.setPrefSize(sampleText.getPrefWidth(), sampleText.getPrefHeight());
-        textField.setLayoutX(0);
-        textField.setLayoutY(0);
-        textField.setPromptText("Name your list!");
-        listView.setPrefSize(sampleList.getPrefWidth(), sampleList.getPrefHeight());
-        listView.setLayoutX(0);
-        listView.setLayoutY(37);
-
-        System.out.println(sampleList+" ----- "+sampleText);
-
-        ListOfTasks newListOfTasks = new ListOfTasks(textField, listView);
-        Lists.add(newListOfTasks);
-
-        Group newGroup = new Group(textField, listView);
-        newGroup.setLayoutX(sampleGroup.getLayoutX());
-        newGroup.setLayoutY(sampleGroup.getLayoutY());
-        newGroup.setTranslateX(sampleGroup.getTranslateX());
-        newGroup.setTranslateY(sampleGroup.getTranslateY());
-
-        children.add(newGroup);
+    public void createTask() {
+        String name = getTaskNamePopup("Task");
+        //if (!server.addTask(name)) return;
+        Label task = new Label(name);
+        taskList1.getItems().add(task);
     }
 
     /**
-     * So this class I created in order to group together each of the TextFields with the ListView
-     * in the new object "ListOfTasks"
-     *
-     * I know we have a class TaskList, and I can work after meeting with you guys or talking it through
-     * on how should I change ListOfTasks or how should we change TaskList so it contains both ListView and
-     * TextField.
-     *
-
+     * When any of the tasks is clicked it gives the user option to view, edit or remove it
      */
-    private class ListOfTasks {
-        private TextField textField;
-        private ListView<String> listView;
+    public void taskOperations() {
+        Label task = taskList1.getSelectionModel().getSelectedItem();
+        if (task == null) return;
+        //Popup with options to view, edit or remove the selected task
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText(task.getText());
+        alert.setContentText("Choose your option.");
 
-        public ListOfTasks() {
-            textField = new TextField();
-            listView = new ListView<String>();
+        ButtonType editButton = new ButtonType("Edit");
+        ButtonType viewButton = new ButtonType("View");
+        ButtonType removeButton = new ButtonType("Remove");
+        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(editButton, viewButton, removeButton, buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == editButton){
+            editTask(task);
+        } else if (result.get() == viewButton) {
+            viewTask(task);
+        } else if (result.get() == removeButton) {
+            deleteTask(task);
+        } else {
+            return;
         }
-
-        public ListOfTasks(TextField textField, ListView<String> listView) {
-            textField = new TextField();
-            listView = new ListView<>();
-        }
-
-        public TextField getTextField() {
-            return textField;
-        }
-
-        public ListView<String> getListView() {
-            return listView;
-        }
-
-
-        public void setTextField(TextField textField) {
-            this.textField = textField;
-        }
-
-        public void setListView(ListView<String> listView) {
-            this.listView = listView;
-        }
-
     }
+
+    public void editTask(Label task) {
+        //if (!server.editTask(task.getText())) return;
+        int index = taskList1.getItems().indexOf(task);
+        taskList1.getItems().get(index).setText(getTaskNamePopup("Task"));
+    }
+
+    public void viewTask(Label task) {
+    }
+
+
+    public void deleteTask(Label task) {
+        //if (!server.removeTask(task.getText())) return;
+        taskList1.getItems().remove(task);
+    }
+
+    /**
+     * popup that ask you to input the name of the thing that you want to create
+     * @return the input name
+     */
+    public String getTaskNamePopup(String item) {
+        TextInputDialog input = new TextInputDialog(item + " name");
+        input.setHeaderText(item);
+        input.setContentText("Please enter a name for the new " + item.toLowerCase(Locale.ROOT) + ".");
+        input.showAndWait();
+        input.setTitle("Name Input Dialog");
+        return input.getEditor().getText();
+    }
+
+    /**
+     * method that moves a task from one list to another
+     * @param fromList - the list containing the task
+     * @param toList - the list in which we want to put the task
+     * @param task the task to be moved
+     */
+    public void moveTask(ListView fromList, ListView toList, Task task) {
+        String list1 = allLists.get(fromList);
+        String list2 = allLists.get(toList);
+        if (list1 == null || list2 == null) return;
+        if (list1.equals(list2)) return;
+        if (server.moveTask(mainCtrl.getCurrBoard(), list1, list2, task)) {
+            fromList.getItems().remove(task);
+            toList.getItems().add(task);
+        }
+    }
+
 }

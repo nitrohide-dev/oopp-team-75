@@ -1,42 +1,49 @@
 package commons;
 
-import javax.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Column;
 import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 
 @Entity
 public class Task {
-    @Id
-    private Long id;
 
-    @Column
-    private String title;
+    public static final int MAX_TITLE_LENGTH = 256;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique=true, nullable=false)
+    public long id;
+
+    @Column(nullable=false, length=MAX_TITLE_LENGTH)
+    public String title;
+
+    @JsonBackReference
     @ManyToOne
-    private TaskList taskList;
+    public TaskList taskList;
 
 //    constructors
+
+    public Task() {} // required for Spring, please don't use.
 
     public Task(TaskList taskList) {
         this.taskList = taskList;
         this.title = "";
     }
 
-    public Task(TaskList taskList, String title) {
-        this.taskList = taskList;
-        this.title = title;
-    }
+//    getters and setters
 
-    public Task() {}
-
-//    setters and getters
-
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -54,6 +61,21 @@ public class Task {
 
     public void setTaskList(TaskList taskList) {
         this.taskList = taskList;
+    }
+
+//    equals and hashcode
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 //    actual methods
