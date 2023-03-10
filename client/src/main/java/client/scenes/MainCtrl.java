@@ -15,6 +15,7 @@
  */
 package client.scenes;
 
+import commons.Board;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -23,6 +24,8 @@ import javafx.util.Pair;
 public class MainCtrl {
 
     private Stage primaryStage;
+    private LandingPageCtrl landingCtrl;
+    private Scene landing;
 
     private QuoteOverviewCtrl overviewCtrl;
     private Scene overview;
@@ -30,29 +33,52 @@ public class MainCtrl {
     private AddQuoteCtrl addCtrl;
     private Scene add;
 
-    private BoardCtrl boardCtrl;
-    private Scene boardScene;
+    private BoardOverviewCtrl boardOverviewCtrl;
+    private Scene boardOverview;
 
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add, Pair<BoardCtrl, Parent> board) {
+    private Board currBoard;
+
+    public void initialize(Stage primaryStage, Pair<LandingPageCtrl, Parent> landing,
+//                           Pair<AddQuoteCtrl, Parent> add,
+                           Pair<BoardOverviewCtrl, Parent> boardOverview) {
         this.primaryStage = primaryStage;
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
+        this.landingCtrl = landing.getKey();
+        this.landing = new Scene(landing.getValue());
+//        this.overviewCtrl = overview.getKey();
+//        this.overview = new Scene(overview.getValue());
+//
+//        this.addCtrl = add.getKey();
+//        this.add = new Scene(add.getValue());
 
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
+        this.boardOverviewCtrl = boardOverview.getKey();
+        this.boardOverview = new Scene(boardOverview.getValue());
 
-        this.boardCtrl = board.getKey();
-        this.boardScene = new Scene(board.getValue());
-
-        showOverview();
+        showLanding();
         primaryStage.show();
+    }
+
+    public Board getCurrBoard() {
+        return currBoard;
     }
 
     public void showOverview() {
         primaryStage.setTitle("Quotes: Overview");
         primaryStage.setScene(overview);
         overviewCtrl.refresh();
+    }
+
+    public void showLanding(){
+        primaryStage.setTitle("Talio: Start");
+        primaryStage.setScene(landing);
+//        landing.getStylesheets().add(String.valueOf(getClass().getResource("styles.css")));
+//        landing.getStylesheets().add("css/styles.css");
+        landingCtrl.refresh();
+    }
+
+    public void showBoard(Board board) {
+        currBoard = board;
+        primaryStage.setTitle("Board: Your Board");
+        primaryStage.setScene(boardOverview);
     }
 
     public void showAdd() {
