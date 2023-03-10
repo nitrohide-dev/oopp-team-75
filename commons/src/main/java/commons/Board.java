@@ -11,8 +11,9 @@ import java.util.List;
 
 @Entity
 public class Board {
+
     @Id
-    private Long id;
+    private String key;
 
     @Column
     @OneToMany(mappedBy = "board")
@@ -20,41 +21,44 @@ public class Board {
 
 //    constructors
 
-    public Board() {
+    public Board() { // required for Spring, please don't use.
+        this.key = "";
         this.taskLists = new ArrayList<>();
     }
 
-    public Board(List<TaskList> taskLists) {
-        this.taskLists = taskLists;
+    public Board(String key) {
+        this.key = key;
+        this.taskLists = new ArrayList<>();
     }
 
-//    setters and getters
+//    getters and setters
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public List<TaskList> getTaskLists() {
         return taskLists;
     }
 
-    public void setTaskLists(List<TaskList> taskLists) {
+    private void setTaskLists(List<TaskList> taskLists) {
         this.taskLists = taskLists;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
 //    actual methods
 
-    public void addTaskList() {
-        this.taskLists.add(new TaskList(this));
+    public TaskList addTaskList() {
+        TaskList taskList = new TaskList(this);
+        this.taskLists.add(taskList);
+        return taskList;
     }
 
-    public void removeTaskList(TaskList taskList) {
+    protected void removeTaskList(TaskList taskList) {
         if (!this.taskLists.remove(taskList))
             throw new IllegalArgumentException();
     }
-
 }

@@ -1,42 +1,37 @@
 package commons;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 
 @Entity
 public class Task {
+
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     @Column
     private String title;
+
     @ManyToOne
     private TaskList taskList;
 
 //    constructors
 
-    public Task(TaskList taskList) {
+    public Task() {} // required for Spring, please don't use.
+
+    protected Task(TaskList taskList) {
         this.taskList = taskList;
         this.title = "";
     }
 
-    public Task(TaskList taskList, String title) {
-        this.taskList = taskList;
-        this.title = title;
-    }
+//    getters and setters
 
-    public Task() {}
-
-//    setters and getters
-
-    public Long getId() {
+    private long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    private void setId(long id) {
         this.id = id;
     }
 
@@ -52,7 +47,7 @@ public class Task {
         return taskList;
     }
 
-    public void setTaskList(TaskList taskList) {
+    private void setTaskList(TaskList taskList) {
         this.taskList = taskList;
     }
 
