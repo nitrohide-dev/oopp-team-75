@@ -1,27 +1,34 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Objects;
 
 
 @Entity
 public class Task {
 
+    public static final int MAX_TITLE_LENGTH = 256;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @Column(unique=true, nullable=false)
+    public long id;
 
-    @Column
-    private String title;
+    @Column(unique=false, nullable=false, length=MAX_TITLE_LENGTH)
+    public String title;
 
+    @JsonBackReference
     @ManyToOne
-    private TaskList taskList;
+    public TaskList taskList;
 
 //    constructors
 
     public Task() {} // required for Spring, please don't use.
 
-    protected Task(TaskList taskList) {
+    public Task(TaskList taskList) {
         this.taskList = taskList;
         this.title = "";
     }
@@ -32,7 +39,7 @@ public class Task {
         return id;
     }
 
-    private void setId(long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -48,7 +55,7 @@ public class Task {
         return taskList;
     }
 
-    private void setTaskList(TaskList taskList) {
+    public void setTaskList(TaskList taskList) {
         this.taskList = taskList;
     }
 
@@ -59,12 +66,12 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && title.equals(task.title) && taskList.equals(task.taskList);
+        return id == task.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, taskList);
+        return Objects.hash(id);
     }
 
 //    actual methods

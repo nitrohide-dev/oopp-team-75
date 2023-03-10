@@ -1,34 +1,37 @@
 package commons;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
 @Entity
 public class Board {
 
-    @Id
-    private String key;
+    public static final int MAX_KEY_LENGTH = 16;
+    public static final int MAX_TITLE_LENGTH = 64;
 
-    @Column
-    @OneToMany(mappedBy = "board")
-    private List<TaskList> taskLists;
+    @Id
+    @Column(unique=true, nullable=false, length=MAX_KEY_LENGTH)
+    public String key;
+
+    @Column(unique=false, nullable=false, length=MAX_TITLE_LENGTH)
+    public String title;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public List<TaskList> taskLists;
 
 //    constructors
 
-    public Board() { // required for Spring, please don't use.
-        this.key = "";
-        this.taskLists = new ArrayList<>();
-    }
+    public Board() {}
 
     public Board(String key) {
         this.key = key;
+        this.title = "";
         this.taskLists = new ArrayList<>();
     }
 
@@ -42,11 +45,19 @@ public class Board {
         this.key = key;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public List<TaskList> getTaskLists() {
         return taskLists;
     }
 
-    private void setTaskLists(List<TaskList> taskLists) {
+    public void setTaskLists(List<TaskList> taskLists) {
         this.taskLists = taskLists;
     }
 
@@ -57,12 +68,12 @@ public class Board {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Board board = (Board) o;
-        return key.equals(board.key) && taskLists.equals(board.taskLists);
+        return Objects.equals(key, board.key);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, taskLists);
+        return Objects.hash(key);
     }
 
 //    actual methods
