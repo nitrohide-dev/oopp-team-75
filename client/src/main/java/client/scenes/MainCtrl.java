@@ -15,6 +15,7 @@
  */
 package client.scenes;
 
+import commons.Board;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -35,6 +36,8 @@ public class MainCtrl {
     private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
 
+    private Board currBoard;
+
     public void initialize(Stage primaryStage, Pair<LandingPageCtrl, Parent> landing,
 //                           Pair<AddQuoteCtrl, Parent> add,
                            Pair<BoardOverviewCtrl, Parent> boardOverview) {
@@ -54,6 +57,10 @@ public class MainCtrl {
         primaryStage.show();
     }
 
+    public Board getCurrBoard() {
+        return currBoard;
+    }
+
     public void showOverview() {
         primaryStage.setTitle("Quotes: Overview");
         primaryStage.setScene(overview);
@@ -68,10 +75,12 @@ public class MainCtrl {
         landingCtrl.refresh();
     }
 
-    public void showBoard(){
+    public void showBoard(Board board) {
+        currBoard = board;
         primaryStage.setTitle("Board: Your Board");
         primaryStage.setScene(boardOverview);
     }
+
     public void showAdd() {
         primaryStage.setTitle("Quotes: Adding Quote");
         primaryStage.setScene(add);
