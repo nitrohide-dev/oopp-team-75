@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Board;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -24,7 +25,9 @@ public class LandingPageCtrl {
 
     public void connect(){
         var q = server_ip.getText();
-        mainCtrl.showBoard();
+        long id = 1; //hardcoded id, should extract it from somewhere
+        Board board = server.getBoard(id);
+        mainCtrl.showBoard(board);
         //need to implement backend, hardcoded it for now
         clearFields();
     }

@@ -1,46 +1,68 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class TaskList {
 
+    public static final int MAX_TITLE_LENGTH = 64;
+
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique=true, nullable=false)
+    public long id;
 
-    @OneToMany(mappedBy = "taskList")
-    private List<Task> tasks;
+    @Column(nullable=false, length=MAX_TITLE_LENGTH)
+    public String title;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "taskList", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    public List<Task> tasks;
+
+    @JsonBackReference
     @ManyToOne
-    private Board board;
+    public Board board;
 
 //    constructors
-    public TaskList() {
-        this.tasks = new ArrayList<>();
-    }
+
+    public TaskList() {}
+
     public TaskList(Board board) {
         this.board = board;
         this.tasks = new ArrayList<>();
+        this.title = "";
     }
 
-    public TaskList(Board board, List<Task> tasks) {
-        this.board = board;
-        this.tasks = tasks;
-    }
+//    getters and setters
 
-//    setters and getters
-
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public List<Task> getTasks() {
@@ -59,13 +81,30 @@ public class TaskList {
         this.board = board;
     }
 
-//    actual methods
+//    equals and hashcode
 
-    public void addTask() {
-        this.tasks.add(new Task(this));
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskList taskList = (TaskList) o;
+        return id == taskList.id;
     }
 
-    public void removeTask(Task task) {
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+//    actual methods
+
+    public Task addTask() {
+        Task task = new Task(this);
+        this.tasks.add(task);
+        return task;
+    }
+
+    protected void removeTask(Task task) {
         if (!this.tasks.remove(task))
             throw new IllegalArgumentException();
     }
