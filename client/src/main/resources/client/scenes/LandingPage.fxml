@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="anchor_page" stylesheets="@../../../../main/java/css/styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LandingPageCtrl">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="anchor_page" stylesheets="@css/styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LandingPageCtrl">
    <children>
       <Label layoutX="176.0" layoutY="82.0" text="Welcome to Talio">
          <font>

@@ -70,8 +70,7 @@ public class MainCtrl {
     public void showLanding(){
         primaryStage.setTitle("Talio: Start");
         primaryStage.setScene(landing);
-//        landing.getStylesheets().add(String.valueOf(getClass().getResource("styles.css")));
-//        landing.getStylesheets().add("css/styles.css");
+        landing.getStylesheets().add(getClass().getResource("css/styles.css").toExternalForm());
         landingCtrl.refresh();
     }
 
