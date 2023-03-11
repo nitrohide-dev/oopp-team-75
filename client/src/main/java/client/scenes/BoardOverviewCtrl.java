@@ -107,8 +107,10 @@ public class BoardOverviewCtrl {
         ObservableList children = hBox.getChildren();
         TextField sampleText = (TextField) sampleGroup.getChildren().get(0);
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
+        ListView<Label> sampleList = (ListView<Label>) samplePane.getContent();
         TextField textField = new TextField();
         ListView<Label> listView = new ListView<>();
+        listView.setPrefSize(sampleList.getPrefWidth(), sampleList.getPrefHeight());
         ScrollPane scrollPane = new ScrollPane(listView);
 
         textField.setPrefSize(sampleText.getPrefWidth(), sampleText.getPrefHeight());
@@ -116,6 +118,7 @@ public class BoardOverviewCtrl {
         textField.setLayoutY(0);
         textField.setText("Name your list!");
         scrollPane.setPrefSize(samplePane.getPrefWidth(), samplePane.getPrefHeight());
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setLayoutX(0);
         scrollPane.setLayoutY(60);
 
