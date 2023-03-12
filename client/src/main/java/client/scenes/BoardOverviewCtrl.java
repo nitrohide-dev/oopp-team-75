@@ -5,22 +5,23 @@ import com.google.inject.Inject;
 import commons.Task;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 
 /**
@@ -32,13 +33,13 @@ public class BoardOverviewCtrl {
     private final MainCtrl mainCtrl;
 
     @FXML
-    private ListView<Label> taskList1;
+    private ListView<HBox> taskList1;
 
     @FXML
-    private ListView<Label> taskList2;
+    private ListView<HBox> taskList2;
 
     @FXML
-    private ListView<Label> taskList3;
+    private ListView<HBox> taskList3;
 
     @FXML
     private TextField listName1;
@@ -136,71 +137,126 @@ public class BoardOverviewCtrl {
 
     /**
      * Creates a task and puts it in the first list
+     * A task contains a label and three buttons for task operations
      */
     public void createTask() {
         String name = getTaskNamePopup("Task");
         //if (!server.addTask(name)) return;
         Label task = new Label(name);
-        System.out.println(task);
-        taskList1.getItems().add(task);
-        System.out.println(taskList1.getItems());
+        task.setPadding(new Insets(1, 70, 1, 1));
+        String path = Path.of("", "client", "images", "cancel.png").toString();
+        Button removeButton = buttonBuilder(path);
+        path = Path.of("", "client", "images", "pencil.png").toString();
+        Button editButton = buttonBuilder(path);
+        path = Path.of("", "client", "images", "eye.png").toString();
+        Button viewButton = buttonBuilder(path);
+        HBox box = new HBox(task, removeButton, editButton, viewButton);
+        removeButton.setOnAction(e -> deleteTask(box));
+        editButton.setOnAction(e -> editTask(box));
+        viewButton.setOnAction(e -> viewTask(box));
+        disableButtons(box);
+        taskList1.getItems().add(box);
+    }
+
+    /**
+     * Creates button for task operations
+     * @param path - The path of the image that is on the button
+     * @return the created button
+     */
+    private Button buttonBuilder(String path) {
+        String url = getClass().getClassLoader().getResource(path.replace("\\","/")).toString();
+        Image image = new Image(url);
+        ImageView picture = new ImageView(image);
+        picture.setFitHeight(20);
+        picture.setFitWidth(20);
+        Button button = new Button();
+        button.setMaxSize(20, 20);
+        button.setBackground(null);
+        button.setPadding(new Insets(4));
+        button.setGraphic(picture);
+        return button;
     }
 
     /**
      * popup that ask you to input the name of the thing that you want to create
+     * @param item - the type of the thing that you want to create
      * @return the input name
      */
     public String getTaskNamePopup(String item) {
         TextInputDialog input = new TextInputDialog(item + " name");
         input.setHeaderText(item);
-        input.setContentText("Please enter a name for the new " + item.toLowerCase(Locale.ROOT) + ".");
-        input.showAndWait();
+        input.setContentText("Please enter a name for the " + item.toLowerCase(Locale.ROOT) + ".");
         input.setTitle("Name Input Dialog");
+        input.showAndWait();
         return input.getEditor().getText();
     }
 
     /**
-     * When any of the tasks is clicked it gives the user option to view, edit or remove it
+     * When any of the tasks is clicked it gives the user options to view, edit or remove it
      */
     public void taskOperations() {
-        Label task = taskList1.getSelectionModel().getSelectedItem();
-        if (task == null) return;
-        //Popup with options to view, edit or remove the selected task
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText(task.getText());
-        alert.setContentText("Choose your option.");
+        HBox box = taskList1.getSelectionModel().getSelectedItem();
+        if (box == null) return;
+        resetOptionButtons();
+        Button removeButton = (Button) box.getChildren().get(1);
+        Button editButton = (Button) box.getChildren().get(2);
+        Button viewButton = (Button) box.getChildren().get(3);
+        removeButton.setDisable(false);
+        removeButton.setVisible(true);
+        editButton.setDisable(false);
+        editButton.setVisible(true);
+        viewButton.setDisable(false);
+        viewButton.setVisible(true);
+    }
 
-        ButtonType editButton = new ButtonType("Edit");
-        ButtonType viewButton = new ButtonType("View");
-        ButtonType removeButton = new ButtonType("Remove");
-        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-        alert.getButtonTypes().setAll(editButton, viewButton, removeButton, buttonTypeCancel);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == editButton){
-            editTask(task);
-        } else if (result.get() == viewButton) {
-            viewTask(task);
-        } else if (result.get() == removeButton) {
-            deleteTask(task);
-        } else {
-            return;
+    /**
+     * resets the buttons for task operations to their default settings
+     */
+    private void resetOptionButtons() {
+        for (ListView<HBox> list : allLists.keySet()) {
+            for (HBox box : list.getItems()) {
+                disableButtons(box);
+            }
         }
     }
 
-    public void editTask(Label task) {
+    /**
+     * disables and hides all buttons in a box, containing a task
+     * @param box - box that contains a task and its operations buttons
+     */
+    private void disableButtons(HBox box) {
+        Button removeButton = (Button) box.getChildren().get(1);
+        Button editButton = (Button) box.getChildren().get(2);
+        Button viewButton = (Button) box.getChildren().get(3);
+        removeButton.setDisable(true);
+        removeButton.setVisible(false);
+        editButton.setDisable(true);
+        editButton.setVisible(false);
+        viewButton.setDisable(true);
+        viewButton.setVisible(false);
+    }
+
+    /**
+     * Edits the chosen task
+     * @param task - a HBox, containing the task
+     */
+    public void editTask(HBox task) {
         //if (!server.editTask(task.getText())) return;
-        int index = taskList1.getItems().indexOf(task);
-        taskList1.getItems().get(index).setText(getTaskNamePopup("Task"));
+        ((Label) task.getChildren().get(0)).setText(getTaskNamePopup("Task"));
     }
 
-    public void viewTask(Label task) {
+    /**
+     * The user can see detailed info about the task
+     * @param task - a HBox, containing the task
+     */
+    public void viewTask(HBox task) {
     }
 
-
-    public void deleteTask(Label task) {
+    /**
+     * Deletes given task
+     * @param task - a HBox, containing the task
+     */
+    public void deleteTask(HBox task) {
         //if (!server.removeTask(task.getText())) return;
         taskList1.getItems().remove(task);
     }

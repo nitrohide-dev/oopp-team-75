@@ -16,30 +16,30 @@
             <Group fx:id="group">
                <children>
                   <Button layoutY="30.0" mnemonicParsing="false" onAction="#createTask" prefHeight="25.0" prefWidth="99.0" text="NEW TASK" />
-                  <TextField fx:id="listName1" alignment="CENTER" prefHeight="25.0" prefWidth="160.0" text="List 1" />
-                  <ScrollPane hbarPolicy="NEVER" layoutY="60.0" prefHeight="348.0" prefWidth="160.0">
+                  <TextField fx:id="listName1" alignment="CENTER" prefHeight="25.0" prefWidth="205.0" text="List 1" />
+                  <ScrollPane hbarPolicy="NEVER" layoutY="60.0" prefHeight="348.0" prefWidth="205.0">
                      <content>
-                        <ListView fx:id="taskList1" editable="true" fixedCellSize="35.0" onMouseClicked="#taskOperations" prefHeight="346.0" prefWidth="159.0" />
+                        <ListView fx:id="taskList1" editable="true" fixedCellSize="35.0" onMouseClicked="#taskOperations" prefHeight="346.0" prefWidth="204.0" />
                      </content>
                   </ScrollPane>
                </children>
             </Group>
             <Group>
                <children>
-                  <TextField fx:id="listName2" alignment="CENTER" prefHeight="25.0" prefWidth="160.0" text="List 2" />
-                  <ScrollPane hbarPolicy="NEVER" layoutY="60.0" prefHeight="348.0" prefWidth="160.0">
+                  <TextField fx:id="listName2" alignment="CENTER" prefHeight="25.0" prefWidth="205.0" text="List 2" />
+                  <ScrollPane hbarPolicy="NEVER" layoutY="60.0" prefHeight="348.0" prefWidth="205.0">
                      <content>
-                        <ListView fx:id="taskList2" fixedCellSize="35.0" layoutX="75.0" onMouseClicked="#taskOperations" prefHeight="346.0" prefWidth="159.0" />
+                        <ListView fx:id="taskList2" fixedCellSize="35.0" layoutX="75.0" onMouseClicked="#taskOperations" prefHeight="346.0" prefWidth="204.0" />
                      </content>
                   </ScrollPane>
                </children>
             </Group>
             <Group>
                <children>
-                  <TextField fx:id="listName3" alignment="CENTER" prefHeight="25.0" prefWidth="160.0" text="List 3" />
-                  <ScrollPane hbarPolicy="NEVER" layoutY="60.0" prefHeight="348.0" prefWidth="160.0">
+                  <TextField fx:id="listName3" alignment="CENTER" prefHeight="25.0" prefWidth="205.0" text="List 3" />
+                  <ScrollPane hbarPolicy="NEVER" layoutY="60.0" prefHeight="348.0" prefWidth="205.0">
                      <content>
-                        <ListView fx:id="taskList3" fixedCellSize="35.0" layoutX="75.0" onMouseClicked="#taskOperations" prefHeight="346.0" prefWidth="159.0" />
+                        <ListView fx:id="taskList3" fixedCellSize="35.0" layoutX="75.0" onMouseClicked="#taskOperations" prefHeight="346.0" prefWidth="204.0" />
                      </content>
                   </ScrollPane>
                </children>
