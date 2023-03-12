@@ -150,7 +150,7 @@ public class BoardOverviewCtrl {
         Button editButton = buttonBuilder(path);
         path = Path.of("", "client", "images", "eye.png").toString();
         Button viewButton = buttonBuilder(path);
-        HBox box = new HBox(task, removeButton, editButton, viewButton);
+        HBox box = new HBox(task, viewButton, editButton, removeButton);
         removeButton.setOnAction(e -> deleteTask(box));
         editButton.setOnAction(e -> editTask(box));
         viewButton.setOnAction(e -> viewTask(box));
