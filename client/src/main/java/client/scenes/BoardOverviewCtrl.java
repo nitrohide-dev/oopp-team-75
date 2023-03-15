@@ -17,6 +17,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -143,7 +144,8 @@ public class BoardOverviewCtrl {
         String name = getTaskNamePopup("Task");
         //if (!server.addTask(name)) return;
         Label task = new Label(name);
-        task.setPadding(new Insets(1, 70, 1, 1));
+        task.setPrefWidth(120);
+        task.setPadding(new Insets(6, 1, 6, 1));
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
         path = Path.of("", "client", "images", "pencil.png").toString();
@@ -155,6 +157,7 @@ public class BoardOverviewCtrl {
         editButton.setOnAction(e -> editTask(box));
         viewButton.setOnAction(e -> viewTask(box));
         disableButtons(box);
+        box.setHgrow(task, Priority.NEVER);
         taskList1.getItems().add(box);
     }
 
@@ -167,12 +170,12 @@ public class BoardOverviewCtrl {
         String url = getClass().getClassLoader().getResource(path.replace("\\","/")).toString();
         Image image = new Image(url);
         ImageView picture = new ImageView(image);
-        picture.setFitHeight(20);
-        picture.setFitWidth(20);
+        picture.setFitHeight(18);
+        picture.setFitWidth(18);
         Button button = new Button();
         button.setMaxSize(20, 20);
         button.setBackground(null);
-        button.setPadding(new Insets(4));
+        button.setPadding(new Insets(6, 1, 6, 3));
         button.setGraphic(picture);
         return button;
     }
