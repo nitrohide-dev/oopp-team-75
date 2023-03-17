@@ -67,15 +67,15 @@ public class Board {
 
     @Id
     @Column(unique=true, nullable=false, length=MAX_KEY_LENGTH)
-    public String key;
+    private String key;
 
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
-    public String title;
+    private String title;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "board", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
     @OrderColumn
-    public List<TaskList> taskLists;
+    private List<TaskList> taskLists;
 
 //    constructors
 
@@ -131,9 +131,9 @@ public class Board {
 //    actual methods
 
     /**
-     * Creates a new empty taskList, adds it to the end of this board and
+     * Creates a new empty {@code TaskList}, adds it to the end of this board and
      * returns it.
-     * @return the created tasklist.
+     * @return the created {@code TaskList}.
      */
     public TaskList createTaskList() {
         TaskList taskList = new TaskList(this);
@@ -142,7 +142,7 @@ public class Board {
     }
 
     /**
-     * Removes a task from this taskList and sets its parent to null.
+     * Removes {@code taskList} from this board and sets its parent to null.
      * @param taskList
      */
     public void removeTaskList(TaskList taskList) {
