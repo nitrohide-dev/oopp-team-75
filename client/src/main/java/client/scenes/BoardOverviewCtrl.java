@@ -2,9 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Task;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -310,15 +308,15 @@ public class BoardOverviewCtrl {
 
     public void determineDragAction(HBox box) {
         if (taskList1.isHover()) {
-           moveTask(taskList1, taskList1, box);
+            moveTask(taskList1, taskList1, box);
 
         } else if (taskList2.isHover()) {
-           moveTask(taskList1, taskList2, box);
+            moveTask(taskList1, taskList2, box);
 
-       } else if (taskList3.isHover()) {
-           moveTask(taskList1, taskList3, box);
+        } else if (taskList3.isHover()) {
+            moveTask(taskList1, taskList3, box);
 
-       } else {
+        } else {
             return;
         }
     }

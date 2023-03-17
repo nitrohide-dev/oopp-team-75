@@ -23,7 +23,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 import commons.Board;
-import commons.Task;
 import jakarta.ws.rs.core.Response;
 import javafx.scene.layout.HBox;
 import javafx.util.Pair;
