@@ -70,6 +70,7 @@ public class MainCtrl {
     public void showLanding(){
         primaryStage.setMinWidth(600);
         primaryStage.setMinHeight(400);
+        landingCtrl.changeImageUrl();
         primaryStage.setTitle("Welcome to Talio!");
         primaryStage.setScene(landing);
         landing.getStylesheets().add(getClass().getResource("css/styles.css").toExternalForm());
