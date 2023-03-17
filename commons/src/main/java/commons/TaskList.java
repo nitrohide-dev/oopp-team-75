@@ -3,15 +3,16 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
+import javax.persistence.OrderColumn;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +21,8 @@ import java.util.Objects;
 public class TaskList {
 
     public static final int MAX_TITLE_LENGTH = 64;
+
+//    attributes
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,7 +33,8 @@ public class TaskList {
     public String title;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "taskList", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "taskList", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @OrderColumn
     public List<Task> tasks;
 
     @JsonBackReference
@@ -39,7 +43,7 @@ public class TaskList {
 
 //    constructors
 
-    public TaskList() {}
+    public TaskList() {} // for object mappers, please don't use.
 
     public TaskList(Board board) {
         this.board = board;
@@ -98,19 +102,81 @@ public class TaskList {
 
 //    actual methods
 
-    public Task addTask() {
+    /**
+     * Creates a new empty task, adds it to the end of this taskList and
+     * returns it.
+     * @return the created task.
+     */
+    public Task createTask() {
         Task task = new Task(this);
         this.tasks.add(task);
         return task;
     }
 
-    protected void removeTask(Task task) {
+    /**
+     * Removes a task from this taskList and sets its parent to null.
+     * @param task
+     */
+    public void removeTask(Task task) {
+        if (task == null)
+            throw new IllegalArgumentException("Task cannot be null");
         if (!this.tasks.remove(task))
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Task not in TaskList");
+        task.setTaskList(null);
     }
 
-    public void delete() {
+    /**
+     * Removes this taskList from its board. Shorthand method for
+     * <pre>  taskList.getBoard().removeTaskList(taskList)</pre>
+     * If the taskList does not have a board (i.e. it is already detached), it
+     * does nothing.
+     */
+    public void detach() {
+        if (board == null) return;
         this.board.removeTaskList(this);
     }
 
+    /**
+     * Inserts the task at the specified index in this taskList.
+     * @param index
+     * @param task
+     */
+    public void insertTask(int index, Task task) {
+        tasks.add(index, task);
+        task.setTaskList(this);
+    }
+
+    /**
+     * Inserts task1 before task2 in this taskList.
+     * @param task1
+     * @param task2
+     */
+    public void insertTask(Task task1, Task task2) {
+        insertTask(tasks.indexOf(task2), task1);
+    }
+
+    /**
+     * Detaches the task from its parent and inserts it into this taskList at
+     * the specified index.
+     * @param index
+     * @param task
+     */
+    public void moveTask(int index, Task task) {
+        if (task == null)
+            throw new IllegalArgumentException("Task cannot be null");
+        task.detach();
+        insertTask(index, task);
+    }
+
+    /**
+     * Detaches task1 from its parent and inserts it before task2 in this taskList.
+     * @param task1
+     * @param task2
+     */
+    public void moveTask(Task task1, Task task2) {
+        if (task1 == null || task2 == null)
+            throw new IllegalArgumentException("Tasks cannot be null");
+        task1.detach();
+        insertTask(task1, task2);
+    }
 }
