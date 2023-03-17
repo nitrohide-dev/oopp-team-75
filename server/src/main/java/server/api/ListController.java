@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import server.database.ListRepository;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/lists")
 public class ListController {
@@ -20,6 +22,9 @@ public class ListController {
     public ListController(ListRepository repo) {
         this.repo = repo;
     }
+
+    @GetMapping(path = { "", "/" })
+    public List<TaskList> getAll() { return repo.findAll(); }
 
     @GetMapping("/{id}")
     public ResponseEntity<TaskList> getById(@PathVariable("id") String id) {
