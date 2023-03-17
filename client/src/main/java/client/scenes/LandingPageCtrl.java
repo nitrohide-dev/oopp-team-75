@@ -6,6 +6,10 @@ import commons.Board;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.nio.file.Path;
 
 public class LandingPageCtrl {
     private final ServerUtils server;
@@ -14,6 +18,8 @@ public class LandingPageCtrl {
     private TextField server_ip;
     @FXML
     private Button connect_button;
+    @FXML
+    private ImageView logo1;
 
 
     @Inject
@@ -34,6 +40,12 @@ public class LandingPageCtrl {
 
     private void clearFields() {
         server_ip.clear();
+    }
+
+    public void changeImageUrl() {
+    // Set the image URL of ImageView
+        String path = Path.of("", "client", "images", "Logo.png").toString();
+        logo1.setImage(new Image(path));
     }
 
     public void refresh() {

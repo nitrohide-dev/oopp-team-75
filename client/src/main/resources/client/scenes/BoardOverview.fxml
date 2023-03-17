@@ -3,15 +3,22 @@
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollBar?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
 <AnchorPane fx:id="mainPane" maxWidth="650.0" prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardOverviewCtrl">
+<!-- Added ScrollPane for improved scrolling experience, changed HBox so there's some space on the
+right when adding new lists -->
+
+<ScrollPane fx:id="scrollPaneMain" fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardOverviewCtrl">
+   <content>
+<AnchorPane fx:id="anchorPaneMain" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+>>>>>>> abe1f0d4549714cfe23404e6b5619d3009e2fdbf
    <children>
-      <HBox fx:id="hBox" prefHeight="100.0" prefWidth="200.0" spacing="40.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="50.0">
+      <HBox fx:id="hBox" prefHeight="100.0" prefWidth="200.0" spacing="40.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0">
          <children>
             <Group fx:id="group">
                <children>
@@ -46,7 +53,10 @@
             </Group>
          </children>
       </HBox>
-      <ScrollBar fx:id="scrollBar" layoutX="650.0" layoutY="479.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <Button layoutX="701.0" layoutY="14.0" mnemonicParsing="false" onAction="#createTaskList" text="+" />
+      <Button layoutX="701.0" layoutY="14.0" mnemonicParsing="false" onAction="#createTaskList" text="+" AnchorPane.rightAnchor="31.0" />
+
    </children>
+
 </AnchorPane>
+   </content>
+</ScrollPane>
