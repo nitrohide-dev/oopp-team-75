@@ -1,6 +1,6 @@
-package server.api;
+package server.api.controllers;
 
-import commons.Task;
+import commons.TaskList;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,25 +9,25 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import server.database.TaskRepository;
+import server.database.ListRepository;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/tasks")
-public class TaskController {
+@RequestMapping("/api/lists")
+public class ListController {
 
-    private final TaskRepository repo;
+    private final ListRepository repo;
 
-    public TaskController(TaskRepository repo) {
+    public ListController(ListRepository repo) {
         this.repo = repo;
     }
 
     @GetMapping(path = { "", "/" })
-    public List<Task> getAll() { return repo.findAll(); }
+    public List<TaskList> getAll() { return repo.findAll(); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getById(@PathVariable("id") String id) {
+    public ResponseEntity<TaskList> getById(@PathVariable("id") String id) {
         try {
             return getById(Long.parseLong(id));
         } catch (NumberFormatException ex) {
@@ -35,21 +35,21 @@ public class TaskController {
         }
     }
 
-    public ResponseEntity<Task> getById(long id) {
+    public ResponseEntity<TaskList> getById(long id) {
         if (!repo.existsById(id))
             return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
     @PostMapping(path = { "", "/" })
-    public ResponseEntity<Task> add(@RequestBody Task task) {
-        if (task == null)
+    public ResponseEntity<TaskList> add(@RequestBody TaskList taskList) {
+        if (taskList == null)
             return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(repo.save(task));
+        return ResponseEntity.ok(repo.save(taskList));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Task> deleteById(@PathVariable("id") String id) {
+    public ResponseEntity<TaskList> deleteById(@PathVariable("id") String id) {
         try {
             return deleteById(Long.parseLong(id));
         } catch (NumberFormatException ex) {
@@ -57,7 +57,7 @@ public class TaskController {
         }
     }
 
-    public ResponseEntity<Task> deleteById(long id) {
+    public ResponseEntity<TaskList> deleteById(long id) {
         if (!repo.existsById(id))
             return ResponseEntity.badRequest().build();
         repo.deleteById(id);
