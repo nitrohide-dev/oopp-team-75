@@ -2,11 +2,11 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Task;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -15,8 +15,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 
 import java.nio.file.Path;
@@ -60,8 +61,10 @@ public class BoardOverviewCtrl {
 
     @FXML
     private ScrollPane scrollPaneMain;
+
     @FXML
     private AnchorPane anchorPaneMain;
+
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
@@ -74,7 +77,7 @@ public class BoardOverviewCtrl {
      * Initializes the objects in the scene
      */
     @FXML
-    public void initialize(){
+    public void initialize() {
         ObservableList children = hBox.getChildren();
         sampleGroup = (Group) children.get(1);
         setListsNames();
@@ -115,7 +118,8 @@ public class BoardOverviewCtrl {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setLayoutX(0);
         scrollPane.setLayoutY(60);
-        System.out.println(samplePane+" ----- "+sampleText);
+
+        System.out.println(samplePane + " ----- " + sampleText);
 
         Group newGroup = new Group(textField, scrollPane);
         newGroup.setLayoutX(sampleGroup.getLayoutX());
@@ -144,6 +148,7 @@ public class BoardOverviewCtrl {
         path = Path.of("", "client", "images", "eye.png").toString();
         Button viewButton = buttonBuilder(path);
         HBox box = new HBox(task, viewButton, editButton, removeButton);
+        box.setOnDragDetected(e -> dragTask(e, task, box));
         removeButton.setOnAction(e -> deleteTask(box));
         editButton.setOnAction(e -> editTask(box));
         viewButton.setOnAction(e -> viewTask(box));
@@ -154,11 +159,12 @@ public class BoardOverviewCtrl {
 
     /**
      * Creates button for task operations
+     *
      * @param path - The path of the image that is on the button
      * @return the created button
      */
     private Button buttonBuilder(String path) {
-        String url = getClass().getClassLoader().getResource(path.replace("\\","/")).toString();
+        String url = getClass().getClassLoader().getResource(path.replace("\\", "/")).toString();
         Image image = new Image(url);
         ImageView picture = new ImageView(image);
         picture.setFitHeight(18);
@@ -173,6 +179,7 @@ public class BoardOverviewCtrl {
 
     /**
      * popup that ask you to input the name of the thing that you want to create
+     *
      * @param item - the type of the thing that you want to create
      * @return the input name
      */
@@ -216,6 +223,7 @@ public class BoardOverviewCtrl {
 
     /**
      * disables and hides all buttons in a box, containing a task
+     *
      * @param box - box that contains a task and its operations buttons
      */
     private void disableButtons(HBox box) {
@@ -232,6 +240,7 @@ public class BoardOverviewCtrl {
 
     /**
      * Edits the chosen task
+     *
      * @param task - a HBox, containing the task
      */
     public void editTask(HBox task) {
@@ -241,6 +250,7 @@ public class BoardOverviewCtrl {
 
     /**
      * The user can see detailed info about the task
+     *
      * @param task - a HBox, containing the task
      */
     public void viewTask(HBox task) {
@@ -248,6 +258,7 @@ public class BoardOverviewCtrl {
 
     /**
      * Deletes given task
+     *
      * @param task - a HBox, containing the task
      */
     public void deleteTask(HBox task) {
@@ -257,11 +268,12 @@ public class BoardOverviewCtrl {
 
     /**
      * method that moves a task from one list to another
-     * @param fromList - the list containing the task
-     * @param toList - the list in which we want to put the task
-     * @param task the task to be moved
+     *
+     * @param fromList - the list containing the taskD
+     * @param toList   - the list in which we want to put the task
+     * @param task     the task to be moved
      */
-    public void moveTask(ListView fromList, ListView toList, Task task) {
+    public void moveTask(ListView fromList, ListView toList, HBox task) {
         String list1 = allLists.get(fromList);
         String list2 = allLists.get(toList);
         if (list1 == null || list2 == null) return;
@@ -272,4 +284,37 @@ public class BoardOverviewCtrl {
         }
     }
 
+    public void dragTask(MouseEvent n, Label task, HBox box) {
+        ObservableList children = anchorPaneMain.getChildren();
+        Text text = new Text();
+        text.setText(task.getText());
+        text.setOpacity((0.4));
+        text.setX(n.getX() + 5);
+        text.setY(n.getY() + 115);
+        task.setOnMouseDragged(e -> {
+            text.setX(e.getX() + 5);
+            text.setY(e.getY() + 115);
+        });
+        text.setOnMouseExited(e -> {
+            children.remove(text);
+            determineDragAction(box);
+        });
+        children.add(text);
+    }
+
+    public void determineDragAction(HBox box) {
+        if (taskList1.isHover()) {
+            moveTask(taskList1, taskList1, box);
+
+        } else if (taskList2.isHover()) {
+            moveTask(taskList1, taskList2, box);
+
+        } else if (taskList3.isHover()) {
+            moveTask(taskList1, taskList3, box);
+
+        } else {
+            return;
+        }
+    }
 }
+
