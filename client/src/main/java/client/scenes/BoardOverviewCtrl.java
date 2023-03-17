@@ -15,7 +15,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.input.MouseEvent;
@@ -34,8 +33,7 @@ import java.util.Map;
 public class BoardOverviewCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    @FXML
-    private AnchorPane mainPane;
+
     @FXML
     private ListView<HBox> taskList1;
 
@@ -63,8 +61,10 @@ public class BoardOverviewCtrl {
 
     @FXML
     private ScrollPane scrollPaneMain;
+
     @FXML
     private AnchorPane anchorPaneMain;
+
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
@@ -285,7 +285,7 @@ public class BoardOverviewCtrl {
     }
 
     public void dragTask(MouseEvent n, Label task, HBox box) {
-        ObservableList children = mainPane.getChildren();
+        ObservableList children = anchorPaneMain.getChildren();
         Text text = new Text();
         text.setText(task.getText());
         text.setOpacity((0.4));
