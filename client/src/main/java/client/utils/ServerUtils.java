@@ -25,6 +25,7 @@ import java.util.List;
 import commons.Board;
 import commons.Task;
 import jakarta.ws.rs.core.Response;
+import javafx.scene.layout.HBox;
 import javafx.util.Pair;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -130,7 +131,7 @@ public class ServerUtils {
      * @param task - the task that we want to move
      * @return true if the task can be put in toList, false otherwise
      */
-    public boolean moveTask(Board board, String fromList, String toList, Task task) {
+    public boolean moveTask(Board board, String fromList, String toList, HBox task) {
         Response res =  ClientBuilder.newClient(new ClientConfig())
             .target(SERVER).path("api/board/move")
             .queryParam("board", board)
@@ -144,4 +145,6 @@ public class ServerUtils {
         if (res.getStatus() == 200) return true;
         else return false;
     }
+
+
 }
