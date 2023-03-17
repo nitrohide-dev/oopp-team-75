@@ -311,15 +311,14 @@ public class BoardOverviewCtrl {
     public void determineDragAction(HBox box) {
         if (taskList1.isHover()) {
            moveTask(taskList1, taskList1, box);
-            System.out.println("AAAVVVAADSADAAA");
+
         } else if (taskList2.isHover()) {
            moveTask(taskList1, taskList2, box);
-            System.out.println("AAAAAVVVAA");
+
        } else if (taskList3.isHover()) {
            moveTask(taskList1, taskList3, box);
-            System.out.println("AAAAVVVVEWQWQQDAAA");
+
        } else {
-           System.out.println("AAAAAAASSASAA");
             return;
         }
     }
