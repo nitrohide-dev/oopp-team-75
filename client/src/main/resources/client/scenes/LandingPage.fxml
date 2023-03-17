@@ -18,7 +18,7 @@
             <VBox alignment="CENTER" spacing="20.0">
                <ImageView fitHeight="200.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true">
                   <image>
-                     <Image url="@../images/Logo.png" />
+                     <Image url="@/client/images/Logo.png" />
                   </image>
                </ImageView>
                <HBox alignment="CENTER" spacing="10">

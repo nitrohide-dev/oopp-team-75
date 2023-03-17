@@ -39,7 +39,7 @@
 /* landing page css */
 .anchor_page {
  -fx-border-color: blue;
- -fx-border-width: 3px;
+ -fx-border-width: 2px;
  -fx-border-radius: 1px;
  -fx-background-color: #CCFFFF;
 }
