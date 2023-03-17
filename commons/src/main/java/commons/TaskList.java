@@ -27,25 +27,25 @@ public class TaskList {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique=true, nullable=false)
-    public long id;
+    private long id;
 
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
-    public String title;
+    private String title;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "taskList", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
     @OrderColumn
-    public List<Task> tasks;
+    private List<Task> tasks;
 
     @JsonBackReference
     @ManyToOne
-    public Board board;
+    private Board board;
 
 //    constructors
 
     public TaskList() {} // for object mappers, please don't use.
 
-    public TaskList(Board board) {
+    protected TaskList(Board board) {
         this.board = board;
         this.tasks = new ArrayList<>();
         this.title = "";
@@ -114,7 +114,7 @@ public class TaskList {
     }
 
     /**
-     * Removes a task from this taskList and sets its parent to null.
+     * Removes {@code task} from this taskList and sets its parent to null.
      * @param task
      */
     public void removeTask(Task task) {
@@ -126,10 +126,9 @@ public class TaskList {
     }
 
     /**
-     * Removes this taskList from its board. Shorthand method for
-     * <pre>  taskList.getBoard().removeTaskList(taskList)</pre>
-     * If the taskList does not have a board (i.e. it is already detached), it
-     * does nothing.
+     * Removes this taskList from its board. Shorthand method for: {@code
+     * taskList.getBoard().removeTaskList(taskList)}. If the taskList does not
+     * have a board (i.e. it is already detached), the method does nothing.
      */
     public void detach() {
         if (board == null) return;
@@ -137,46 +136,27 @@ public class TaskList {
     }
 
     /**
-     * Inserts the task at the specified index in this taskList.
+     * Detaches {@code task} and inserts it at {@code index} in this taskList.
      * @param index
      * @param task
      */
     public void insertTask(int index, Task task) {
+        if (task == null)
+            throw new IllegalArgumentException("Task cannot be null");
+        task.detach();
         tasks.add(index, task);
         task.setTaskList(this);
     }
 
     /**
-     * Inserts task1 before task2 in this taskList.
+     * Detaches {@code task1} and inserts it before {@code task2} in this taskList.
      * @param task1
      * @param task2
      */
     public void insertTask(Task task1, Task task2) {
-        insertTask(tasks.indexOf(task2), task1);
-    }
-
-    /**
-     * Detaches the task from its parent and inserts it into this taskList at
-     * the specified index.
-     * @param index
-     * @param task
-     */
-    public void moveTask(int index, Task task) {
-        if (task == null)
-            throw new IllegalArgumentException("Task cannot be null");
-        task.detach();
-        insertTask(index, task);
-    }
-
-    /**
-     * Detaches task1 from its parent and inserts it before task2 in this taskList.
-     * @param task1
-     * @param task2
-     */
-    public void moveTask(Task task1, Task task2) {
-        if (task1 == null || task2 == null)
-            throw new IllegalArgumentException("Tasks cannot be null");
-        task1.detach();
-        insertTask(task1, task2);
+        int index = tasks.indexOf(task2);
+        if (index == -1)
+            throw new IllegalArgumentException("Task2 does not exist in the taskList.");
+        insertTask(index, task1);
     }
 }

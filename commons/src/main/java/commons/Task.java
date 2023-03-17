@@ -21,23 +21,23 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique=true, nullable=false)
-    public long id;
+    private long id;
 
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
-    public String title;
+    private String title;
 
     @Column(nullable=false)
-    public String desc;
+    private String desc;
 
     @JsonBackReference
     @ManyToOne
-    public TaskList taskList;
+    private TaskList taskList;
 
 //    constructors
 
     public Task() {} // for object mappers, please don't use.
 
-    public Task(TaskList taskList) {
+    protected Task(TaskList taskList) {
         this.taskList = taskList;
         this.title = "";
         this.desc = "";
