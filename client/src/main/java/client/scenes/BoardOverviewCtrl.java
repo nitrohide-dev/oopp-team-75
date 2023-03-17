@@ -10,15 +10,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Priority;
+
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
@@ -53,15 +55,16 @@ public class BoardOverviewCtrl {
     private TextField listName3;
 
     @FXML
-    private ScrollBar scrollBar;
-
-    @FXML
     private HBox hBox;
 
     private Group sampleGroup;
 
     private Map<ListView, String> allLists; // Stores all task lists
 
+    @FXML
+    private ScrollPane scrollPaneMain;
+    @FXML
+    private AnchorPane anchorPaneMain;
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
@@ -78,20 +81,11 @@ public class BoardOverviewCtrl {
         ObservableList children = hBox.getChildren();
         sampleGroup = (Group) children.get(1);
         setListsNames();
-        scroll();
+        // Sets ScrollPane size, so it's slightly bigger than AnchorPane
+        scrollPaneMain.setPrefSize(anchorPaneMain.getPrefWidth()+10,anchorPaneMain.getPrefHeight()+20);
     }
 
-    /**
-     * Not the best implementation, will work on making the scroll bar appear only when needed and also
-     * so I will make the scroll bar proportionally larger.
-     */
-    public void scroll() {
-        scrollBar.valueProperty().addListener((observable, oldValue, newValue) -> {
-            double scrollWidth = -Math.abs(hBox.getWidth() - hBox.getScene().getWidth());
-            hBox.setTranslateX(newValue.doubleValue() * scrollWidth);
-        });
-    }
-
+//Deleted Scrolling, implemented using ScrollPane
     /**
      * Connects all lists to their names
      */
@@ -145,7 +139,8 @@ public class BoardOverviewCtrl {
         String name = getTaskNamePopup("Task");
         //if (!server.addTask(name)) return;
         Label task = new Label(name);
-        task.setPadding(new Insets(1, 70, 1, 1));
+        task.setPrefWidth(120);
+        task.setPadding(new Insets(6, 1, 6, 1));
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
         path = Path.of("", "client", "images", "pencil.png").toString();
@@ -158,6 +153,7 @@ public class BoardOverviewCtrl {
         editButton.setOnAction(e -> editTask(box));
         viewButton.setOnAction(e -> viewTask(box));
         disableButtons(box);
+        box.setHgrow(task, Priority.NEVER);
         taskList1.getItems().add(box);
     }
 
@@ -171,12 +167,12 @@ public class BoardOverviewCtrl {
         String url = getClass().getClassLoader().getResource(path.replace("\\", "/")).toString();
         Image image = new Image(url);
         ImageView picture = new ImageView(image);
-        picture.setFitHeight(20);
-        picture.setFitWidth(20);
+        picture.setFitHeight(18);
+        picture.setFitWidth(18);
         Button button = new Button();
         button.setMaxSize(20, 20);
         button.setBackground(null);
-        button.setPadding(new Insets(4));
+        button.setPadding(new Insets(6, 1, 6, 3));
         button.setGraphic(picture);
         return button;
     }
