@@ -16,6 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
@@ -52,15 +53,16 @@ public class BoardOverviewCtrl {
     private TextField listName3;
 
     @FXML
-    private ScrollBar scrollBar;
-
-    @FXML
     private HBox hBox;
 
     private Group sampleGroup;
 
     private Map<ListView, String> allLists; // Stores all task lists
 
+    @FXML
+    private ScrollPane scrollPaneMain;
+    @FXML
+    private AnchorPane anchorPaneMain;
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
@@ -77,20 +79,11 @@ public class BoardOverviewCtrl {
         ObservableList children = hBox.getChildren();
         sampleGroup = (Group) children.get(1);
         setListsNames();
-        scroll();
+        // Sets ScrollPane size, so it's slightly bigger than AnchorPane
+        scrollPaneMain.setPrefSize(anchorPaneMain.getPrefWidth()+10,anchorPaneMain.getPrefHeight()+20);
     }
 
-    /**
-     * Not the best implementation, will work on making the scroll bar appear only when needed and also
-     * so I will make the scroll bar proportionally larger.
-     */
-    public void scroll(){
-        scrollBar.valueProperty().addListener((observable, oldValue, newValue) -> {
-            double scrollWidth =  - Math.abs(hBox.getWidth()  - hBox.getScene().getWidth());
-            hBox.setTranslateX(newValue.doubleValue() * scrollWidth);
-        });
-    }
-
+//Deleted Scrolling, implemented using ScrollPane
     /**
      * Connects all lists to their names
      */
@@ -123,7 +116,6 @@ public class BoardOverviewCtrl {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setLayoutX(0);
         scrollPane.setLayoutY(60);
-
         System.out.println(samplePane+" ----- "+sampleText);
 
         Group newGroup = new Group(textField, scrollPane);
