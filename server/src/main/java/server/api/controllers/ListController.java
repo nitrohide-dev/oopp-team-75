@@ -34,11 +34,9 @@ public class ListController {
         try {
             TaskList taskList = listService.getById(Long.parseLong(id));
             return ResponseEntity.ok(taskList);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().build();
-        }
-        catch (ListDoesNotExist e) {
+        } catch (ListDoesNotExist e) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -58,11 +56,9 @@ public class ListController {
         try {
             listService.deleteById(Long.parseLong(id));
             return ResponseEntity.ok().build();
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().build();
-        }
-        catch (ListDoesNotExist e) {
+        } catch (ListDoesNotExist e) {
             return ResponseEntity.badRequest().build();
         }
     }

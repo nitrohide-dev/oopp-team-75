@@ -2,7 +2,8 @@ package commons.models;
 
 public class CreateBoardModel {
 	public static final int MAX_KEY_LENGTH = 16;
-	public static final char[] KEY_CHARS = ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!-._ ").toCharArray();
+	public static final char[] KEY_CHARS = ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!-._ ")
+		.toCharArray();
 	public static final int MAX_TITLE_LENGTH = 64;
 
 	public final String key;

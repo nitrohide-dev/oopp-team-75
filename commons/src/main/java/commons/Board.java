@@ -136,10 +136,11 @@ public class Board {
     /**
      * Adds the given {@code TaskList}, adds it to the end of this board and
      * returns it.
-     * @param taskList - the taskList to add to the board
+     * @param listName - the name of the taskList to add to the board
      * @return the created {@code TaskList}.
      */
-    public TaskList createTaskList(TaskList taskList) {
+    public TaskList createTaskList(String listName) {
+        TaskList taskList = new TaskList(this, listName);
         this.taskLists.add(taskList);
         return taskList;
     }

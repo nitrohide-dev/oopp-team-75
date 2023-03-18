@@ -40,7 +40,7 @@ public class ListService {
 		if (usedName) {
 			throw new CannotCreateList("This list is already in the board.");
 		}
-		TaskList taskList = board.createTaskList(new TaskList(board, model.name));
+		TaskList taskList = board.createTaskList(model.name);
 		boardRepository.save(board);
 		return taskList;
 	}
