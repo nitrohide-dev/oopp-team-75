@@ -41,7 +41,7 @@ public class BoardController {
      * @param key the board key
      * @return the stored board
      */
-    @GetMapping("/{key}")
+    @GetMapping("/get/{key}")
     public ResponseEntity<Board> getByKey(@PathVariable("key") String key) {
         try {
             Board board = boardService.getBoardByKey(key);
@@ -53,9 +53,9 @@ public class BoardController {
     }
 
     /**
-     * Creates a new board with a random key, stores it in the database, and
-     * returns it. This method has a worst-case time complexity of O(∞).
-     * @return the created board
+     * Creates a new board from the given model, stores it in the database, and
+     * returns it.
+     * @return the created board or bad request if the model is not correct
      */
     @PostMapping( "/create")
     public ResponseEntity<Board> create(@RequestBody CreateBoardModel model) {
@@ -75,7 +75,7 @@ public class BoardController {
      * @param key the board key
      * @return nothing
      */
-    @DeleteMapping("/{key}")
+    @DeleteMapping("/delete/{key}")
     public ResponseEntity<Object> deleteByKey(@PathVariable("key") String key) {
         try {
             boardService.deleteBoardByKey(key);

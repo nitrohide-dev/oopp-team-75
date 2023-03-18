@@ -77,6 +77,10 @@ public class Board {
     @OrderColumn
     private List<TaskList> taskLists;
 
+    /**
+     * if true the board is only accessible to the users with a key
+     * If false it is accessible for everyone
+     */
     private boolean locked;
 
 //    constructors

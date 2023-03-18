@@ -33,6 +33,12 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 
+    /**
+     * Gets a task from the database by id. If the id does not exist in the
+     * database, the method will respond with a bad request.
+     * @param id the task key
+     * @return the stored task
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Task> getById(@PathVariable("id") String id) {
         try {
@@ -43,7 +49,12 @@ public class TaskController {
         }
     }
 
-    @PostMapping(path = { "", "/" })
+    /**
+     * Creates a new task from the given model, stores it in the database, and
+     * returns it.
+     * @return the created task or bad request if the model is not correct
+     */
+    @PostMapping("/create")
     public ResponseEntity<Task> create(@RequestBody CreateTaskModel model) {
         try {
             Task task = taskService.createTask(model);
@@ -53,6 +64,12 @@ public class TaskController {
         }
     }
 
+    /**
+     * Deletes a task by its id. If the id does not exist in the database
+     * or has a wrong format, the method will respond with a bad request.
+     * @param id the task id
+     * @return nothing
+     */
     @PostMapping("/delete/{id}")
     public ResponseEntity<Object> deleteById(@PathVariable("id") String id) {
         try {
