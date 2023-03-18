@@ -45,10 +45,10 @@ public class TaskList {
 
     public TaskList() {} // for object mappers, please don't use.
 
-    protected TaskList(Board board) {
+    public TaskList(Board board, String title) {
         this.board = board;
         this.tasks = new ArrayList<>();
-        this.title = "";
+        this.title = title;
     }
 
 //    getters and setters

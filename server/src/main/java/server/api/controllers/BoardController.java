@@ -1,11 +1,13 @@
 package server.api.controllers;
 
 import commons.Board;
+import commons.models.CreateBoardModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,44 +57,16 @@ public class BoardController {
      * returns it. This method has a worst-case time complexity of O(∞).
      * @return the created board
      */
-    @PostMapping(path = { "create", "create/" })
-    public ResponseEntity<Board> create() {
+    @PostMapping( "/create")
+    public ResponseEntity<Board> create(@RequestBody CreateBoardModel model) {
         try {
-            Board board = boardService.createBoard();
+            Board board = boardService.createBoard(model);
             return ResponseEntity.ok(board);
         }
         catch (CannotCreateBoard e) {
             return ResponseEntity.badRequest().build();
         }
     }
-
-//    /**
-//     * Creates a new board with a specified key, stores it in the database, and
-//     * returns it. If the key already exists in the database, the method will
-//     * respond with a bad request.
-//     * @return the created board
-//     */
-//    @GetMapping("create/{key}")
-//    public ResponseEntity<Board> create(@PathVariable("key") String key) {
-//        if (boardService.existsById(key))
-//            return ResponseEntity.badRequest().build();
-//        return ResponseEntity.ok(boardService.save(new Board(key)));
-//    }
-
-//    /**
-//     * Stores a board, but not its children in the database. Adding and
-//     * updating tasklists is done using the listcontroller. This is done so
-//     * that updates to boards and their subcomponents can be saved to the
-//     * database independently.
-//     * @param board the board to store
-//     * @return the stored board
-//     */
-//    @PostMapping(path = { "", "/" })
-//    public ResponseEntity<Board> save(@RequestBody Board board) {
-//        if (board == null || board.getKey() == null)
-//            return ResponseEntity.badRequest().build();
-//        return ResponseEntity.ok(boardService.save(board));
-//    }
 
     /**
      * Deletes a board, including its children from the database by its key. If

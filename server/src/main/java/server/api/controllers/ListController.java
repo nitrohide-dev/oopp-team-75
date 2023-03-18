@@ -1,6 +1,7 @@
 package server.api.controllers;
 
 import commons.TaskList;
+import commons.models.CreateListModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import server.database.ListRepository;
+import server.api.services.ListService;
+import server.exceptions.CannotCreateList;
+import server.exceptions.ListDoesNotExist;
 
 import java.util.List;
 
@@ -17,50 +20,50 @@ import java.util.List;
 @RequestMapping("/api/lists")
 public class ListController {
 
-    private final ListRepository repo;
+    private final ListService listService;
 
-    public ListController(ListRepository repo) {
-        this.repo = repo;
+    public ListController(ListService listService) {
+        this.listService = listService;
     }
 
     @GetMapping(path = { "", "/" })
-    public List<TaskList> getAll() { return repo.findAll(); }
+    public List<TaskList> getAll() { return listService.getAllLists(); }
 
     @GetMapping("/{id}")
     public ResponseEntity<TaskList> getById(@PathVariable("id") String id) {
         try {
-            return getById(Long.parseLong(id));
-        } catch (NumberFormatException ex) {
+            TaskList taskList = listService.getById(Long.parseLong(id));
+            return ResponseEntity.ok(taskList);
+        }
+        catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().build();
+        }
+        catch (ListDoesNotExist e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    public ResponseEntity<TaskList> getById(long id) {
-        if (!repo.existsById(id))
+    @PostMapping("/create")
+    public ResponseEntity<TaskList> create(@RequestBody CreateListModel model) {
+        try {
+            TaskList taskList = listService.createList(model);
+            return ResponseEntity.ok(taskList);
+        } catch (CannotCreateList e) {
             return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(repo.findById(id).get());
+        }
     }
 
-    @PostMapping(path = { "", "/" })
-    public ResponseEntity<TaskList> add(@RequestBody TaskList taskList) {
-        if (taskList == null)
-            return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(repo.save(taskList));
-    }
-
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<TaskList> deleteById(@PathVariable("id") String id) {
         try {
-            return deleteById(Long.parseLong(id));
-        } catch (NumberFormatException ex) {
+            listService.deleteById(Long.parseLong(id));
+            return ResponseEntity.ok().build();
+        }
+        catch (NumberFormatException e) {
             return ResponseEntity.badRequest().build();
         }
-    }
-
-    public ResponseEntity<TaskList> deleteById(long id) {
-        if (!repo.existsById(id))
+        catch (ListDoesNotExist e) {
             return ResponseEntity.badRequest().build();
-        repo.deleteById(id);
-        return ResponseEntity.ok().build();
+        }
     }
 }

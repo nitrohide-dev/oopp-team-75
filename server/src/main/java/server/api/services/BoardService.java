@@ -1,6 +1,7 @@
 package server.api.services;
 
 import commons.Board;
+import commons.models.CreateBoardModel;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
 import server.exceptions.BoardDoesNotExist;
@@ -31,10 +32,10 @@ public class BoardService {
 		else throw new BoardDoesNotExist("There is no board with the given key.");
 	}
 
-	public Board createBoard() throws CannotCreateBoard {
-		String key = Board.generateKey(random);
-		while (boardRepository.existsById(key)) key = Board.generateKey(random);
-		return boardRepository.save(new Board(key));
+	public Board createBoard(CreateBoardModel model) throws CannotCreateBoard {
+		if (!model.isValid()) throw new CannotCreateBoard("Some of the provided fields are invalid.");
+		if (boardRepository.existsById(model.key)) throw new CannotCreateBoard("This key is already used.");
+		return boardRepository.save(new Board(model.name, model.key, model.locked));
 	}
 
 	public void deleteBoardByKey(String key) throws BoardDoesNotExist {
