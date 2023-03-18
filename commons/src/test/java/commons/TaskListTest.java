@@ -97,16 +97,16 @@ class TaskListTest {
 
     @Test
     void createTask() {
-        taskList.createTask();
-        taskList.createTask();
+        taskList.createTask("");
+        taskList.createTask("");
         assertEquals(2, taskList.getTasks().size());
     }
 
     @Test
     void removeTask() {
-        taskList.createTask(); // 1
-        Task b = taskList.createTask(); // 2
-        taskList.createTask(); // 3
+        taskList.createTask(""); // 1
+        Task b = taskList.createTask(""); // 2
+        taskList.createTask(""); // 3
         taskList.removeTask(b); // 2
         assertEquals(2, taskList.getTasks().size());
     }
@@ -123,10 +123,10 @@ class TaskListTest {
         TaskList a = new TaskList(board, "name");
         TaskList b = new TaskList(board, "name2");
 
-        Task at = a.createTask();
-        b.createTask(); //0
-        b.createTask(); //1
-        Task bt = b.createTask(); //2
+        Task at = a.createTask("");
+        b.createTask(""); //0
+        b.createTask(""); //1
+        Task bt = b.createTask(""); //2
 
         b.insertTask(2, at);
 
@@ -142,10 +142,10 @@ class TaskListTest {
         TaskList a = new TaskList(board, "name");
         TaskList b = new TaskList(board, "name2");
 
-        Task at = a.createTask();
-        b.createTask(); //0
-        b.createTask(); //1
-        Task bt = b.createTask(); //2
+        Task at = a.createTask("");
+        b.createTask(""); //0
+        b.createTask(""); //1
+        Task bt = b.createTask(""); //2
 
         b.insertTask(at, bt);
 

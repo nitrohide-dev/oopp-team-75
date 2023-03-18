@@ -45,7 +45,7 @@ public class ListService {
 		return taskList;
 	}
 
-	public void deleteById(long id) throws ListDoesNotExist {
+	public void deleteListById(long id) throws ListDoesNotExist {
 		if (!listRepository.existsById(id))
 			throw new ListDoesNotExist("There is no list with the provided id.");
 		listRepository.deleteById(id);

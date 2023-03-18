@@ -48,7 +48,7 @@ public class BoardController {
             return ResponseEntity.ok(board);
         }
         catch (BoardDoesNotExist e) {
-            return ResponseEntity.badRequest().build();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
 
@@ -64,7 +64,7 @@ public class BoardController {
             return ResponseEntity.ok(board);
         }
         catch (CannotCreateBoard e) {
-            return ResponseEntity.badRequest().build();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
 

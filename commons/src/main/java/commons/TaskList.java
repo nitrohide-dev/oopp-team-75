@@ -106,9 +106,10 @@ public class TaskList {
      * Creates a new empty task, adds it to the end of this taskList and
      * returns it.
      * @return the created task.
+	 * @param name
      */
-    public Task createTask() {
-        Task task = new Task(this);
+    public Task createTask(String name) {
+        Task task = new Task(this, name);
         this.tasks.add(task);
         return task;
     }
