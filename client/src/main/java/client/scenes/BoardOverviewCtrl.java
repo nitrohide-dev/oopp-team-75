@@ -326,8 +326,8 @@ public class BoardOverviewCtrl {
          //   toList.getItems().add(task);
        // }
   //  }
-        public void dragOverHandler(ListView<HBox> list) {
-            list.setOnDragOver(new EventHandler<DragEvent>() {
+    public void dragOverHandler(ListView<HBox> list) {
+        list.setOnDragOver(new EventHandler<DragEvent>() {
                 public void handle(DragEvent event) {
                     Dragboard db = event.getDragboard();
                     if(db.hasString()) {
@@ -336,9 +336,9 @@ public class BoardOverviewCtrl {
                     }
                 }
             });
-        }
-        public void dragDroppedHandler(ListView<HBox> list) {
-            list.setOnDragDropped(new EventHandler<DragEvent>() {
+    }
+    public void dragDroppedHandler(ListView<HBox> list) {
+        list.setOnDragDropped(new EventHandler<DragEvent>() {
                 public void handle(DragEvent event) {
                     Dragboard db = event.getDragboard();
                     boolean success = false;
@@ -353,7 +353,7 @@ public class BoardOverviewCtrl {
                     event.consume();
                 }
             });
-        }
+    }
     public void dragDetectHandler(HBox box,Label task,ListView<HBox> list)
     {
         ObservableList children = anchorPaneMain.getChildren();
