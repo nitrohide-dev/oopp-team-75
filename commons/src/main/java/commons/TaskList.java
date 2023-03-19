@@ -45,10 +45,10 @@ public class TaskList {
 
     public TaskList() {} // for object mappers, please don't use.
 
-    protected TaskList(Board board) {
+    public TaskList(Board board, String title) {
         this.board = board;
         this.tasks = new ArrayList<>();
-        this.title = "";
+        this.title = title;
     }
 
 //    getters and setters
@@ -106,9 +106,10 @@ public class TaskList {
      * Creates a new empty task, adds it to the end of this taskList and
      * returns it.
      * @return the created task.
+	 * @param name
      */
-    public Task createTask() {
-        Task task = new Task(this);
+    public Task createTask(String name) {
+        Task task = new Task(this, name);
         this.tasks.add(task);
         return task;
     }

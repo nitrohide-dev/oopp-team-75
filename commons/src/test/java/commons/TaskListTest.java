@@ -1,5 +1,6 @@
 package commons;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -12,48 +13,45 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 class TaskListTest {
 
+    private Board board;
+    private TaskList taskList;
+
+    @BeforeEach
+    void setUp() {
+        this.board = new Board("abc", "cbd", false);
+        this.taskList = board.createTaskList("name");
+    }
+
     @Test
     void getId() {
-        Board board = new Board("ABC");
-        TaskList taskList = board.createTaskList();
         taskList.setId(999);
         assertEquals(999, taskList.getId());
     }
 
     @Test
     void setId() {
-        Board board = new Board("ABC");
-        TaskList taskList = board.createTaskList();
         taskList.setId(999);
         assertEquals(999, taskList.getId());
     }
 
     @Test
     void getTitle() {
-        Board board = new Board("ABC");
-        TaskList taskList = board.createTaskList();
-        assertEquals("", taskList.getTitle());
+        assertEquals("name", taskList.getTitle());
     }
 
     @Test
     void setTitle() {
-        Board board = new Board("ABC");
-        TaskList taskList = board.createTaskList();
         taskList.setTitle("DEF");
         assertEquals("DEF", taskList.getTitle());
     }
 
     @Test
     void getTasks() {
-        Board board = new Board("ABC");
-        TaskList taskList = board.createTaskList();
         assertEquals(new ArrayList<>(), taskList.getTasks());
     }
 
     @Test
     void setTasks() {
-        Board board = new Board("ABC");
-        TaskList taskList = board.createTaskList();
         List<Task> list = new ArrayList<>();
         taskList.setTasks(list);
         assertSame(taskList.getTasks(), list);
@@ -61,26 +59,21 @@ class TaskListTest {
 
     @Test
     void getBoard() {
-        Board board = new Board("ABC");
-        TaskList taskList = board.createTaskList();
         assertEquals(board, taskList.getBoard());
     }
 
     @Test
     void setBoard() {
-        Board board1 = new Board("ABC");
-        Board board2 = new Board("DEF");
-        TaskList taskList = board1.createTaskList();
+        Board board2 = new Board("DEF", "thc", false);
         taskList.setBoard(board2);
         assertEquals(board2, taskList.getBoard());
     }
 
     @Test
     void testEquals() {
-        Board board = new Board("ABC");
-        TaskList a = board.createTaskList();
-        TaskList b = board.createTaskList();
-        TaskList c = board.createTaskList();
+        TaskList a = board.createTaskList("a");
+        TaskList b = board.createTaskList("a");
+        TaskList c = board.createTaskList("c");
         a.setId(123);
         b.setId(123);
         c.setId(456);
@@ -91,10 +84,9 @@ class TaskListTest {
 
     @Test
     void testHashCode() {
-        Board board = new Board("ABC");
-        TaskList a = board.createTaskList();
-        TaskList b = board.createTaskList();
-        TaskList c = board.createTaskList();
+        TaskList a = board.createTaskList("a");
+        TaskList b = board.createTaskList("a");
+        TaskList c = board.createTaskList("c");
         a.setId(123);
         b.setId(123);
         c.setId(456);
@@ -105,42 +97,36 @@ class TaskListTest {
 
     @Test
     void createTask() {
-        Board board = new Board("ABC");
-        TaskList a = board.createTaskList();
-        a.createTask();
-        a.createTask();
-        assertEquals(2, a.getTasks().size());
+        taskList.createTask("");
+        taskList.createTask("");
+        assertEquals(2, taskList.getTasks().size());
     }
 
     @Test
     void removeTask() {
-        Board board = new Board("ABC");
-        TaskList a = board.createTaskList();
-        a.createTask(); // 1
-        Task b = a.createTask(); // 2
-        a.createTask(); // 3
-        a.removeTask(b); // 2
-        assertEquals(2, a.getTasks().size());
+        taskList.createTask(""); // 1
+        Task b = taskList.createTask(""); // 2
+        taskList.createTask(""); // 3
+        taskList.removeTask(b); // 2
+        assertEquals(2, taskList.getTasks().size());
     }
 
     @Test
     void detach() {
-        Board b = new Board("Steve");
-        TaskList a = b.createTaskList();
-        a.detach();
-        assertNull(a.getBoard());
+        taskList.detach();
+        assertNull(taskList.getBoard());
     }
 
     @Test
     void insertTask1() {
 
-        TaskList a = new TaskList(null);
-        TaskList b = new TaskList(null);
+        TaskList a = new TaskList(board, "name");
+        TaskList b = new TaskList(board, "name2");
 
-        Task at = a.createTask();
-        b.createTask(); //0
-        b.createTask(); //1
-        Task bt = b.createTask(); //2
+        Task at = a.createTask("");
+        b.createTask(""); //0
+        b.createTask(""); //1
+        Task bt = b.createTask(""); //2
 
         b.insertTask(2, at);
 
@@ -153,13 +139,13 @@ class TaskListTest {
     @Test
     void insertTask2() {
 
-        TaskList a = new TaskList(null);
-        TaskList b = new TaskList(null);
+        TaskList a = new TaskList(board, "name");
+        TaskList b = new TaskList(board, "name2");
 
-        Task at = a.createTask();
-        b.createTask(); //0
-        b.createTask(); //1
-        Task bt = b.createTask(); //2
+        Task at = a.createTask("");
+        b.createTask(""); //0
+        b.createTask(""); //1
+        Task bt = b.createTask(""); //2
 
         b.insertTask(at, bt);
 
