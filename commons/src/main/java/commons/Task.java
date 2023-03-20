@@ -16,25 +16,31 @@ public class Task {
 
     public static final int MAX_TITLE_LENGTH = 256;
 
+//    attributes
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique=true, nullable=false)
-    public long id;
+    private long id;
 
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
-    public String title;
+    private String title;
+
+    @Column(nullable=false)
+    private String desc;
 
     @JsonBackReference
     @ManyToOne
-    public TaskList taskList;
+    private TaskList taskList;
 
 //    constructors
 
-    public Task() {} // required for Spring, please don't use.
+    public Task() {} // for object mappers, please don't use.
 
-    public Task(TaskList taskList) {
+    protected Task(TaskList taskList, String title) {
         this.taskList = taskList;
-        this.title = "";
+        this.title = title;
+        this.desc = "";
     }
 
 //    getters and setters
@@ -53,6 +59,14 @@ public class Task {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     public TaskList getTaskList() {
@@ -80,7 +94,7 @@ public class Task {
 
 //    actual methods
 
-    public void delete() {
+    public void detach() {
         this.taskList.removeTask(this);
     }
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package server.api;
+package server.api.controllers;
 
 import commons.Board;
 import org.springframework.http.ResponseEntity;

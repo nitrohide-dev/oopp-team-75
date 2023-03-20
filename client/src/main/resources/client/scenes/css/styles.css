@@ -39,7 +39,23 @@
 /* landing page css */
 .anchor_page {
  -fx-border-color: blue;
- -fx-border-width: 3px;
+ -fx-border-width: 2px;
  -fx-border-radius: 1px;
  -fx-background-color: #CCFFFF;
+}
+
+/* added effect with blue outline*/
+.text-field{
+ -fx-effect: dropshadow( three-pass-box, blue , 10.0, 0.0,0.0,0.0);
+ -fx-background-insets:3.0;
+ -fx-background-radius: 5.0;
+}
+
+
+.text-field:focused{
+ -fx-background-color: white;
+ -fx-text-fill:blue;
+ -fx-prompt-text-fill:white;
+ -fx-background-insets: -0.1, 2.0;
+ -fx-font-size:14.0;
 }

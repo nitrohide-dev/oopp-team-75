@@ -3,22 +3,34 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="anchor_page" stylesheets="@../../../../main/java/css/styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LandingPageCtrl">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="anchor_page" stylesheets="@css/styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LandingPageCtrl">
    <children>
-      <Label layoutX="176.0" layoutY="82.0" text="Welcome to Talio">
-         <font>
-            <Font size="32.0" />
-         </font>
-      </Label>
-      <Label layoutX="126.0" layoutY="171.0" text="Enter server ip:">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <TextField fx:id="server_ip" layoutX="253.0" layoutY="164.0" prefHeight="35.0" prefWidth="208.0" />
-      <Button fx:id="connect_button" layoutX="218.0" layoutY="238.0" mnemonicParsing="false" onAction="#connect" prefHeight="60.0" prefWidth="162.0" styleClass="button-9" text="Connect" textFill="WHITE" />
+      <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="border_page" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <VBox alignment="CENTER" spacing="20.0">
+               <ImageView fx:id="logo1" fitHeight="200.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../images/Logo.png" />
+                  </image>
+               </ImageView>
+               <HBox alignment="CENTER" spacing="10">
+                  <Label text="Enter server ip:">
+                     <font>
+                        <Font name="Roboto" size="19.0" />
+                     </font></Label>
+                  <TextField fx:id="server_ip" prefHeight="35.0" prefWidth="208.0" styleClass="input" />
+               </HBox>
+               <Button fx:id="connect_button" mnemonicParsing="false" onAction="#connect" prefHeight="60.0" prefWidth="162.0" styleClass="button-9" text="Connect" textFill="WHITE" />
+            </VBox>
+         </center>
+      </BorderPane>
    </children>
 </AnchorPane>
