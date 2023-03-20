@@ -8,7 +8,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
-
 <ScrollPane fx:id="scrollPaneMain" fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardOverviewCtrl">
    <content>
 <AnchorPane fx:id="anchorPaneMain" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
@@ -24,6 +23,7 @@
                         <ListView fx:id="taskList1" editable="true" fixedCellSize="35.0" onMouseClicked="#taskOperations" prefHeight="346.0" prefWidth="204.0" />
                      </content>
                   </ScrollPane>
+                        <Button fx:id="deleteTaskListsButton" layoutX="191.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="x" />
                </children>
             </Group>
             <Group>
@@ -34,6 +34,7 @@
                         <ListView fx:id="taskList2" fixedCellSize="35.0" layoutX="75.0" onMouseClicked="#taskOperations" prefHeight="346.0" prefWidth="204.0" />
                      </content>
                   </ScrollPane>
+                        <Button fx:id="deleteTaskListsButton1" layoutX="191.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="x" />
                </children>
             </Group>
             <Group>
@@ -44,6 +45,7 @@
                         <ListView fx:id="taskList3" fixedCellSize="35.0" layoutX="75.0" onMouseClicked="#taskOperations" prefHeight="346.0" prefWidth="204.0" />
                      </content>
                   </ScrollPane>
+                        <Button fx:id="deleteTaskListsButton2" layoutX="191.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="x" />
                </children>
             </Group>
          </children>

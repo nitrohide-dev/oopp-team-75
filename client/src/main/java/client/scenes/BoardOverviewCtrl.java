@@ -7,6 +7,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.DragEvent;
@@ -29,6 +31,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -56,6 +59,16 @@ public class BoardOverviewCtrl {
 
     @FXML
     private TextField listName3;
+
+    @FXML
+    private Button deleteTaskListsButton;
+
+    @FXML
+    private Button deleteTaskListsButton1;
+
+    @FXML
+    private Button deleteTaskListsButton2;
+
 
     @FXML
     private HBox hBox;
@@ -88,6 +101,15 @@ public class BoardOverviewCtrl {
         ListsSetup();
         // Sets ScrollPane size, so it's slightly bigger than AnchorPane
         scrollPaneMain.setPrefSize(anchorPaneMain.getPrefWidth()+10,anchorPaneMain.getPrefHeight()+20);
+
+        //initializes the 3 default buttons
+        setDeleteAction(deleteTaskListsButton, listName1.getText());
+        setDeleteAction(deleteTaskListsButton1, listName2.getText());
+        setDeleteAction(deleteTaskListsButton2, listName3.getText());
+        hoverOverDeleteButton(deleteTaskListsButton);
+        hoverOverDeleteButton(deleteTaskListsButton1);
+        hoverOverDeleteButton(deleteTaskListsButton2);
+
     }
 
 //Deleted Scrolling, implemented using ScrollPane
@@ -109,7 +131,8 @@ public class BoardOverviewCtrl {
 
     /**
      * This eventHandler is waiting for the addButton to be clicked, after that creates
-     * new Group of TextField and a ScrollPane - new taskList
+     * new Group of TextField, ScrollPane and a Deletion Button - new taskList
+     *
      */
     public void createTaskList() {
         ObservableList children = hBox.getChildren();
@@ -120,6 +143,17 @@ public class BoardOverviewCtrl {
         ListView<HBox> listView = new ListView<>();
         listView.setPrefSize(sampleList.getPrefWidth(), sampleList.getPrefHeight());
         ScrollPane scrollPane = new ScrollPane(listView);
+
+        //create deleteTaskListsButton
+        Button deleteTaskListsButton = new Button("x");
+
+        setDeleteAction(deleteTaskListsButton, textField.getText());
+        hoverOverDeleteButton(deleteTaskListsButton);
+
+
+        deleteTaskListsButton.setLayoutX(191);
+        deleteTaskListsButton.setLayoutY(0);
+
 
         textField.setPrefSize(sampleText.getPrefWidth(), sampleText.getPrefHeight());
         textField.setLayoutX(0);
@@ -132,7 +166,7 @@ public class BoardOverviewCtrl {
 
         System.out.println(samplePane + " ----- " + sampleText);
 
-        Group newGroup = new Group(textField, scrollPane);
+        Group newGroup = new Group(textField, scrollPane, deleteTaskListsButton);
         newGroup.setLayoutX(sampleGroup.getLayoutX());
         newGroup.setLayoutY(sampleGroup.getLayoutY());
         newGroup.setTranslateX(sampleGroup.getTranslateX());
@@ -142,6 +176,40 @@ public class BoardOverviewCtrl {
         dragOverHandler(listView);
         dragDroppedHandler(listView);
         allLists.put(listView, textField.getText());
+    }
+
+    /**A method to delete taskLists, and for pop-up asking for confirmation
+     *
+     * @param deleteTaskListsButton
+     * @param taskListName
+     */
+    public void setDeleteAction(Button deleteTaskListsButton, String taskListName){
+        deleteTaskListsButton.setOnAction(e -> {
+            Group parentGroup = (Group) deleteTaskListsButton.getParent();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Delete Confirmation Dialog");
+            alert.setHeaderText("Delete TaskList");
+            alert.setContentText("Are you sure you want to delete '"+taskListName+"'?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK){
+                hBox.getChildren().remove(parentGroup); // remove parent group from hbox
+            }
+        });
+    }
+
+    /**A method to turn the deleteTasksLists button into pink when mouse is hovering over it
+     *
+     * @param deleteTaskListsButton
+     */
+    public void hoverOverDeleteButton(Button deleteTaskListsButton){
+        deleteTaskListsButton.setOnMouseEntered(e -> {
+            deleteTaskListsButton.setStyle("-fx-background-color: pink;");
+        });
+
+        deleteTaskListsButton.setOnMouseExited(e -> {
+            deleteTaskListsButton.setStyle(null);
+        });
     }
 
     /**
