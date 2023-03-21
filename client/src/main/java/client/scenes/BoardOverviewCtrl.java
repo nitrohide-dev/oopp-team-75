@@ -102,13 +102,18 @@ public class BoardOverviewCtrl {
         // Sets ScrollPane size, so it's slightly bigger than AnchorPane
         scrollPaneMain.setPrefSize(anchorPaneMain.getPrefWidth()+10,anchorPaneMain.getPrefHeight()+20);
 
-        //initializes the 3 default buttons
+        //initializes the 3 default delete taskListsButtons
         setDeleteAction(deleteTaskListsButton, listName1.getText());
         setDeleteAction(deleteTaskListsButton1, listName2.getText());
         setDeleteAction(deleteTaskListsButton2, listName3.getText());
         hoverOverDeleteButton(deleteTaskListsButton);
         hoverOverDeleteButton(deleteTaskListsButton1);
         hoverOverDeleteButton(deleteTaskListsButton2);
+        //initializes the 3 addTask buttons
+
+        addTaskButton(taskList1);
+        addTaskButton(taskList2);
+        addTaskButton(taskList3);
 
     }
 
@@ -141,6 +146,9 @@ public class BoardOverviewCtrl {
         ListView<HBox> sampleList = (ListView<HBox>) samplePane.getContent();
         TextField textField = new TextField();
         ListView<HBox> listView = new ListView<>();
+        listView.setOnMouseClicked(e -> {
+            taskOperations(listView);
+        });
         listView.setPrefSize(sampleList.getPrefWidth(), sampleList.getPrefHeight());
         ScrollPane scrollPane = new ScrollPane(listView);
 
@@ -153,6 +161,9 @@ public class BoardOverviewCtrl {
 
         deleteTaskListsButton.setLayoutX(191);
         deleteTaskListsButton.setLayoutY(0);
+
+
+        addTaskButton(listView);
 
 
         textField.setPrefSize(sampleText.getPrefWidth(), sampleText.getPrefHeight());
@@ -176,6 +187,20 @@ public class BoardOverviewCtrl {
         dragOverHandler(listView);
         dragDroppedHandler(listView);
         allLists.put(listView, textField.getText());
+    }
+
+    /** Method for adding a TaskButton, used when creating a taskList, and when creating new tasks
+     *
+     * @param listView
+     */
+    public void addTaskButton(ListView<HBox> listView){
+        Button addTaskButton = new Button("+");
+        addTaskButton.setPadding(new Insets(2, 80, 2, 80));
+        HBox box = new HBox(addTaskButton);
+        listView.getItems().add(box);
+        addTaskButton.setOnAction(e -> {
+            createTask(listView);
+        });
     }
 
     /**A method to delete taskLists, and for pop-up asking for confirmation
@@ -216,29 +241,12 @@ public class BoardOverviewCtrl {
      * Creates a task and puts it in the first list
      * A task contains a label and three buttons for task operations
      */
-    public void createTask() {
+    public void createTask(ListView<HBox> list) {
         String name = getTaskNamePopup("Task");
         //if (!server.addTask(name)) return;
-        Label task = new Label(name);
-        task.setPrefWidth(120);
-        task.setPadding(new Insets(6, 1, 6, 1));
-        String path = Path.of("", "client", "images", "cancel.png").toString();
-        Button removeButton = buttonBuilder(path);
-        path = Path.of("", "client", "images", "pencil.png").toString();
-        Button editButton = buttonBuilder(path);
-        path = Path.of("", "client", "images", "eye.png").toString();
-        Button viewButton = buttonBuilder(path);
-        HBox box = new HBox(task, viewButton, editButton, removeButton);
-        dragDetectHandler(box,task,taskList1);
-        removeButton.setOnAction(e -> deleteTask(box));
-        editButton.setOnAction(e -> editTask(box));
-        viewButton.setOnAction(e -> viewTask(box));
-        disableButtons(box);
-        box.setHgrow(task, Priority.NEVER);
-        taskList1.getItems().add(box);
-    }
-    public void createTask(String name, ListView<HBox> list) {
-        //if (!server.addTask(name)) return;
+        //Removes the addTask button
+        list.getItems().remove(list.getItems().get(list.getItems().size()-1));
+
         Label task = new Label(name);
         task.setPrefWidth(120);
         task.setPadding(new Insets(6, 1, 6, 1));
@@ -256,6 +264,35 @@ public class BoardOverviewCtrl {
         disableButtons(box);
         box.setHgrow(task, Priority.NEVER);
         list.getItems().add(box);
+        //Re-adds the button to the end of the list
+        addTaskButton(list);
+    }
+    public void createTask(String name, ListView<HBox> list) {
+        //if (!server.addTask(name)) return;
+
+        //Removes the addTask button
+        list.getItems().remove(list.getItems().get(list.getItems().size()-1));
+
+        Label task = new Label(name);
+        task.setPrefWidth(120);
+        task.setPadding(new Insets(6, 1, 6, 1));
+        String path = Path.of("", "client", "images", "cancel.png").toString();
+        Button removeButton = buttonBuilder(path);
+        path = Path.of("", "client", "images", "pencil.png").toString();
+        Button editButton = buttonBuilder(path);
+        path = Path.of("", "client", "images", "eye.png").toString();
+        Button viewButton = buttonBuilder(path);
+        HBox box = new HBox(task, viewButton, editButton, removeButton);
+        dragDetectHandler(box,task,list);
+        removeButton.setOnAction(e -> deleteTask(box));
+        editButton.setOnAction(e -> editTask(box));
+        viewButton.setOnAction(e -> viewTask(box));
+        disableButtons(box);
+        box.setHgrow(task, Priority.NEVER);
+        list.getItems().add(box);
+
+        //Re-adds the button to the end of the list
+        addTaskButton(list);
     }
     /**
      * Creates button for task operations
@@ -295,8 +332,8 @@ public class BoardOverviewCtrl {
     /**
      * When any of the tasks is clicked it gives the user options to view, edit or remove it
      */
-    public void taskOperations() {
-        HBox box = taskList1.getSelectionModel().getSelectedItem();
+    public void taskOperations(ListView<HBox> list) {
+        HBox box = list.getSelectionModel().getSelectedItem();
         if (box == null) return;
         resetOptionButtons();
         Button removeButton = (Button) box.getChildren().get(1);
@@ -363,7 +400,7 @@ public class BoardOverviewCtrl {
      */
     public void deleteTask(HBox task) {
         //if (!server.removeTask(task.getText())) return;
-        taskList1.getItems().remove(task);
+        ((ListView) task.getParent()).getItems().remove(task);
     }
     public void deleteTask(String name,ListView <HBox> list) {
         for(int i=0;i<list.getItems().size();i++)
