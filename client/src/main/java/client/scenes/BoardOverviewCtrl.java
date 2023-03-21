@@ -34,10 +34,6 @@ import java.util.Map;
 import java.util.Optional;
 
 
-/**
- * I added ListView everywhere with <String> attributes just for as a starter
- * Later it should have <Task>
- */
 public class BoardOverviewCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -46,32 +42,13 @@ public class BoardOverviewCtrl {
     private ListView<HBox> taskList1;
 
     @FXML
-    private ListView<HBox> taskList2;
-
-    @FXML
-    private ListView<HBox> taskList3;
-
-    @FXML
     private TextField listName1;
-
-    @FXML
-    private TextField listName2;
-
-    @FXML
-    private TextField listName3;
 
     @FXML
     private Button deleteTaskListsButton;
 
     @FXML
-    private Button deleteTaskListsButton1;
-
-    @FXML
-    private Button deleteTaskListsButton2;
-
-
-    @FXML
-    private HBox hBox;
+    private HBox listContainer;
 
     private Group sampleGroup;
 
@@ -96,51 +73,37 @@ public class BoardOverviewCtrl {
      */
     @FXML
     public void initialize() {
-        ObservableList children = hBox.getChildren();
-        sampleGroup = (Group) children.get(1);
+        ObservableList children = listContainer.getChildren();
+        sampleGroup = (Group) children.get(0);
         ListsSetup();
         // Sets ScrollPane size, so it's slightly bigger than AnchorPane
         scrollPaneMain.setPrefSize(anchorPaneMain.getPrefWidth()+10,anchorPaneMain.getPrefHeight()+20);
 
-        //initializes the 3 default delete taskListsButtons
+        //initializes the default delete taskListsButton
         setDeleteAction(deleteTaskListsButton, listName1.getText());
-        setDeleteAction(deleteTaskListsButton1, listName2.getText());
-        setDeleteAction(deleteTaskListsButton2, listName3.getText());
         hoverOverDeleteButton(deleteTaskListsButton);
-        hoverOverDeleteButton(deleteTaskListsButton1);
-        hoverOverDeleteButton(deleteTaskListsButton2);
-        //initializes the 3 addTask buttons
+        //initializes the addTask button
 
         addTaskButton(taskList1);
-        addTaskButton(taskList2);
-        addTaskButton(taskList3);
-
     }
 
 //Deleted Scrolling, implemented using ScrollPane
     /**
-     * Connects all lists to their names
+     * Connects the initial list to its name
      */
     private void ListsSetup() {
         this.allLists.put(taskList1, listName1.getText());
-        this.allLists.put(taskList2, listName2.getText());
-        this.allLists.put(taskList3, listName3.getText());
         dragOverHandler(taskList1);
         dragDroppedHandler(taskList1);
-        dragOverHandler(taskList2);
-        dragDroppedHandler(taskList2);
-        dragOverHandler(taskList3);
-        dragDroppedHandler(taskList3);
     }
 
 
     /**
      * This eventHandler is waiting for the addButton to be clicked, after that creates
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
-     *
      */
     public void createTaskList() {
-        ObservableList children = hBox.getChildren();
+        ObservableList children = listContainer.getChildren();
         TextField sampleText = (TextField) sampleGroup.getChildren().get(0);
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
         ListView<HBox> sampleList = (ListView<HBox>) samplePane.getContent();
@@ -158,13 +121,10 @@ public class BoardOverviewCtrl {
         setDeleteAction(deleteTaskListsButton, textField.getText());
         hoverOverDeleteButton(deleteTaskListsButton);
 
-
         deleteTaskListsButton.setLayoutX(191);
         deleteTaskListsButton.setLayoutY(0);
 
-
         addTaskButton(listView);
-
 
         textField.setPrefSize(sampleText.getPrefWidth(), sampleText.getPrefHeight());
         textField.setLayoutX(0);
@@ -189,8 +149,8 @@ public class BoardOverviewCtrl {
         allLists.put(listView, textField.getText());
     }
 
-    /** Method for adding a TaskButton, used when creating a taskList, and when creating new tasks
-     *
+    /**
+     * Method for adding a TaskButton, used when creating a taskList, it creates new tasks
      * @param listView
      */
     public void addTaskButton(ListView<HBox> listView){
@@ -203,8 +163,8 @@ public class BoardOverviewCtrl {
         });
     }
 
-    /**A method to delete taskLists, and for pop-up asking for confirmation
-     *
+    /**
+     * A method to delete taskLists, and for pop-up asking for confirmation
      * @param deleteTaskListsButton
      * @param taskListName
      */
@@ -218,7 +178,7 @@ public class BoardOverviewCtrl {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK){
-                hBox.getChildren().remove(parentGroup); // remove parent group from hbox
+                listContainer.getChildren().remove(parentGroup); // remove parent group from hbox
             }
         });
     }
@@ -267,6 +227,7 @@ public class BoardOverviewCtrl {
         //Re-adds the button to the end of the list
         addTaskButton(list);
     }
+    
     public void createTask(String name, ListView<HBox> list) {
         //if (!server.addTask(name)) return;
 
@@ -352,8 +313,8 @@ public class BoardOverviewCtrl {
      */
     private void resetOptionButtons() {
         for (ListView<HBox> list : allLists.keySet()) {
-            for (HBox box : list.getItems()) {
-                disableButtons(box);
+            for (int i = 0; i < list.getItems().size() - 1; i++) {
+                disableButtons(list.getItems().get(i));
             }
         }
     }

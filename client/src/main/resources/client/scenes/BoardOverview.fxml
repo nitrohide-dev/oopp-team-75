@@ -12,7 +12,7 @@
    <content>
 <AnchorPane fx:id="anchorPaneMain" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox fx:id="hBox" prefHeight="100.0" prefWidth="200.0" spacing="40.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0">
+      <HBox fx:id="listContainer" prefHeight="100.0" prefWidth="200.0" spacing="40.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0">
          <children>
             <Group fx:id="group">
                <children>
@@ -23,28 +23,6 @@
                      </content>
                   </ScrollPane>
                         <Button fx:id="deleteTaskListsButton" layoutX="191.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="x" />
-               </children>
-            </Group>
-            <Group>
-               <children>
-                  <TextField fx:id="listName2" alignment="CENTER" prefHeight="25.0" prefWidth="205.0" text="List 2" />
-                  <ScrollPane hbarPolicy="NEVER" layoutY="60.0" prefHeight="348.0" prefWidth="205.0">
-                     <content>
-                        <ListView fx:id="taskList2" fixedCellSize="35.0" layoutX="75.0" prefHeight="346.0" prefWidth="204.0" />
-                     </content>
-                  </ScrollPane>
-                        <Button fx:id="deleteTaskListsButton1" layoutX="191.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="x" />
-               </children>
-            </Group>
-            <Group>
-               <children>
-                  <TextField fx:id="listName3" alignment="CENTER" prefHeight="25.0" prefWidth="205.0" text="List 3" />
-                  <ScrollPane hbarPolicy="NEVER" layoutY="60.0" prefHeight="348.0" prefWidth="205.0">
-                     <content>
-                        <ListView fx:id="taskList3" fixedCellSize="35.0" layoutX="75.0" prefHeight="346.0" prefWidth="204.0" />
-                     </content>
-                  </ScrollPane>
-                        <Button fx:id="deleteTaskListsButton2" layoutX="191.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="x" />
                </children>
             </Group>
          </children>
