@@ -40,3 +40,27 @@ If something is still unclear you can ask your questions now.
 
 # Closing
 **What have we agreed upon** in today’s meeting?
+
+# Notes
+
+- This week: 
+    - fix wiring between client and server (might be harder than we think)
+    - get in contact with other team and do HUE 
+- do epics in order, and finish basic requirements before starting advanced (finish basic application asap)
+- Work should be evenly distributed, but that is going good so far.
+- HUE:
+    - mockups
+    - reviewing their mockups
+    - essay / evaluation / analysis (3-4 people (rather everyone) should work on this)
+- product steps (in order): wiring, basic reqs, multiboard, detailed cards
+- discuss code in gitlab, and notify the people you wrote a review to via other media 
+- use a.i.d model to give feedback for buddycheck 2
+- evaluate our code using rubric, and create a document containing the lines or methods that correctly apply the requirement from the rubric (before sunday evening). This is makes code checking for the TA easier, and gives us the chance to represent our code as best as possible.
+- every week you need a meaningful mr
+- use websockets including listeners for synchronization
+- scenes:
+    - connect ip screen
+    - join board screen
+    - create board screen 
+    - board screen
+    - admin panel?
