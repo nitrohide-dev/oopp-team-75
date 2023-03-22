@@ -42,51 +42,51 @@ class BoardTest {
 
     @Test
     void getKey() {
-        Board board = new Board("abc");
-        assertEquals(board.getKey(), "abc");
+        Board board = new Board("abc", "cbd", false);
+        assertEquals(board.getKey(), "cbd");
     }
 
     @Test
     void setKey() {
-        Board board = new Board("abc");
+        Board board = new Board("abc", "cbd", false);
         board.setKey("def");
         assertEquals(board.getKey(), "def");
     }
 
     @Test
     void getTitle() {
-        Board board = new Board("abc");
-        assertEquals(board.getTitle(), "");
+        Board board = new Board("abc", "cbd", false);
+        assertEquals(board.getTitle(), "abc");
     }
 
     @Test
     void setTitle() {
-        Board board = new Board("def");
+        Board board = new Board("abc", "cbd", false);
         board.setTitle("dee ee eff");
         assertEquals(board.getTitle(), "dee ee eff");
     }
 
     @Test
     void getTaskLists() {
-        Board board = new Board("ChocolateCake");
+        Board board = new Board("abc", "cbd", false);
         assertEquals(board.getTaskLists(), new ArrayList<>());
     }
 
     @Test
     void setTaskLists() {
-        Board board = new Board("ChocolateCake");
+        Board board = new Board("abc", "cbd", false);
         List<TaskList> list = new ArrayList<>();
         board.setTaskLists(list);
-        list.add(new TaskList(board));
-        list.add(new TaskList(board));
+        list.add(new TaskList(board, "name"));
+        list.add(new TaskList(board, "name2"));
         assertEquals(board.getTaskLists(), list);
     }
 
     @Test
     void testEquals() {
-        Board a = new Board("abc");
-        Board b = new Board("def");
-        Board c = new Board("def");
+        Board a = new Board("abc", "thc", false);
+        Board b = new Board("abc", "cbd", false);
+        Board c = new Board("abc", "cbd", false);
         assertEquals(a, a);
         assertNotEquals(a, b);
         assertEquals(b, c);
@@ -94,9 +94,9 @@ class BoardTest {
 
     @Test
     void testHashCode() {
-        Board a = new Board("abc");
-        Board b = new Board("def");
-        Board c = new Board("def");
+        Board a = new Board("abc", "thc", false);
+        Board b = new Board("abc", "cbd", false);
+        Board c = new Board("abc", "cbd", false);
         assertEquals(a.hashCode(), a.hashCode());
         assertNotEquals(a.hashCode(), b.hashCode());
         assertEquals(b.hashCode(), c.hashCode());
@@ -104,18 +104,18 @@ class BoardTest {
 
     @Test
     void createTaskList() {
-        Board a = new Board("abc");
-        a.createTaskList();
-        a.createTaskList();
+        Board a = new Board("abc", "cbd", false);
+        a.createTaskList("name");
+        a.createTaskList("name2");
         assertEquals(a.getTaskLists().size(), 2);
     }
 
     @Test
     void removeTaskList() {
-        Board a = new Board("abc");
-        a.createTaskList();
-        TaskList b = a.createTaskList();
-        TaskList c = a.createTaskList();
+        Board a = new Board("abc", "cbd", false);
+        a.createTaskList("name");
+        TaskList b = a.createTaskList("name2");
+        TaskList c = a.createTaskList("name3");
         a.removeTaskList(b);
         assertNull(b.getBoard());
         assertEquals(2, a.getTaskLists().size());

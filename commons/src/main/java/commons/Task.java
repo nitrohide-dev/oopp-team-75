@@ -37,9 +37,9 @@ public class Task {
 
     public Task() {} // for object mappers, please don't use.
 
-    protected Task(TaskList taskList) {
+    protected Task(TaskList taskList, String title) {
         this.taskList = taskList;
-        this.title = "";
+        this.title = title;
         this.desc = "";
     }
 

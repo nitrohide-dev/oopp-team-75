@@ -77,14 +77,21 @@ public class Board {
     @OrderColumn
     private List<TaskList> taskLists;
 
+    /**
+     * if true the board is only accessible to the users with a key
+     * If false it is accessible for everyone
+     */
+    private boolean locked;
+
 //    constructors
 
     public Board() {} // for object mappers, please don't use.
 
-    public Board(String key) {
+    public Board(String title, String key, boolean locked) {
         this.key = key;
-        this.title = "";
+        this.title = title;
         this.taskLists = new ArrayList<>();
+        this.locked = locked;
     }
 
 //    getters and setters
@@ -131,12 +138,13 @@ public class Board {
 //    actual methods
 
     /**
-     * Creates a new empty {@code TaskList}, adds it to the end of this board and
+     * Adds the given {@code TaskList}, adds it to the end of this board and
      * returns it.
+     * @param listName - the name of the taskList to add to the board
      * @return the created {@code TaskList}.
      */
-    public TaskList createTaskList() {
-        TaskList taskList = new TaskList(this);
+    public TaskList createTaskList(String listName) {
+        TaskList taskList = new TaskList(this, listName);
         this.taskLists.add(taskList);
         return taskList;
     }
