@@ -33,40 +33,7 @@ public class BoardUtils {
 
 //    BOARDS
 
-    public Board getBoard(String key) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/boards/" + key) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<>() {
-                });
-    }
 
-    public Board saveBoard(Board board) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/boards") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(board, APPLICATION_JSON), Board.class);
-    }
-
-    public Board deleteBoard(String key) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/boards/" + key) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .delete(new GenericType<>() {
-                });
-    }
-
-    public List<Board> getAllBoards(String adminKey) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("admin/" + adminKey) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .delete(new GenericType<>() {
-                });
-    }
 
 //    TASK LISTS
 

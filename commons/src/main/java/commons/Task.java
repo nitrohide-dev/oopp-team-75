@@ -37,10 +37,14 @@ public class Task {
 
     public Task() {} // for object mappers, please don't use.
 
-    protected Task(TaskList taskList, String title) {
+    public Task(TaskList taskList) {
+        this(taskList, "", "");
+    }
+
+    public Task(TaskList taskList, String title, String desc) {
         this.taskList = taskList;
         this.title = title;
-        this.desc = "";
+        this.desc = desc;
     }
 
 //    getters and setters
@@ -90,12 +94,6 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-//    actual methods
-
-    public void detach() {
-        this.taskList.removeTask(this);
     }
 
 }

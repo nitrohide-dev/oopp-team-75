@@ -33,7 +33,7 @@ public class TaskList {
     private String title;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "taskList", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @OrderColumn
     private List<Task> tasks;
 
@@ -45,10 +45,14 @@ public class TaskList {
 
     public TaskList() {} // for object mappers, please don't use.
 
-    public TaskList(Board board, String title) {
+    public TaskList(Board board) {
+        this(board, "", new ArrayList());
+    }
+
+    public TaskList(Board board, String title, List tasks) {
         this.board = board;
-        this.tasks = new ArrayList<>();
         this.title = title;
+        this.tasks = tasks;
     }
 
 //    getters and setters
@@ -108,8 +112,8 @@ public class TaskList {
      * @return the created task.
 	 * @param name
      */
-    public Task createTask(String name) {
-        Task task = new Task(this, name);
+    public Task createTask() {
+        Task task = new Task(this);
         this.tasks.add(task);
         return task;
     }
@@ -127,30 +131,21 @@ public class TaskList {
     }
 
     /**
-     * Removes this taskList from its board. Shorthand method for: {@code
-     * taskList.getBoard().removeTaskList(taskList)}. If the taskList does not
-     * have a board (i.e. it is already detached), the method does nothing.
-     */
-    public void detach() {
-        if (board == null) return;
-        this.board.removeTaskList(this);
-    }
-
-    /**
-     * Detaches {@code task} and inserts it at {@code index} in this taskList.
+     * Inserts {@code task} at {@code index} in this taskList.
      * @param index
      * @param task
      */
     public void insertTask(int index, Task task) {
         if (task == null)
             throw new IllegalArgumentException("Task cannot be null");
-        task.detach();
+        if (task.getTaskList() != null)
+            task.getTaskList().removeTask(task);
         tasks.add(index, task);
         task.setTaskList(this);
     }
 
     /**
-     * Detaches {@code task1} and inserts it before {@code task2} in this taskList.
+     * Inserts {@code task1} before {@code task2} in this taskList.
      * @param task1
      * @param task2
      */
