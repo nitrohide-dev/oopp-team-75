@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.TaskList;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -25,10 +26,7 @@ import javafx.scene.text.Text;
 import javafx.scene.layout.Priority;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 public class BoardOverviewCtrl {
@@ -83,7 +81,34 @@ public class BoardOverviewCtrl {
         taskList1.setOnMouseClicked(e -> taskOperations(taskList1));
         addTaskButton(taskList1);
     }
-
+    /**
+     * Updates the board to show the changes that have been made(Experimental)
+     */
+    public void Update(List<TaskList> listOfLists) {
+        ObservableList children = listContainer.getChildren();
+        for(int i=0;i<children.size();i++)
+        {
+            children.remove(i);
+        }
+       for(int i=0;i<listOfLists.size();i++)
+       {
+           createTaskList();
+           ListView<HBox> ourList = (ListView<HBox>) children.get(i);
+           dragOverHandler(ourList);
+           dragDroppedHandler(ourList);
+           for(int j=0;i<listOfLists.get(i).getTasks().size();j++)
+           {
+               createTask(listOfLists.get(i).getTasks().get(j).getTitle(),ourList);
+           }
+       }
+        sampleGroup = (Group) children.get(0);
+        //initializes the default delete taskListsButton
+        setDeleteAction(deleteTaskListsButton, listName1.getText());
+        hoverOverDeleteButton(deleteTaskListsButton);
+        //initializes the addTask button
+        ListView<HBox> ourList = (ListView<HBox>) children.get(0);
+        addTaskButton(ourList);
+    }
 //Deleted Scrolling, implemented using ScrollPane
     /**
      * Connects the initial list to its name
