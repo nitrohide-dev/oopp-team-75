@@ -6,18 +6,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -282,8 +275,14 @@ public class BoardOverviewCtrl {
     public String getTaskNamePopup(String item) {
         TextInputDialog input = new TextInputDialog(item + " name");
         input.setHeaderText(item);
-        input.setContentText("Please enter a name for the " + item.toLowerCase(Locale.ROOT) + ".");
+        input.setContentText("Enter a name for the " + item.toLowerCase(Locale.ROOT));
         input.setTitle("Name Input Dialog");
+        //add css to dialog pane
+        input.getDialogPane().getStylesheets().add(
+                getClass().getResource("css/BoardOverview.css").toExternalForm());
+        //make prefsize bigger
+        input.getDialogPane().setPrefSize(400, 200);
+
         input.showAndWait();
         return input.getEditor().getText();
     }
