@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Group?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Button?>
 
-<ScrollPane fx:id="scrollPaneMain" fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardOverviewCtrl">
+<ScrollPane fx:id="scrollPaneMain" fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardOverviewCtrl">
    <content>
 <AnchorPane fx:id="anchorPaneMain" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -22,7 +22,7 @@
                         <ListView fx:id="taskList1" editable="true" fixedCellSize="35.0" prefHeight="346.0" prefWidth="204.0" />
                      </content>
                   </ScrollPane>
-                        <Button fx:id="deleteTaskListsButton" layoutX="191.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="x" />
+                        <Button fx:id="deleteTaskListsButton" layoutX="191.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="x" />
                </children>
             </Group>
          </children>
