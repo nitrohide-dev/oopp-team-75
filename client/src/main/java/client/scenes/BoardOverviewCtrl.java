@@ -6,7 +6,15 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
-import javafx.scene.control.*;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -18,10 +26,7 @@ import javafx.scene.text.Text;
 import javafx.scene.layout.Priority;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 public class BoardOverviewCtrl {
@@ -42,7 +47,7 @@ public class BoardOverviewCtrl {
 
     private Group sampleGroup;
 
-    private Map<ListView, String> allLists; // Stores all task lists
+    private Map<ListView<HBox>, String> allLists; // Stores all task lists
 
     @FXML
     private ScrollPane scrollPaneMain;
@@ -54,7 +59,7 @@ public class BoardOverviewCtrl {
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-        this.allLists = new HashMap();
+        this.allLists = new HashMap<ListView<HBox>, String>();
     }
 
     /**
@@ -63,7 +68,7 @@ public class BoardOverviewCtrl {
      */
     @FXML
     public void initialize() {
-        ObservableList children = listContainer.getChildren();
+        ObservableList<Node> children = listContainer.getChildren();
         sampleGroup = (Group) children.get(0);
         ListsSetup();
         // Sets ScrollPane size, so it's slightly bigger than AnchorPane
@@ -93,15 +98,13 @@ public class BoardOverviewCtrl {
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
      */
     public void createTaskList() {
-        ObservableList children = listContainer.getChildren();
+        ObservableList<Node> children = listContainer.getChildren();
         TextField sampleText = (TextField) sampleGroup.getChildren().get(0);
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
         ListView<HBox> sampleList = (ListView<HBox>) samplePane.getContent();
         TextField textField = new TextField();
         ListView<HBox> listView = new ListView<>();
-        listView.setOnMouseClicked(e -> {
-            taskOperations(listView);
-        });
+        listView.setOnMouseClicked(e -> taskOperations(listView));
         listView.setPrefSize(sampleList.getPrefWidth(), sampleList.getPrefHeight());
         listView.setFixedCellSize(35);
         ScrollPane scrollPane = new ScrollPane(listView);
@@ -141,22 +144,20 @@ public class BoardOverviewCtrl {
 
     /**
      * Method for adding a TaskButton, used when creating a taskList, it creates new tasks
-     * @param listView
+     * @param listView the listview
      */
     public void addTaskButton(ListView<HBox> listView){
         Button addTaskButton = new Button("+");
         addTaskButton.setPadding(new Insets(2, 80, 2, 80));
         HBox box = new HBox(addTaskButton);
         listView.getItems().add(box);
-        addTaskButton.setOnAction(e -> {
-            createTask(listView);
-        });
+        addTaskButton.setOnAction(e -> createTask(listView));
     }
 
     /**
      * A method to delete taskLists, and for pop-up asking for confirmation
-     * @param deleteTaskListsButton
-     * @param taskListName
+     * @param deleteTaskListsButton The delete button
+     * @param taskListName the name of the task list
      */
     public void setDeleteAction(Button deleteTaskListsButton, String taskListName){
         deleteTaskListsButton.setOnAction(e -> {
@@ -168,23 +169,19 @@ public class BoardOverviewCtrl {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK){
-                listContainer.getChildren().remove(parentGroup); // remove parent group from hbox
+                listContainer.getChildren().remove(parentGroup); // remove parent group from Hbox
             }
         });
     }
 
     /**A method to turn the deleteTasksLists button into pink when mouse is hovering over it
      *
-     * @param deleteTaskListsButton
+     * @param deleteTaskListsButton the delete button
      */
     public void hoverOverDeleteButton(Button deleteTaskListsButton){
-        deleteTaskListsButton.setOnMouseEntered(e -> {
-            deleteTaskListsButton.setStyle("-fx-background-color: pink;");
-        });
+        deleteTaskListsButton.setOnMouseEntered(e -> deleteTaskListsButton.setStyle("-fx-background-color: pink;"));
 
-        deleteTaskListsButton.setOnMouseExited(e -> {
-            deleteTaskListsButton.setStyle(null);
-        });
+        deleteTaskListsButton.setOnMouseExited(e -> deleteTaskListsButton.setStyle(null));
     }
 
     /**
@@ -194,28 +191,7 @@ public class BoardOverviewCtrl {
     public void createTask(ListView<HBox> list) {
         String name = getTaskNamePopup("Task");
         //if (!server.addTask(name)) return;
-        //Removes the addTask button
-        list.getItems().remove(list.getItems().get(list.getItems().size()-1));
-
-        Label task = new Label(name);
-        task.setPrefWidth(120);
-        task.setPadding(new Insets(6, 1, 6, 1));
-        String path = Path.of("", "client", "images", "cancel.png").toString();
-        Button removeButton = buttonBuilder(path);
-        path = Path.of("", "client", "images", "pencil.png").toString();
-        Button editButton = buttonBuilder(path);
-        path = Path.of("", "client", "images", "eye.png").toString();
-        Button viewButton = buttonBuilder(path);
-        HBox box = new HBox(task, viewButton, editButton, removeButton);
-        dragDetectHandler(box,task,list);
-        removeButton.setOnAction(e -> deleteTask(list, box));
-        editButton.setOnAction(e -> editTask(box));
-        viewButton.setOnAction(e -> viewTask(box));
-        disableButtons(box);
-        box.setHgrow(task, Priority.NEVER);
-        list.getItems().add(box);
-        //Re-adds the button to the end of the list
-        addTaskButton(list);
+        createTask(name, list);
     }
     
     public void createTask(String name, ListView<HBox> list) {
@@ -241,7 +217,6 @@ public class BoardOverviewCtrl {
         disableButtons(box);
         box.setHgrow(task, Priority.NEVER);
         list.getItems().add(box);
-
         //Re-adds the button to the end of the list
         addTaskButton(list);
     }
@@ -253,7 +228,7 @@ public class BoardOverviewCtrl {
      * @return the created button
      */
     private Button buttonBuilder(String path) {
-        String url = getClass().getClassLoader().getResource(path.replace("\\", "/")).toString();
+        String url = Objects.requireNonNull(getClass().getClassLoader().getResource(path.replace("\\", "/"))).toString();
         Image image = new Image(url);
         ImageView picture = new ImageView(image);
         picture.setFitHeight(18);
@@ -279,8 +254,8 @@ public class BoardOverviewCtrl {
         input.setTitle("Name Input Dialog");
         //add css to dialog pane
         input.getDialogPane().getStylesheets().add(
-                getClass().getResource("css/BoardOverview.css").toExternalForm());
-        //make prefsize bigger
+                Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
+        //make preferred size bigger
         input.getDialogPane().setPrefSize(400, 200);
 
         input.showAndWait();
@@ -407,7 +382,7 @@ public class BoardOverviewCtrl {
     }
 
     public void dragDetectHandler(HBox box,Label task,ListView<HBox> list) {
-        ObservableList children = anchorPaneMain.getChildren();
+        ObservableList<Node> children = anchorPaneMain.getChildren();
         box.setOnDragDetected(event -> {
             Dragboard db = box.startDragAndDrop(TransferMode.ANY);
             ClipboardContent content = new ClipboardContent();
