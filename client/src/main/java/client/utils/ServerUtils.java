@@ -22,13 +22,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
+import client.scenes.BoardOverviewCtrl;
 import commons.Board;
+import commons.Quote;
 import jakarta.ws.rs.core.Response;
 import javafx.scene.layout.HBox;
 import javafx.util.Pair;
 import org.glassfish.jersey.client.ClientConfig;
 
-import commons.Quote;
+//import commons.Quote;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
@@ -42,31 +44,31 @@ public class ServerUtils {
 
     private static final String SERVER = "http://localhost:8080/";
 
-//    public void getQuotesTheHardWay() throws IOException {
-//        var url = new URL("http://localhost:8080/api/quotes");
-//        var is = url.openConnection().getInputStream();
-//        var br = new BufferedReader(new InputStreamReader(is));
-//        String line;
-//        while ((line = br.readLine()) != null) {
-//            System.out.println(line);
-//        }
-//    }
-//
-//    public List<Quote> getQuotes() {
-//        return ClientBuilder.newClient(new ClientConfig()) //
-//                .target(SERVER).path("api/quotes") //
-//                .request(APPLICATION_JSON) //
-//                .accept(APPLICATION_JSON) //
-//                .get(new GenericType<List<Quote>>() {});
-//    }
-//
-//    public Quote addQuote(Quote quote) {
-//        return ClientBuilder.newClient(new ClientConfig()) //
-//                .target(SERVER).path("api/quotes") //
-//                .request(APPLICATION_JSON) //
-//                .accept(APPLICATION_JSON) //
-//                .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
-//    }
+    public void getQuotesTheHardWay() throws IOException {
+        var url = new URL("http://localhost:8080/api/quotes");
+        var is = url.openConnection().getInputStream();
+        var br = new BufferedReader(new InputStreamReader(is));
+        String line;
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+    }
+
+    public List<Quote> getQuotes() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/quotes") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<Quote>>() {});
+    }
+
+    public Quote addQuote(Quote quote) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/quotes") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
+    }
 
     /**
      * Sends request to the server that gets the board by id
@@ -177,12 +179,12 @@ public class ServerUtils {
                 .get(new GenericType<List<Board>>() {});
     }
 
-    public List<Board> setupSync() {
+    public void setupSync(BoardOverviewCtrl boc) {
         WebSocketClient client = new StandardWebSocketClient();
         WebSocketStompClient stompClient = new WebSocketStompClient(client);
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
-        StompSessionHandler sessionHandler = new MyStompSessionHandler();
-        stompClient.connect(URL, sessionHandler);
+        StompSessionHandler sessionHandler = new MyStompSessionHandler(boc);
+        stompClient.connect(SERVER + "/api/boards/update", sessionHandler);
     }
 
 

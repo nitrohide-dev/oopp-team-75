@@ -1,5 +1,6 @@
 package client.utils;
 
+import client.scenes.BoardOverviewCtrl;
 import commons.Board;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -11,6 +12,10 @@ import java.lang.reflect.Type;
 public class MyStompSessionHandler implements StompSessionHandler {
 
     private StompSession session;
+    private BoardOverviewCtrl boc;
+    public MyStompSessionHandler(BoardOverviewCtrl boc) {
+        this.boc = boc;
+    }
 
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         session.subscribe("/topic/messages", this);
@@ -27,6 +32,6 @@ public class MyStompSessionHandler implements StompSessionHandler {
 
     public void handleFrame(StompHeaders headers, Object payload) {
         Board board = (Board) payload;
-
+        boc.update(board);
     }
 }

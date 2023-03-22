@@ -19,11 +19,17 @@ import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
 import client.scenes.BoardOverviewCtrl;
 import client.scenes.LandingPageCtrl;
 import client.scenes.MainCtrl;
 import com.google.inject.Injector;
 
+import commons.Board;
+import commons.Task;
+import commons.TaskList;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -46,5 +52,19 @@ public class Main extends Application {
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, landing, board);
+
+        var boc = board.getKey();
+        Board board1 = new Board("a", "a", "a");
+        TaskList tl1 = board1.createTaskList();
+        TaskList tl2 = board1.createTaskList();
+        tl2.setTitle("Orange");
+        Task t1 = tl2.createTask();
+        t1.setTitle("Cheese");
+        Task t2 = tl2.createTask();
+        t2.setTitle("Apple");
+        List<TaskList> listOfLists = new ArrayList<>();
+        listOfLists.add(tl1);
+        listOfLists.add(tl2);
+        boc.update(board1);
     }
 }
