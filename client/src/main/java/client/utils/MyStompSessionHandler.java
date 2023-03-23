@@ -22,7 +22,7 @@ public class MyStompSessionHandler implements StompSessionHandler {
         this.session = session;
     }
 
-    public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload, Throwable exception) {}
+    public void handleException(StompSession session, StompCommand cmd, StompHeaders hdrs, byte[] payl, Throwable exception) {}
 
     public void handleTransportError(StompSession session, Throwable exception) {}
 
