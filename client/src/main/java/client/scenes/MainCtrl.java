@@ -16,8 +16,10 @@
 package client.scenes;
 
 import commons.Board;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -80,6 +82,15 @@ public class MainCtrl {
     public void showBoard(Board board) {
         currBoard = board;
         primaryStage.setTitle("Board: Your Board");
+        primaryStage.setMaximized(true);
+        primaryStage.setMinWidth(750);
+        primaryStage.setMinHeight(550);
+        //this fixes a bug where the maximized window will be opened in pref size.
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+        primaryStage.setWidth(bounds.getWidth());
+        primaryStage.setHeight(bounds.getHeight());
+
         primaryStage.setScene(boardOverview);
     }
 
