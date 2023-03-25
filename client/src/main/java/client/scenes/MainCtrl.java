@@ -76,7 +76,7 @@ public class MainCtrl {
         primaryStage.setTitle("Welcome to Talio!");
         primaryStage.setScene(landing);
         landing.getStylesheets().add(getClass().getResource("css/styles.css").toExternalForm());
-        landingCtrl.refresh(); //do we need this one? I put one here as reminder, but if the database sync is implemented i dont think this one is useful
+        landingCtrl.refresh(); //do we need this one? I put one here as reminder, but if the database sync is implemented I don't think this one is useful
     }
 
     public void showBoard(Board board) {

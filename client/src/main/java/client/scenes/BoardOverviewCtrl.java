@@ -219,7 +219,7 @@ public class BoardOverviewCtrl {
         editButton.setOnAction(e -> editTask(box));
         viewButton.setOnAction(e -> viewTask(box));
         disableButtons(box);
-        box.setHgrow(task, Priority.NEVER);
+        HBox.setHgrow(task, Priority.NEVER);
         list.getItems().add(box);
         //Re-adds the button to the end of the list
         addTaskButton(list);

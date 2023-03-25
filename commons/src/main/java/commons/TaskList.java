@@ -106,7 +106,7 @@ public class TaskList {
      * Creates a new empty task, adds it to the end of this taskList and
      * returns it.
      * @return the created task.
-	 * @param name
+	 * @param name name of task
      */
     public Task createTask(String name) {
         Task task = new Task(this, name);
@@ -116,7 +116,7 @@ public class TaskList {
 
     /**
      * Removes {@code task} from this taskList and sets its parent to null.
-     * @param task
+     * @param task name of task
      */
     public void removeTask(Task task) {
         if (task == null)
@@ -138,8 +138,8 @@ public class TaskList {
 
     /**
      * Detaches {@code task} and inserts it at {@code index} in this taskList.
-     * @param index
-     * @param task
+     * @param index index of task in list
+     * @param task name of task
      */
     public void insertTask(int index, Task task) {
         if (task == null)
@@ -151,8 +151,8 @@ public class TaskList {
 
     /**
      * Detaches {@code task1} and inserts it before {@code task2} in this taskList.
-     * @param task1
-     * @param task2
+     * @param task1 first task
+     * @param task2 second task
      */
     public void insertTask(Task task1, Task task2) {
         int index = tasks.indexOf(task2);

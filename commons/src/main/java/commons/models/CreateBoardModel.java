@@ -3,6 +3,7 @@ package commons.models;
 /**
  * Model for better communication with the server when creating board
  */
+@SuppressWarnings("SpellCheckingInspection")
 public class CreateBoardModel {
 	public static final int MAX_KEY_LENGTH = 16;
 	public static final char[] KEY_CHARS = ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!-._ ")

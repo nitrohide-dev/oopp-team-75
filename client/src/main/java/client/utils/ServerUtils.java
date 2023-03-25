@@ -52,9 +52,10 @@ public class ServerUtils {
                 .target(SERVER).path("api/quotes") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Quote>>() {});
+                .get(new GenericType<>() {
+                });
     }
-
+    //can we delete those old ones now?
     public Quote addQuote(Quote quote) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/quotes") //
@@ -141,8 +142,7 @@ public class ServerUtils {
             .accept(APPLICATION_JSON)
             .post(Entity.entity(null, APPLICATION_JSON), Response.class);
 
-        if (res.getStatus() == 200) return true;
-        else return false;
+        return res.getStatus() == 200;
     }
 
 

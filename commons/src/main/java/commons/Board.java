@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+@SuppressWarnings("SpellCheckingInspection")
 @Entity
 public class Board {
 
@@ -151,7 +152,7 @@ public class Board {
 
     /**
      * Removes {@code taskList} from this board and sets its parent to null.
-     * @param taskList
+     * @param taskList to be deleted tasklist
      */
     public void removeTaskList(TaskList taskList) {
         if (taskList == null)
