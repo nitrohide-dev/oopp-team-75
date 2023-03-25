@@ -1,14 +1,15 @@
 package server.api.controllers;
 
 import commons.Task;
-import commons.TaskList;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.TaskService;
-import server.exceptions.CannotCreateTask;
-import server.exceptions.ListDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
 
 import java.util.List;
