@@ -10,7 +10,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OrderColumn;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Board {
@@ -18,7 +20,7 @@ public class Board {
 //    static attributes
 
 //    public static final int MAX_KEY_LENGTH = 16;
-//    public static final char[] KEY_CHARS = ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!-._ ").toCharArray();
+//public static final char[] KEY_CHARS = ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!-._ ").toCharArray();
 //    public static final HashSet<Character> KEY_CHARS_SET = new HashSet(Arrays.asList(KEY_CHARS));
 //    public static final int MAX_TITLE_LENGTH = 64;
 //    public static final int MAX_PASSWORD_LENGTH = 64;

@@ -15,30 +15,32 @@
  */
 package client.utils;
 
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.List;
-import client.scenes.BoardOverviewCtrl;
 import commons.Board;
 import commons.Quote;
+import commons.models.CreateBoardModel;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import javafx.scene.layout.HBox;
 import javafx.util.Pair;
 import org.glassfish.jersey.client.ClientConfig;
-
-//import commons.Quote;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
-import jakarta.ws.rs.core.GenericType;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.stomp.StompSessionHandler;
+import org.springframework.messaging.simp.stomp.*;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.net.URL;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
+
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtils {
 
@@ -153,14 +155,14 @@ public class ServerUtils {
     }
 
 
+    // METHODS THAT ARE ACTUALLY USEFUL
 
-
-    public Board getBoard(String key) {
+    public Board findBoard(String key) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/get/" + key)
+                .target(SERVER).path("api/boards/find/" + key)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .get(new GenericType<Board>() {});
+                .get(Board.class);
     }
 
     public Board deleteBoard(String key) {
@@ -168,7 +170,7 @@ public class ServerUtils {
                 .target(SERVER).path("api/boards/delete/" + key)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .delete(new GenericType<Board>() {});
+                .delete(Board.class);
     }
 
     public List<Board> getAllBoards() {
@@ -179,13 +181,49 @@ public class ServerUtils {
                 .get(new GenericType<List<Board>>() {});
     }
 
-    public void setupSync(BoardOverviewCtrl boc) {
-        WebSocketClient client = new StandardWebSocketClient();
-        WebSocketStompClient stompClient = new WebSocketStompClient(client);
-        stompClient.setMessageConverter(new MappingJackson2MessageConverter());
-        StompSessionHandler sessionHandler = new MyStompSessionHandler(boc);
-        stompClient.connect(SERVER + "/api/boards/update", sessionHandler);
+    public Board createBoard(CreateBoardModel model) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/create")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(model, APPLICATION_JSON), Board.class);
     }
 
+    private StompSession session = connect("ws://localhost:8080/websocket");
 
+    private StompSession connect(String url) {
+        WebSocketClient client = new StandardWebSocketClient();
+        WebSocketStompClient stomp = new WebSocketStompClient(client);
+        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+        try {
+            return stomp.connect(url, new StompSessionHandlerAdapter(){}).get();
+        } catch (ExecutionException e) {
+            Thread.currentThread().interrupt();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        throw new IllegalStateException();
+    }
+
+    public void subscribe(String dest, Consumer<Board> consumer) {
+        session.subscribe(dest , new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return Board.class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                consumer.accept((Board) payload);
+            }
+        });
+    }
+
+    public void send(String dest, Object o) {
+        session.send(dest, o);
+    }
+
+    public void updateBoard(Board board) {
+        send("/app/boards", board);
+    }
 }

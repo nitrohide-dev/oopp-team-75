@@ -39,19 +39,13 @@ public class BoardController {
 
     /**
      * Gets a board from the database by key. If the key does not exist in the
-     * database, the method will respond with a bad request.
+     * database, the method will return null.
      * @param key the board key
      * @return the stored board
      */
-    @GetMapping("/get/{key}")
-    public ResponseEntity<Board> getByKey(@PathVariable("key") String key) {
-        try {
-            Board board = boardService.getByKey(key);
-            return ResponseEntity.ok(board);
-        }
-        catch (BoardDoesNotExist e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
+    @GetMapping("/find/{key}")
+    public ResponseEntity<Board> findByKey(@PathVariable("key") String key) {
+        return ResponseEntity.ok(boardService.findByKey(key));
     }
 
     /**
@@ -88,9 +82,9 @@ public class BoardController {
 
     }
 
-    @MessageMapping("/update")
-    @SendTo("/refresh")
-    public Board sync(Board board) throws Exception {
+    @MessageMapping("/boards") // sets address to /app/boards
+    @SendTo("/topic/boards") // sends result to /topic/boards
+    public Board update(Board board) throws Exception {
         return boardService.save(board);
     }
 

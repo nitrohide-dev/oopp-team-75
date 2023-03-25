@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
+import commons.models.CreateBoardModel;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -28,12 +29,17 @@ import javafx.scene.text.Text;
 import javafx.scene.layout.Priority;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 
 public class BoardOverviewCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private static final String boardKey = "a";
 
     @FXML
     private ListView<HBox> taskList1;
@@ -67,6 +73,10 @@ public class BoardOverviewCtrl {
         this.listMap = new HashMap();
     }
 
+    public ServerUtils getServer() {
+        return server;
+    }
+
     /**
      * Initializer
      * Initializes the objects in the scene
@@ -77,7 +87,7 @@ public class BoardOverviewCtrl {
         sampleGroup = (Group) children.get(0);
         ListsSetup();
         // Sets ScrollPane size, so it's slightly bigger than AnchorPane
-        scrollPaneMain.setPrefSize(anchorPaneMain.getPrefWidth()+10,anchorPaneMain.getPrefHeight()+20);
+        scrollPaneMain.setPrefSize(anchorPaneMain.getPrefWidth() + 10, anchorPaneMain.getPrefHeight() + 20);
 
         //initializes the default delete taskListsButton
         setDeleteAction(deleteTaskListsButton, listName1.getText());
@@ -85,16 +95,34 @@ public class BoardOverviewCtrl {
         //initializes the addTask button
         taskList1.setOnMouseClicked(e -> taskOperations(taskList1));
         addTaskButton(taskList1);
+
+        // loads board from db
+        board = server.findBoard(boardKey);
+        if (board == null)
+            board = server.createBoard(new CreateBoardModel(boardKey, "a", "a"));
+        refresh(board);
+
+        // connects to /topic/boards
+        server.subscribe("/topic/boards", this::refresh);
     }
+
+    public void clear() {
+
+    }
+
+
     /**
      * Updates the board to show the changes that have been made(Experimental)
      */
-    public void update(Board board) {
+    public void refresh(Board board) {
+        // sets current board to board
         this.board = board;
+
+        // removes all lists
+        listContainer.getChildren().clear();
+
+        // creates new lists
         List<TaskList> listOfLists = board.getTaskLists();
-        ObservableList children = listContainer.getChildren();
-        for(int i=0;i<children.size();i++)
-            children.remove(i);
         if (listOfLists.size() == 0)
             return;
         for (TaskList taskList : listOfLists) {
@@ -104,7 +132,10 @@ public class BoardOverviewCtrl {
             for(Task task : taskList.getTasks())
                 addTask(task.getTitle(),ourList);
         }
-        sampleGroup = (Group) children.get(0);
+
+        // sets attributes accordingly
+        sampleGroup = (Group) listContainer.getChildren().get(0);
+
         //initializes the default delete taskListsButton
         setDeleteAction(deleteTaskListsButton, listName1.getText());
         hoverOverDeleteButton(deleteTaskListsButton);
@@ -179,6 +210,8 @@ public class BoardOverviewCtrl {
         allLists.put(listView, textField.getText());
         listMap.put(listView, taskList);
 
+        // save board to database
+        server.updateBoard(board);
         return listView;
     }
 

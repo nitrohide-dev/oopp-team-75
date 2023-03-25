@@ -5,9 +5,11 @@ package commons.models;
  */
 public class CreateBoardModel {
 
-	public final String key;
-	public final String title;
-	public final String password;
+	public String key;
+	public String title;
+	public String password;
+
+	public CreateBoardModel(){} // for object mappers, please don't use.
 
 	public CreateBoardModel(String key, String title, String password) {
 		this.key = key;
@@ -26,15 +28,30 @@ public class CreateBoardModel {
 			return false;
 		if (password == null)
 			return false;
-//		if (key.length() > Board.MAX_KEY_LENGTH)
-//			return false;
-//		if (title.length() > Board.MAX_TITLE_LENGTH)
-//			return false;
-//		if (password.length() > Board.MAX_PASSWORD_LENGTH)
-////			return false;
-//		for (char c : key.toCharArray())
-//			if (!Board.KEY_CHARS_SET.contains(c))
-//				return false;
 		return true;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }

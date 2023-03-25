@@ -8,6 +8,7 @@ import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BoardService {
@@ -29,13 +30,15 @@ public class BoardService {
 	/**
 	 * Finds a board by a given key
 	 * @param key the key of the board that we want to get
-	 * @return the board with the given key
-	 * @throws BoardDoesNotExist when there is no board with the given key in the db
+	 * @return the board with the given key, or null if it doesn't exist
 	 */
-	public Board getByKey(String key) throws BoardDoesNotExist {
-		if (!repo.existsById(key))
-			throw new BoardDoesNotExist("There is no board with the given key.");
-		return repo.getById(key);
+	public Board findByKey(String key) {
+		if (key == null)
+			throw new IllegalArgumentException("key cannot be null");
+		Optional<Board> board = repo.findById(key);
+		if (board.isEmpty())
+			return null;
+		return board.get();
 	}
 
 	/**
