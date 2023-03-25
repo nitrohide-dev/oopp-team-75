@@ -29,7 +29,7 @@
                         <Font name="Roboto" size="19.0" />
                      </font></Label>
                   <TextField fx:id="server_ip" prefHeight="35.0" prefWidth="208.0" styleClass="input" />
-                  <Button fx:id="connect_button" mnemonicParsing="false" onAction="#connect" prefHeight="38.0" prefWidth="128.0" styleClass="button-9" text="Connect" textFill="WHITE" />
+                  <Button mnemonicParsing="false" onAction="#connect" prefHeight="38.0" prefWidth="128.0" styleClass="button-9" text="Connect" textFill="WHITE" />
                </HBox>
                <padding>
                   <Insets bottom="20.0" />

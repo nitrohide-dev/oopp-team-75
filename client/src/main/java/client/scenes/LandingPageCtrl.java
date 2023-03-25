@@ -18,18 +18,15 @@ public class LandingPageCtrl {
     @FXML
     private TextField server_ip;
     @FXML
-    private Button connect_button;
-    @FXML
     private ImageView logo1;
     @FXML
     private ImageView exitButton;
 
 
     @Inject
-    public LandingPageCtrl(ServerUtils server, MainCtrl mainCtrl, Button connect_button) {
+    public LandingPageCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-        this.connect_button = connect_button;
     }
 
     public void connect(){
