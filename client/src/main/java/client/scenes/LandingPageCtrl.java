@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -20,6 +21,8 @@ public class LandingPageCtrl {
     private Button connect_button;
     @FXML
     private ImageView logo1;
+    @FXML
+    private ImageView exitButton;
 
 
     @Inject
@@ -38,6 +41,11 @@ public class LandingPageCtrl {
         clearFields();
     }
 
+    public void exit(){
+        Platform.exit();
+        System.exit(0);
+    }
+
     private void clearFields() {
         server_ip.clear();
     }
@@ -45,7 +53,9 @@ public class LandingPageCtrl {
     public void changeImageUrl() {
     // Set the image URL of ImageView
         String path = Path.of("", "client", "images", "Logo.png").toString();
+        String path2 = Path.of("", "client", "images", "ExitButton.png").toString();
         logo1.setImage(new Image(path));
+        exitButton.setImage(new Image(path2));
     }
 
     public void refresh() {
