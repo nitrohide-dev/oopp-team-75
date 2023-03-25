@@ -28,6 +28,7 @@ import commons.Person;
 import commons.Quote;
 import server.api.controllers.QuoteController;
 
+@SuppressWarnings("ALL")
 public class QuoteControllerTest {
 
     public int nextInt;

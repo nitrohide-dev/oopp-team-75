@@ -29,6 +29,7 @@ import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuer
 import commons.Quote;
 import server.database.QuoteRepository;
 
+@SuppressWarnings("ALL")
 public class TestQuoteRepository implements QuoteRepository {
 
     public final List<Quote> quotes = new ArrayList<>();
@@ -135,7 +136,7 @@ public class TestQuoteRepository implements QuoteRepository {
     @Override
     public <S extends Quote> S save(S entity) {
         call("save");
-        entity.id = (long) quotes.size();
+        entity.id = quotes.size();
         quotes.add(entity);
         return entity;
     }

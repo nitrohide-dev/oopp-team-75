@@ -23,6 +23,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.util.Objects;
+
 public class MainCtrl {
 
     private Stage primaryStage;
@@ -35,7 +37,6 @@ public class MainCtrl {
     private AddQuoteCtrl addCtrl;
     private Scene add;
 
-    private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
 
     private Board currBoard;
@@ -52,7 +53,7 @@ public class MainCtrl {
 //        this.addCtrl = add.getKey();
 //        this.add = new Scene(add.getValue());
 
-        this.boardOverviewCtrl = boardOverview.getKey();
+        BoardOverviewCtrl boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
         showLanding();
@@ -75,7 +76,7 @@ public class MainCtrl {
         landingCtrl.changeImageUrl();
         primaryStage.setTitle("Welcome to Talio!");
         primaryStage.setScene(landing);
-        landing.getStylesheets().add(getClass().getResource("css/styles.css").toExternalForm());
+        landing.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/styles.css")).toExternalForm());
         landingCtrl.refresh();
         //do we need this one? I put one here as reminder,
         //but if the database sync is implemented I don't think this one is useful

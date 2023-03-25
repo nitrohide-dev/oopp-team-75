@@ -1,4 +1,5 @@
 /* button landing page */
+/*noinspection ALL*/
 .button {
  -fx-color: #fff;
  -fx-cursor: pointer;
@@ -45,6 +46,7 @@
 }
 
 /* added effect with blue outline*/
+/*noinspection ALL*/
 .text-field{
  -fx-effect: dropshadow( three-pass-box, blue , 10.0, 0.0,0.0,0.0);
  -fx-background-insets:3.0;
@@ -52,6 +54,7 @@
 }
 
 
+/*noinspection ALL*/
 .text-field:focused{
  -fx-background-color: white;
  -fx-text-fill:blue;
