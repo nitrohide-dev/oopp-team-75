@@ -42,7 +42,7 @@
  -fx-border-color: #2f58cd;
  -fx-border-width: 2px;
  -fx-border-radius: 1px;
- -fx-background-color: #CCFFFF;
+ -fx-background-color: #3795bd;
 }
 
 /* added effect with blue outline*/
@@ -61,4 +61,9 @@
  -fx-prompt-text-fill:white;
  -fx-background-insets: -0.1, 2.0;
  -fx-font-size:14.0;
+}
+
+/*noinspection ALL*/
+#header {
+
 }

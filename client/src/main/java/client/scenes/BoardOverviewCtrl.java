@@ -17,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.image.Image;
@@ -36,6 +37,8 @@ import java.util.Optional;
 public class BoardOverviewCtrl {
     @FXML
     public Group group;
+    @FXML
+    public HBox header;
 
     @FXML
     private ListView<HBox> taskList1;
@@ -58,6 +61,10 @@ public class BoardOverviewCtrl {
 
     @FXML
     private AnchorPane anchorPaneMain;
+    @FXML
+    private ImageView logo1;
+    @FXML
+    private ImageView exitButton;
 
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -357,6 +364,9 @@ public class BoardOverviewCtrl {
 //        }
 //    }
 
+    /**
+     * @param list - the list that the task is dragged from
+     */
     public void dragOverHandler(ListView<HBox> list) {
         list.setOnDragOver(event -> {
             Dragboard db = event.getDragboard();
@@ -367,6 +377,9 @@ public class BoardOverviewCtrl {
         });
     }
 
+    /**
+     * @param list - the list that the task is dropped on
+     */
     public void dragDroppedHandler(ListView<HBox> list) {
         list.setOnDragDropped(event -> {
             Dragboard db = event.getDragboard();
@@ -383,6 +396,11 @@ public class BoardOverviewCtrl {
         });
     }
 
+    /**
+     * @param box - the box that contains the task
+     * @param task - the task
+     * @param list - the list that contains the task
+     */
     public void dragDetectHandler(HBox box,Label task,ListView<HBox> list) {
         ObservableList<Node> children = anchorPaneMain.getChildren();
         box.setOnDragDetected(event -> {
@@ -400,6 +418,21 @@ public class BoardOverviewCtrl {
                 deleteTask(list, box);
             }
         });
+    }
+
+    /**
+     * @param mouseEvent - the mouse event
+     */
+    public void goToPrevious(MouseEvent mouseEvent) {
+        //TODO write code to go to previous page
+    }
+
+    public void changeImageUrl() {
+        // Set the image URL of ImageView
+        String path = Path.of("", "client", "images", "Logo.png").toString();
+        String path2 = Path.of("", "client", "images", "ExitButton.png").toString();
+        logo1.setImage(new Image(path));
+        exitButton.setImage(new Image(path2));
     }
 }
 

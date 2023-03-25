@@ -30,13 +30,7 @@ public class MainCtrl {
     private Stage primaryStage;
     private LandingPageCtrl landingCtrl;
     private Scene landing;
-
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
-
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
-
+    private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
 
     private Board currBoard;
@@ -53,7 +47,7 @@ public class MainCtrl {
 //        this.addCtrl = add.getKey();
 //        this.add = new Scene(add.getValue());
 
-        BoardOverviewCtrl boardOverviewCtrl = boardOverview.getKey();
+        this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
         showLanding();
@@ -62,12 +56,6 @@ public class MainCtrl {
 
     public Board getCurrBoard() {
         return currBoard;
-    }
-
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
     }
 
     public void showLanding(){
@@ -79,7 +67,7 @@ public class MainCtrl {
         landing.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/styles.css")).toExternalForm());
         landingCtrl.refresh();
         //do we need this one? I put one here as reminder,
-        //but if the database sync is implemented I don't think this one is useful
+        //but if the database sync is implemented I don't think this one is not useful
     }
 
     public void showBoard(Board board) {
@@ -89,17 +77,14 @@ public class MainCtrl {
         primaryStage.setMinWidth(750);
         primaryStage.setMinHeight(550);
         //this fixes a bug where the maximized window will be opened in pref size.
+        //but it causes a bug where the window is not properly set, so the buttons on the right side are not visible
+        //TODO fix this bug
         Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds();
         primaryStage.setWidth(bounds.getWidth());
         primaryStage.setHeight(bounds.getHeight());
 
+        boardOverviewCtrl.changeImageUrl();
         primaryStage.setScene(boardOverview);
-    }
-
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 }
