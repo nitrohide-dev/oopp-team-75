@@ -17,14 +17,6 @@ import java.util.Objects;
 @Entity
 public class Board {
 
-//    static attributes
-
-//    public static final int MAX_KEY_LENGTH = 16;
-//    public static final char[] KEY_CHARS = ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!-._ ").toCharArray();
-//    public static final HashSet<Character> KEY_CHARS_SET = new HashSet(Arrays.asList(KEY_CHARS));
-//    public static final int MAX_TITLE_LENGTH = 64;
-//    public static final int MAX_PASSWORD_LENGTH = 64;
-
 //    attributes
 
     @Id
@@ -34,24 +26,31 @@ public class Board {
     @Column(nullable=false)
     private String title;
 
+    @Column(nullable=false)
+    private String password;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @OrderColumn
     private List<TaskList> taskLists;
 
-    @Column(nullable=false)
-    private String password;
-
 //    constructors
 
     public Board() {} // for object mappers, please don't use.
 
+    public Board(String key) {
+        this(key, "", "", new ArrayList<>());
+    }
 
-    public Board(String key, String title, String password) {
+    public Board(CreateBoardModel model) {
+        this(model.getKey(), model.getTitle(), model.getPassword(), new ArrayList<>());
+    }
+
+    public Board(String key, String title, String password, List<TaskList> taskLists) {
         this.key = key;
         this.title = title;
         this.password = password;
-        this.taskLists = new ArrayList<>();
+        this.taskLists = taskLists;
     }
 
 //    getters and setters
@@ -90,17 +89,35 @@ public class Board {
 
 //    equals and hashcode
 
+    /**
+     * Checks for equality in all attributes.
+     * @param o the object to compare with
+     * @return true if this and o are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Board)) return false;
+
         Board board = (Board) o;
-        return Objects.equals(key, board.key);
+
+        if (!Objects.equals(key, board.key)) return false;
+        if (!Objects.equals(title, board.title)) return false;
+        if (!Objects.equals(password, board.password)) return false;
+        return Objects.equals(taskLists, board.taskLists);
     }
 
+    /**
+     * Generates a hashcode using all attributes.
+     * @return the generated hashcode
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(key);
+        int result = key != null ? key.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (taskLists != null ? taskLists.hashCode() : 0);
+        return result;
     }
 
 //    actual methods

@@ -1,7 +1,7 @@
 package server.api.controllers;
 
 import commons.Board;
-import commons.models.CreateBoardModel;
+import commons.CreateBoardModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -85,7 +85,8 @@ public class BoardController {
     @MessageMapping("/boards") // sets address to /app/boards
     @SendTo("/topic/boards") // sends result to /topic/boards
     public Board update(Board board) throws Exception {
-        return boardService.save(board);
+        boardService.save(board);
+        return board;
     }
 
 }

@@ -91,17 +91,35 @@ public class TaskList {
 
 //    equals and hashcode
 
+    /**
+     * Checks for equality in all attributes except the parent board, since
+     * that would introduce infinite recursion.
+     * @param o the object to compare with
+     * @return true if this and o are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof TaskList)) return false;
+
         TaskList taskList = (TaskList) o;
-        return id == taskList.id;
+
+        if (id != taskList.id) return false;
+        if (!Objects.equals(title, taskList.title)) return false;
+        return Objects.equals(tasks, taskList.tasks);
     }
 
+    /**
+     * Generates a hashcode using all attributes except the parent board, since
+     * that would introduce infinite recursion.
+     * @return the generated hashcode
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (tasks != null ? tasks.hashCode() : 0);
+        return result;
     }
 
 //    actual methods
@@ -110,7 +128,6 @@ public class TaskList {
      * Creates a new empty task, adds it to the end of this taskList and
      * returns it.
      * @return the created task.
-	 * @param name
      */
     public Task createTask() {
         Task task = new Task(this);
@@ -124,7 +141,7 @@ public class TaskList {
      */
     public void removeTask(Task task) {
         if (task == null)
-            throw new IllegalArgumentException("Task cannot be null");
+            throw new NullPointerException("Task cannot be null");
         if (!this.tasks.remove(task))
             throw new IllegalArgumentException("Task not in TaskList");
         task.setTaskList(null);
@@ -137,7 +154,7 @@ public class TaskList {
      */
     public void insertTask(int index, Task task) {
         if (task == null)
-            throw new IllegalArgumentException("Task cannot be null");
+            throw new NullPointerException("Task cannot be null");
         if (task.getTaskList() != null)
             task.getTaskList().removeTask(task);
         tasks.add(index, task);
@@ -150,6 +167,8 @@ public class TaskList {
      * @param task2
      */
     public void insertTask(Task task1, Task task2) {
+        if (task2 == null)
+            throw new NullPointerException("Task2 cannot be null");
         int index = tasks.indexOf(task2);
         if (index == -1)
             throw new IllegalArgumentException("Task2 does not exist in the taskList.");

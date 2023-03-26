@@ -1,7 +1,7 @@
 package server.api.services;
 
 import commons.Board;
-import commons.models.CreateBoardModel;
+import commons.CreateBoardModel;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
 import server.exceptions.BoardDoesNotExist;
@@ -52,7 +52,7 @@ public class BoardService {
 			throw new CannotCreateBoard("Some of the provided fields are invalid.");
 		if (repo.existsById(model.key))
 			throw new CannotCreateBoard("This key is already used.");
-		return repo.save(new Board(model.key, model.title, model.password));
+		return repo.save(new Board(model));
 	}
 
 	/**

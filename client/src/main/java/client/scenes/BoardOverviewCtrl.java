@@ -5,18 +5,16 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
-import commons.models.CreateBoardModel;
+import commons.CreateBoardModel;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
@@ -24,12 +22,19 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Text;
 import javafx.scene.layout.Priority;
+import javafx.scene.text.Text;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 
 public class BoardOverviewCtrl {
@@ -55,6 +60,7 @@ public class BoardOverviewCtrl {
     private Map<ListView, TaskList> listMap; // Stores all task lists
     private Map<HBox, Task> taskMap; // Stores all tasks
     private Board board;
+    private long boardTime;
 
     @FXML
     private ScrollPane scrollPaneMain;
@@ -94,19 +100,21 @@ public class BoardOverviewCtrl {
         taskList1.setOnMouseClicked(e -> taskOperations(taskList1));
         addTaskButton(taskList1);
 
-        // loads board from db
+        // gets board from the database, or creates one if it doesnt exist
         board = server.findBoard(boardKey);
         if (board == null)
             board = server.createBoard(new CreateBoardModel(boardKey, "a", "a"));
         refresh(board);
 
         // connects to /topic/boards
-        server.subscribe("/topic/boards", this::refresh);
+        server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
     }
+
     /**
      * Updates the board to show the changes that have been made(Experimental)
      */
     public void refresh(Board board) {
+
         // sets current board to board
         this.board = board;
 
@@ -148,7 +156,9 @@ public class BoardOverviewCtrl {
      */
     public ListView<HBox> createTaskList() {
         TaskList taskList = board.createTaskList();
-        return addTaskList(taskList);
+        ListView<HBox> list = addTaskList(taskList);
+        server.updateBoard(board); // updates server
+        return list;
     }
 
     /**
@@ -156,18 +166,22 @@ public class BoardOverviewCtrl {
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
      */
     public ListView<HBox> addTaskList(TaskList taskList) {
-        ObservableList children = listContainer.getChildren();
         TextField sampleText = (TextField) sampleGroup.getChildren().get(0);
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
         ListView<HBox> sampleList = (ListView<HBox>) samplePane.getContent();
-        TextField textField = new TextField();
+
+        ObservableList<Node> children = listContainer.getChildren();
+
         ListView<HBox> listView = new ListView<>();
+        listView.setPrefSize(sampleList.getPrefWidth(), sampleList.getPrefHeight());
+        listView.setFixedCellSize(35);
         listView.setOnMouseClicked(e -> {
             taskOperations(listView);
         });
-        listView.setPrefSize(sampleList.getPrefWidth(), sampleList.getPrefHeight());
-        listView.setFixedCellSize(35);
+
         ScrollPane scrollPane = new ScrollPane(listView);
+
+        TextField textField = new TextField();
         textField.setOnInputMethodTextChanged(e ->{
             taskList.setTitle(textField.getText());
         });
@@ -203,7 +217,6 @@ public class BoardOverviewCtrl {
         dragDroppedHandler(listView);
         allLists.put(listView, textField.getText());
         listMap.put(listView, taskList);
-
         return listView;
     }
 
@@ -223,12 +236,12 @@ public class BoardOverviewCtrl {
 
     /**
      * A method to delete taskLists, and for pop-up asking for confirmation
-     * @param deleteTaskListsButton
+     * @param button
      * @param taskListName
      */
-    public void setDeleteAction(Button deleteTaskListsButton, String taskListName,ListView<HBox> list){
-        deleteTaskListsButton.setOnAction(e -> {
-            Group parentGroup = (Group) deleteTaskListsButton.getParent();
+    public void setDeleteAction(Button button, String taskListName, ListView<HBox> list){
+        button.setOnAction(e -> {
+            Group parentGroup = (Group) button.getParent();
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Delete Confirmation Dialog");
             alert.setHeaderText("Delete TaskList");
@@ -236,9 +249,10 @@ public class BoardOverviewCtrl {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK){
-                listContainer.getChildren().remove(parentGroup); // remove parent group from hbox
+                listContainer.getChildren().remove(parentGroup); // remove parent group from HBox
                 TaskList list1 = listMap.get(list);
                 board.removeTaskList(list1);
+                server.updateBoard(board); // updates server
             }
         });
     }
@@ -262,18 +276,15 @@ public class BoardOverviewCtrl {
      * A task contains a label and three buttons for task operations
      */
     public HBox createTask(ListView<HBox> list) {
-        //if (!server.addTask(name)) return;
-        String name = getTaskNamePopup("Task");
-        Task task1 = listMap.get(list).createTask();
-        task1.setTitle(name);
-        return addTask(name, list,task1);
+        return createTask(inputTaskName(), list);
     }
 
     public HBox createTask(String name,ListView<HBox> list) {
-        //if (!server.addTask(name)) return;
         Task task1 = listMap.get(list).createTask();
         task1.setTitle(name);
-        return addTask(name, list,task1);
+        HBox task = addTask(name, list,task1);
+        server.updateBoard(board); // updates server
+        return task;
     }
     public HBox addTask(String name, ListView<HBox> list,Task task1) {
 
@@ -294,7 +305,7 @@ public class BoardOverviewCtrl {
         removeButton.setOnAction(e -> deleteTask(list, box));
         editButton.setOnAction(e -> editTask(box));
         viewButton.setOnAction(e -> viewTask(box));
-        disableButtons(box);
+        disableTaskButtons(box);
         box.setHgrow(task, Priority.NEVER);
         list.getItems().add(box);
         //Re-adds the button to the end of the list
@@ -305,7 +316,6 @@ public class BoardOverviewCtrl {
 
     /**
      * Creates button for task operations
-     *
      * @param path - The path of the image that is on the button
      * @return the created button
      */
@@ -324,16 +334,14 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * popup that ask you to input the name of the thing that you want to create
-     *
-     * @param item - the type of the thing that you want to create
+     * popup that ask you to input a task name.
      * @return the input name
      */
-    public String getTaskNamePopup(String item) {
-        TextInputDialog input = new TextInputDialog(item + " name");
-        input.setHeaderText(item);
-        input.setContentText("Please enter a name for the " + item.toLowerCase(Locale.ROOT) + ".");
-        input.setTitle("Name Input Dialog");
+    public String inputTaskName() {
+        TextInputDialog input = new TextInputDialog("task name");
+        input.setHeaderText("Task name");
+        input.setContentText("Please enter a name for the task:");
+        input.setTitle("Input Task Name");
         input.showAndWait();
         return input.getEditor().getText();
     }
@@ -345,16 +353,7 @@ public class BoardOverviewCtrl {
         int index = list.getSelectionModel().getSelectedIndex();
         if (index >= list.getItems().size() - 1) return;
         resetOptionButtons();
-        HBox box = list.getItems().get(index);
-        Button removeButton = (Button) box.getChildren().get(1);
-        Button editButton = (Button) box.getChildren().get(2);
-        Button viewButton = (Button) box.getChildren().get(3);
-        removeButton.setDisable(false);
-        removeButton.setVisible(true);
-        editButton.setDisable(false);
-        editButton.setVisible(true);
-        viewButton.setDisable(false);
-        viewButton.setVisible(true);
+        enableTaskButtons(list.getItems().get(index));
     }
 
     /**
@@ -363,17 +362,16 @@ public class BoardOverviewCtrl {
     private void resetOptionButtons() {
         for (ListView<HBox> list : allLists.keySet()) {
             for (int i = 0; i < list.getItems().size() - 1; i++) {
-                disableButtons(list.getItems().get(i));
+                disableTaskButtons(list.getItems().get(i));
             }
         }
     }
 
     /**
-     * disables and hides all buttons in a box, containing a task
-     *
-     * @param box - box that contains a task and its operations buttons
+     * Disables and hides the buttons of a task
+     * @param box the task box
      */
-    private void disableButtons(HBox box) {
+    private void disableTaskButtons(HBox box) {
         Button removeButton = (Button) box.getChildren().get(1);
         Button editButton = (Button) box.getChildren().get(2);
         Button viewButton = (Button) box.getChildren().get(3);
@@ -386,37 +384,49 @@ public class BoardOverviewCtrl {
     }
 
     /**
+     * Enables and shows the buttons of a task
+     * @param box the task box
+     */
+    private void enableTaskButtons(HBox box) {
+        Button removeButton = (Button) box.getChildren().get(1);
+        Button editButton = (Button) box.getChildren().get(2);
+        Button viewButton = (Button) box.getChildren().get(3);
+        removeButton.setDisable(false);
+        removeButton.setVisible(true);
+        editButton.setDisable(false);
+        editButton.setVisible(true);
+        viewButton.setDisable(false);
+        viewButton.setVisible(true);
+    }
+
+    /**
      * Edits the chosen task
-     *
-     * @param task - a HBox, containing the task
+     * @param task the task box
      */
     public void editTask(HBox task) {
-        //if (!server.editTask(task.getText())) return;
-        String name = getTaskNamePopup("Task");
+        String name = inputTaskName();
         ((Label) task.getChildren().get(0)).setText(name);
         Task task1 = taskMap.get(task);
         task1.setTitle(name);
+        server.updateBoard(board); // updates server
     }
 
     /**
      * The user can see detailed info about the task
-     *
      * @param task - a HBox, containing the task
      */
-    public void viewTask(HBox task) {
-    }
+    public void viewTask(HBox task) {}
 
     /**
      * Deletes given task
-     *
      * @param task - a HBox, containing the task
      */
     public void deleteTask(ListView<HBox> list, HBox task) {
-        //if (!server.removeTask(task.getText())) return;
         TaskList list1 = listMap.get(list);
         Task task1 = taskMap.get(task);
         list1.removeTask(task1);
         list.getItems().remove(task);
+        server.updateBoard(board); // updates server
     }
 
 //    /**

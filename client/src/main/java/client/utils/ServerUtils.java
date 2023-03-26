@@ -17,7 +17,7 @@ package client.utils;
 
 import commons.Board;
 import commons.Quote;
-import commons.models.CreateBoardModel;
+import commons.CreateBoardModel;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
@@ -26,7 +26,10 @@ import javafx.scene.layout.HBox;
 import javafx.util.Pair;
 import org.glassfish.jersey.client.ClientConfig;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.stomp.*;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -205,16 +208,16 @@ public class ServerUtils {
         throw new IllegalStateException();
     }
 
-    public void subscribe(String dest, Consumer<Board> consumer) {
+    public <T> void subscribe(String dest, Class<T> type, Consumer<T> consumer) {
         session.subscribe(dest , new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
-                return Board.class;
+                return type;
             }
 
             @Override
             public void handleFrame(StompHeaders headers, Object payload) {
-                consumer.accept((Board) payload);
+                consumer.accept((T) payload);
             }
         });
     }

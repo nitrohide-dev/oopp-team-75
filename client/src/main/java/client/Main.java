@@ -19,16 +19,11 @@ import client.scenes.BoardOverviewCtrl;
 import client.scenes.LandingPageCtrl;
 import client.scenes.MainCtrl;
 import com.google.inject.Injector;
-import commons.Board;
-import commons.Task;
-import commons.TaskList;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.google.inject.Guice.createInjector;
 
