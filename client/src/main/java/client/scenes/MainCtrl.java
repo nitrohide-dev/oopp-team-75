@@ -83,7 +83,8 @@ public class MainCtrl {
         Rectangle2D bounds = screen.getVisualBounds();
         primaryStage.setWidth(bounds.getWidth());
         primaryStage.setHeight(bounds.getHeight());
-
+        boardOverview.getStylesheets().add(Objects.requireNonNull(getClass()
+                .getResource("css/BoardOverview.css")).toExternalForm());
         boardOverviewCtrl.changeImageUrl();
         primaryStage.setScene(boardOverview);
     }

@@ -25,12 +25,10 @@
          </ImageView>
          <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
          <ImageView fx:id="lockButton" fitHeight="48.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-               <Image url="@../images/lockUnlocked.png" />
-            </image>
             <HBox.margin>
                <Insets right="10.0" />
             </HBox.margin>
+            <Image url="@../images/lockUnlocked.png" />
          </ImageView>
          <ImageView fx:id="exitButton" fitHeight="46.0" fitWidth="44.0" onMouseClicked="#goToPrevious" pickOnBounds="true" preserveRatio="true">
             <HBox.margin>
@@ -39,12 +37,10 @@
             <Image url="@../images/ExitButton.png" />
          </ImageView>
          <ImageView fx:id="dropDownMenu" fitHeight="115.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-               <Image url="@../images/Dots.png" />
-            </image>
             <HBox.margin>
                <Insets />
             </HBox.margin>
+            <Image url="@../images/Dots.png" />
          </ImageView>
          <padding>
             <Insets right="10.0" />
@@ -52,7 +48,7 @@
       </HBox>
    </top>
    <center>
-      <ScrollPane fx:id="scrollPaneMain" fitToHeight="true" fitToWidth="true" pickOnBounds="false" style="-fx-background-color: #2f58cd;">
+      <ScrollPane fx:id="scrollPaneMain" fitToHeight="true" fitToWidth="true" pickOnBounds="false">
          <AnchorPane fx:id="anchorPaneMain" pickOnBounds="false" prefHeight="500.0" prefWidth="750.0" style="-fx-background-color: #3795bd;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
             <Button layoutX="701.0" layoutY="14.0" mnemonicParsing="false" onAction="#createTaskList" style="-fx-background-color: white;" text="+" textAlignment="CENTER" textOverrun="CLIP" AnchorPane.rightAnchor="31.0">
                <font>
@@ -61,14 +57,14 @@
 
             <HBox fx:id="listContainer" prefHeight="100.0" prefWidth="200.0" spacing="40.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0">
                <Group fx:id="group" nodeOrientation="LEFT_TO_RIGHT">
-                  <TextField fx:id="listName1" alignment="CENTER" prefHeight="25.0" prefWidth="205.0" style="-fx-background-color: white;" text="List 1">
+                  <TextField fx:id="listName1" alignment="CENTER" prefHeight="25.0" prefWidth="180.0" text="List 1">
                      <font>
                         <Font size="19.0" />
                      </font></TextField>
-                  <ScrollPane hbarPolicy="NEVER" layoutY="60.0" prefHeight="348.0" prefWidth="205.0">
-                     <ListView fx:id="taskList1" editable="true" fixedCellSize="35.0" prefHeight="346.0" prefWidth="204.0" style="-fx-background-color: rgba(255, 241, 215, 0.3);" />
+                  <ScrollPane fx:id="sPaneListView" fitToHeight="true" hbarPolicy="NEVER" layoutY="50.0" prefHeight="348.0" prefWidth="205.0">
+                     <ListView fx:id="taskList1" editable="true" fixedCellSize="35.0" prefHeight="346.0" prefWidth="204.0" />
                   </ScrollPane>
-                  <Button fx:id="deleteTaskListsButton" layoutX="166.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: transparent; -fx-label-padding: 0 0 0 0;" text="X" textFill="RED">
+                  <Button fx:id="deleteTaskListsButton" layoutX="168.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="X">
                      <font>
                         <Font size="19.0" />
                      </font></Button>

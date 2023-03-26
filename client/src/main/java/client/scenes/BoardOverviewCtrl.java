@@ -23,6 +23,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.layout.Priority;
 
@@ -39,6 +40,8 @@ public class BoardOverviewCtrl {
     public Group group;
     @FXML
     public HBox header;
+    @FXML
+    public ScrollPane sPaneListView;
 
     @FXML
     private ListView<HBox> taskList1;
@@ -111,50 +114,66 @@ public class BoardOverviewCtrl {
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
      */
     public void createTaskList() {
-        ObservableList<Node> children = listContainer.getChildren();
-        TextField sampleText = (TextField) sampleGroup.getChildren().get(0);
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
         ListView<HBox> sampleList = (ListView<HBox>) samplePane.getContent();
         TextField textField = new TextField();
+        textField.setId("listName1");
         ListView<HBox> listView = new ListView<>();
         listView.setOnMouseClicked(e -> taskOperations(listView));
         listView.setPrefSize(sampleList.getPrefWidth(), sampleList.getPrefHeight());
         listView.setFixedCellSize(35);
+        listView.setId("taskList1");
         ScrollPane scrollPane = new ScrollPane(listView);
 
         //create deleteTaskListsButton
-        Button deleteTaskListsButton = new Button("x");
-
+        Button deleteTaskListsButton = new Button("X");
         setDeleteAction(deleteTaskListsButton, textField.getText());
         hoverOverDeleteButton(deleteTaskListsButton);
 
-        deleteTaskListsButton.setLayoutX(191);
-        deleteTaskListsButton.setLayoutY(0);
-        deleteTaskListsButton.setPrefSize(25, 25);
 
+        setPropertiesTaskList(deleteTaskListsButton, textField, scrollPane);
         addTaskButton(listView);
-
-        textField.setPrefSize(sampleText.getPrefWidth(), sampleText.getPrefHeight());
-        textField.setLayoutX(0);
-        textField.setLayoutY(0);
-        textField.setText("Name your list!");
-        scrollPane.setPrefSize(samplePane.getPrefWidth(), samplePane.getPrefHeight());
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setLayoutX(0);
-        scrollPane.setLayoutY(60);
 
         Group newGroup = new Group(textField, scrollPane, deleteTaskListsButton);
         newGroup.setLayoutX(sampleGroup.getLayoutX());
         newGroup.setLayoutY(sampleGroup.getLayoutY());
         newGroup.setTranslateX(sampleGroup.getTranslateX());
         newGroup.setTranslateY(sampleGroup.getTranslateY());
+        newGroup.getStylesheets().addAll(sampleGroup.getStylesheets()); //does not work
 
-        children.add(newGroup);
+        listContainer.getChildren().add(newGroup);
         dragOverHandler(listView);
         dragDroppedHandler(listView);
         allLists.put(listView, textField.getText());
     }
 
+    /**
+     * Sets the properties of the taskList
+     * @param deleteTaskListsButton the delete button
+     * @param textField the text field
+     * @param scrollPane the scrollpane
+     */
+    public void setPropertiesTaskList(Button deleteTaskListsButton, TextField textField, ScrollPane scrollPane) {
+        deleteTaskListsButton.setLayoutX(170);
+        deleteTaskListsButton.setLayoutY(0);
+        deleteTaskListsButton.setPrefSize(25, 25);
+        deleteTaskListsButton.setFont(new Font(19));
+        deleteTaskListsButton.setId("deleteTaskListsButton");
+
+        textField.setPrefSize(180, 25);
+        textField.setLayoutX(0);
+        textField.setLayoutY(0);
+        textField.setAlignment(javafx.geometry.Pos.CENTER);
+        textField.setFont(new Font(19));
+        textField.setText("Name your list!");
+        ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
+        scrollPane.setPrefSize(samplePane.getPrefWidth(), samplePane.getPrefHeight());
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setLayoutX(0);
+        scrollPane.setLayoutY(50);
+        scrollPane.setId("sPaneListView");
+
+    }
     /**
      * Method for adding a TaskButton, used when creating a taskList, it creates new tasks
      * @param listView the listview
@@ -194,7 +213,7 @@ public class BoardOverviewCtrl {
     public void hoverOverDeleteButton(Button deleteTaskListsButton){
         deleteTaskListsButton.setOnMouseEntered(e -> deleteTaskListsButton.setStyle("-fx-background-color: pink;"));
 
-        deleteTaskListsButton.setOnMouseExited(e -> deleteTaskListsButton.setStyle(null));
+        deleteTaskListsButton.setOnMouseExited(e -> deleteTaskListsButton.setStyle("-fx-background-color: transparent;"));
     }
 
     /**

@@ -48,3 +48,24 @@
     -fx-background-color: #0b5ed7;
     -fx-border-color: #0a58ca;
 }
+
+#listName1 {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-border-radius: 3px;
+}
+
+#taskList1 {
+    -fx-background-color: rgba(255, 241, 215, 0.71);
+    -fx-border-color: #2f58cd;
+    -fx-border-width: 2px;
+}
+
+#deleteTaskListsButton {
+    -fx-background-color: transparent;
+    -fx-text-fill: RED;
+}
+
+#sPaneListView {
+    -fx-background-color: transparent;
+}
