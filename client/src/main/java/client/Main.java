@@ -19,12 +19,12 @@ import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import client.scenes.BoardOverviewCtrl;
-import client.scenes.LandingPageCtrl;
-import client.scenes.MainCtrl;
+
+import client.scenes.*;
 import com.google.inject.Injector;
 
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -43,8 +43,11 @@ public class Main extends Application {
 //        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
         var landing = FXML.load(LandingPageCtrl.class, "client", "scenes", "LandingPage.fxml");
         var board = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "BoardOverview.fxml");
-
+        var userMenu = FXML.load(UserMenuCtrl.class,"client","scenes","UserMenu.fxml");
+        var boardCreate = FXML.load(BoardCreateCtrl.class,"client","scenes","BoardCreate.fxml");
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, landing, board);
+        mainCtrl.initialize(primaryStage, landing, board,userMenu,boardCreate);
+
+
     }
 }
