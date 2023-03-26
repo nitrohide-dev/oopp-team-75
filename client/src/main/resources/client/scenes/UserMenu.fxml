@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.UserMenuCtrl">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
   <children>
-      <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="163.0" prefWidth="900.0">
+      <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="119.0" prefWidth="900.0">
         <items>
-          <Button mnemonicParsing="false" text="Back" />
-            <Separator prefWidth="596.0" visible="false" />
+          <Button mnemonicParsing="false" text="Button" />
+            <Separator prefHeight="120.0" prefWidth="620.0" visible="false" />
             <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/Logo.png" />
@@ -46,22 +54,22 @@
                   </Label>
                   <Button alignment="CENTER" contentDisplay="CENTER" layoutX="138.0" layoutY="179.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="245.0" text="Join board">
                      <font>
-                        <Font size="25.0" />
+                        <Font size="30.0" />
                      </font>
                   </Button>
-                  <Button fx:id="createBoard" layoutX="138.0" layoutY="303.0" mnemonicParsing="false" onAction="#createBoard" prefHeight="55.0" prefWidth="245.0" text="Create board ">
+                  <Button layoutX="138.0" layoutY="303.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="245.0" text="Create board ">
                      <font>
-                        <Font size="25.0" />
+                        <Font size="30.0" />
                      </font>
                   </Button>
-                  <Button alignment="CENTER" contentDisplay="CENTER" layoutX="138.0" layoutY="367.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="245.0" text="Admin login">
+                  <Button layoutX="138.0" layoutY="367.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="245.0" text="Admin login">
                      <font>
-                        <Font size="25.0" />
+                        <Font size="30.0" />
                      </font>
                   </Button>
                   <TextField alignment="TOP_LEFT" layoutX="138.0" layoutY="113.0" prefWidth="245.0" promptText="Enter board ID:">
                      <font>
-                        <Font size="25.0" />
+                        <Font size="30.0" />
                      </font>
                   </TextField>
                </children>
