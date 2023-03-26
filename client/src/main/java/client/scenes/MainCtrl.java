@@ -75,7 +75,7 @@ public class MainCtrl {
         primaryStage.setTitle("Board: Your Board");
         primaryStage.setMaximized(true);
         primaryStage.setMinWidth(750);
-        primaryStage.setMinHeight(550);
+        primaryStage.setMinHeight(600);
         //this fixes a bug where the maximized window will be opened in pref size.
         //but it causes a bug where the window is not properly set, so the buttons on the right side are not visible
         //TODO fix this bug

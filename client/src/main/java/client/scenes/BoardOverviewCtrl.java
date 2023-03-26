@@ -65,6 +65,10 @@ public class BoardOverviewCtrl {
     private ImageView logo1;
     @FXML
     private ImageView exitButton;
+    @FXML
+    private ImageView lockButton;
+    @FXML
+    private ImageView dropDownMenu;
 
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -431,8 +435,12 @@ public class BoardOverviewCtrl {
         // Set the image URL of ImageView
         String path = Path.of("", "client", "images", "Logo.png").toString();
         String path2 = Path.of("", "client", "images", "ExitButton.png").toString();
+        String path3 = Path.of("", "client", "images", "Dots.png").toString();
+        String path4 = Path.of("", "client", "images", "lockUnlocked.png").toString();
         logo1.setImage(new Image(path));
         exitButton.setImage(new Image(path2));
+        dropDownMenu.setImage(new Image(path3));
+        lockButton.setImage(new Image(path4));
     }
 }
 
