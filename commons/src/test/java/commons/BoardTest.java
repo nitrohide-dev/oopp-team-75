@@ -1,125 +1,179 @@
 package commons;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BoardTest {
 
-    @Test
-    void validateKeyInvalid() {
-        assertFalse(Board.validateKey(System.lineSeparator()));
-        assertFalse(Board.validateKey(null));
+    private Board board;
+
+    @BeforeEach
+    void setup() {
+        board = new Board("a", "a", "a", new ArrayList<>());
     }
 
     @Test
-    void validateKeyValid() {
-        assertTrue(Board.validateKey("abc"));
-        assertTrue(Board.validateKey("123"));
+    void constructor1() {
+        Board board = new Board();
+        assertNull(board.getKey()); // not initialized
+        assertNull(board.getPassword()); // not initialized
+        assertNull(board.getTitle()); // not initialized
+        assertNull(board.getTaskLists()); // not initialized
     }
 
     @Test
-    void generateKeyWithLen() {
-        String str = Board.generateKey(new Random(7), 8);
-        assertEquals(8, str.length());
-        assertTrue(Board.validateKey(str));
+    void constructor2() {
+        Board board = new Board("Hello");
+        assertEquals("Hello", board.getKey()); // initialized by constructor parameter
+        assertNotNull(board.getPassword()); // initialized to default value
+        assertNotNull(board.getTitle()); // initialized to default value
+        assertNotNull(board.getTaskLists()); // initialized to default value
     }
 
     @Test
-    void generateKeyWithoutLen() {
-        String str = Board.generateKey(new Random(7));
-        assertEquals(Board.MAX_KEY_LENGTH, str.length());
-        assertTrue(Board.validateKey(str));
+    void constructor3() {
+        Board board = new Board(new CreateBoardModel("a", "a", "a"));
+        assertEquals("a", board.getKey()); // initialized by constructor parameter
+        assertEquals("a", board.getPassword()); // initialized by constructor parameter
+        assertEquals("a", board.getTitle()); // initialized by constructor parameter
+        assertNotNull(board.getTaskLists()); // initialized to default value
+    }
+
+    @Test
+    void constructor4() {
+        Board board = new Board("a", "a", "a", new ArrayList<>());
+        assertEquals("a", board.getKey()); // initialized by constructor parameter
+        assertEquals("a", board.getPassword()); // initialized by constructor parameter
+        assertEquals("a", board.getTitle()); // initialized by constructor parameter
+        assertEquals(new ArrayList<>(), board.getTaskLists()); // initialized by constructor parameter
     }
 
     @Test
     void getKey() {
-        Board board = new Board("abc", "cbd", false);
-        assertEquals(board.getKey(), "cbd");
+        assertEquals("a", board.getKey());
+        assertNotEquals("b", board.getKey());
     }
 
     @Test
     void setKey() {
-        Board board = new Board("abc", "cbd", false);
-        board.setKey("def");
-        assertEquals(board.getKey(), "def");
+        board.setKey("b");
+        assertNotEquals("a", board.getKey());
+        assertEquals("b", board.getKey());
     }
 
     @Test
     void getTitle() {
-        Board board = new Board("abc", "cbd", false);
-        assertEquals(board.getTitle(), "abc");
+        assertEquals("a", board.getTitle());
+        assertNotEquals("b", board.getTitle());
     }
 
     @Test
     void setTitle() {
-        Board board = new Board("abc", "cbd", false);
-        board.setTitle("dee ee eff");
-        assertEquals(board.getTitle(), "dee ee eff");
+        board.setTitle("b");
+        assertNotEquals("a", board.getTitle());
+        assertEquals("b", board.getTitle());
+    }
+
+    @Test
+    void getPassword() {
+        assertEquals("a", board.getPassword());
+        assertNotEquals("b", board.getPassword());
+    }
+
+    @Test
+    void setPassword() {
+        board.setPassword("b");
+        assertNotEquals("a", board.getPassword());
+        assertEquals("b", board.getPassword());
     }
 
     @Test
     void getTaskLists() {
-        Board board = new Board("abc", "cbd", false);
-        assertEquals(board.getTaskLists(), new ArrayList<>());
+        List<TaskList> goodList = new ArrayList<>();
+        List<TaskList> naughtyList = new ArrayList<>();
+        naughtyList.add(null);
+        assertEquals(goodList, board.getTaskLists());
+        assertNotEquals(naughtyList, board.getTaskLists());
     }
 
     @Test
     void setTaskLists() {
-        Board board = new Board("abc", "cbd", false);
-        List<TaskList> list = new ArrayList<>();
-        board.setTaskLists(list);
-        list.add(new TaskList(board, "name"));
-        list.add(new TaskList(board, "name2"));
-        assertEquals(board.getTaskLists(), list);
+        List<TaskList> goodList = new ArrayList<>();
+        List<TaskList> naughtyList = new ArrayList<>();
+        goodList.add(null);
+        board.setTaskLists(goodList);
+        assertEquals(goodList, board.getTaskLists());
+        assertNotEquals(naughtyList, board.getTaskLists());
     }
 
     @Test
     void testEquals() {
-        Board a = new Board("abc", "thc", false);
-        Board b = new Board("abc", "cbd", false);
-        Board c = new Board("abc", "cbd", false);
-        assertEquals(a, a);
-        assertNotEquals(a, b);
-        assertEquals(b, c);
+        Board board1 = new Board("a", "a", "a", new ArrayList<>());
+        Board board2 = new Board("a", "a", "a", new ArrayList<>());
+        Board board3 = new Board("b", "a", "a", new ArrayList<>());
+        Board board4 = new Board("a", "b", "a", new ArrayList<>());
+        Board board5 = new Board("a", "a", "b", new ArrayList<>());
+        List<TaskList> naughtyList = new ArrayList<>();
+        naughtyList.add(null);
+        Board board6 = new Board("a", "a", "a", naughtyList);
+
+        assertEquals(board1, board1);
+        assertEquals(board1, board2);
+        assertNotEquals(board1, board3);
+        assertNotEquals(board1, board4);
+        assertNotEquals(board1, board5);
+        assertNotEquals(board1, board6);
+        assertNotEquals(null, board1);
     }
 
     @Test
     void testHashCode() {
-        Board a = new Board("abc", "thc", false);
-        Board b = new Board("abc", "cbd", false);
-        Board c = new Board("abc", "cbd", false);
-        assertEquals(a.hashCode(), a.hashCode());
-        assertNotEquals(a.hashCode(), b.hashCode());
-        assertEquals(b.hashCode(), c.hashCode());
+        Board board1 = new Board("a", "a", "a", new ArrayList<>());
+        Board board2 = new Board("a", "a", "a", new ArrayList<>());
+        Board board3 = new Board("b", "a", "a", new ArrayList<>());
+        Board board4 = new Board("a", "b", "a", new ArrayList<>());
+        Board board5 = new Board("a", "a", "b", new ArrayList<>());
+        List<TaskList> naughtyList = new ArrayList<>();
+        naughtyList.add(null);
+        Board board6 = new Board("a", "a", "a", naughtyList);
+
+        assertEquals(board1.hashCode(), board1.hashCode());
+        assertEquals(board1.hashCode(), board2.hashCode());
+        assertNotEquals(board1.hashCode(), board3.hashCode());
+        assertNotEquals(board1.hashCode(), board4.hashCode());
+        assertNotEquals(board1.hashCode(), board5.hashCode());
+        assertNotEquals(board1.hashCode(), board6.hashCode());
     }
 
     @Test
     void createTaskList() {
-        Board a = new Board("abc", "cbd", false);
-        a.createTaskList("name");
-        a.createTaskList("name2");
-        assertEquals(a.getTaskLists().size(), 2);
+        TaskList tl1 = board.createTaskList();
+        assertEquals(1, board.getTaskLists().size());
+        assertEquals(board, tl1.getBoard());
+        TaskList tl2 = board.createTaskList();
+        assertEquals(2, board.getTaskLists().size());
+        assertEquals(board, tl2.getBoard());
     }
 
     @Test
     void removeTaskList() {
-        Board a = new Board("abc", "cbd", false);
-        a.createTaskList("name");
-        TaskList b = a.createTaskList("name2");
-        TaskList c = a.createTaskList("name3");
-        a.removeTaskList(b);
-        assertNull(b.getBoard());
-        assertEquals(2, a.getTaskLists().size());
-        assertEquals(c, a.getTaskLists().get(1));
+        TaskList tl1 = board.createTaskList();
+        TaskList tl2 = board.createTaskList();
+        board.removeTaskList(tl1);
+        assertEquals(1, board.getTaskLists().size());
+        assertEquals(null, tl1.getBoard());
+        board.removeTaskList(tl2);
+        assertEquals(0, board.getTaskLists().size());
+        assertEquals(null, tl2.getBoard());
+        assertThrows(IllegalArgumentException.class, () -> board.removeTaskList(null));
     }
-
 }
