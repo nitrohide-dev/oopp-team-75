@@ -36,6 +36,8 @@ import java.util.Optional;
 
 
 public class BoardOverviewCtrl {
+    private final ServerUtils server;
+    private final MainCtrl mainCtrl;
     @FXML
     public Group group;
     @FXML
@@ -75,7 +77,9 @@ public class BoardOverviewCtrl {
 
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
-        this.allLists = new HashMap<ListView<HBox>, String>();
+        this.mainCtrl = mainCtrl;
+        this.server = server;
+        this.allLists = new HashMap<>();
     }
 
     /**

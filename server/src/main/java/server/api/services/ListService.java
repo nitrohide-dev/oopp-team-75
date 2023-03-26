@@ -48,7 +48,7 @@ public class ListService {
 	public TaskList createList(CreateListModel model) throws CannotCreateList {
 		Board board = model.board;
 		boolean usedName = board.getTaskLists().stream()
-			.map(list -> list.getTitle())
+			.map(TaskList::getTitle)
 			.anyMatch(title -> title.equals(model.name));
 		if (usedName) {
 			throw new CannotCreateList("This list is already in the board.");

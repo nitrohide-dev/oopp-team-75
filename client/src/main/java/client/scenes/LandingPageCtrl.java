@@ -8,12 +8,15 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 
 import java.nio.file.Path;
 
 public class LandingPageCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    @FXML
+    public HBox header;
     @FXML
     private TextField server_ip;
     @FXML
