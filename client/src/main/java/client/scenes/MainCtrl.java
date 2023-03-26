@@ -23,6 +23,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.io.IOException;
 import java.net.SocketException;
 
 public class MainCtrl {
@@ -52,7 +53,7 @@ public class MainCtrl {
 //                           Pair<AddQuoteCtrl, Parent> add,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                             Pair<UserMenuCtrl, Parent> userMenu,
-                           Pair<BoardCreateCtrl, Parent> boardCreate) throws SocketException {
+                           Pair<BoardCreateCtrl, Parent> boardCreate) throws IOException {
         this.primaryStage = primaryStage;
         this.landingCtrl = landing.getKey();
         this.landing = new Scene(landing.getValue());
@@ -71,11 +72,15 @@ public class MainCtrl {
         this.boardCreateCtrl = boardCreate.getKey();
         this.boardCreate = new Scene(boardCreate.getValue());
         //showLanding();
+
+        this.user = new User();
+        user.readFromCsv();
+        System.out.println(user.getBoards());
         showUserMenu();
         primaryStage.show();
 
-        user=new User();
-        user.test();
+
+
 
     }
 
@@ -121,5 +126,15 @@ public class MainCtrl {
         create.initModality(Modality.APPLICATION_MODAL);
         create.showAndWait();
     }
+    public void addBoardToDatabase(String name, int password){
+        user.addBoard(name,password);
+    }
 
+    public void saveData() throws IOException {
+        user.writeToCsv();
+    }
+
+    public User getUser(){
+        return user;
+    }
 }

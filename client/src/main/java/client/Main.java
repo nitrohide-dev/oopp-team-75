@@ -31,6 +31,7 @@ public class Main extends Application {
 
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
+    private static MainCtrl mainCtrl;
 
     public static void main(String[] args) throws URISyntaxException, IOException {
         launch();
@@ -45,9 +46,18 @@ public class Main extends Application {
         var board = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "BoardOverview.fxml");
         var userMenu = FXML.load(UserMenuCtrl.class,"client","scenes","UserMenu.fxml");
         var boardCreate = FXML.load(BoardCreateCtrl.class,"client","scenes","BoardCreate.fxml");
-        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
+        mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, landing, board,userMenu,boardCreate);
 
+
+    }
+@Override
+    public void stop(){
+        try {
+            mainCtrl.getUser().writeToCsv();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }

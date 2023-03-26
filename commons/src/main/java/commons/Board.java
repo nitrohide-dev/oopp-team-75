@@ -10,6 +10,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OrderColumn;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -72,6 +73,9 @@ public class Board {
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
     private String title;
 
+    @Column
+    private int password;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "board", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
     @OrderColumn
@@ -92,6 +96,15 @@ public class Board {
         this.title = title;
         this.taskLists = new ArrayList<>();
         this.locked = locked;
+        this.password =0;
+    }
+
+    public Board(String title, String key, boolean locked,int password) {
+        this.key = key;
+        this.title = title;
+        this.taskLists = new ArrayList<>();
+        this.locked = locked;
+        this.password = password;
     }
 
 //    getters and setters
@@ -119,6 +132,8 @@ public class Board {
     public void setTaskLists(List<TaskList> taskLists) {
         this.taskLists = taskLists;
     }
+
+    public void setPassword(int password){this.password=password;}
 
 //    equals and hashcode
 
