@@ -160,4 +160,8 @@ public class Board {
             throw new IllegalArgumentException("TaskList not in Board");
         taskList.setBoard(null);
     }
+
+    public boolean isLocked(){
+        return locked;
+    }
 }
