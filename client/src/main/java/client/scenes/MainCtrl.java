@@ -16,13 +16,18 @@
 package client.scenes;
 
 import commons.Board;
+import commons.User;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.net.SocketException;
+
 public class MainCtrl {
 
+    private User user;
     private Stage primaryStage;
     private LandingPageCtrl landingCtrl;
     private Scene landing;
@@ -37,10 +42,17 @@ public class MainCtrl {
     private Scene boardOverview;
 
     private Board currBoard;
+    private Scene userMenu;
+    private UserMenuCtrl userMenuCtrl;
+    private Scene boardCreate;
+    private BoardCreateCtrl boardCreateCtrl;
+
 
     public void initialize(Stage primaryStage, Pair<LandingPageCtrl, Parent> landing,
 //                           Pair<AddQuoteCtrl, Parent> add,
-                           Pair<BoardOverviewCtrl, Parent> boardOverview) {
+                           Pair<BoardOverviewCtrl, Parent> boardOverview,
+                            Pair<UserMenuCtrl, Parent> userMenu,
+                           Pair<BoardCreateCtrl, Parent> boardCreate) throws SocketException {
         this.primaryStage = primaryStage;
         this.landingCtrl = landing.getKey();
         this.landing = new Scene(landing.getValue());
@@ -53,8 +65,18 @@ public class MainCtrl {
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
-        showLanding();
+        this.userMenuCtrl = userMenu.getKey();
+        this.userMenu = new Scene(userMenu.getValue());
+
+        this.boardCreateCtrl = boardCreate.getKey();
+        this.boardCreate = new Scene(boardCreate.getValue());
+        //showLanding();
+        showUserMenu();
         primaryStage.show();
+
+        user=new User();
+        user.test();
+
     }
 
     public Board getCurrBoard() {
@@ -88,4 +110,16 @@ public class MainCtrl {
         primaryStage.setScene(add);
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
+
+    public void showUserMenu(){
+        primaryStage.setScene(userMenu);
+    }
+
+    public void createBoard(){
+    Stage create = new Stage();
+    create.setScene(boardCreate);
+        create.initModality(Modality.APPLICATION_MODAL);
+        create.showAndWait();
+    }
+
 }
