@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardOverviewCtrl">
    <top>
@@ -52,16 +53,25 @@
    </top>
    <center>
       <ScrollPane fx:id="scrollPaneMain" fitToHeight="true" fitToWidth="true" pickOnBounds="false" style="-fx-background-color: #2f58cd;">
-         <AnchorPane fx:id="anchorPaneMain" pickOnBounds="false" prefHeight="500.0" prefWidth="750.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
-            <Button layoutX="701.0" layoutY="14.0" mnemonicParsing="false" onAction="#createTaskList" text="+" AnchorPane.rightAnchor="31.0" />
+         <AnchorPane fx:id="anchorPaneMain" pickOnBounds="false" prefHeight="500.0" prefWidth="750.0" style="-fx-background-color: #3795bd;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+            <Button layoutX="701.0" layoutY="14.0" mnemonicParsing="false" onAction="#createTaskList" style="-fx-background-color: white;" text="+" textAlignment="CENTER" textOverrun="CLIP" AnchorPane.rightAnchor="31.0">
+               <font>
+                  <Font name="Roboto" size="15.0" />
+               </font></Button>
 
             <HBox fx:id="listContainer" prefHeight="100.0" prefWidth="200.0" spacing="40.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0">
                <Group fx:id="group" nodeOrientation="LEFT_TO_RIGHT">
-                  <TextField fx:id="listName1" alignment="CENTER" prefHeight="25.0" prefWidth="205.0" text="List 1" />
+                  <TextField fx:id="listName1" alignment="CENTER" prefHeight="25.0" prefWidth="205.0" style="-fx-background-color: white;" text="List 1">
+                     <font>
+                        <Font size="19.0" />
+                     </font></TextField>
                   <ScrollPane hbarPolicy="NEVER" layoutY="60.0" prefHeight="348.0" prefWidth="205.0">
-                     <ListView fx:id="taskList1" editable="true" fixedCellSize="35.0" prefHeight="346.0" prefWidth="204.0" />
+                     <ListView fx:id="taskList1" editable="true" fixedCellSize="35.0" prefHeight="346.0" prefWidth="204.0" style="-fx-background-color: rgba(255, 241, 215, 0.3);" />
                   </ScrollPane>
-                  <Button fx:id="deleteTaskListsButton" layoutX="191.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="x" />
+                  <Button fx:id="deleteTaskListsButton" layoutX="166.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: transparent; -fx-label-padding: 0 0 0 0;" text="X" textFill="RED">
+                     <font>
+                        <Font size="19.0" />
+                     </font></Button>
                </Group>
             </HBox>
 
