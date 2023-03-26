@@ -7,32 +7,22 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.layout.Priority;
+import javafx.stage.Stage;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 
 public class BoardOverviewCtrl {
@@ -198,10 +188,15 @@ public class BoardOverviewCtrl {
     public void setDeleteAction(Button deleteTaskListsButton, String taskListName){
         deleteTaskListsButton.setOnAction(e -> {
             Group parentGroup = (Group) deleteTaskListsButton.getParent();
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Delete Confirmation Dialog");
             alert.setHeaderText("Delete TaskList");
             alert.setContentText("Are you sure you want to delete '"+taskListName+"'?");
+            //add css to dialog pane
+            alert.getDialogPane().getStylesheets().add(
+                    Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
+            //make preferred size bigger
+            alert.getDialogPane().setPrefSize(400, 200);
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK){
@@ -293,6 +288,10 @@ public class BoardOverviewCtrl {
                 Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
         //make preferred size bigger
         input.getDialogPane().setPrefSize(400, 200);
+        //trying to add icon to dialog
+        String path = Path.of("", "client", "images", "Logo.png").toString();
+        Stage stage = (Stage) input.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(path));
 
         input.showAndWait();
         return input.getEditor().getText();
