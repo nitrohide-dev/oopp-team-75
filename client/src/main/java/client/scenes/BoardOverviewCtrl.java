@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
-import commons.CreateBoardModel;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -57,10 +56,8 @@ public class BoardOverviewCtrl {
 
     private long boardKey;
     private Map<ListView, String> allLists; // Stores all task lists
-    private Map<ListView, TaskList> listMap; // Stores all task lists
-    private Map<HBox, Task> taskMap; // Stores all tasks
-    private Board board;
-    private long boardTime;
+    private final Map<ListView, TaskList> listMap; // Stores all task lists
+    private final Map<HBox, Task> taskMap; // Stores all tasks
 
     @FXML
     private ScrollPane scrollPaneMain;
@@ -76,10 +73,6 @@ public class BoardOverviewCtrl {
         this.listMap = new HashMap();
         this.taskMap = new HashMap();
         this.board = mainCtrl.getCurrBoard();
-    }
-
-    public ServerUtils getServer() {
-        return server;
     }
 
     /**
@@ -100,27 +93,35 @@ public class BoardOverviewCtrl {
         //initializes the addTask button
         taskList1.setOnMouseClicked(e -> taskOperations(taskList1));
         addTaskButton(taskList1);
+    }
 
-//         gets board from the database, or creates one if it doesnt exist
-//        board = server.findBoard(boardKey);
-//        if (board == null)
-//            board = server.createBoard(new CreateBoardModel(boardKey, "a", 0));
-//        refresh(board);
-
-        // connects to /topic/boards
+    /**
+     * Connects to the server for automatic refreshing.
+     */
+    public void connect() {
         server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
     }
 
     /**
-     * Updates the board to show the changes that have been made(Experimental)
+     * Updates the board to a new board, and regenerates the boardOverview,
+     * only if the new boards key is equal to the previous boards key (i.e.
+     * only new versions of the same board are accepted).
+     * @param board the board to refresh to.
      */
     public void refresh(Board board) {
+        mainCtrl.setCurrBoard(board);
+        load(board);
+    }
 
-        // sets current board to board
-        this.board = board;
-
-        // removes all lists
+    /**
+     * Clears the previous boardOverview, and generates a new one from a given board.
+     * @param board the board set the boardOverview to
+     */
+    public void load(Board board) {
+        // removes all lists including their tasks
         listContainer.getChildren().clear();
+        listMap.clear();
+        taskMap.clear();
 
         // creates new lists
         List<TaskList> listOfLists = board.getTaskLists();
@@ -141,6 +142,15 @@ public class BoardOverviewCtrl {
         setDeleteAction(deleteTaskListsButton, listName1.getText(),taskList1);
         hoverOverDeleteButton(deleteTaskListsButton);
     }
+
+    /**
+     * Shortened variant to make access to the board easier.
+     * @return the current board
+     */
+    public Board getBoard() {
+        return mainCtrl.getCurrBoard();
+    }
+
 //Deleted Scrolling, implemented using ScrollPane
     /**
      * Connects the initial list to its name
@@ -156,9 +166,9 @@ public class BoardOverviewCtrl {
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
      */
     public ListView<HBox> createTaskList() {
-        TaskList taskList = board.createTaskList();
+        TaskList taskList = getBoard().createTaskList();
         ListView<HBox> list = addTaskList(taskList);
-        server.updateBoard(board); // updates server
+        server.updateBoard(getBoard()); // updates server
         return list;
     }
 
@@ -252,8 +262,8 @@ public class BoardOverviewCtrl {
             if (result.isPresent() && result.get() == ButtonType.OK){
                 listContainer.getChildren().remove(parentGroup); // remove parent group from HBox
                 TaskList list1 = listMap.get(list);
-                board.removeTaskList(list1);
-                server.updateBoard(board); // updates server
+                getBoard().removeTaskList(list1);
+                server.updateBoard(getBoard()); // updates server
             }
         });
     }
@@ -284,7 +294,7 @@ public class BoardOverviewCtrl {
         Task task1 = listMap.get(list).createTask();
         task1.setTitle(name);
         HBox task = addTask(name, list,task1);
-        server.updateBoard(board); // updates server
+        server.updateBoard(getBoard()); // updates server
         return task;
     }
     public HBox addTask(String name, ListView<HBox> list,Task task1) {
@@ -409,7 +419,7 @@ public class BoardOverviewCtrl {
         ((Label) task.getChildren().get(0)).setText(name);
         Task task1 = taskMap.get(task);
         task1.setTitle(name);
-        server.updateBoard(board); // updates server
+        server.updateBoard(getBoard()); // updates server
     }
 
     /**
@@ -427,7 +437,7 @@ public class BoardOverviewCtrl {
         Task task1 = taskMap.get(task);
         list1.removeTask(task1);
         list.getItems().remove(task);
-        server.updateBoard(board); // updates server
+        server.updateBoard(getBoard()); // updates server
     }
 
 //    /**

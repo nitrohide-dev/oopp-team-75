@@ -93,6 +93,10 @@ public class MainCtrl {
         return currBoard;
     }
 
+    public void setCurrBoard(Board board) {
+        currBoard = board;
+    }
+
     public void showOverview() {
         primaryStage.setTitle("Quotes: Overview");
         primaryStage.setScene(overview);
@@ -113,6 +117,9 @@ public class MainCtrl {
         currBoard = board;
         primaryStage.setTitle("Board: Your Board");
         primaryStage.setScene(boardOverview);
+        boardOverviewCtrl.load(board);
+        boardOverviewCtrl.connect();
+        // connects to /topic/boards
     }
 
     public void showAdd() {
