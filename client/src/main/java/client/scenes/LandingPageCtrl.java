@@ -31,9 +31,11 @@ public class LandingPageCtrl {
 
     public void connect(){
         var q = server_ip.getText();
-        long id = 1; //hardcoded id, should extract it from somewhere
-        Board board = server.getBoard(id);
-        mainCtrl.showBoard(board);
+        //long id = 1; //hardcoded id, should extract it from somewhere
+        //Board board = server.getBoard(id);
+        //mainCtrl.showBoard(board);
+
+        mainCtrl.showUserMenu();
         //need to implement backend, hardcoded it for now
         clearFields();
     }

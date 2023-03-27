@@ -37,12 +37,12 @@ public class BoardCreateCtrl  {
                 if (isPasswordEnabled && !password.isEmpty()) {
                     // Close the stage if board name and password are entered
                     Stage stage = (Stage) createButton.getScene().getWindow();
-                    mainCtrl.addBoardToDatabase(boardName,password.hashCode());
+                    mainCtrl.createBoard(boardName,password.hashCode());
                     stage.close();
                 } else if (!isPasswordEnabled) {
                     // Close the stage if board name is entered and password is not required
                     Stage stage = (Stage) createButton.getScene().getWindow();
-                    mainCtrl.addBoardToDatabase(boardName,0);
+                    mainCtrl.createBoard(boardName,0);
                     stage.close();
                 } else {
                     // Show an error message if password is required but not entered

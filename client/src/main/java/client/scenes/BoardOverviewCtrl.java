@@ -40,7 +40,6 @@ import java.util.Optional;
 public class BoardOverviewCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    private static final String boardKey = "a";
 
     @FXML
     private ListView<HBox> taskList1;
@@ -56,6 +55,7 @@ public class BoardOverviewCtrl {
 
     private Group sampleGroup;
 
+    private long boardKey;
     private Map<ListView, String> allLists; // Stores all task lists
     private Map<ListView, TaskList> listMap; // Stores all task lists
     private Map<HBox, Task> taskMap; // Stores all tasks
@@ -75,6 +75,7 @@ public class BoardOverviewCtrl {
         this.allLists = new HashMap();
         this.listMap = new HashMap();
         this.taskMap = new HashMap();
+        this.board = mainCtrl.getCurrBoard();
     }
 
     public ServerUtils getServer() {
@@ -100,11 +101,11 @@ public class BoardOverviewCtrl {
         taskList1.setOnMouseClicked(e -> taskOperations(taskList1));
         addTaskButton(taskList1);
 
-        // gets board from the database, or creates one if it doesnt exist
-        board = server.findBoard(boardKey);
-        if (board == null)
-            board = server.createBoard(new CreateBoardModel(boardKey, "a", "a"));
-        refresh(board);
+//         gets board from the database, or creates one if it doesnt exist
+//        board = server.findBoard(boardKey);
+//        if (board == null)
+//            board = server.createBoard(new CreateBoardModel(boardKey, "a", 0));
+//        refresh(board);
 
         // connects to /topic/boards
         server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));

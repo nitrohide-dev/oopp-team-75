@@ -62,15 +62,15 @@ class CreateBoardModelTest {
 
     @Test
     void getPassword() {
-        assertEquals("a", model.getPassword());
-        assertNotEquals("b", model.getPassword());
+        assertEquals("a".hashCode(), model.getPassword());
+        assertNotEquals("b".hashCode(), model.getPassword());
     }
 
     @Test
     void setPassword() {
-        model.setPassword("b");
-        assertNotEquals("a", model.getPassword());
-        assertEquals("b", model.getPassword());
+        model.setPassword("b".hashCode());
+        assertNotEquals("a".hashCode(), model.getPassword());
+        assertEquals("b".hashCode(), model.getPassword());
     }
 
     @Test

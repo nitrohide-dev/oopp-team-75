@@ -26,7 +26,8 @@ import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
-
+import client.scenes.UserMenuCtrl;
+import client.scenes.BoardCreateCtrl;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -59,7 +60,7 @@ public class Main extends Application {
 @Override
     public void stop(){
         try {
-            mainCtrl.getUser().writeToCsv();
+            mainCtrl.closingApp();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

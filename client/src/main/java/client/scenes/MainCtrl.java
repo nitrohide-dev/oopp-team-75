@@ -15,7 +15,10 @@
  */
 package client.scenes;
 
+import client.utils.ServerUtils;
+import com.google.inject.Inject;
 import commons.Board;
+import commons.CreateBoardModel;
 import commons.User;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -27,8 +30,8 @@ import java.io.IOException;
 import java.net.SocketException;
 
 public class MainCtrl {
+    private ServerUtils server;
 
-    private User user;
     private Stage primaryStage;
     private LandingPageCtrl landingCtrl;
     private Scene landing;
@@ -48,6 +51,10 @@ public class MainCtrl {
     private Scene boardCreate;
     private BoardCreateCtrl boardCreateCtrl;
 
+    @Inject
+    public MainCtrl(ServerUtils server){
+        this.server = server;
+    }
 
     public void initialize(Stage primaryStage, Pair<LandingPageCtrl, Parent> landing,
 //                           Pair<AddQuoteCtrl, Parent> add,
@@ -66,17 +73,15 @@ public class MainCtrl {
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
+
         this.userMenuCtrl = userMenu.getKey();
         this.userMenu = new Scene(userMenu.getValue());
 
         this.boardCreateCtrl = boardCreate.getKey();
         this.boardCreate = new Scene(boardCreate.getValue());
-        //showLanding();
+        showLanding();
 
-        this.user = new User();
-        user.readFromCsv();
-        System.out.println(user.getBoards());
-        showUserMenu();
+
         primaryStage.show();
 
 
@@ -120,21 +125,25 @@ public class MainCtrl {
         primaryStage.setScene(userMenu);
     }
 
-    public void createBoard(){
-    Stage create = new Stage();
-    create.setScene(boardCreate);
+
+    public void showBoardCreate(){
+        Stage create = new Stage();
+        create.setScene(boardCreate);
         create.initModality(Modality.APPLICATION_MODAL);
         create.showAndWait();
-    }
-    public void addBoardToDatabase(String name, int password){
-        user.addBoard(name,password);
+
     }
 
-    public void saveData() throws IOException {
-        user.writeToCsv();
+    public void createBoard(String name, int password){
+        userMenuCtrl.addBoardToList(name,password);
+        server.createBoard(new CreateBoardModel(name,name,password));
+        showUserMenu();
     }
 
-    public User getUser(){
-        return user;
+    public void closingApp() throws IOException {
+        userMenuCtrl.getUser().writeToCsv();
     }
+
+
+
 }

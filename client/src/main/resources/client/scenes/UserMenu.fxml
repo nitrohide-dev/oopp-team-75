@@ -28,7 +28,7 @@
                <children>
                   <ScrollPane layoutX="53.0" layoutY="102.0" prefHeight="343.0" prefWidth="263.0">
                      <content>
-                        <ListView prefHeight="341.0" prefWidth="261.0" />
+                        <ListView prefHeight="341.0" prefWidth="261.0" fx:id="boardsListView"/>
                      </content></ScrollPane>
                   <Label layoutX="53.0" layoutY="55.0" prefHeight="34.0" prefWidth="263.0" text="Your boards:">
                      <font>

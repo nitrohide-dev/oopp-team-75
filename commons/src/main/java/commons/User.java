@@ -5,11 +5,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.*;
 import java.net.NetworkInterface;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 import java.net.SocketException;
-import java.util.List;
+
 public class User {
 
 
@@ -32,15 +30,16 @@ public class User {
             dir.mkdirs();
         }
         File file = new File(dir, "data.csv");
+        if(file.exists()){file.delete();}
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(this.getBoards().toString());
         }
     }
 
 
-    public void readFromCsv() throws IOException {
-        if(isFirstTime()) return;
-        System.out.println("not a virgin");
+    public List<String> readFromCsv() throws IOException {
+        List<String> boardNames=new ArrayList<>();
+        if(isFirstTime()) return boardNames;
         HashMap<String, Integer> data = new HashMap<>();
         File dir = new File(System.getProperty("user.home") + "/Documents/Talio/data.csv");
         try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
@@ -53,13 +52,14 @@ public class User {
 
                     String key = tokens[0].trim();
 
+                    boardNames.add(key);
                     int value = Integer.parseInt(tokens[1].trim());
                     data.put(key, value);
                 }
             }
         }
          this.setBoards(data);
-        System.out.println(data);
+        return boardNames;
     }
 
     public boolean isFirstTime() {
@@ -70,6 +70,7 @@ public class User {
         }
        return false;
     }
+
 
     public HashMap<String, Integer> getBoards() {
         return boards;

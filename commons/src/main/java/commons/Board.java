@@ -30,6 +30,7 @@ public class Board {
  @Column(nullable=false)
     private int password;
 
+    private boolean locked;
    
     @JsonManagedReference
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -40,29 +41,24 @@ public class Board {
 
     public Board() {} // for object mappers, please don't use.
 
-    public Board(String key) {
-        this(key, "", "", new ArrayList<>());
-    }
 
     public Board(CreateBoardModel model) {
         this(model.getKey(), model.getTitle(), model.getPassword(), new ArrayList<>());
     }
 
-   public Board(String title, String key, boolean locked,List<TaskList> taskLists) {
+   public Board(String title, String key, List<TaskList> taskLists) {
         this.key = key;
         this.title = title;
         this.taskLists = taskLists;
-        this.locked = locked;
         this.password =0;
     }
 
-        t
+
      
-    public Board(String title, String key, boolean locked,int password,List<TaskList> taskLists) {
+    public Board(String title, String key,int password,List<TaskList> taskLists) {
         this.key = key;
         this.title = title;
         this.taskLists = taskLists;
-        this.locked = locked;
         this.password = password;
     }
 
@@ -84,12 +80,8 @@ public class Board {
         this.title = title;
     }
 
-    public String getPassword() {
+    public int getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public List<TaskList> getTaskLists() {
@@ -130,7 +122,7 @@ public class Board {
     public int hashCode() {
         int result = key != null ? key.hashCode() : 0;
         result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + ( password);
         result = 31 * result + (taskLists != null ? taskLists.hashCode() : 0);
         return result;
     }
