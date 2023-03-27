@@ -31,7 +31,7 @@ public class LandingPageCtrl {
     }
 
     public void connect(){
-        String boardKey = "a";
+        //String boardKey = "a";
         // gets board from the database, or creates one if it doesn't exist
 //        Board board = server.findBoard(boardKey);
 //        if (board == null)

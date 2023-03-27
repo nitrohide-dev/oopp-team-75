@@ -123,6 +123,16 @@ public class UserMenuCtrl {
 
     public void joinBoard(){
         String name = textBox.getText();
+        Board board = server.findBoard(name);
+        if(name!=null){
+        if(board ==null){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Board does not exist.");
+            alert.showAndWait();
+        }
+        else{
+        mainCtrl.showBoard(board);
+        addHBoxToListView(name);
 
-    }
+        }
+    }}
 }

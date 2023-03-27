@@ -18,14 +18,14 @@ class BoardTest {
 
     @BeforeEach
     void setup() {
-        board = new Board("a", "a", "a", new ArrayList<>());
+        board = new Board("a", "a", 0, new ArrayList<>());
     }
 
     @Test
     void constructor1() {
         Board board = new Board();
         assertNull(board.getKey()); // not initialized
-        assertNull(board.getPassword()); // not initialized
+        assertEquals(board.getPassword(),0); // not initialized
         assertNull(board.getTitle()); // not initialized
         assertNull(board.getTaskLists()); // not initialized
     }
@@ -41,18 +41,18 @@ class BoardTest {
 
     @Test
     void constructor3() {
-        Board board = new Board(new CreateBoardModel("a", "a", "a"));
+        Board board = new Board(new CreateBoardModel("a", "a", 0));
         assertEquals("a", board.getKey()); // initialized by constructor parameter
-        assertEquals("a", board.getPassword()); // initialized by constructor parameter
+        assertEquals(0, board.getPassword()); // initialized by constructor parameter
         assertEquals("a", board.getTitle()); // initialized by constructor parameter
         assertNotNull(board.getTaskLists()); // initialized to default value
     }
 
     @Test
     void constructor4() {
-        Board board = new Board("a", "a", "a", new ArrayList<>());
+        Board board = new Board("a", "a", 0, new ArrayList<>());
         assertEquals("a", board.getKey()); // initialized by constructor parameter
-        assertEquals("a", board.getPassword()); // initialized by constructor parameter
+        assertEquals(0, board.getPassword()); // initialized by constructor parameter
         assertEquals("a", board.getTitle()); // initialized by constructor parameter
         assertEquals(new ArrayList<>(), board.getTaskLists()); // initialized by constructor parameter
     }
@@ -85,15 +85,15 @@ class BoardTest {
 
     @Test
     void getPassword() {
-        assertEquals("a", board.getPassword());
-        assertNotEquals("b", board.getPassword());
+        assertEquals(0, board.getPassword());
+        assertNotEquals(1, board.getPassword());
     }
 
     @Test
     void setPassword() {
-        board.setPassword("b");
-        assertNotEquals("a", board.getPassword());
-        assertEquals("b", board.getPassword());
+        board.setPassword(1);
+        assertNotEquals(0, board.getPassword());
+        assertEquals(1, board.getPassword());
     }
 
     @Test
@@ -117,14 +117,14 @@ class BoardTest {
 
     @Test
     void testEquals() {
-        Board board1 = new Board("a", "a", "a", new ArrayList<>());
-        Board board2 = new Board("a", "a", "a", new ArrayList<>());
-        Board board3 = new Board("b", "a", "a", new ArrayList<>());
-        Board board4 = new Board("a", "b", "a", new ArrayList<>());
-        Board board5 = new Board("a", "a", "b", new ArrayList<>());
+        Board board1 = new Board("a", "a", 0, new ArrayList<>());
+        Board board2 = new Board("a", "a", 0, new ArrayList<>());
+        Board board3 = new Board("b", "a", 0, new ArrayList<>());
+        Board board4 = new Board("a", "b", 0, new ArrayList<>());
+        Board board5 = new Board("a", "a", 1, new ArrayList<>());
         List<TaskList> naughtyList = new ArrayList<>();
         naughtyList.add(null);
-        Board board6 = new Board("a", "a", "a", naughtyList);
+        Board board6 = new Board("a", "a", 0, naughtyList);
 
         assertEquals(board1, board1);
         assertEquals(board1, board2);
@@ -137,14 +137,14 @@ class BoardTest {
 
     @Test
     void testHashCode() {
-        Board board1 = new Board("a", "a", "a", new ArrayList<>());
-        Board board2 = new Board("a", "a", "a", new ArrayList<>());
-        Board board3 = new Board("b", "a", "a", new ArrayList<>());
-        Board board4 = new Board("a", "b", "a", new ArrayList<>());
-        Board board5 = new Board("a", "a", "b", new ArrayList<>());
+        Board board1 = new Board("a", "a", 0, new ArrayList<>());
+        Board board2 = new Board("a", "a", 0, new ArrayList<>());
+        Board board3 = new Board("b", "a", 0, new ArrayList<>());
+        Board board4 = new Board("a", "b", 0, new ArrayList<>());
+        Board board5 = new Board("a", "a", 1, new ArrayList<>());
         List<TaskList> naughtyList = new ArrayList<>();
         naughtyList.add(null);
-        Board board6 = new Board("a", "a", "a", naughtyList);
+        Board board6 = new Board("a", "a", 0, naughtyList);
 
         assertEquals(board1.hashCode(), board1.hashCode());
         assertEquals(board1.hashCode(), board2.hashCode());

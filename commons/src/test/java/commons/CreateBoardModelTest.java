@@ -15,7 +15,7 @@ class CreateBoardModelTest {
 
     @BeforeEach
     void setup() {
-        model = new CreateBoardModel("a", "a", "a");
+        model = new CreateBoardModel("a", "a", 0);
     }
 
     @Test
@@ -23,15 +23,15 @@ class CreateBoardModelTest {
         CreateBoardModel model = new CreateBoardModel();
         assertNull(model.getKey());
         assertNull(model.getTitle());
-        assertNull(model.getPassword());
+        assertEquals(model.getPassword(),0);
     }
 
     @Test
     void constructor2() {
-        CreateBoardModel model = new CreateBoardModel("a", "a", "a");
+        CreateBoardModel model = new CreateBoardModel("a", "a", 0);
         assertEquals("a", model.getKey());
         assertEquals("a", model.getTitle());
-        assertEquals("a", model.getPassword());
+        assertEquals(0, model.getPassword());
     }
 
     @Test
@@ -62,26 +62,26 @@ class CreateBoardModelTest {
 
     @Test
     void getPassword() {
-        assertEquals("a".hashCode(), model.getPassword());
+        assertEquals(0, model.getPassword());
         assertNotEquals("b".hashCode(), model.getPassword());
     }
 
     @Test
     void setPassword() {
-        model.setPassword("b".hashCode());
-        assertNotEquals("a".hashCode(), model.getPassword());
+        model.setPassword(1);
+        assertNotEquals(0, model.getPassword());
         assertEquals("b".hashCode(), model.getPassword());
     }
 
     @Test
     void isValid() {
-        CreateBoardModel model1 = new CreateBoardModel("a", "a", "a");
-        CreateBoardModel model2 = new CreateBoardModel(null, "a", "a");
-        CreateBoardModel model3 = new CreateBoardModel("a", null, "a");
-        CreateBoardModel model4 = new CreateBoardModel("a", "a", null);
+        CreateBoardModel model1 = new CreateBoardModel("a", "a", 0);
+        CreateBoardModel model2 = new CreateBoardModel(null, "a", 0);
+        CreateBoardModel model3 = new CreateBoardModel("a", null, 0);
+        CreateBoardModel model4 = new CreateBoardModel("a", "a", 0);
         assertTrue(model1.isValid());
         assertFalse(model2.isValid());
         assertFalse(model3.isValid());
-        assertFalse(model4.isValid());
+        assertTrue(model4.isValid());
     }
 }
