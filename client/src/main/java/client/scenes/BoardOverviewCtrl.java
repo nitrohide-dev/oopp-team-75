@@ -72,7 +72,6 @@ public class BoardOverviewCtrl {
         this.allLists = new HashMap();
         this.listMap = new HashMap();
         this.taskMap = new HashMap();
-        this.board = mainCtrl.getCurrBoard();
     }
 
     /**

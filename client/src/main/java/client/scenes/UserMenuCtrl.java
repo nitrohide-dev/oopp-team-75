@@ -10,10 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -31,6 +28,9 @@ public class UserMenuCtrl {
     private final MainCtrl mainCtrl;
     @FXML
     public ListView<HBox> boardsListView;
+
+    @FXML
+    public TextField textBox;
 
     private List<String> boardNames;
     private User user;
@@ -119,5 +119,10 @@ public class UserMenuCtrl {
     public void removeBoardForUser(String name){
         user.deleteBoard(name);
         boardNames.remove(name);
+    }
+
+    public void joinBoard(){
+        String name = textBox.getText();
+
     }
 }

@@ -28,7 +28,7 @@
                <children>
                   <ScrollPane layoutX="53.0" layoutY="102.0" prefHeight="343.0" prefWidth="263.0">
                      <content>
-                        <ListView prefHeight="341.0" prefWidth="261.0" fx:id="boardsListView"/>
+                        <ListView fx:id="boardsListView" prefHeight="341.0" prefWidth="261.0" />
                      </content></ScrollPane>
                   <Label layoutX="53.0" layoutY="55.0" prefHeight="34.0" prefWidth="263.0" text="Your boards:">
                      <font>
@@ -44,7 +44,7 @@
                         <Font size="30.0" />
                      </font>
                   </Label>
-                  <Button alignment="CENTER" contentDisplay="CENTER" layoutX="138.0" layoutY="179.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="245.0" text="Join board">
+                  <Button alignment="CENTER" contentDisplay="CENTER" layoutX="138.0" layoutY="179.0" mnemonicParsing="false" onAction="#joinBoard" prefHeight="55.0" prefWidth="245.0" text="Join board">
                      <font>
                         <Font size="25.0" />
                      </font>
@@ -59,7 +59,7 @@
                         <Font size="25.0" />
                      </font>
                   </Button>
-                  <TextField alignment="TOP_LEFT" layoutX="138.0" layoutY="113.0" prefWidth="245.0" promptText="Enter board ID:">
+                  <TextField fx:id="textBox" alignment="TOP_LEFT" layoutX="138.0" layoutY="113.0" prefWidth="245.0" promptText="Enter board ID:">
                      <font>
                         <Font size="25.0" />
                      </font>

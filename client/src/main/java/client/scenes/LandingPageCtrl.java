@@ -33,11 +33,13 @@ public class LandingPageCtrl {
     public void connect(){
         String boardKey = "a";
         // gets board from the database, or creates one if it doesn't exist
-        Board board = server.findBoard(boardKey);
-        if (board == null)
-            board = server.createBoard(new CreateBoardModel(boardKey, "a", "a"));
-        mainCtrl.showBoard(board);
+//        Board board = server.findBoard(boardKey);
+//        if (board == null)
+//            board = server.createBoard(new CreateBoardModel(boardKey, "a", 0));
+//        mainCtrl.showBoard(board);
         // need to implement backend, hardcoded it for now
+
+        mainCtrl.showUserMenu();
         clearFields();
     }
 

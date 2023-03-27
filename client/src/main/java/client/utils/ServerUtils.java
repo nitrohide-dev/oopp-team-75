@@ -95,9 +95,9 @@ public class ServerUtils {
      * @param name - the name of the task
      * @return true if the task can be created, false otherwise
      */
-    public boolean addTask(String name,long boardId) {
+    public boolean addTask(String name) {
         Response res =  ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/task/create"+boardId)
+            .target(SERVER).path("api/task/create")
             .request(APPLICATION_JSON)
             .accept(APPLICATION_JSON)
             .post(Entity.entity(name, APPLICATION_JSON));
