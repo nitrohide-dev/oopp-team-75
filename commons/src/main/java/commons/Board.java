@@ -41,7 +41,12 @@ public class Board {
 
     public Board() {} // for object mappers, please don't use.
 
-
+    public Board(String key){
+        this.key = key;
+        this.title = key;
+        this.taskLists = new ArrayList<>();
+        this.password = 0;
+    }
     public Board(CreateBoardModel model) {
         this(model.getKey(), model.getTitle(), model.getPassword(), new ArrayList<>());
     }

@@ -70,7 +70,7 @@ class CreateBoardModelTest {
     void setPassword() {
         model.setPassword(1);
         assertNotEquals(0, model.getPassword());
-        assertEquals("b".hashCode(), model.getPassword());
+        assertEquals(1, model.getPassword());
     }
 
     @Test
