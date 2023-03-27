@@ -44,9 +44,7 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public Person() {
-
-    }
+    public Person() {}
 
     @Override
     public boolean equals(Object obj) {

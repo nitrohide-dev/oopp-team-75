@@ -1,9 +1,11 @@
 package server.api.controllers;
 
 import commons.Board;
-import commons.models.CreateBoardModel;
+import commons.CreateBoardModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,23 +35,17 @@ public class BoardController {
      * @return List containing all boards.
      */
     @GetMapping(path = { "", "/" })
-    public List<Board> getAll() { return boardService.getAllBoards(); }
+    public List<Board> getAll() { return boardService.getAll(); }
 
     /**
      * Gets a board from the database by key. If the key does not exist in the
-     * database, the method will respond with a bad request.
+     * database, the method will return null.
      * @param key the board key
      * @return the stored board
      */
-    @GetMapping("/get/{key}")
-    public ResponseEntity<Board> getByKey(@PathVariable("key") String key) {
-        try {
-            Board board = boardService.getBoardByKey(key);
-            return ResponseEntity.ok(board);
-        }
-        catch (BoardDoesNotExist e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
+    @GetMapping("/find/{key}")
+    public ResponseEntity<Board> findByKey(@PathVariable("key") String key) {
+        return ResponseEntity.ok(boardService.findByKey(key));
     }
 
     /**
@@ -60,7 +56,7 @@ public class BoardController {
     @PostMapping( "/create")
     public ResponseEntity<Board> create(@RequestBody CreateBoardModel model) {
         try {
-            Board board = boardService.createBoard(model);
+            Board board = boardService.create(model);
             return ResponseEntity.ok(board);
         }
         catch (CannotCreateBoard e) {
@@ -78,13 +74,19 @@ public class BoardController {
     @DeleteMapping("/delete/{key}")
     public ResponseEntity<Object> deleteByKey(@PathVariable("key") String key) {
         try {
-            boardService.deleteBoardByKey(key);
+            boardService.deleteByKey(key);
             return ResponseEntity.ok().build();
-        }
-        catch (BoardDoesNotExist e) {
+        } catch (BoardDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
 
+    }
+
+    @MessageMapping("/boards") // sets address to /app/boards
+    @SendTo("/topic/boards") // sends result to /topic/boards
+    public Board update(Board board) throws Exception {
+        boardService.save(board);
+        return board;
     }
 
 }
