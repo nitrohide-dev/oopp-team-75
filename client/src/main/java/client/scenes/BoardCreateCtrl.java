@@ -1,15 +1,16 @@
 package client.scenes;
-
-import client.utils.ServerUtils;
-
 import javafx.fxml.FXML;
 import com.google.inject.Inject;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+
 import javafx.stage.Stage;
 
 
 public class BoardCreateCtrl  {
-    private final ServerUtils server;
     private final MainCtrl mainCtrl;
 
     @FXML private TextField boardNameField;
@@ -17,11 +18,14 @@ public class BoardCreateCtrl  {
     @FXML private CheckBox PasswordCheckbox;
     @FXML private Button createButton;
     @Inject
-    public BoardCreateCtrl(ServerUtils server,MainCtrl mainCtrl) {
+    public BoardCreateCtrl(MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
-        this.server = server;
 
     }
+
+    /**
+     * button, checkbox and textfield configuration
+     */
     public void initialize() {
         PasswordCheckbox.setOnAction(event -> {
             boolean showPassword = PasswordCheckbox.isSelected();
@@ -38,11 +42,17 @@ public class BoardCreateCtrl  {
                     // Close the stage if board name and password are entered
                     Stage stage = (Stage) createButton.getScene().getWindow();
                     mainCtrl.createBoard(boardName,password.hashCode());
+                    boardNameField.clear();
+                    passwordField.clear();
+                    PasswordCheckbox.setSelected(false);
+                    passwordField.setDisable(true);
                     stage.close();
                 } else if (!isPasswordEnabled) {
                     // Close the stage if board name is entered and password is not required
                     Stage stage = (Stage) createButton.getScene().getWindow();
                     mainCtrl.createBoard(boardName,0);
+                    boardNameField.clear();
+                    passwordField.clear();
                     stage.close();
                 } else {
                     // Show an error message if password is required but not entered

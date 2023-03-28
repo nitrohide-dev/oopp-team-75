@@ -6,17 +6,17 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.User;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.control.*;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.util.Callback;
+
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -32,10 +32,10 @@ public class UserMenuCtrl {
     @FXML
     public TextField textBox;
 
-    private List<String> boardNames;
+    private List<String> boardNames; // list of current boards - much more convenient to access  than hashmap
+    // both this and hashmap get modified, hashmap is needed for passwords
     private User user;
-    @FXML
-    private Button createBoard;
+
     @Inject
     public UserMenuCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
@@ -47,26 +47,40 @@ public class UserMenuCtrl {
     public void initialize() throws IOException {
         boardNames=user.readFromCsv();
         for(String board:boardNames){
-           addHBoxToListView(board);
+            addBoardToListView(board);
         }
     }
 
     public User getUser(){
         return user;
     }
+
+    /**
+     *
+     * adds board to user favorites
+     * @param name name of the board
+     * @param password password - hashed
+     */
     public void addBoardToList(String name,int password){
         user.addBoard(name,password);
-        addHBoxToListView(name);
+        addBoardToListView(name);
     }
 
+    /**
+     * shows popup for board creation
+     */
     public void createBoard(){
         mainCtrl.showBoardCreate();
     }
 
-    public void showUserBoards(){
 
-    }
-    public void addHBoxToListView(String text) {
+
+    /**
+     *
+     * Adds a board to the list view for the user
+     * @param text name/key of the board
+     */
+    public void addBoardToListView(String text) {
 
         HBox itemBox = new HBox();
         Label itemLabel = new Label(text);
@@ -75,7 +89,7 @@ public class UserMenuCtrl {
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
         removeButton.setOnAction(event -> {
-                removeBoard(itemBox);
+            removeBoard(itemBox);
         });
         itemBox.getChildren().addAll(itemLabel, removeButton);
         itemBox.setOnMouseClicked(event -> {
@@ -87,6 +101,11 @@ public class UserMenuCtrl {
         boardsListView.getItems().add(itemBox);
     }
 
+
+    /**
+     * removes HBox with board from user listView
+     * @param itemBox Hbox selected
+     */
     public void removeBoard(HBox itemBox){
 
         String name = ((Label)itemBox.getChildren().get(0)).getText();
@@ -95,6 +114,11 @@ public class UserMenuCtrl {
 
     }
 
+    /**
+     *
+     * Opens particular board
+     * @param itemBox HBox selected
+     */
     public void openBoard(HBox itemBox){
         String name = ((Label)itemBox.getChildren().get(0)).getText();
         System.out.println(name);
@@ -103,6 +127,12 @@ public class UserMenuCtrl {
         mainCtrl.showBoard(board);
     }
 
+    /**
+     * Creates delete button
+     *
+     * @param path path to image
+     * @return button with image
+     */
     private Button buttonBuilder(String path) {
         String url = getClass().getClassLoader().getResource(path.replace("\\", "/")).toString();
         Image image = new Image(url);
@@ -116,23 +146,31 @@ public class UserMenuCtrl {
         button.setGraphic(picture);
         return button;
     }
+
+    /**
+     * removes board for particular User (from their own variables)
+     * @param name  name of the board
+     */
     public void removeBoardForUser(String name){
         user.deleteBoard(name);
         boardNames.remove(name);
     }
 
+    /**
+     * User joins a particular board and displays it immediately
+     */
     public void joinBoard(){
         String name = textBox.getText();
         Board board = server.findBoard(name);
         if(name!=null){
-        if(board ==null){
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Board does not exist.");
-            alert.showAndWait();
-        }
-        else{
-        mainCtrl.showBoard(board);
-        addHBoxToListView(name);
+            if(board ==null){
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Board does not exist.");
+                alert.showAndWait();
+            }
+            else{
+                mainCtrl.showBoard(board);
+                addBoardToListView(name);
 
-        }
-    }}
+            }
+        }   }
 }

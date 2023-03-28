@@ -1,12 +1,15 @@
 package commons;
 
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.*;
-import java.net.NetworkInterface;
-import java.util.*;
-import java.net.SocketException;
+import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class User {
 
@@ -22,8 +25,12 @@ public class User {
 
     public void deleteBoard(String key){
         boards.remove(key);
-        }
+    }
 
+    /**
+     * writes user's favorite boards and their hashed passwords to file on their computer
+     * @throws IOException exception for input
+     */
     public void writeToCsv() throws IOException {
         File dir = new File(System.getProperty("user.home") + "/Documents/Talio");
         if (!dir.exists()) {
@@ -37,6 +44,11 @@ public class User {
     }
 
 
+    /**
+     * reads user's saved data(if they exist) from the local file
+     * @return list of names of baords
+     * @throws IOException shouldn't happen
+     */
     public List<String> readFromCsv() throws IOException {
         List<String> boardNames=new ArrayList<>();
         if(isFirstTime()) return boardNames;
@@ -58,24 +70,33 @@ public class User {
                 }
             }
         }
-         this.setBoards(data);
+        this.setBoards(data);
         return boardNames;
     }
 
+    /**
+     * @return if the user ever used the application before
+     */
     public boolean isFirstTime() {
         File file = new File(System.getProperty("user.home") + "/Documents/Talio/first_time");
         if (!file.exists()) {
             file.mkdirs();
             return true;
         }
-       return false;
+        return false;
     }
 
 
+    /**
+     * @return returns hashmap of boards
+     */
     public HashMap<String, Integer> getBoards() {
         return boards;
     }
 
+    /**
+     * @param boards board hashmap setter
+     */
     public void setBoards(HashMap<String, Integer> boards) {
         this.boards = boards;
     }

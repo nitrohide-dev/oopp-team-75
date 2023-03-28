@@ -10,7 +10,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OrderColumn;
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,10 +26,10 @@ public class Board {
     @Column(nullable=false)
     private String title;
 
- @Column(nullable=false)
-    private int password;
+    @Column(nullable=false)
+    private int password;  //if password is 0, board is unlocked
 
-    private boolean locked;
+    //private boolean locked;
    
     @JsonManagedReference
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -51,7 +50,7 @@ public class Board {
         this(model.getKey(), model.getTitle(), model.getPassword(), new ArrayList<>());
     }
 
-   public Board(String title, String key, List<TaskList> taskLists) {
+    public Board(String title, String key, List<TaskList> taskLists) {
         this.key = key;
         this.title = title;
         this.taskLists = taskLists;
@@ -147,7 +146,7 @@ public class Board {
 
     /**
      * Removes {@code taskList} from this board and sets its parent to null.
-     * @param taskList
+     * @param taskList list of tasks
      */
     public void removeTaskList(TaskList taskList) {
         if (taskList == null)
@@ -156,7 +155,4 @@ public class Board {
         taskList.setBoard(null);
     }
 
-    public boolean isLocked(){
-        return locked;
-    }
 }

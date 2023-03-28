@@ -2,8 +2,6 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Board;
-import commons.CreateBoardModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -13,8 +11,8 @@ import javafx.scene.image.ImageView;
 import java.nio.file.Path;
 
 public class LandingPageCtrl {
-    private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final ServerUtils server;
     @FXML
     private TextField server_ip;
     @FXML

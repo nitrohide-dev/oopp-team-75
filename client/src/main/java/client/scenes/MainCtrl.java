@@ -19,7 +19,6 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.CreateBoardModel;
-import commons.User;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -27,7 +26,6 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.io.IOException;
-import java.net.SocketException;
 
 public class MainCtrl {
     private ServerUtils server;
@@ -49,7 +47,6 @@ public class MainCtrl {
     private Scene userMenu;
     private UserMenuCtrl userMenuCtrl;
     private Scene boardCreate;
-    private BoardCreateCtrl boardCreateCtrl;
 
     @Inject
     public MainCtrl(ServerUtils server){
@@ -77,7 +74,7 @@ public class MainCtrl {
         this.userMenuCtrl = userMenu.getKey();
         this.userMenu = new Scene(userMenu.getValue());
 
-        this.boardCreateCtrl = boardCreate.getKey();
+        BoardCreateCtrl boardCreateCtrl = boardCreate.getKey();
         this.boardCreate = new Scene(boardCreate.getValue());
         showLanding();
 

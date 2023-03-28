@@ -57,7 +57,7 @@ public class Main extends Application {
 
 
     }
-@Override
+    @Override
     public void stop(){
         try {
             mainCtrl.closingApp();
