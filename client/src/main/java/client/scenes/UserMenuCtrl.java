@@ -4,7 +4,6 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
 import commons.Board;
-import commons.User;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 
@@ -20,6 +19,7 @@ import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -34,26 +34,20 @@ public class UserMenuCtrl {
 
     private List<String> boardNames; // list of current boards - much more convenient to access  than hashmap
     // both this and hashmap get modified, hashmap is needed for passwords
-    private User user;
+    private HashMap<String, Integer> boards; // board and password hashed
+
 
     @Inject
     public UserMenuCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-        this.user = new User();
 
     }
 
     public void initialize() throws IOException {
-        boardNames=user.readFromCsv();
-        for(String board:boardNames){
-            addBoardToListView(board);
-        }
+
     }
 
-    public User getUser(){
-        return user;
-    }
 
     /**
      *
@@ -62,7 +56,7 @@ public class UserMenuCtrl {
      * @param password password - hashed
      */
     public void addBoardToList(String name,int password){
-        user.addBoard(name,password);
+        this.addBoard(name,password);
         addBoardToListView(name);
     }
 
@@ -152,7 +146,7 @@ public class UserMenuCtrl {
      * @param name  name of the board
      */
     public void removeBoardForUser(String name){
-        user.deleteBoard(name);
+        this.deleteBoard(name);
         boardNames.remove(name);
     }
 
@@ -173,4 +167,30 @@ public class UserMenuCtrl {
 
             }
         }   }
+
+    public void addBoard(String key, int password){
+        boards.put(key,password);
+    }
+
+    public void deleteBoard(String key){
+        boards.remove(key);
+    }
+
+
+
+
+    /**
+     * @return returns hashmap of boards
+     */
+    public HashMap<String, Integer> getBoards() {
+        return boards;
+    }
+
+    /**
+     * @param boards board hashmap setter
+     */
+    public void setBoards(HashMap<String, Integer> boards) {
+        this.boards = boards;
+    }
+
 }

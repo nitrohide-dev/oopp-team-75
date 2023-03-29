@@ -60,7 +60,7 @@ public class Main extends Application {
     @Override
     public void stop(){
         try {
-            mainCtrl.closingApp();
+            mainCtrl.writeToCsv();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

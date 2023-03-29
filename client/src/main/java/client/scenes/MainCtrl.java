@@ -25,7 +25,15 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MainCtrl {
     private ServerUtils server;
@@ -47,7 +55,7 @@ public class MainCtrl {
     private Scene userMenu;
     private UserMenuCtrl userMenuCtrl;
     private Scene boardCreate;
-
+    private BoardCreateCtrl boardCreateCtrl;
     @Inject
     public MainCtrl(ServerUtils server){
         this.server = server;
@@ -74,7 +82,12 @@ public class MainCtrl {
         this.userMenuCtrl = userMenu.getKey();
         this.userMenu = new Scene(userMenu.getValue());
 
-        BoardCreateCtrl boardCreateCtrl = boardCreate.getKey();
+        List<String>boardNames=this.readFromCsv();
+        for(String board:boardNames){
+            userMenuCtrl.addBoardToListView(board);
+        }
+
+        this.boardCreateCtrl = boardCreate.getKey();
         this.boardCreate = new Scene(boardCreate.getValue());
         showLanding();
 
@@ -138,14 +151,69 @@ public class MainCtrl {
 
     }
 
-    public void createBoard(String name, int password){
+    public void createBoard(String name,String title, int password){
         userMenuCtrl.addBoardToList(name,password);
-        server.createBoard(new CreateBoardModel(name,name,password));
+        server.createBoard(new CreateBoardModel(name,title,password));
         showUserMenu();
     }
 
-    public void closingApp() throws IOException {
-        userMenuCtrl.getUser().writeToCsv();
+    /**
+     * writes user's favorite boards and their hashed passwords to file on their computer
+     * @throws IOException exception for input
+     */
+    public void writeToCsv() throws IOException {
+        File dir = new File(System.getProperty("user.home") + "/Documents/Talio");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        File file = new File(dir, "data.csv");
+        if(file.exists()){file.delete();}
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(userMenuCtrl.getBoards().toString());
+        }
+    }
+
+
+    /**
+     * reads user's saved data(if they exist) from the local file
+     * @return list of names of baords
+     * @throws IOException shouldn't happen
+     */
+    public List<String> readFromCsv() throws IOException {
+        List<String> boardNames=new ArrayList<>();
+        if(isFirstTime()) return boardNames;
+        HashMap<String, Integer> data = new HashMap<>();
+        File dir = new File(System.getProperty("user.home") + "/Documents/Talio/data.csv");
+        try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
+            String line= reader.readLine();
+            line= line.substring(1,line.length()-1);
+            String[] boards = line.split(",* ");
+            for(String string : boards) {
+                String[] tokens = string.split("=");
+                if (tokens.length == 2) {
+
+                    String key = tokens[0].trim();
+
+                    boardNames.add(key);
+                    int value = Integer.parseInt(tokens[1].trim());
+                    data.put(key, value);
+                }
+            }
+        }
+        userMenuCtrl.setBoards(data);
+        return boardNames;
+    }
+
+    /**
+     * @return if the user ever used the application before
+     */
+    public boolean isFirstTime() {
+        File file = new File(System.getProperty("user.home") + "/Documents/Talio/first_time");
+        if (!file.exists()) {
+            file.mkdirs();
+            return true;
+        }
+        return false;
     }
 
 
