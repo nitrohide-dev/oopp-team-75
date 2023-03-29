@@ -27,7 +27,8 @@ public class Board {
     private String title;
 
     @Column(nullable=false)
-    private String password;
+    private long password;  //if password is 0, board is unlocked
+
 
     @JsonManagedReference
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -38,19 +39,24 @@ public class Board {
 
     public Board() {} // for object mappers, please don't use.
 
-    public Board(String key) {
-        this(key, "", "", new ArrayList<>());
+    public Board(String key){
+        this("","Hello",0,new ArrayList<>());
     }
-
     public Board(CreateBoardModel model) {
         this(model.getKey(), model.getTitle(), model.getPassword(), new ArrayList<>());
     }
 
-    public Board(String key, String title, String password, List<TaskList> taskLists) {
+    public Board(String title, String key, List<TaskList> taskLists) {
+        this(title,key,0,taskLists);
+    }
+
+
+     
+    public Board(String title, String key,long password,List<TaskList> taskLists) {
         this.key = key;
         this.title = title;
-        this.password = password;
         this.taskLists = taskLists;
+        this.password = password;
     }
 
 //    getters and setters
@@ -71,12 +77,8 @@ public class Board {
         this.title = title;
     }
 
-    public String getPassword() {
+    public long getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public List<TaskList> getTaskLists() {
@@ -86,6 +88,8 @@ public class Board {
     public void setTaskLists(List<TaskList> taskLists) {
         this.taskLists = taskLists;
     }
+
+    public void setPassword(int password){this.password=password;}
 
 //    equals and hashcode
 
@@ -115,7 +119,7 @@ public class Board {
     public int hashCode() {
         int result = key != null ? key.hashCode() : 0;
         result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (int)( password);
         result = 31 * result + (taskLists != null ? taskLists.hashCode() : 0);
         return result;
     }
@@ -135,7 +139,7 @@ public class Board {
 
     /**
      * Removes {@code taskList} from this board and sets its parent to null.
-     * @param taskList
+     * @param taskList list of tasks
      */
     public void removeTaskList(TaskList taskList) {
         if (taskList == null)
@@ -143,4 +147,5 @@ public class Board {
         this.taskLists.remove(taskList);
         taskList.setBoard(null);
     }
+
 }

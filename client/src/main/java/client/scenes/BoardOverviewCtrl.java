@@ -54,6 +54,7 @@ public class BoardOverviewCtrl {
 
     private Group sampleGroup;
 
+    private long boardKey;
     private Map<ListView, String> allLists; // Stores all task lists
     private final Map<ListView, TaskList> listMap; // Stores all task lists
     private final Map<HBox, Task> taskMap; // Stores all tasks

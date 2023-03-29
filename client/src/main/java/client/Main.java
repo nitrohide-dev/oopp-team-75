@@ -15,13 +15,19 @@
  */
 package client;
 
+import static com.google.inject.Guice.createInjector;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 import client.scenes.BoardOverviewCtrl;
 import client.scenes.LandingPageCtrl;
 import client.scenes.MainCtrl;
 import com.google.inject.Injector;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.stage.Stage;
-
+import client.scenes.UserMenuCtrl;
+import client.scenes.BoardCreateCtrl;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -31,6 +37,7 @@ public class Main extends Application {
 
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
+    private static MainCtrl mainCtrl;
 
     public static void main(String[] args) throws URISyntaxException, IOException {
         launch();
@@ -39,12 +46,22 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-//        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
-//        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
         var landing = FXML.load(LandingPageCtrl.class, "client", "scenes", "LandingPage.fxml");
         var board = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "BoardOverview.fxml");
+        var userMenu = FXML.load(UserMenuCtrl.class,"client","scenes","UserMenu.fxml");
+        var boardCreate = FXML.load(BoardCreateCtrl.class,"client","scenes","BoardCreate.fxml");
+        mainCtrl = INJECTOR.getInstance(MainCtrl.class);
+        mainCtrl.initialize(primaryStage, landing, board,userMenu,boardCreate);
 
-        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, landing, board);
+
+    }
+    @Override
+    public void stop(){
+        try {
+            mainCtrl.writeToCsv();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
