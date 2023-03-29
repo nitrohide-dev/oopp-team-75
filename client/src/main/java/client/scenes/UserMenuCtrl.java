@@ -54,28 +54,27 @@ public class UserMenuCtrl {
 
 
     /**
-     *
      * adds board to user favorites
-     * @param name name of the board
+     *
+     * @param name     name of the board
      * @param password password - hashed
      */
-    public void addBoardToList(String name,long password){
-        this.addBoard(name,password);
+    public void addBoardToList(String name, long password) {
+        this.addBoard(name, password);
         addBoardToListView(name);
     }
 
     /**
      * shows popup for board creation
      */
-    public void createBoard(){
+    public void createBoard() {
         mainCtrl.showBoardCreate();
     }
 
 
-
     /**
-     *
      * Adds a board to the list view for the user
+     *
      * @param text name/key of the board
      */
     public void addBoardToListView(String text) {
@@ -102,23 +101,24 @@ public class UserMenuCtrl {
 
     /**
      * removes HBox with board from user listView
+     *
      * @param itemBox Hbox selected
      */
-    public void removeBoard(HBox itemBox){
+    public void removeBoard(HBox itemBox) {
 
-        String name = ((Label)itemBox.getChildren().get(0)).getText();
+        String name = ((Label) itemBox.getChildren().get(0)).getText();
         removeBoardForUser(name);
         boardsListView.getItems().remove(itemBox);
 
     }
 
     /**
-     *
      * Opens particular board
+     *
      * @param itemBox HBox selected
      */
-    public void openBoard(HBox itemBox){
-        String name = ((Label)itemBox.getChildren().get(0)).getText();
+    public void openBoard(HBox itemBox) {
+        String name = ((Label) itemBox.getChildren().get(0)).getText();
         System.out.println(name);
         Board board = server.findBoard(name);
         System.out.println(board.toString());
@@ -147,9 +147,10 @@ public class UserMenuCtrl {
 
     /**
      * removes board for particular User (from their own variables)
-     * @param name  name of the board
+     *
+     * @param name name of the board
      */
-    public void removeBoardForUser(String name){
+    public void removeBoardForUser(String name) {
         this.deleteBoard(name);
         boardNames.remove(name);
     }
@@ -157,20 +158,19 @@ public class UserMenuCtrl {
     /**
      * User joins a particular board and displays it immediately
      */
-    public void joinBoard(){
+    public void joinBoard() {
         String name = textBox.getText().trim();
-        if(!name.isEmpty()){
+        if (!name.isEmpty()) {
             Board board = server.findBoard(name);
-            if(board ==null){
+            if (board == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Board does not exist.");
                 alert.showAndWait();
-            }
-            else{
+            } else {
                 mainCtrl.showBoard(board);
-                addBoardToList(name,0);
+                addBoardToList(name, 0);
             }
 
-        } else{
+        } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Enter a board name.");
             alert.showAndWait();
 
@@ -179,15 +179,13 @@ public class UserMenuCtrl {
         textBox.clear();
     }
 
-    public void addBoard(String key, long password){
-        boards.put(key,password);
+    public void addBoard(String key, long password) {
+        boards.put(key, password);
     }
 
-    public void deleteBoard(String key){
+    public void deleteBoard(String key) {
         boards.remove(key);
     }
-
-
 
 
     /**

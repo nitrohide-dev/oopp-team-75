@@ -1,4 +1,5 @@
 /* button landing page */
+/*noinspection ALL*/
 .button {
  -fx-color: #fff;
  -fx-cursor: pointer;
@@ -32,19 +33,20 @@
     -fx-cursor: default;
 }
 
-.button-9:active {
+.button-9:hover {
     -fx-box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset, rgba(50, 50, 93, .2) 0 6px 15px 0, rgba(0, 0, 0, .1) 0 2px 2px 0, rgba(50, 151, 211, .3) 0 0 0 4px;
 }
 
 /* landing page css */
 .anchor_page {
- -fx-border-color: blue;
+ -fx-border-color: #2f58cd;
  -fx-border-width: 2px;
  -fx-border-radius: 1px;
- -fx-background-color: #CCFFFF;
+ -fx-background-color: #3795bd;
 }
 
 /* added effect with blue outline*/
+/*noinspection ALL*/
 .text-field{
  -fx-effect: dropshadow( three-pass-box, blue , 10.0, 0.0,0.0,0.0);
  -fx-background-insets:3.0;
@@ -52,6 +54,7 @@
 }
 
 
+/*noinspection ALL*/
 .text-field:focused{
  -fx-background-color: white;
  -fx-text-fill:blue;
