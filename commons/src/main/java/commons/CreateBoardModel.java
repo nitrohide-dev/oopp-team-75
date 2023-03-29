@@ -1,12 +1,22 @@
 package commons;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Class to validate and create a board.
  */
 public class CreateBoardModel {
 
+	@Getter
+	@Setter
 	public String key;
+	@Getter
+	@Setter
 	public String title;
+
+	@Getter
+	@Setter
 	public String password;
 
 	public CreateBoardModel(){} // for object mappers, please don't use.
@@ -14,30 +24,6 @@ public class CreateBoardModel {
 	public CreateBoardModel(String key, String title, String password) {
 		this.key = key;
 		this.title = title;
-		this.password = password;
-	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
 		this.password = password;
 	}
 

@@ -26,13 +26,13 @@ public class MainCtrl {
     private Stage primaryStage;
     private LandingPageCtrl landingCtrl;
     private Scene landing;
-
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
-
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
-
+//
+//    private QuoteOverviewCtrl overviewCtrl;
+//    private Scene overview;
+//
+//    private AddQuoteCtrl addCtrl;
+//    private Scene add;
+//
     private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
 
@@ -65,11 +65,11 @@ public class MainCtrl {
         currBoard = board;
     }
 
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
-    }
+//    public void showOverview() {
+//        primaryStage.setTitle("Quotes: Overview");
+//        primaryStage.setScene(overview);
+//        overviewCtrl.refresh();
+//    }
 
     public void showLanding(){
         primaryStage.setMinWidth(600);
@@ -90,9 +90,9 @@ public class MainCtrl {
         // connects to /topic/boards
     }
 
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
-    }
+//    public void showAdd() {
+//        primaryStage.setTitle("Quotes: Adding Quote");
+//        primaryStage.setScene(add);
+//        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+//    }
 }
