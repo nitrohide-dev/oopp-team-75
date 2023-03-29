@@ -13,6 +13,6 @@ public interface SubTaskRepository extends JpaRepository<SubTask, Long> {
      @param task_id the id of the task to look up subtasks of
      @return the set of subtasks corresponding to a given task
      */
-    @Query("SELECT * FROM TAG t1 JOIN TAG_TASKS t2 ON t1.ID = t2.TAG_ID WHERE t2.TASK_ID = ?1 ")
+    @Query(value = "SELECT * FROM SUB_TASK s1 WHERE s1.TASK_ID = ?1 ",nativeQuery = true)
     Collection<SubTask> getSubTasksOfTask(long task_id);
 }

@@ -1,9 +1,11 @@
 package server.api.services;
 
 import commons.SubTask;
+import org.springframework.stereotype.Service;
 import server.database.SubTaskRepository;
 import server.exceptions.SubTaskDoesNotExist;
 import java.util.Set;
+@Service
 public class SubTaskService {
     private final SubTaskRepository repo;
 

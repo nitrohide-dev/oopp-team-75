@@ -1,9 +1,10 @@
 package server.api.services;
 import commons.Tag;
+import org.springframework.stereotype.Service;
 import server.database.TagRepository;
 import server.exceptions.TagDoesNotExist;
 import java.util.Set;
-
+@Service
 public class TagService {
     private final TagRepository repo;
 
