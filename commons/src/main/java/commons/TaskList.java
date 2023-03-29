@@ -33,7 +33,7 @@ public class TaskList {
     private String title;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "taskList", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @OrderColumn
     private List<Task> tasks;
 
@@ -45,10 +45,14 @@ public class TaskList {
 
     public TaskList() {} // for object mappers, please don't use.
 
-    public TaskList(Board board, String title) {
+    public TaskList(Board board) {
+        this(board, "", new ArrayList());
+    }
+
+    public TaskList(Board board, String title, List tasks) {
         this.board = board;
-        this.tasks = new ArrayList<>();
         this.title = title;
+        this.tasks = tasks;
     }
 
 //    getters and setters
@@ -87,17 +91,35 @@ public class TaskList {
 
 //    equals and hashcode
 
+    /**
+     * Checks for equality in all attributes except the parent board, since
+     * that would introduce infinite recursion.
+     * @param o the object to compare with
+     * @return true if this and o are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof TaskList)) return false;
+
         TaskList taskList = (TaskList) o;
-        return id == taskList.id;
+
+        if (id != taskList.id) return false;
+        if (!Objects.equals(title, taskList.title)) return false;
+        return Objects.equals(tasks, taskList.tasks);
     }
 
+    /**
+     * Generates a hashcode using all attributes except the parent board, since
+     * that would introduce infinite recursion.
+     * @return the generated hashcode
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (tasks != null ? tasks.hashCode() : 0);
+        return result;
     }
 
 //    actual methods
@@ -106,10 +128,9 @@ public class TaskList {
      * Creates a new empty task, adds it to the end of this taskList and
      * returns it.
      * @return the created task.
-	 * @param name name of task
      */
-    public Task createTask(String name) {
-        Task task = new Task(this, name);
+    public Task createTask() {
+        Task task = new Task(this);
         this.tasks.add(task);
         return task;
     }
@@ -120,41 +141,34 @@ public class TaskList {
      */
     public void removeTask(Task task) {
         if (task == null)
-            throw new IllegalArgumentException("Task cannot be null");
+            throw new NullPointerException("Task cannot be null");
         if (!this.tasks.remove(task))
             throw new IllegalArgumentException("Task not in TaskList");
         task.setTaskList(null);
     }
 
     /**
-     * Removes this taskList from its board. Shorthand method for: {@code
-     * taskList.getBoard().removeTaskList(taskList)}. If the taskList does not
-     * have a board (i.e. it is already detached), the method does nothing.
-     */
-    public void detach() {
-        if (board == null) return;
-        this.board.removeTaskList(this);
-    }
-
-    /**
-     * Detaches {@code task} and inserts it at {@code index} in this taskList.
-     * @param index index of task in list
-     * @param task name of task
+     * Inserts {@code task} at {@code index} in this taskList.
+     * @param index
+     * @param task
      */
     public void insertTask(int index, Task task) {
         if (task == null)
-            throw new IllegalArgumentException("Task cannot be null");
-        task.detach();
+            throw new NullPointerException("Task cannot be null");
+        if (task.getTaskList() != null)
+            task.getTaskList().removeTask(task);
         tasks.add(index, task);
         task.setTaskList(this);
     }
 
     /**
-     * Detaches {@code task1} and inserts it before {@code task2} in this taskList.
+     * Inserts {@code task1} before {@code task2} in this taskList.
      * @param task1 first task
      * @param task2 second task
      */
     public void insertTask(Task task1, Task task2) {
+        if (task2 == null)
+            throw new NullPointerException("Task2 cannot be null");
         int index = tasks.indexOf(task2);
         if (index == -1)
             throw new IllegalArgumentException("Task2 does not exist in the taskList.");

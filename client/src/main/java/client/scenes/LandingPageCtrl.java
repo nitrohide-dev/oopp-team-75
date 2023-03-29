@@ -4,7 +4,9 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import javafx.application.Platform;
+import commons.CreateBoardModel;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,11 +34,13 @@ public class LandingPageCtrl {
     }
 
     public void connect(){
-        var q = server_ip.getText();
-        long id = 1; //hardcoded id, should extract it from somewhere
-        Board board = server.getBoard(id);
+        String boardKey = "a";
+        // gets board from the database, or creates one if it doesn't exist
+        Board board = server.findBoard(boardKey);
+        if (board == null)
+            board = server.createBoard(new CreateBoardModel(boardKey, "a", "a"));
         mainCtrl.showBoard(board);
-        //need to implement backend, hardcoded it for now
+        // need to implement backend, hardcoded it for now
         clearFields();
     }
 
@@ -55,9 +59,5 @@ public class LandingPageCtrl {
         String path2 = Path.of("", "client", "images", "ExitButton.png").toString();
         logo1.setImage(new Image(path));
         exitButton.setImage(new Image(path2));
-    }
-
-    public void refresh() {
-        //TODO make something to refresh the data from the databases.
     }
 }

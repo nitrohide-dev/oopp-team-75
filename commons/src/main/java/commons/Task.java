@@ -37,10 +37,14 @@ public class Task {
 
     public Task() {} // for object mappers, please don't use.
 
-    protected Task(TaskList taskList, String title) {
+    public Task(TaskList taskList) {
+        this(taskList, "", "");
+    }
+
+    public Task(TaskList taskList, String title, String desc) {
         this.taskList = taskList;
         this.title = title;
-        this.desc = "";
+        this.desc = desc;
     }
 
 //    getters and setters
@@ -79,23 +83,34 @@ public class Task {
 
 //    equals and hashcode
 
+    /**
+     * Checks for equality in all attributes except the parent taskList, since
+     * that would introduce infinite recursion.
+     * @param o the object to compare with
+     * @return true if this and o are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Task)) return false;
+
         Task task = (Task) o;
-        return id == task.id;
+
+        if (id != task.id) return false;
+        if (!Objects.equals(title, task.title)) return false;
+        return Objects.equals(desc, task.desc);
     }
 
+    /**
+     * Generates a hashcode using all attributes except the parent taskList, since
+     * that would introduce infinite recursion.
+     * @return the generated hashcode
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (desc != null ? desc.hashCode() : 0);
+        return result;
     }
-
-//    actual methods
-
-    public void detach() {
-        this.taskList.removeTask(this);
-    }
-
 }

@@ -15,11 +15,12 @@
  */
 package commons;
 
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
 
 public class QuoteTest {
 
@@ -27,9 +28,12 @@ public class QuoteTest {
 
 	@Test
 	public void checkConstructor() {
-		var q = new Quote(SOME_PERSON, "q");
-		assertEquals(SOME_PERSON, q.person);
-		assertEquals("q", q.quote);
+		var q1 = new Quote(SOME_PERSON, "q");
+		var q2 = new Quote();
+		assertEquals(SOME_PERSON, q1.person);
+		assertEquals("q", q1.quote);
+		assertNull(q2.person);
+		assertNull(q2.quote);
 	}
 
 	@Test

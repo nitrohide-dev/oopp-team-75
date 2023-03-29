@@ -58,6 +58,10 @@ public class MainCtrl {
         return currBoard;
     }
 
+    public void setCurrBoard(Board board) {
+        currBoard = board;
+    }
+
     public void showLanding(){
         primaryStage.setMinWidth(600);
         primaryStage.setMinHeight(400);
@@ -65,9 +69,6 @@ public class MainCtrl {
         primaryStage.setTitle("Welcome to Talio!");
         primaryStage.setScene(landing);
         landing.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/styles.css")).toExternalForm());
-        landingCtrl.refresh();
-        //do we need this one? I put one here as reminder,
-        //but if the database sync is implemented I don't think this one is not useful
     }
 
     public void showBoard(Board board) {
@@ -87,5 +88,8 @@ public class MainCtrl {
                 .getResource("css/BoardOverview.css")).toExternalForm());
         boardOverviewCtrl.changeImageUrl();
         primaryStage.setScene(boardOverview);
+        boardOverviewCtrl.load(board);
+        boardOverviewCtrl.connect();
+        // connects to /topic/boards
     }
 }

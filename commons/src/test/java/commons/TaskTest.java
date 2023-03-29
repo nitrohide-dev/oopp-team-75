@@ -5,96 +5,123 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class TaskTest {
 
-    private Board board;
-    private TaskList taskList;
     private Task task;
 
     @BeforeEach
-    void setUp() {
-        this.board = new Board("abc", "cbd", false);
-        this.taskList = board.createTaskList("name");
-        this.task = taskList.createTask("task");
+    void setup() {
+        task = new Task(new TaskList(null, null, null), "a", "a");
+    }
+
+    @Test
+    void constructor1() {
+        Task task = new Task();
+        assertNotNull(task.getId());
+        assertNull(task.getDesc());
+        assertNull(task.getTitle());
+        assertNull(task.getTaskList());
+    }
+
+    @Test
+    void constructor2() {
+        Task task = new Task(new TaskList());
+        assertNotNull(task.getId());
+        assertNotNull(task.getDesc());
+        assertNotNull(task.getTitle());
+        assertEquals(new TaskList(), task.getTaskList());
+    }
+
+    @Test
+    void constructor3() {
+        Task task = new Task(new TaskList(), "a", "a");
+        assertNotNull(task.getId());
+        assertEquals("a", task.getDesc());
+        assertEquals("a", task.getTitle());
+        assertEquals(new TaskList(), task.getTaskList());
     }
 
     @Test
     void getId() {
-        task.setId(999);
-        assertEquals(999, task.getId());
+        assertNotNull(task.getId());
     }
 
     @Test
     void setId() {
         task.setId(999);
         assertEquals(999, task.getId());
+
     }
 
     @Test
     void getTitle() {
-        assertEquals("task", task.getTitle());
+        assertEquals("a", task.getTitle());
+        assertNotEquals("b", task.getTitle());
     }
 
     @Test
     void setTitle() {
-        task.setTitle("DEF");
-        assertEquals("DEF", task.getTitle());
+        task.setTitle("b");
+        assertEquals("b", task.getTitle());
+        assertNotEquals("a", task.getTitle());
+
     }
 
     @Test
     void getDesc() {
-        assertEquals("", task.getDesc());
+        assertEquals("a", task.getDesc());
+        assertNotEquals("b", task.getDesc());
     }
 
     @Test
     void setDesc() {
-        task.setDesc("DEF");
-        assertEquals("DEF", task.getDesc());
+        task.setDesc("b");
+        assertEquals("b", task.getDesc());
+        assertNotEquals("a", task.getDesc());
     }
 
     @Test
     void getTaskList() {
-        assertEquals(taskList, task.getTaskList());
+        assertEquals(new TaskList(null, null, null), task.getTaskList());
+        assertNotEquals(new TaskList(null, "a", null), task.getTaskList());
     }
 
     @Test
     void setTaskList() {
-        TaskList taskList2 = board.createTaskList("list2");
-        task.setTaskList(taskList2);
-        assertEquals(taskList2, task.getTaskList());
+        task.setTaskList(new TaskList(null, "a", null));
+        assertNotEquals(new TaskList(null, null, null), task.getTaskList());
+        assertEquals(new TaskList(null, "a", null), task.getTaskList());
     }
 
     @Test
     void testEquals() {
-        Task task1 = taskList.createTask("task 1");
-        Task task2 = taskList.createTask("task 1");
-        Task task3 = taskList.createTask("task 3");
-        task1.setId(999);
-        task2.setId(999);
-        task3.setId(777);
+        Task task1 = new Task(null, "a", "a");
+        Task task2 = new Task(null, "a", "a");
+        Task task3 = new Task(null, "b", "a");
+        Task task4 = new Task(null, "a", "b");
+        Task task5 = new Task(new TaskList(null, null, null), "a", "a");
         assertEquals(task1, task1);
         assertEquals(task1, task2);
         assertNotEquals(task1, task3);
+        assertNotEquals(task1, task4);
+        assertEquals(task1, task5);
+        assertNotEquals(null, task1);
     }
 
     @Test
     void testHashCode() {
-        Task task1 = taskList.createTask("task 1");
-        Task task2 = taskList.createTask("task 1");
-        Task task3 = taskList.createTask("task 3");
-        task1.setId(999);
-        task2.setId(999);
-        task3.setId(777);
+        Task task1 = new Task(null, "a", "a");
+        Task task2 = new Task(null, "a", "a");
+        Task task3 = new Task(null, "b", "a");
+        Task task4 = new Task(null, "a", "b");
+        Task task5 = new Task(new TaskList(null, null, null), "a", "a");
         assertEquals(task1.hashCode(), task1.hashCode());
         assertEquals(task1.hashCode(), task2.hashCode());
         assertNotEquals(task1.hashCode(), task3.hashCode());
-    }
-
-    @Test
-    void detach() {
-        task.detach();
-        assertNull(task.getTaskList());
+        assertNotEquals(task1.hashCode(), task4.hashCode());
+        assertEquals(task1.hashCode(), task5.hashCode());
     }
 }
