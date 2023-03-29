@@ -11,14 +11,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -26,24 +19,14 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.scene.layout.Priority;
-import javafx.scene.text.Text;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 
 public class BoardOverviewCtrl {
@@ -199,11 +182,11 @@ public class BoardOverviewCtrl {
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
      */
     public ListView<HBox> addTaskList(TaskList taskList) {
-        TextField sampleText = (TextField) sampleGroup.getChildren().get(0);
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
         ListView<HBox> sampleList = (ListView<HBox>) samplePane.getContent();
         TextField textField = new TextField();
         textField.setId("listName1");
+        textField.setOnInputMethodTextChanged(e -> taskList.setTitle(textField.getText()));
 
         ListView<HBox> listView = new ListView<>();
         listView.setOnMouseClicked(e -> taskOperations(listView));
@@ -212,10 +195,6 @@ public class BoardOverviewCtrl {
         listView.setId("taskList1");
         ScrollPane scrollPane = new ScrollPane(listView);
 
-        TextField textField = new TextField();
-        textField.setOnInputMethodTextChanged(e ->{
-            taskList.setTitle(textField.getText());
-        });
         //create deleteTaskListsButton
         Button deleteTaskListsButton = new Button("X");
         setDeleteAction(deleteTaskListsButton, textField.getText(), listView);
@@ -352,7 +331,7 @@ public class BoardOverviewCtrl {
         editButton.setOnAction(e -> editTask(box));
         viewButton.setOnAction(e -> viewTask(box));
         disableTaskButtons(box);
-        box.setHgrow(task, Priority.NEVER);
+        HBox.setHgrow(task, Priority.NEVER);
         list.getItems().add(box);
         //Re-adds the button to the end of the list
         addTaskButton(list);
