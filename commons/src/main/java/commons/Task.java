@@ -30,7 +30,7 @@ public class Task {
     @Setter
     private String title;
     @JsonManagedReference
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Getter
     @Setter
     private Set<Tag> tags;

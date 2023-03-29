@@ -16,7 +16,7 @@
 package client.utils;
 
 import commons.Board;
-import commons.Quote;
+//import commons.Quote;
 import commons.CreateBoardModel;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -58,22 +58,22 @@ public class ServerUtils {
             System.out.println(line);
         }
     }
-
-    public List<Quote> getQuotes() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Quote>>() {});
-    }
-
-    public Quote addQuote(Quote quote) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
-    }
+//
+//    public List<Quote> getQuotes() {
+//        return ClientBuilder.newClient(new ClientConfig()) //
+//                .target(SERVER).path("api/quotes") //
+//                .request(APPLICATION_JSON) //
+//                .accept(APPLICATION_JSON) //
+//                .get(new GenericType<List<Quote>>() {});
+//    }
+//
+//    public Quote addQuote(Quote quote) {
+//        return ClientBuilder.newClient(new ClientConfig()) //
+//                .target(SERVER).path("api/quotes") //
+//                .request(APPLICATION_JSON) //
+//                .accept(APPLICATION_JSON) //
+//                .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
+//    }
 
     /**
      * Sends request to the server that gets the board by id
