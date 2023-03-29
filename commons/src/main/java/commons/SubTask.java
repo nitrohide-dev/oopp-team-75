@@ -1,13 +1,11 @@
 package commons;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 @Entity
 public class SubTask {
     public static final int MAX_TITLE_LENGTH = 256;
@@ -31,6 +29,12 @@ public class SubTask {
     @Getter
     @Setter
     private Task task;
+
+    // constructor
+
+    public SubTask(String title) {
+        this.title = title;
+    }
 
     // equals and hashcode
 

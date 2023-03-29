@@ -15,7 +15,6 @@
  */
 package server.database;
 
-import commons.Board;
 import commons.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,7 +22,11 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Collection;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
-
+    /**
+     * Finds the tags of a specific task in the database
+     @param task_id the id of the task to look up tags of
+     @return the taglist corresponding to a given task
+     */
     @Query("SELECT * FROM TAG t1 JOIN TAG_TASKS t2 ON t1.ID = t2.TAG_ID WHERE t2.TASK_ID = ?1 ")
     Collection<Tag> getTagsByTask(long task_id);
 }

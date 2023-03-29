@@ -43,6 +43,11 @@ public class Board {
     @Getter
     @Setter
     private List<TaskList> taskLists;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @Getter
+    @Setter
+    private List<Tag> tags;
 
 //    constructors
 
