@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 @Entity
@@ -28,6 +29,12 @@ public class Tag {
     @Getter
     @Setter
     private Set<Task> tasks;
+
+    // constructor
+
+    public Tag(long id, String title) {
+        this(id, title,new HashSet<Task>());
+    }
 
     // equals and hashcode
 
