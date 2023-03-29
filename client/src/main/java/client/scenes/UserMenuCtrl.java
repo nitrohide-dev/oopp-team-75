@@ -32,16 +32,20 @@ public class UserMenuCtrl {
     @FXML
     public TextField textBox;
 
+    public void setBoardNames(List<String> boardNames) {
+        this.boardNames = boardNames;
+    }
+
     private List<String> boardNames; // list of current boards - much more convenient to access  than hashmap
     // both this and hashmap get modified, hashmap is needed for passwords
-    private HashMap<String, Integer> boards; // board and password hashed
+    private HashMap<String, Long> boards; // board and password hashed
 
 
     @Inject
     public UserMenuCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-
+        this.boards = new HashMap<>();
     }
 
     public void initialize() throws IOException {
@@ -55,7 +59,7 @@ public class UserMenuCtrl {
      * @param name name of the board
      * @param password password - hashed
      */
-    public void addBoardToList(String name,int password){
+    public void addBoardToList(String name,long password){
         this.addBoard(name,password);
         addBoardToListView(name);
     }
@@ -154,21 +158,28 @@ public class UserMenuCtrl {
      * User joins a particular board and displays it immediately
      */
     public void joinBoard(){
-        String name = textBox.getText();
-        Board board = server.findBoard(name);
-        if(name!=null){
+        String name = textBox.getText().trim();
+        if(!name.isEmpty()){
+            Board board = server.findBoard(name);
             if(board ==null){
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Board does not exist.");
                 alert.showAndWait();
             }
             else{
                 mainCtrl.showBoard(board);
-                addBoardToListView(name);
-
+                addBoardToList(name,0);
             }
-        }   }
 
-    public void addBoard(String key, int password){
+        } else{
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Enter a board name.");
+            alert.showAndWait();
+
+        }
+
+        textBox.clear();
+    }
+
+    public void addBoard(String key, long password){
         boards.put(key,password);
     }
 
@@ -182,14 +193,14 @@ public class UserMenuCtrl {
     /**
      * @return returns hashmap of boards
      */
-    public HashMap<String, Integer> getBoards() {
+    public HashMap<String, Long> getBoards() {
         return boards;
     }
 
     /**
      * @param boards board hashmap setter
      */
-    public void setBoards(HashMap<String, Integer> boards) {
+    public void setBoards(HashMap<String, Long> boards) {
         this.boards = boards;
     }
 

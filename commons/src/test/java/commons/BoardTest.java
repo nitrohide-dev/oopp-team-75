@@ -34,7 +34,7 @@ class BoardTest {
     void constructor2() {
         Board board = new Board("Hello");
         assertEquals("Hello", board.getKey()); // initialized by constructor parameter
-        assertNotNull(board.getPassword()); // initialized to default value
+        assertEquals(0,board.getPassword()); // initialized to default value
         assertNotNull(board.getTitle()); // initialized to default value
         assertNotNull(board.getTaskLists()); // initialized to default value
     }

@@ -46,8 +46,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-//        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
-//        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
         var landing = FXML.load(LandingPageCtrl.class, "client", "scenes", "LandingPage.fxml");
         var board = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "BoardOverview.fxml");
         var userMenu = FXML.load(UserMenuCtrl.class,"client","scenes","UserMenu.fxml");

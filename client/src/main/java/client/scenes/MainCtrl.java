@@ -82,9 +82,10 @@ public class MainCtrl {
         this.userMenuCtrl = userMenu.getKey();
         this.userMenu = new Scene(userMenu.getValue());
 
-        List<String>boardNames=this.readFromCsv();
+        List<String> boardNames=this.readFromCsv();
+        userMenuCtrl.setBoardNames(boardNames);
         for(String board:boardNames){
-            userMenuCtrl.addBoardToListView(board);
+            userMenuCtrl.addBoardToList(board,0);
         }
 
         this.boardCreateCtrl = boardCreate.getKey();
@@ -93,7 +94,7 @@ public class MainCtrl {
 
 
         primaryStage.show();
-
+        System.out.println(System.getProperty("user.dir"));
 
 
 
@@ -162,7 +163,7 @@ public class MainCtrl {
      * @throws IOException exception for input
      */
     public void writeToCsv() throws IOException {
-        File dir = new File(System.getProperty("user.home") + "/Documents/Talio");
+        File dir = new File(System.getProperty("user.dir") + "/client/src/main/resources/");
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -181,9 +182,11 @@ public class MainCtrl {
      */
     public List<String> readFromCsv() throws IOException {
         List<String> boardNames=new ArrayList<>();
-        if(isFirstTime()) return boardNames;
-        HashMap<String, Integer> data = new HashMap<>();
-        File dir = new File(System.getProperty("user.home") + "/Documents/Talio/data.csv");
+        File dir = new File(System.getProperty("user.dir") + "/client/src/main/resources/data.csv");
+        if(!dir.exists()) {
+            return boardNames;
+        }
+        HashMap<String, Long> data = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
             String line= reader.readLine();
             line= line.substring(1,line.length()-1);
@@ -195,7 +198,7 @@ public class MainCtrl {
                     String key = tokens[0].trim();
 
                     boardNames.add(key);
-                    int value = Integer.parseInt(tokens[1].trim());
+                    long value = Integer.parseInt(tokens[1].trim());
                     data.put(key, value);
                 }
             }
@@ -204,17 +207,7 @@ public class MainCtrl {
         return boardNames;
     }
 
-    /**
-     * @return if the user ever used the application before
-     */
-    public boolean isFirstTime() {
-        File file = new File(System.getProperty("user.home") + "/Documents/Talio/first_time");
-        if (!file.exists()) {
-            file.mkdirs();
-            return true;
-        }
-        return false;
-    }
+
 
 
 
