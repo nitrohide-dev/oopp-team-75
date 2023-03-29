@@ -4,7 +4,9 @@ import client.utils.ServerUtils;
 
 import javafx.fxml.FXML;
 
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 
 
 public class BoardCreateCtrl  {

@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 
 public class UserMenuCtrl {
 
-@FXML
+    @FXML
     public void initialize(){
 
     }
