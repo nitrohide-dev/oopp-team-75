@@ -23,22 +23,32 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 
 public class BoardOverviewCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    @FXML
+    public Group group;
+    @FXML
+    public HBox header;
+    @FXML
+    public ScrollPane sPaneListView;
 
     @FXML
     private ListView<HBox> taskList1;
@@ -64,14 +74,22 @@ public class BoardOverviewCtrl {
 
     @FXML
     private AnchorPane anchorPaneMain;
+    @FXML
+    private ImageView logo1;
+    @FXML
+    private ImageView exitButton;
+    @FXML
+    private ImageView lockButton;
+    @FXML
+    private ImageView dropDownMenu;
 
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-        this.allLists = new HashMap();
-        this.listMap = new HashMap();
-        this.taskMap = new HashMap();
+        this.allLists = new HashMap<>();
+        this.listMap = new HashMap<>();
+        this.taskMap = new HashMap<>();
     }
 
     /**
@@ -80,7 +98,7 @@ public class BoardOverviewCtrl {
      */
     @FXML
     public void initialize() {
-        ObservableList children = listContainer.getChildren();
+        ObservableList<Node> children = listContainer.getChildren();
         sampleGroup = (Group) children.get(0);
         ListsSetup();
         // Sets ScrollPane size, so it's slightly bigger than AnchorPane
@@ -176,53 +194,36 @@ public class BoardOverviewCtrl {
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
      */
     public ListView<HBox> addTaskList(TaskList taskList) {
-        TextField sampleText = (TextField) sampleGroup.getChildren().get(0);
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
         ListView<HBox> sampleList = (ListView<HBox>) samplePane.getContent();
-
-        ObservableList<Node> children = listContainer.getChildren();
+        TextField textField = new TextField();
+        textField.setId("listName1");
+        textField.setOnInputMethodTextChanged(e -> taskList.setTitle(textField.getText()));
 
         ListView<HBox> listView = new ListView<>();
+        listView.setOnMouseClicked(e -> taskOperations(listView));
         listView.setPrefSize(sampleList.getPrefWidth(), sampleList.getPrefHeight());
         listView.setFixedCellSize(35);
-        listView.setOnMouseClicked(e -> {
-            taskOperations(listView);
-        });
-
+        listView.setId("taskList1");
         ScrollPane scrollPane = new ScrollPane(listView);
 
-        TextField textField = new TextField();
-        textField.setOnInputMethodTextChanged(e ->{
-            taskList.setTitle(textField.getText());
-        });
         //create deleteTaskListsButton
-        Button deleteTaskListsButton = new Button("x");
-
-        setDeleteAction(deleteTaskListsButton, textField.getText(),listView);
+        Button deleteTaskListsButton = new Button("X");
+        setDeleteAction(deleteTaskListsButton, textField.getText(), listView);
         hoverOverDeleteButton(deleteTaskListsButton);
 
-        deleteTaskListsButton.setLayoutX(191);
-        deleteTaskListsButton.setLayoutY(0);
-        deleteTaskListsButton.setPrefSize(25, 25);
 
+        setPropertiesTaskList(deleteTaskListsButton, textField, scrollPane);
         addTaskButton(listView);
-
-        textField.setPrefSize(sampleText.getPrefWidth(), sampleText.getPrefHeight());
-        textField.setLayoutX(0);
-        textField.setLayoutY(0);
-        textField.setText(taskList.getTitle());
-        scrollPane.setPrefSize(samplePane.getPrefWidth(), samplePane.getPrefHeight());
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setLayoutX(0);
-        scrollPane.setLayoutY(60);
 
         Group newGroup = new Group(textField, scrollPane, deleteTaskListsButton);
         newGroup.setLayoutX(sampleGroup.getLayoutX());
         newGroup.setLayoutY(sampleGroup.getLayoutY());
         newGroup.setTranslateX(sampleGroup.getTranslateX());
         newGroup.setTranslateY(sampleGroup.getTranslateY());
+        newGroup.getStylesheets().addAll(sampleGroup.getStylesheets()); //does not work
 
-        children.add(newGroup);
+        listContainer.getChildren().add(newGroup);
         dragOverHandler(listView);
         dragDroppedHandler(listView);
         allLists.put(listView, textField.getText());
@@ -231,31 +232,61 @@ public class BoardOverviewCtrl {
     }
 
     /**
+     * Sets the properties of the taskList
+     * @param deleteTaskListsButton the delete button
+     * @param textField the text field
+     * @param scrollPane the scrollpane
+     */
+    public void setPropertiesTaskList(Button deleteTaskListsButton, TextField textField, ScrollPane scrollPane) {
+        deleteTaskListsButton.setLayoutX(170);
+        deleteTaskListsButton.setLayoutY(0);
+        deleteTaskListsButton.setPrefSize(25, 25);
+        deleteTaskListsButton.setFont(new Font(19));
+        deleteTaskListsButton.setId("deleteTaskListsButton");
+
+        textField.setPrefSize(180, 25);
+        textField.setLayoutX(0);
+        textField.setLayoutY(0);
+        textField.setAlignment(javafx.geometry.Pos.CENTER);
+        textField.setFont(new Font(19));
+        textField.setText("Name your list!");
+        ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
+        scrollPane.setPrefSize(samplePane.getPrefWidth(), samplePane.getPrefHeight());
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setLayoutX(0);
+        scrollPane.setLayoutY(50);
+        scrollPane.setId("sPaneListView");
+
+    }
+    /**
      * Method for adding a TaskButton, used when creating a taskList, it creates new tasks
-     * @param listView
+     * @param listView the listview
      */
     public void addTaskButton(ListView<HBox> listView){
         Button addTaskButton = new Button("+");
         addTaskButton.setPadding(new Insets(2, 80, 2, 80));
         HBox box = new HBox(addTaskButton);
         listView.getItems().add(box);
-        addTaskButton.setOnAction(e -> {
-            createTask(listView);
-        });
+        addTaskButton.setOnAction(e -> createTask(listView));
     }
 
     /**
      * A method to delete taskLists, and for pop-up asking for confirmation
-     * @param button
-     * @param taskListName
+     * @param button The delete button
+     * @param taskListName the name of the task list
      */
     public void setDeleteAction(Button button, String taskListName, ListView<HBox> list){
         button.setOnAction(e -> {
             Group parentGroup = (Group) button.getParent();
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Delete Confirmation Dialog");
             alert.setHeaderText("Delete TaskList");
             alert.setContentText("Are you sure you want to delete '"+taskListName+"'?");
+            //add css to dialog pane
+            alert.getDialogPane().getStylesheets().add(
+                    Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
+            //make preferred size bigger
+            alert.getDialogPane().setPrefSize(400, 200);
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK){
@@ -269,16 +300,12 @@ public class BoardOverviewCtrl {
 
     /**A method to turn the deleteTasksLists button into pink when mouse is hovering over it
      *
-     * @param deleteTaskListsButton
+     * @param deleteTaskListsButton the delete button
      */
     public void hoverOverDeleteButton(Button deleteTaskListsButton){
-        deleteTaskListsButton.setOnMouseEntered(e -> {
-            deleteTaskListsButton.setStyle("-fx-background-color: pink;");
-        });
+        deleteTaskListsButton.setOnMouseEntered(e -> deleteTaskListsButton.setStyle("-fx-background-color: pink;"));
 
-        deleteTaskListsButton.setOnMouseExited(e -> {
-            deleteTaskListsButton.setStyle(null);
-        });
+        deleteTaskListsButton.setOnMouseExited(e -> deleteTaskListsButton.setStyle("-fx-background-color: transparent;"));
     }
 
     /**
@@ -316,7 +343,7 @@ public class BoardOverviewCtrl {
         editButton.setOnAction(e -> editTask(box));
         viewButton.setOnAction(e -> viewTask(box));
         disableTaskButtons(box);
-        box.setHgrow(task, Priority.NEVER);
+        HBox.setHgrow(task, Priority.NEVER);
         list.getItems().add(box);
         //Re-adds the button to the end of the list
         addTaskButton(list);
@@ -330,7 +357,7 @@ public class BoardOverviewCtrl {
      * @return the created button
      */
     private Button buttonBuilder(String path) {
-        String url = getClass().getClassLoader().getResource(path.replace("\\", "/")).toString();
+        String url = Objects.requireNonNull(getClass().getClassLoader().getResource(path.replace("\\", "/"))).toString();
         Image image = new Image(url);
         ImageView picture = new ImageView(image);
         picture.setFitHeight(18);
@@ -352,6 +379,16 @@ public class BoardOverviewCtrl {
         input.setHeaderText("Task name");
         input.setContentText("Please enter a name for the task:");
         input.setTitle("Input Task Name");
+        //add css to dialog pane
+        input.getDialogPane().getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
+        //make preferred size bigger
+        input.getDialogPane().setPrefSize(400, 200);
+        //trying to add icon to dialog
+        String path = Path.of("", "client", "images", "Logo.png").toString();
+        Stage stage = (Stage) input.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(path));
+
         input.showAndWait();
         return input.getEditor().getText();
     }
@@ -457,6 +494,9 @@ public class BoardOverviewCtrl {
 //        }
 //    }
 
+    /**
+     * @param list - the list that the task is dragged from
+     */
     public void dragOverHandler(ListView<HBox> list) {
         list.setOnDragOver(event -> {
             Dragboard db = event.getDragboard();
@@ -467,6 +507,9 @@ public class BoardOverviewCtrl {
         });
     }
 
+    /**
+     * @param list - the list that the task is dropped on
+     */
     public void dragDroppedHandler(ListView<HBox> list) {
         list.setOnDragDropped(event -> {
             Dragboard db = event.getDragboard();
@@ -485,8 +528,13 @@ public class BoardOverviewCtrl {
         });
     }
 
+    /**
+     * @param box - the box that contains the task
+     * @param task - the task
+     * @param list - the list that contains the task
+     */
     public void dragDetectHandler(HBox box,Label task,ListView<HBox> list) {
-        ObservableList children = anchorPaneMain.getChildren();
+        ObservableList<Node> children = anchorPaneMain.getChildren();
         box.setOnDragDetected(event -> {
             Dragboard db = box.startDragAndDrop(TransferMode.ANY);
             ClipboardContent content = new ClipboardContent();
@@ -502,6 +550,25 @@ public class BoardOverviewCtrl {
                 deleteTask(list, box);
             }
         });
+    }
+
+    /**
+     * @param mouseEvent - the mouse event
+     */
+    public void goToPrevious(MouseEvent mouseEvent) {
+        //TODO write code to go to previous page
+    }
+
+    public void changeImageUrl() {
+        // Set the image URL of ImageView
+        String path = Path.of("", "client", "images", "Logo.png").toString();
+        String path2 = Path.of("", "client", "images", "ExitButton.png").toString();
+        String path3 = Path.of("", "client", "images", "Dots.png").toString();
+        String path4 = Path.of("", "client", "images", "lockUnlocked.png").toString();
+        logo1.setImage(new Image(path));
+        exitButton.setImage(new Image(path2));
+        dropDownMenu.setImage(new Image(path3));
+        lockButton.setImage(new Image(path4));
     }
 }
 

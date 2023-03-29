@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("SpellCheckingInspection")
 @Entity
 public class Board {
 
@@ -39,24 +40,23 @@ public class Board {
 
     public Board() {} // for object mappers, please don't use.
 
-    public Board(String key){
-        this("","Hello",0,new ArrayList<>());
+    public Board(String key) {
+        this(key, "", 0L, new ArrayList<>());
     }
+
     public Board(CreateBoardModel model) {
         this(model.getKey(), model.getTitle(), model.getPassword(), new ArrayList<>());
     }
 
     public Board(String title, String key, List<TaskList> taskLists) {
-        this(title,key,0,taskLists);
+        this(key,title,0,taskLists);
     }
 
-
-     
-    public Board(String title, String key,long password,List<TaskList> taskLists) {
+    public Board(String key, String title, long password, List<TaskList> taskLists) {
         this.key = key;
         this.title = title;
-        this.taskLists = taskLists;
         this.password = password;
+        this.taskLists = taskLists;
     }
 
 //    getters and setters
@@ -81,6 +81,10 @@ public class Board {
         return password;
     }
 
+    public void setPassword(long password) {
+        this.password = password;
+    }
+
     public List<TaskList> getTaskLists() {
         return taskLists;
     }
@@ -88,8 +92,6 @@ public class Board {
     public void setTaskLists(List<TaskList> taskLists) {
         this.taskLists = taskLists;
     }
-
-    public void setPassword(int password){this.password=password;}
 
 //    equals and hashcode
 
@@ -139,7 +141,7 @@ public class Board {
 
     /**
      * Removes {@code taskList} from this board and sets its parent to null.
-     * @param taskList list of tasks
+     * @param taskList to be deleted tasklist
      */
     public void removeTaskList(TaskList taskList) {
         if (taskList == null)
@@ -147,5 +149,4 @@ public class Board {
         this.taskLists.remove(taskList);
         taskList.setBoard(null);
     }
-
 }
