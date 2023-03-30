@@ -22,10 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -190,8 +187,44 @@ public class BoardOverviewCtrl {
       ListView menuBar = new ListView();
       menuBar.prefHeightProperty().bind(borderPane.heightProperty());
       menuBar.setMaxWidth(150);
-      menuBar.getItems().addAll(new TextField("Something"), new TextField("Something else"), new TextField("Something different"));
       menuBar.setTranslateX(0);
+      menuBar.getItems().add(new Label(getBoard().getTitle()));
+      Button KeyCopyButton = new Button();
+      KeyCopyButton.setText("Copy Board Key");
+      KeyCopyButton.setOnAction(e -> {
+          Clipboard clipboard = Clipboard.getSystemClipboard();
+          ClipboardContent clipboardContent = new ClipboardContent();
+          clipboardContent.putString(getBoard().getKey());
+          clipboard.setContent(clipboardContent);
+      });
+      menuBar.getItems().add(KeyCopyButton);
+      Button boardRenameButton = new Button();
+      boardRenameButton.setText("rename board");
+      boardRenameButton.setOnAction(e ->
+      {
+          getBoard().setTitle(inputBoardName());
+          Label text = (Label) menuBar.getItems().get(0);
+          text.setText(getBoard().getTitle());
+      });
+      menuBar.getItems().add(boardRenameButton);
+      Button boardDeletionButton = new Button();
+      boardDeletionButton.setText("delete board");
+      boardDeletionButton.setOnAction(e->{
+          Alert alert = new Alert(Alert.AlertType.WARNING);
+          alert.setTitle("Delete Confirmation Dialog");
+          alert.setHeaderText("Delete TaskList");
+          alert.setContentText("Are you sure you want to delete '"+getBoard().getTitle()+"'?");
+          //add css to dialog pane
+          alert.getDialogPane().getStylesheets().add(
+                  Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
+          //make preferred size bigger
+          alert.getDialogPane().setPrefSize(400, 200);
+          Optional<ButtonType> result = alert.showAndWait();
+          if (result.isPresent() && result.get() == ButtonType.OK){
+              goToPrevious();
+          }
+      });
+      menuBar.getItems().add(boardDeletionButton);
 //      TranslateTransition menuBarTranslation = new TranslateTransition(Duration.millis(400), menuBar);
 //
 //      menuBarTranslation.setFromX(772);
@@ -434,6 +467,27 @@ public class BoardOverviewCtrl {
         Stage stage = (Stage) input.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(path));
 
+        input.showAndWait();
+        return input.getEditor().getText();
+    }
+    /**
+     * popup that ask you to input a board name.
+     * @return the input name
+     */
+    public String inputBoardName() {
+        TextInputDialog input = new TextInputDialog("board name");
+        input.setHeaderText("Board name");
+        input.setContentText("Please enter a name for the board:");
+        input.setTitle("Input Board Name");
+        //add css to dialog pane
+        input.getDialogPane().getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
+        //make preferred size bigger
+        input.getDialogPane().setPrefSize(400, 200);
+        //trying to add icon to dialog
+        String path = Path.of("", "client", "images", "Logo.png").toString();
+        Stage stage = (Stage) input.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(path));
         input.showAndWait();
         return input.getEditor().getText();
     }
