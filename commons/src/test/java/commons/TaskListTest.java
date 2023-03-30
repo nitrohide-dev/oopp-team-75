@@ -18,7 +18,7 @@ class TaskListTest {
 
     @BeforeEach
     void setup() {
-        taskList = new TaskList(new Board("a", "a", "a", null), "a", new ArrayList<>());
+        taskList = new TaskList(new Board("a", "a", 0, null), "a", new ArrayList<>());
     }
 
     @Test
@@ -93,16 +93,16 @@ class TaskListTest {
 
     @Test
     void getBoard() {
-        Board goodBoyBoard = new Board("a", "a", "a", null);
-        Board badBoyBoard = new Board("b", "a", "a", null);
+        Board goodBoyBoard = new Board("a", "a", 0, null);
+        Board badBoyBoard = new Board("b", "a", 0, null);
         assertEquals(goodBoyBoard, taskList.getBoard());
         assertNotEquals(badBoyBoard, taskList.getBoard());
     }
 
     @Test
     void setBoard() {
-        Board badBoyBoard = new Board("a", "a", "a", null);
-        Board goodBoyBoard = new Board("b", "a", "a", null);
+        Board badBoyBoard = new Board("a", "a", 0, null);
+        Board goodBoyBoard = new Board("b", "a", 0, null);
         taskList.setBoard(goodBoyBoard);
         assertEquals(goodBoyBoard, taskList.getBoard());
         assertNotEquals(badBoyBoard, taskList.getBoard());
@@ -110,13 +110,13 @@ class TaskListTest {
 
     @Test
     void testEquals() {
-        TaskList taskList1 = new TaskList(new Board("a", "a", "a", null), "a", new ArrayList<>());
-        TaskList taskList2 = new TaskList(new Board("a", "a", "a", null), "a", new ArrayList<>());
-        TaskList taskList3 = new TaskList(new Board("a", "a", "a", null), "b", new ArrayList<>());
+        TaskList taskList1 = new TaskList(new Board("a", "a", 0, null), "a", new ArrayList<>());
+        TaskList taskList2 = new TaskList(new Board("a", "a", 0, null), "a", new ArrayList<>());
+        TaskList taskList3 = new TaskList(new Board("a", "a", 0, null), "b", new ArrayList<>());
         List<Task> tasks4 = new ArrayList<>();
         tasks4.add(null);
-        TaskList taskList4 = new TaskList(new Board("a", "a", "a", null), "a", tasks4);
-        TaskList taskList5 = new TaskList(new Board("b", "a", "a", null), "a", new ArrayList<>());
+        TaskList taskList4 = new TaskList(new Board("a", "a", 0, null), "a", tasks4);
+        TaskList taskList5 = new TaskList(new Board("b", "a", 0, null), "a", new ArrayList<>());
         assertEquals(taskList1, taskList1);
         assertEquals(taskList1, taskList2);
         assertNotEquals(taskList1, taskList3);
@@ -127,13 +127,13 @@ class TaskListTest {
 
     @Test
     void testHashCode() {
-        TaskList taskList1 = new TaskList(new Board("a", "a", "a", null), "a", new ArrayList<>());
-        TaskList taskList2 = new TaskList(new Board("a", "a", "a", null), "a", new ArrayList<>());
-        TaskList taskList3 = new TaskList(new Board("a", "a", "a", null), "b", new ArrayList<>());
+        TaskList taskList1 = new TaskList(new Board("a", "a", 0, null), "a", new ArrayList<>());
+        TaskList taskList2 = new TaskList(new Board("a", "a", 0, null), "a", new ArrayList<>());
+        TaskList taskList3 = new TaskList(new Board("a", "a", 0, null), "b", new ArrayList<>());
         List<Task> tasks4 = new ArrayList<>();
         tasks4.add(null);
-        TaskList taskList4 = new TaskList(new Board("a", "a", "a", null), "a", tasks4);
-        TaskList taskList5 = new TaskList(new Board("b", "a", "a", null), "a", new ArrayList<>());
+        TaskList taskList4 = new TaskList(new Board("a", "a", 0, null), "a", tasks4);
+        TaskList taskList5 = new TaskList(new Board("b", "a", 0, null), "a", new ArrayList<>());
         assertEquals(taskList1.hashCode(), taskList1.hashCode());
         assertEquals(taskList1.hashCode(), taskList2.hashCode());
         assertNotEquals(taskList1.hashCode(), taskList3.hashCode());

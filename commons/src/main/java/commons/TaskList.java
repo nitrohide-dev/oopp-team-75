@@ -137,7 +137,7 @@ public class TaskList {
 
     /**
      * Removes {@code task} from this taskList and sets its parent to null.
-     * @param task
+     * @param task name of task
      */
     public void removeTask(Task task) {
         if (task == null)
@@ -163,8 +163,8 @@ public class TaskList {
 
     /**
      * Inserts {@code task1} before {@code task2} in this taskList.
-     * @param task1
-     * @param task2
+     * @param task1 first task
+     * @param task2 second task
      */
     public void insertTask(Task task1, Task task2) {
         if (task2 == null)

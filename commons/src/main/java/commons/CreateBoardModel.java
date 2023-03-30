@@ -7,11 +7,11 @@ public class CreateBoardModel {
 
 	public String key;
 	public String title;
-	public String password;
+	public int password;
 
 	public CreateBoardModel(){} // for object mappers, please don't use.
 
-	public CreateBoardModel(String key, String title, String password) {
+	public CreateBoardModel(String key, String title, int password) {
 		this.key = key;
 		this.title = title;
 		this.password = password;
@@ -33,11 +33,11 @@ public class CreateBoardModel {
 		this.title = title;
 	}
 
-	public String getPassword() {
+	public int getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(int password) {
 		this.password = password;
 	}
 
@@ -49,8 +49,6 @@ public class CreateBoardModel {
 		if (key == null)
 			return false;
 		if (title == null)
-			return false;
-		if (password == null)
 			return false;
 		return true;
 	}
