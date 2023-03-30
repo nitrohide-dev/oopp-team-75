@@ -94,22 +94,14 @@ public class BoardOverviewCtrl {
 
     /**
      * Initializer
-     * Initializes the objects in the scene
+     * Initializes the initial objects in the scene
      */
     @FXML
     public void initialize() {
         ObservableList<Node> children = listContainer.getChildren();
         sampleGroup = (Group) children.get(0);
-        ListsSetup();
         // Sets ScrollPane size, so it's slightly bigger than AnchorPane
         scrollPaneMain.setPrefSize(anchorPaneMain.getPrefWidth() + 10, anchorPaneMain.getPrefHeight() + 20);
-
-        //initializes the default delete taskListsButton
-        setDeleteAction(deleteTaskListsButton, listName1.getText(),taskList1);
-        hoverOverDeleteButton(deleteTaskListsButton);
-        //initializes the addTask button
-        taskList1.setOnMouseClicked(e -> taskOperations(taskList1));
-        addTaskButton(taskList1);
     }
 
     /**
@@ -137,6 +129,7 @@ public class BoardOverviewCtrl {
     public void load(Board board) {
         // removes all lists including their tasks
         listContainer.getChildren().clear();
+        allLists.clear();
         listMap.clear();
         taskMap.clear();
 
@@ -168,15 +161,6 @@ public class BoardOverviewCtrl {
         return mainCtrl.getCurrBoard();
     }
 
-//Deleted Scrolling, implemented using ScrollPane
-    /**
-     * Connects the initial list to its name
-     */
-    private void ListsSetup() {
-        this.allLists.put(taskList1, listName1.getText());
-        dragOverHandler(taskList1);
-        dragDroppedHandler(taskList1);
-    }
 
     /**
      * This eventHandler is waiting for the addButton to be clicked, after that creates
@@ -192,6 +176,7 @@ public class BoardOverviewCtrl {
     /**
      * This eventHandler is waiting for the addButton to be clicked, after that creates
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
+     * @param taskList a TaskList common object that is mapped with the created tasklist for backend-frontend communication
      */
     public ListView<HBox> addTaskList(TaskList taskList) {
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
@@ -309,13 +294,20 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * Creates a task and puts it in the first list
-     * A task contains a label and three buttons for task operations
+     * task creation method caused by the user's manual task addition.
+     * @return the created task
      */
     public HBox createTask(ListView<HBox> list) {
         return createTask(inputTaskName(), list);
     }
 
+
+    /**
+     * creates a task in the given list with the given name
+     * @param name the name of the task to be created
+     * @param list the list in which the task should be created
+     * @return the created task
+     */
     public HBox createTask(String name,ListView<HBox> list) {
         Task task1 = listMap.get(list).createTask();
         task1.setTitle(name);
@@ -323,6 +315,13 @@ public class BoardOverviewCtrl {
         server.updateBoard(getBoard()); // updates server
         return task;
     }
+    /**
+     * adds a task to a given list in frontend and maps it to the corresponding Task common data type
+     * @param name the name of the task to be added
+     * @param list the list to which the task should be added
+     * @param task1 the Task common data type to map to the task for frontend-backend communication
+     * @return the created task
+     */
     public HBox addTask(String name, ListView<HBox> list,Task task1) {
 
         //Removes the addTask button
@@ -348,6 +347,7 @@ public class BoardOverviewCtrl {
         //Re-adds the button to the end of the list
         addTaskButton(list);
         taskMap.put(box,task1);
+
         return box;
     }
 
@@ -495,7 +495,8 @@ public class BoardOverviewCtrl {
 //    }
 
     /**
-     * @param list - the list that the task is dragged from
+     * Handles the list's behaviour once a task is being dragged over it
+     * @param list the list which behaviour is to be configured
      */
     public void dragOverHandler(ListView<HBox> list) {
         list.setOnDragOver(event -> {
@@ -508,16 +509,15 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * @param list - the list that the task is dropped on
+     *  handles a list's behaviour when a task is dropped onto it
+     * @param list the list which behaviour is to be configured
      */
     public void dragDroppedHandler(ListView<HBox> list) {
         list.setOnDragDropped(event -> {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-                createTask(db.getString(),list);
-                Task task1 = listMap.get(list).createTask();
-                task1.setTitle(db.getString());
+              createTask(db.getString(),list);
                 success = true;
                 db.clear();
             }
@@ -529,8 +529,9 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * @param box - the box that contains the task
-     * @param task - the task
+     * Handles the task's behaviour when it's being dragged AND deletes it from the given list when it's being dropped
+     * @param box - the box that contains the task which behaviour is to be configured
+     * @param task - the task label, containing its name
      * @param list - the list that contains the task
      */
     public void dragDetectHandler(HBox box,Label task,ListView<HBox> list) {
