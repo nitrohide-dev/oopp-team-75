@@ -31,16 +31,16 @@ public class LandingPageCtrl {
     }
 
     public void connect(){
-        //String boardKey = "a";
-        // gets board from the database, or creates one if it doesn't exist
-//        Board board = server.findBoard(boardKey);
-//        if (board == null)
-//            board = server.createBoard(new CreateBoardModel(boardKey, "a", 0));
-//        mainCtrl.showBoard(board);
-        // need to implement backend, hardcoded it for now
-
+        String ip = server_ip.getText();
+        server_ip.setText("connecting");
+        if (ip.equals(""))
+            ip = "localhost:8080";
+        if (!server.testServer(ip)) {
+            server_ip.setText("could not connect");
+            return;
+        }
+        server.setServer(ip);
         mainCtrl.showUserMenu();
-        clearFields();
     }
 
     public void exit(){
@@ -48,12 +48,8 @@ public class LandingPageCtrl {
         System.exit(0);
     }
 
-    private void clearFields() {
-        server_ip.clear();
-    }
-
     public void changeImageUrl() {
-    // Set the image URL of ImageView
+        // Set the image URL of ImageView
         String path = Path.of("", "client", "images", "Logo.png").toString();
         String path2 = Path.of("", "client", "images", "ExitButton.png").toString();
         logo1.setImage(new Image(path));

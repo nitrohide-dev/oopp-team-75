@@ -16,7 +16,6 @@
 package client.utils;
 
 import commons.Board;
-import commons.Quote;
 import commons.CreateBoardModel;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -34,10 +33,9 @@ import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -48,33 +46,24 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 @SuppressWarnings("ALL")
 public class ServerUtils {
 
-    private static final String SERVER = "http://localhost:8080/";
+    private String SERVER;
 
-    public void getQuotesTheHardWay() throws IOException {
-        var url = new URL("http://localhost:8080/api/quotes");
-        var is = url.openConnection().getInputStream();
-        var br = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
+    private StompSession session;
+
+    public void setServer(String url) {
+        SERVER = "http://" + url + "/";
+        session = connect("ws://" + url + "/websocket");
+    }
+
+    public boolean testServer(String url) {
+        try {
+            new URL("http://" + url + "/").openConnection().connect();
+            return true;
+        } catch (final MalformedURLException e) {
+            return false;
+        } catch (final IOException e) {
+            return false;
         }
-    }
-
-    public List<Quote> getQuotes() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<>() {
-                });
-    }
-    //can we delete those old ones now?
-    public Quote addQuote(Quote quote) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
     }
 
     /**
@@ -192,9 +181,6 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(model, APPLICATION_JSON), Board.class);
     }
-
-    private StompSession session = connect("ws://localhost:8080/websocket");
-
     private StompSession connect(String url) {
         WebSocketClient client = new StandardWebSocketClient();
         WebSocketStompClient stomp = new WebSocketStompClient(client);
