@@ -54,20 +54,20 @@ public class Board {
     public Board() {} // for object mappers, please don't use.
 
     public Board(String key) {
-        this(key, "", "", new ArrayList<>());
+        this(key, "", "", new ArrayList<>(),new ArrayList<>());
     }
 
     public Board(CreateBoardModel model) {
-        this(model.getKey(), model.getTitle(), model.getPassword(), new ArrayList<>());
+        this(model.getKey(), model.getTitle(), model.getPassword(), new ArrayList<>(),new ArrayList<>());
     }
 
-    public Board(String key, String title, String password, List<TaskList> taskLists) {
+    public Board(String key, String title, String password, List<TaskList> taskLists,List<Tag> tags) {
         this.key = key;
         this.title = title;
         this.password = password;
         this.taskLists = taskLists;
+        this.tags = tags;
     }
-
 
 //    equals and hashcode
 
@@ -79,29 +79,21 @@ public class Board {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Board)) return false;
-
+        if (o == null || getClass() != o.getClass()) return false;
         Board board = (Board) o;
-
-        if (!Objects.equals(key, board.key)) return false;
-        if (!Objects.equals(title, board.title)) return false;
-        if (!Objects.equals(password, board.password)) return false;
-        return Objects.equals(taskLists, board.taskLists);
+        return Objects.equals(key, board.key) && Objects.equals(title, board.title) && Objects.equals(password, board.password) && Objects.equals(taskLists, board.taskLists) && Objects.equals(tags, board.tags);
     }
 
-    /**
+
+
+/**
      * Generates a hashcode using all attributes.
      * @return the generated hashcode
      */
-    @Override
-    public int hashCode() {
-        int result = key != null ? key.hashCode() : 0;
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (taskLists != null ? taskLists.hashCode() : 0);
-        return result;
-    }
-
+@Override
+public int hashCode() {
+    return Objects.hash(key, title, password, taskLists, tags);
+}
 //    actual methods
 
     /**
