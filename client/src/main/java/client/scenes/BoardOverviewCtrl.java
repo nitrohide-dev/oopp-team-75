@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -25,12 +26,11 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -82,6 +82,10 @@ public class BoardOverviewCtrl {
     private ImageView lockButton;
     @FXML
     private ImageView dropDownMenu;
+    @FXML
+    private BorderPane borderPane;
+    @FXML
+    private Pane mainPane;
 
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -102,6 +106,8 @@ public class BoardOverviewCtrl {
         sampleGroup = (Group) children.get(0);
         // Sets ScrollPane size, so it's slightly bigger than AnchorPane
         scrollPaneMain.setPrefSize(anchorPaneMain.getPrefWidth() + 10, anchorPaneMain.getPrefHeight() + 20);
+        configureExitButton();
+        configureMenuButton();
     }
 
     /**
@@ -161,7 +167,48 @@ public class BoardOverviewCtrl {
         return mainCtrl.getCurrBoard();
     }
 
-
+    public void configureExitButton(){
+        String path = Path.of("", "client", "images", "ExitButton.png").toString();
+        Button exitButton = buttonBuilder(path);
+        exitButton.setOnAction(e-> {
+            goToPrevious();
+        });
+        header.getChildren().add(exitButton);
+    }
+    public void configureMenuButton(){
+        String path = Path.of("", "client", "images", "Dots.png").toString();
+        Button menuButton = buttonBuilder(path);
+        menuButton.setOnAction(e-> {
+            addMenu();
+        });
+        header.getChildren().add(menuButton);
+    }
+  public void addMenu(){
+        if(mainPane.getChildren().size()>=2)
+        {
+            mainPane.getChildren().remove(1);
+            return;
+        }
+      ListView menuBar = new ListView();
+      menuBar.prefHeightProperty().bind(mainPane.heightProperty());
+      menuBar.setMaxWidth(150);
+      menuBar.getItems().addAll(new TextField("Something"), new TextField("Something else"), new TextField("Something different"));
+      menuBar.setTranslateX(752);
+//      TranslateTransition menuBarTranslation = new TranslateTransition(Duration.millis(400), menuBar);
+//
+//      menuBarTranslation.setFromX(772);
+//      menuBarTranslation.setToX(622);
+//
+//      menuBar.setOnMouseEntered(e -> {
+//          menuBarTranslation.setRate(1);
+//          menuTranslation.play();
+//      });
+//      menuBar.setOnMouseExited(e -> {
+//          menuBarTranslation.setRate(-1);
+//          menuBarTranslation.play();
+//      });
+      mainPane.getChildren().add(menuBar);
+  }
     /**
      * This eventHandler is waiting for the addButton to be clicked, after that creates
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
@@ -554,22 +601,16 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * @param mouseEvent - the mouse event
+     *
      */
-    public void goToPrevious(MouseEvent mouseEvent) {
-        //TODO write code to go to previous page
+    public void goToPrevious() {
+     mainCtrl.showUserMenu();
     }
 
     public void changeImageUrl() {
         // Set the image URL of ImageView
         String path = Path.of("", "client", "images", "Logo.png").toString();
-        String path2 = Path.of("", "client", "images", "ExitButton.png").toString();
-        String path3 = Path.of("", "client", "images", "Dots.png").toString();
-        String path4 = Path.of("", "client", "images", "lockUnlocked.png").toString();
         logo1.setImage(new Image(path));
-        exitButton.setImage(new Image(path2));
-        dropDownMenu.setImage(new Image(path3));
-        lockButton.setImage(new Image(path4));
     }
 }
 
