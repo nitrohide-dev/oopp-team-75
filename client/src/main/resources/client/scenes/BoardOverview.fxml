@@ -15,8 +15,8 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="mainPane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardOverviewCtrl">
-<BorderPane fx:id="borderPane">
+
+<BorderPane fx:id="borderPane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BoardOverviewCtrl">
    <top>
       <HBox fx:id="header" alignment="CENTER_LEFT" prefHeight="79.0" prefWidth="596.0" spacing="5.0" style="-fx-background-color: #2f58cd; -fx-border-width: 0 0 3 0; -fx-border-color: white;" BorderPane.alignment="TOP_LEFT">
          <ImageView fx:id="logo1" fitHeight="64.0" fitWidth="139.0" pickOnBounds="true" preserveRatio="true">
@@ -59,4 +59,4 @@
       </ScrollPane>
    </center>
 </BorderPane>
-</Pane>
+

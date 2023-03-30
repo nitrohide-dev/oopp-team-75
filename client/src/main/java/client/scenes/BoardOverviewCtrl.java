@@ -84,8 +84,6 @@ public class BoardOverviewCtrl {
     private ImageView dropDownMenu;
     @FXML
     private BorderPane borderPane;
-    @FXML
-    private Pane mainPane;
 
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -184,16 +182,16 @@ public class BoardOverviewCtrl {
         header.getChildren().add(menuButton);
     }
   public void addMenu(){
-        if(mainPane.getChildren().size()>=2)
+        if(borderPane.getRight()!=null)
         {
-            mainPane.getChildren().remove(1);
+            borderPane.setRight(null);
             return;
         }
       ListView menuBar = new ListView();
-      menuBar.prefHeightProperty().bind(mainPane.heightProperty());
+      menuBar.prefHeightProperty().bind(borderPane.heightProperty());
       menuBar.setMaxWidth(150);
       menuBar.getItems().addAll(new TextField("Something"), new TextField("Something else"), new TextField("Something different"));
-      menuBar.setTranslateX(752);
+      menuBar.setTranslateX(0);
 //      TranslateTransition menuBarTranslation = new TranslateTransition(Duration.millis(400), menuBar);
 //
 //      menuBarTranslation.setFromX(772);
@@ -207,7 +205,7 @@ public class BoardOverviewCtrl {
 //          menuBarTranslation.setRate(-1);
 //          menuBarTranslation.play();
 //      });
-      mainPane.getChildren().add(menuBar);
+      borderPane.setRight(menuBar);
   }
     /**
      * This eventHandler is waiting for the addButton to be clicked, after that creates
