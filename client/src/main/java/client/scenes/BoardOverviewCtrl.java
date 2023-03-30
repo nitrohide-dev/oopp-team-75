@@ -90,7 +90,6 @@ public class BoardOverviewCtrl {
         this.allLists = new HashMap<>();
         this.listMap = new HashMap<>();
         this.taskMap = new HashMap<>();
-        this.usermenuCtrl = new UserMenuCtrl(server,mainCtrl);
     }
 
     /**
@@ -205,8 +204,10 @@ public class BoardOverviewCtrl {
       boardRenameButton.setOnAction(e ->
       {
           getBoard().setTitle(inputBoardName());
+          server.updateBoard(getBoard());
           Label text = (Label) menuBar.getItems().get(0);
           text.setText(getBoard().getTitle());
+          refresh(getBoard());
       });
       menuBar.getItems().add(boardRenameButton);
       Button boardDeletionButton = new Button();
@@ -223,6 +224,7 @@ public class BoardOverviewCtrl {
           alert.getDialogPane().setPrefSize(400, 200);
           Optional<ButtonType> result = alert.showAndWait();
           if (result.isPresent() && result.get() == ButtonType.OK){
+              mainCtrl.getUserMenuCtrl().removeBoard(getBoard().getKey());
               goToPrevious();
               server.deleteBoard(getBoard().getKey());
           }

@@ -4,6 +4,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
 import commons.Board;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 
@@ -86,7 +87,7 @@ public class UserMenuCtrl {
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
         removeButton.setOnAction(event -> {
-            removeBoard(itemBox);
+            removeBoard(text);
         });
         itemBox.getChildren().addAll(itemLabel, removeButton);
         itemBox.setOnMouseClicked(event -> {
@@ -102,10 +103,21 @@ public class UserMenuCtrl {
     /**
      * removes HBox with board from user listView
      *
-     * @param itemBox Hbox selected
+     * @param key the key of the board to be remvoed
      */
-    public void removeBoard(HBox itemBox) {
-
+    public void removeBoard(String key) {
+       ObservableList<HBox> boardsList = boardsListView.getItems();
+       HBox itemBox = null;
+       for(int i=0;i<boardsList.size();i++)
+       {
+           HBox box = (HBox) boardsList.get(i);
+           String text = ((Label) box.getChildren().get(0)).getText();
+           if(text.equals(key)) {
+               itemBox = box;
+               boardsList.remove(itemBox);
+               break;
+           }
+       }
         String name = ((Label) itemBox.getChildren().get(0)).getText();
         removeBoardForUser(name);
         boardsListView.getItems().remove(itemBox);
@@ -152,7 +164,9 @@ public class UserMenuCtrl {
      */
     public void removeBoardForUser(String name) {
         this.deleteBoard(name);
-        boardNames.remove(name);
+        if(boardNames!=null) {
+            boardNames.remove(name);
+        }
     }
 
     /**
