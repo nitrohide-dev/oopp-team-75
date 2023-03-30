@@ -81,6 +81,7 @@ public class BoardOverviewCtrl {
     private ImageView dropDownMenu;
     @FXML
     private BorderPane borderPane;
+    private UserMenuCtrl usermenuCtrl;
 
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -89,6 +90,7 @@ public class BoardOverviewCtrl {
         this.allLists = new HashMap<>();
         this.listMap = new HashMap<>();
         this.taskMap = new HashMap<>();
+        this.usermenuCtrl = new UserMenuCtrl(server,mainCtrl);
     }
 
     /**
@@ -222,6 +224,7 @@ public class BoardOverviewCtrl {
           Optional<ButtonType> result = alert.showAndWait();
           if (result.isPresent() && result.get() == ButtonType.OK){
               goToPrevious();
+              server.deleteBoard(getBoard().getKey());
           }
       });
       menuBar.getItems().add(boardDeletionButton);
@@ -656,6 +659,7 @@ public class BoardOverviewCtrl {
      *
      */
     public void goToPrevious() {
+        borderPane.setRight(null);
      mainCtrl.showUserMenu();
     }
 
