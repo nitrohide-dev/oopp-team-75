@@ -517,7 +517,7 @@ public class BoardOverviewCtrl {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-              createTask(db.getString(),list);
+                createTask(db.getString(),list);
                 success = true;
                 db.clear();
             }
