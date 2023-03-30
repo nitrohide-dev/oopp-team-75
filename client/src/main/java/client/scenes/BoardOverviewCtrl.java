@@ -104,6 +104,7 @@ public class BoardOverviewCtrl {
         scrollPaneMain.setPrefSize(anchorPaneMain.getPrefWidth() + 10, anchorPaneMain.getPrefHeight() + 20);
         configureExitButton();
         configureMenuButton();
+        borderPane.setOnMouseClicked(null);
     }
 
     /**
@@ -190,6 +191,8 @@ public class BoardOverviewCtrl {
       menuBar.setMaxWidth(150);
       menuBar.setTranslateX(0);
       menuBar.getItems().add(new Label(getBoard().getTitle()));
+      menuBar.setId("sideMenu");
+      menuBar.setOnMouseClicked(null);
       Button KeyCopyButton = new Button();
       KeyCopyButton.setText("Copy Board Key");
       KeyCopyButton.setOnAction(e -> {
@@ -198,6 +201,7 @@ public class BoardOverviewCtrl {
           clipboardContent.putString(getBoard().getKey());
           clipboard.setContent(clipboardContent);
       });
+      KeyCopyButton.setId("smButton");
       menuBar.getItems().add(KeyCopyButton);
       Button boardRenameButton = new Button();
       boardRenameButton.setText("rename board");
@@ -209,6 +213,7 @@ public class BoardOverviewCtrl {
           text.setText(getBoard().getTitle());
           refresh(getBoard());
       });
+      boardRenameButton.setId("smButton");
       menuBar.getItems().add(boardRenameButton);
       Button boardDeletionButton = new Button();
       boardDeletionButton.setText("delete board");
@@ -229,6 +234,7 @@ public class BoardOverviewCtrl {
               server.deleteBoard(getBoard().getKey());
           }
       });
+      boardDeletionButton.setId("smButton");
       menuBar.getItems().add(boardDeletionButton);
 //      TranslateTransition menuBarTranslation = new TranslateTransition(Duration.millis(400), menuBar);
 //
