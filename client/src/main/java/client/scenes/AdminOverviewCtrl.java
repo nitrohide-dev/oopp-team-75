@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdminOverviewCtrl{
@@ -45,7 +46,10 @@ public class AdminOverviewCtrl{
 
     @FXML
     private void logOut(){
+        boards= new ArrayList<>();
+        boardsListView.getItems().clear();
         mainCtrl.showUserMenu();
+        mainCtrl.setAdminPresence(false);
     }
 
 

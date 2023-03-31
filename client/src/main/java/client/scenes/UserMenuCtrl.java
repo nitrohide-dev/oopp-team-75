@@ -20,6 +20,7 @@ import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,16 +38,15 @@ public class UserMenuCtrl {
         this.boardNames = boardNames;
     }
 
-    private List<String> boardNames; // list of current boards - much more convenient to access  than hashmap
-    // both this and hashmap get modified, hashmap is needed for passwords
-    private HashMap<String, Long> boards; // board and password hashed
+    private List<String> boardNames; // list of current boards
+
 
 
     @Inject
     public UserMenuCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-        this.boards = new HashMap<>();
+        this.boardNames=new ArrayList<>();
     }
 
     public void initialize() throws IOException {
@@ -63,17 +63,6 @@ public class UserMenuCtrl {
 
 
     /**
-     * adds board to user favorites
-     *
-     * @param name     name of the board
-     * @param password password - hashed
-     */
-    public void addBoardToList(String name, long password) {
-        this.addBoard(name, password);
-        addBoardToListView(name);
-    }
-
-    /**
      * shows popup for board creation
      */
     public void createBoard() {
@@ -86,13 +75,20 @@ public class UserMenuCtrl {
      *
      * @param text name/key of the board
      */
-    public void addBoardToListView(String text) {
+    public void addBoard(String text) {
+        Board board = server.findBoard(text);
+        if(board==null){
+            return;
+        }
+        boardNames.add(text);
+
         ObservableList<HBox> boardsList = boardsListView.getItems();
         for(int i=0;i<boardsList.size();i++)
         {
             HBox box = (HBox) boardsList.get(i);
             String text2 = ((Label) box.getChildren().get(0)).getText();
             if(text2.equals(text)) {
+                System.out.println("hello");
                 return;
             }
         }
@@ -122,6 +118,8 @@ public class UserMenuCtrl {
      * @param key the key of the board to be remvoed
      */
     public void removeBoard(String key) {
+        boardNames.remove(key); // first remove it from user's internal list
+
         ObservableList<HBox> boardsList = boardsListView.getItems();
         HBox itemBox = null;
         for(int i=0;i<boardsList.size();i++)
@@ -135,7 +133,6 @@ public class UserMenuCtrl {
             }
         }
         String name = ((Label) itemBox.getChildren().get(0)).getText();
-        removeBoardForUser(name);
         boardsListView.getItems().remove(itemBox);
 
     }
@@ -148,7 +145,12 @@ public class UserMenuCtrl {
     public void openBoard(HBox itemBox) {
         String name = ((Label) itemBox.getChildren().get(0)).getText();
         Board board = server.findBoard(name);
+        if(board==null){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Board does not exist.");
+            alert.showAndWait();
+        }
         mainCtrl.showBoard(board);
+
     }
 
     /**
@@ -172,18 +174,6 @@ public class UserMenuCtrl {
     }
 
     /**
-     * removes board for particular User (from their own variables)
-     *
-     * @param name name of the board
-     */
-    public void removeBoardForUser(String name) {
-        this.deleteBoard(name);
-        if(boardNames!=null) {
-            boardNames.remove(name);
-        }
-    }
-
-    /**
      * User joins a particular board and displays it immediately
      */
     public void joinBoard() {
@@ -195,7 +185,7 @@ public class UserMenuCtrl {
                 alert.showAndWait();
             } else {
                 mainCtrl.showBoard(board);
-                addBoardToList(name, 0);
+                addBoard(name);
             }
 
         } else {
@@ -206,28 +196,10 @@ public class UserMenuCtrl {
 
         textBox.clear();
     }
-
-    public void addBoard(String key, long password) {
-        boards.put(key, password);
+    public List<String> getBoards(){
+        return boardNames;
     }
 
-    public void deleteBoard(String key) {
-        boards.remove(key);
-    }
-
-
-    /**
-     * @return returns hashmap of boards
-     */
-    public HashMap<String, Long> getBoards() {
-        return boards;
-    }
-
-    /**
-     * @param boards board hashmap setter
-     */
-    public void setBoards(HashMap<String, Long> boards) {
-        this.boards = boards;
-    }
 
 }
+

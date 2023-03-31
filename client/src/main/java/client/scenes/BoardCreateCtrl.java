@@ -39,7 +39,7 @@ public class BoardCreateCtrl  {
 
                     // Close the stage if board name is entered
                     Stage stage = (Stage) createButton.getScene().getWindow();
-                    mainCtrl.createBoard(boardName.trim(),boardName.trim(),0);
+                    mainCtrl.createBoard(boardName.trim(),boardName.trim());
                     boardNameField.clear();
                     stage.close();
                 }

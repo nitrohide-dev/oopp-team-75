@@ -85,11 +85,7 @@ public class MainCtrl {
         this.userMenuCtrl = userMenu.getKey();
         this.userMenu = new Scene(userMenu.getValue());
 
-        List<String> boardNames=this.readFromCsv();
-        userMenuCtrl.setBoardNames(boardNames);
-        for(String board:boardNames){
-            userMenuCtrl.addBoardToList(board,0);
-        }
+
 
         this.boardCreateCtrl = boardCreate.getKey();
         this.boardCreate = new Scene(boardCreate.getValue());
@@ -107,6 +103,11 @@ public class MainCtrl {
         //primaryStage.setScene(this.adminOverview);
 
         primaryStage.show();
+
+        List<String> boardNames=this.readFromCsv();
+        for(String board : boardNames){
+            userMenuCtrl.addBoard(board);
+        }
 
 
 
@@ -165,9 +166,9 @@ public class MainCtrl {
 
     }
 
-    public void createBoard(String name,String title, int password){
-        userMenuCtrl.addBoardToList(name,password);
-        server.createBoard(new CreateBoardModel(name,title,password));
+    public void createBoard(String name,String title){
+        server.createBoard(new CreateBoardModel(name,title,0));
+        userMenuCtrl.addBoard(name);
         showUserMenu();
     }
 
@@ -201,24 +202,17 @@ public class MainCtrl {
         if(!dir.exists()) {
             return boardNames;
         }
-        HashMap<String, Long> data = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
             String line= reader.readLine();
             line= line.substring(1,line.length()-1);
             String[] boards = line.split(",* ");
             for(String string : boards) {
-                String[] tokens = string.split("=");
-                if (tokens.length == 2) {
 
-                    String key = tokens[0].trim();
-
-                    boardNames.add(key);
-                    long value = Integer.parseInt(tokens[1].trim());
-                    data.put(key, value);
+                    String key = string.trim();
+                    if(!key.equals("") && server.findBoard(key)!=null){
+                    boardNames.add(key);}
                 }
             }
-        }
-        userMenuCtrl.setBoards(data);
         return boardNames;
     }
 
@@ -229,8 +223,12 @@ public class MainCtrl {
         create.showAndWait();
     }
     public void adminOverview(){
+        primaryStage.close();
+        primaryStage = new Stage();
+        setAdminPresence(true);
         primaryStage.setScene(adminOverview);
         adminOverviewCtrl.refresh();
+        primaryStage.show();
     }
 
     /**
@@ -258,5 +256,8 @@ public class MainCtrl {
         create.initModality(Modality.APPLICATION_MODAL);
         create.showAndWait();
 
+    }
+    public void setAdminPresence(boolean adminPresence) {
+        boardOverviewCtrl.setAdminPresence(true);
     }
 }
