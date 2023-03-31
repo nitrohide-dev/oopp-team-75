@@ -2,32 +2,38 @@ package server.api.controllers;
 
 import commons.Board;
 import commons.CreateBoardModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/boards")
 public class BoardController {
 
+    private boolean authentication;
+    private static String hashedPassword;
     private final BoardService boardService;
 
-    public BoardController(BoardService boardService) {
+    public BoardController(BoardService boardService) throws IOException {
         this.boardService = boardService;
+        this.authentication= false;
     }
 
     /**
@@ -35,7 +41,9 @@ public class BoardController {
      * @return List containing all boards.
      */
     @GetMapping(path = { "", "/" })
-    public List<Board> getAll() { return boardService.getAll(); }
+    public List<Board> getAll() {
+        if(!authentication) return null;
+        return (List<Board>) boardService.getAll(); }
 
     /**
      * Gets a board from the database by key. If the key does not exist in the
@@ -73,6 +81,7 @@ public class BoardController {
      */
     @DeleteMapping("/delete/{key}")
     public ResponseEntity<Object> deleteByKey(@PathVariable("key") String key) {
+        if(!authentication) return null;
         try {
             boardService.deleteByKey(key);
             return ResponseEntity.ok().build();
@@ -89,4 +98,61 @@ public class BoardController {
         return board;
     }
 
-}
+    public static String hashPassword(String password) {
+        // Use a secure hash function to hash the password
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Hash function not available", e);
+        }
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<Boolean> authenticate(@RequestHeader String password) {
+        System.out.println("received");
+        if (password.equals(hashedPassword)) {
+            authentication=true;
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
+    }
+
+    public static void readPassword(String password) throws IOException {
+        File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
+        if(!dir.exists()) {
+            dir.createNewFile();
+            hashedPassword = hashPassword(password);
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir))) {
+                writer.write(hashedPassword);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Your initial password is: "+password+"\n Change it for increased security");
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
+            hashedPassword= reader.readLine();
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @GetMapping("/login/change")
+    public void changePassword(@RequestHeader String passwordHashed){
+        hashedPassword = passwordHashed;
+        File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
+        if(dir.exists()){dir.delete();}
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir))) {
+            writer.write(passwordHashed);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    }
+
+

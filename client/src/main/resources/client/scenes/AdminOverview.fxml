@@ -10,18 +10,18 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="717.0" prefWidth="395.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminOverviewCtrl">
+<VBox prefHeight="717.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminOverviewCtrl">
     <children>
         <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="80.0" prefWidth="395.0">
             <items>
-            <Button mnemonicParsing="false" text="Log out" />
-                <Button mnemonicParsing="false" text="Change password" />
+            <Button mnemonicParsing="false" onAction="#logOut" text="Log out" />
+            <Button mnemonicParsing="false" onAction="#changePassword" text="Change password" />
             </items>
             <cursor>
                 <Cursor fx:constant="DEFAULT" />
             </cursor>
         </ToolBar>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="574.0" prefWidth="395.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0">
               <children>
                   <ScrollPane layoutX="53.0" layoutY="50.0">
                       <content>

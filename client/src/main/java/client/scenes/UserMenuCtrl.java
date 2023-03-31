@@ -52,6 +52,14 @@ public class UserMenuCtrl {
 
     }
 
+    /**
+     * login method for admin
+     */
+    public void login(){
+        mainCtrl.adminLogin();
+
+    }
+
 
     /**
      * adds board to user favorites

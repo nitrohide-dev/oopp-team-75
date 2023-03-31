@@ -19,6 +19,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import server.api.controllers.AdminController;
+import server.api.controllers.BoardController;
+
+import java.io.IOException;
 
 @SpringBootApplication
 @EnableScheduling
@@ -27,5 +31,12 @@ public class Main {
 
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
+        try {
+            BoardController.readPassword("password");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+
 }

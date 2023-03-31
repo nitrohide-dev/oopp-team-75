@@ -49,8 +49,10 @@ public class Main extends Application {
         var userMenu = FXML.load(UserMenuCtrl.class,"client","scenes","UserMenu.fxml");
         var boardCreate = FXML.load(BoardCreateCtrl.class,"client","scenes","BoardCreate.fxml");
         var adminOverview = FXML.load(AdminOverviewCtrl.class,"client","scenes","AdminOverview.fxml");
+        var adminLogin = FXML.load(AdminLoginCtrl.class,"client","scenes","AdminLogin.fxml");
+        var passwordChange = FXML.load(PasswordChangeCtrl.class,"client","scenes","PasswordChange.fxml");
         mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, landing, board,userMenu,boardCreate,adminOverview);
+        mainCtrl.initialize(primaryStage, landing, board,userMenu,boardCreate,adminOverview,adminLogin,passwordChange);
 
 
     }

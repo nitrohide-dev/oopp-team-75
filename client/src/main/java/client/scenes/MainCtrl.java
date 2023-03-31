@@ -56,6 +56,11 @@ public class MainCtrl {
 
     private AdminOverviewCtrl adminOverviewCtrl;
     private Scene adminOverview;
+    private AdminLoginCtrl adminLoginCtrl;
+    private Scene adminLogin;
+    private PasswordChangeCtrl passwordChangeCtrl;
+    private Scene passwordChange;
+
     @Inject
     public MainCtrl(ServerUtils server){
         this.server = server;
@@ -66,7 +71,9 @@ public class MainCtrl {
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                             Pair<UserMenuCtrl, Parent> userMenu,
                            Pair<BoardCreateCtrl, Parent> boardCreate,
-                            Pair<AdminOverviewCtrl, Parent> adminOverview) throws IOException {
+                            Pair<AdminOverviewCtrl, Parent> adminOverview,
+                           Pair<AdminLoginCtrl, Parent> adminLogin,
+                           Pair<PasswordChangeCtrl, Parent> passwordChange) throws IOException {
         this.primaryStage = primaryStage;
 
         this.landingCtrl = landing.getKey();
@@ -91,8 +98,14 @@ public class MainCtrl {
         this.adminOverviewCtrl = adminOverview.getKey();
         this.adminOverview = new Scene(adminOverview.getValue());
 
-        //showLanding();
-        primaryStage.setScene(this.adminOverview);
+        this.adminLoginCtrl = adminLogin.getKey();
+        this.adminLogin = new Scene(adminLogin.getValue());
+
+        this.passwordChangeCtrl = passwordChange.getKey();
+        this.passwordChange = new Scene(passwordChange.getValue());
+
+        showLanding();
+        //primaryStage.setScene(this.adminOverview);
 
         primaryStage.show();
 
@@ -206,5 +219,47 @@ public class MainCtrl {
         }
         userMenuCtrl.setBoards(data);
         return boardNames;
+    }
+
+    public void adminLogin() {
+        Stage create = new Stage();
+        create.setScene(adminLogin);
+        create.initModality(Modality.APPLICATION_MODAL);
+        create.showAndWait();
+    }
+    public void adminOverview(){
+        primaryStage.setScene(adminOverview);
+        adminOverviewCtrl.refresh();
+    }
+
+    public void showBoardNewWindow(Board board) {
+        currBoard = board;
+        primaryStage.setTitle("Board: Your Board");
+        primaryStage.setMaximized(true);
+        primaryStage.setMinWidth(750);
+        primaryStage.setMinHeight(600);
+        //this fixes a bug where the maximized window will be opened in pref size.
+        //but it causes a bug where the window is not properly set, so the buttons on the right side are not visible
+        //TODO fix this bug
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+        primaryStage.setWidth(bounds.getWidth());
+        primaryStage.setHeight(bounds.getHeight());
+        boardOverview.getStylesheets().add(Objects.requireNonNull(getClass()
+                .getResource("css/BoardOverview.css")).toExternalForm());
+        boardOverviewCtrl.changeImageUrl();
+        Stage stage = new Stage();
+        stage.setScene(boardOverview);
+        boardOverviewCtrl.load(board);
+        boardOverviewCtrl.connect();
+        // connects to /topic/boards
+    }
+
+    public void changePassword(){
+        Stage create = new Stage();
+        create.setScene(passwordChange);
+        create.initModality(Modality.APPLICATION_MODAL);
+        create.showAndWait();
+
     }
 }

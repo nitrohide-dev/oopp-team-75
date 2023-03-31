@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import commons.Board;
 import com.google.inject.Inject;
+import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -10,6 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -30,11 +32,7 @@ public class AdminOverviewCtrl{
 
     }
 
-    public void initialize(){
-        refresh();
-    }
-
-    private void refresh(){
+    public void refresh(){
         boards = server.getAllBoards();
         System.out.println(boards);
         for(Board b : boards){
@@ -42,11 +40,13 @@ public class AdminOverviewCtrl{
         }
     }
 
-    private void deleteBoard(){}
 
-    private void viewBoard(){}
 
-    private void logOut(){}
+
+    @FXML
+    private void logOut(){
+        mainCtrl.showUserMenu();
+    }
 
 
     public void addBoardToListView(String text) {
@@ -73,7 +73,7 @@ public class AdminOverviewCtrl{
     private void openBoard(HBox itemBox) {
         String name = ((Label) itemBox.getChildren().get(0)).getText();
         Board board = server.findBoard(name);
-        mainCtrl.showBoard(board);
+        mainCtrl.showBoardNewWindow(board);
     }
 
     private void removeBoard(HBox itemBox) {
@@ -94,6 +94,11 @@ public class AdminOverviewCtrl{
         button.setPadding(new Insets(6, 1, 6, 3));
         button.setGraphic(picture);
         return button;
+    }
+
+@FXML
+    private void changePassword(){
+     mainCtrl.changePassword();
     }
 
 }
