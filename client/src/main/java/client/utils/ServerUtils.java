@@ -215,6 +215,11 @@ public class ServerUtils {
         send("/app/boards", board);
     }
 
+    /**
+     * initial authentication on the side of the server
+     * @param password password hashed
+     * @return whether it was successful or not
+     */
     public boolean authenticate(String password) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/login")
@@ -224,13 +229,21 @@ public class ServerUtils {
                 .get(Boolean.class);
     }
 
-    public boolean changePassword(String password) {
+
+    public boolean changePassword(String passwordHashed) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/login/change")
+                .target(SERVER).path("api/boards/changePassword")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .header("password",password)
+                .header("passwordHashed",passwordHashed)
                 .get(Boolean.class);
+    }
+
+    public void logout(){
+        ClientBuilder.newClient(new ClientConfig())
+         .target(SERVER).path("api/boards/logout")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON);
     }
 
 }

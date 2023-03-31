@@ -32,12 +32,12 @@
                <font>
                   <Font size="20.0" />
                </font></Label>
-                <TextField fx:id="boardNameField" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <TextField fx:id="boardNameField" onAction="#send" GridPane.columnIndex="1" GridPane.rowIndex="0">
                <font>
                   <Font size="20.0" />
                </font></TextField>
 
-                <Button fx:id="createButton" alignment="CENTER" contentDisplay="CENTER" prefWidth="100.0" text="Create" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <Button fx:id="createButton" alignment="CENTER" contentDisplay="CENTER" onAction="#send" prefWidth="100.0" text="Create" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <font>
                   <Font size="20.0" />
                </font></Button>

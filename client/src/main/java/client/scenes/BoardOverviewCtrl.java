@@ -180,10 +180,10 @@ public class BoardOverviewCtrl {
         Button exitButton = buttonBuilder(path);
         exitButton.setOnAction(e-> {
             if(!adminPresence){
-            goToPrevious();}
+                goToPrevious();}
             else{
-               Stage stage = (Stage) scrollPaneMain.getScene().getWindow();
-               stage.close();
+                Stage stage = (Stage) scrollPaneMain.getScene().getWindow();
+                stage.close();
             }
         });
         header.getChildren().add(exitButton);

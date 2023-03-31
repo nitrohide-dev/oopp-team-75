@@ -21,7 +21,6 @@ import javafx.scene.layout.HBox;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -148,8 +147,11 @@ public class UserMenuCtrl {
         if(board==null){
             Alert alert = new Alert(Alert.AlertType.ERROR, "Board does not exist.");
             alert.showAndWait();
+            removeBoard(name);
         }
-        mainCtrl.showBoard(board);
+        else{
+            mainCtrl.showBoard(board);
+        }
 
     }
 

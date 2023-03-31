@@ -11,7 +11,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -33,6 +32,9 @@ public class AdminOverviewCtrl{
 
     }
 
+    /**
+     * refreshes admin overview
+     */
     public void refresh(){
         boards = server.getAllBoards();
         System.out.println(boards);
@@ -42,17 +44,24 @@ public class AdminOverviewCtrl{
     }
 
 
-
-
+    /**
+     * logs admin out
+     */
     @FXML
     private void logOut(){
         boards= new ArrayList<>();
         boardsListView.getItems().clear();
         mainCtrl.showUserMenu();
         mainCtrl.setAdminPresence(false);
+        server.logout();
     }
 
 
+    /**
+     * @param text name of the board
+     *
+     * used for admin overview initialization
+     */
     public void addBoardToListView(String text) {
 
         HBox itemBox = new HBox();
@@ -74,17 +83,28 @@ public class AdminOverviewCtrl{
         boardsListView.getItems().add(itemBox);
     }
 
+    /**
+     * @param itemBox item from list
+     *
+     *  opens a board for admin
+     */
     private void openBoard(HBox itemBox) {
         String name = ((Label) itemBox.getChildren().get(0)).getText();
         Board board = server.findBoard(name);
         mainCtrl.showBoardNewWindow(board);
     }
 
+    /**
+     * @param itemBox item from list
+     *
+     * removes board from database
+     */
     private void removeBoard(HBox itemBox) {
         boardsListView.getItems().remove(itemBox);
         server.deleteBoard(((Label) itemBox.getChildren().get(0)).getText());
 
     }
+
 
     private Button buttonBuilder(String path) {
         String url = getClass().getClassLoader().getResource(path.replace("\\", "/")).toString();
@@ -100,9 +120,12 @@ public class AdminOverviewCtrl{
         return button;
     }
 
-@FXML
+    /**
+     * password change
+     */
+    @FXML
     private void changePassword(){
-     mainCtrl.changePassword();
+        mainCtrl.changePassword();
     }
 
 }

@@ -20,7 +20,16 @@ import static com.google.inject.Guice.createInjector;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import client.scenes.*;
+
+import client.scenes.BoardOverviewCtrl;
+import client.scenes.LandingPageCtrl;
+import client.scenes.MainCtrl;
+import client.scenes.UserMenuCtrl;
+import client.scenes.BoardCreateCtrl;
+import client.scenes.PasswordChangeCtrl;
+import client.scenes.AdminOverviewCtrl;
+import client.scenes.AdminLoginCtrl;
+
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.fxml.FXML;

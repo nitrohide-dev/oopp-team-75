@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import com.sun.javafx.menu.MenuItemBase;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -41,9 +40,9 @@ public class PasswordChangeCtrl {
                     alert.showAndWait();
                 }
                 else{
-//                    if(server.changePassword(hashPassword(password.getText()))){
-//                        System.out.println("nice");
-//                    };
+                    if(server.changePassword(hashPassword(password.getText()))){
+                        System.out.println("nice");
+                    };
                     Stage stage = (Stage) password.getScene().getWindow();
                     stage.close();
                 }
@@ -53,6 +52,13 @@ public class PasswordChangeCtrl {
             }
         });
     }
+
+    /**
+     *
+     * used for hashing for increased security
+     * @param password unhashed password
+     * @return hashed password
+     */
     public String hashPassword(String password) {
         // use a hash function to hash the password, will be used
         try {

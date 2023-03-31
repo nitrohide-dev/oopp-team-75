@@ -2,25 +2,33 @@ package server.api.controllers;
 
 import commons.Board;
 import commons.CreateBoardModel;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
-
-import java.io.*;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -123,6 +131,7 @@ public class BoardController {
     public static void readPassword(String password) throws IOException {
         File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
         if(!dir.exists()) {
+            System.out.println("Your initial password is: "+password+"\nChange it for increased security");
             dir.createNewFile();
             hashedPassword = hashPassword(password);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir))) {
@@ -130,29 +139,36 @@ public class BoardController {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println("Your initial password is: "+password+"\n Change it for increased security");
         }
-        try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
-            hashedPassword= reader.readLine();
+        else{
+            try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
+                hashedPassword= reader.readLine();
 
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
-    @GetMapping("/login/change")
-    public void changePassword(@RequestHeader String passwordHashed){
+    @GetMapping("/changePassword")
+    public ResponseEntity<Boolean> changePassword(@RequestHeader String passwordHashed){
         hashedPassword = passwordHashed;
         File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
         if(dir.exists()){dir.delete();}
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir))) {
             writer.write(passwordHashed);
+            return ResponseEntity.ok(true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
+    @GetMapping("/logout")
+    public ResponseEntity<Object> logOut() {
+        System.out.println("received");
+        if (authentication) {
+            authentication=false;
+        }
+        return ResponseEntity.ok().build();
     }
+}
 
 

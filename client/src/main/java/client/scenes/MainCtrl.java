@@ -18,7 +18,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
-import javafx.geometry.Rectangle2D;
+//import javafx.geometry.Rectangle2D;
 import commons.CreateBoardModel;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -36,7 +36,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MainCtrl {
@@ -133,16 +132,16 @@ public class MainCtrl {
     public void showBoard(Board board) {
         currBoard = board;
         primaryStage.setTitle("Board: Your Board");
-        primaryStage.setMaximized(true);
+        //primaryStage.setMaximized(true);
         primaryStage.setMinWidth(750);
         primaryStage.setMinHeight(600);
         //this fixes a bug where the maximized window will be opened in pref size.
         //but it causes a bug where the window is not properly set, so the buttons on the right side are not visible
         //TODO fix this bug
         Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
-        primaryStage.setWidth(bounds.getWidth());
-        primaryStage.setHeight(bounds.getHeight());
+        //Rectangle2D bounds = screen.getVisualBounds();
+//        primaryStage.setWidth(bounds.getWidth());
+//        primaryStage.setHeight(bounds.getHeight());
         boardOverview.getStylesheets().add(Objects.requireNonNull(getClass()
                 .getResource("css/BoardOverview.css")).toExternalForm());
         boardOverviewCtrl.changeImageUrl();
@@ -208,11 +207,11 @@ public class MainCtrl {
             String[] boards = line.split(",* ");
             for(String string : boards) {
 
-                    String key = string.trim();
-                    if(!key.equals("") && server.findBoard(key)!=null){
+                String key = string.trim();
+                if(!key.equals("") && server.findBoard(key)!=null){
                     boardNames.add(key);}
-                }
             }
+        }
         return boardNames;
     }
 
@@ -258,6 +257,6 @@ public class MainCtrl {
 
     }
     public void setAdminPresence(boolean adminPresence) {
-        boardOverviewCtrl.setAdminPresence(true);
+        boardOverviewCtrl.setAdminPresence(adminPresence);
     }
 }

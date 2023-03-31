@@ -25,6 +25,9 @@ public class AdminLoginCtrl {
         this.mainCtrl = mainCtrl;
     }
 
+    /**
+     * logs you in as an admin
+     */
     public void login(){
         System.out.println(hashPassword("pass"));
         if(!password.getText().equals("") && server.authenticate(hashPassword(password.getText())) ){ // TBD
@@ -40,6 +43,12 @@ public class AdminLoginCtrl {
         }
     }
 
+    /**
+     * for security
+     *
+     * @param password unhashed password
+     * @return hashed password
+     */
     public String hashPassword(String password) {
         // use a hash function to hash the password
         try {

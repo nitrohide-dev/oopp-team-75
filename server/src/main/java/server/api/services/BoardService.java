@@ -2,7 +2,6 @@ package server.api.services;
 
 import commons.Board;
 import commons.CreateBoardModel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
 import server.exceptions.BoardDoesNotExist;
