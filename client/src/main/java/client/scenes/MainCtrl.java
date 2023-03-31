@@ -67,8 +67,7 @@ public class MainCtrl {
     }
 
     public void initialize(Stage primaryStage, Pair<LandingPageCtrl, Parent> landing,
-//                           Pair<AddQuoteCtrl, Parent> add,
-                           Pair<BoardOverviewCtrl, Parent> boardOverview,
+                          Pair<BoardOverviewCtrl, Parent> boardOverview,
                             Pair<UserMenuCtrl, Parent> userMenu,
                            Pair<BoardCreateCtrl, Parent> boardCreate,
                             Pair<AdminOverviewCtrl, Parent> adminOverview,
@@ -232,27 +231,23 @@ public class MainCtrl {
         adminOverviewCtrl.refresh();
     }
 
+    /**
+     * Used only by admin
+     * @param board Board to view
+     */
     public void showBoardNewWindow(Board board) {
+        Stage stage = new Stage();
         currBoard = board;
-        primaryStage.setTitle("Board: Your Board");
-        primaryStage.setMaximized(true);
-        primaryStage.setMinWidth(750);
-        primaryStage.setMinHeight(600);
-        //this fixes a bug where the maximized window will be opened in pref size.
-        //but it causes a bug where the window is not properly set, so the buttons on the right side are not visible
-        //TODO fix this bug
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
-        primaryStage.setWidth(bounds.getWidth());
-        primaryStage.setHeight(bounds.getHeight());
+        stage.setTitle("Board: Your Board");
+        stage.setMinWidth(750);
+        stage.setMinHeight(600);
+        stage.setScene(boardOverview);
         boardOverview.getStylesheets().add(Objects.requireNonNull(getClass()
                 .getResource("css/BoardOverview.css")).toExternalForm());
         boardOverviewCtrl.changeImageUrl();
-        Stage stage = new Stage();
-        stage.setScene(boardOverview);
         boardOverviewCtrl.load(board);
         boardOverviewCtrl.connect();
-        // connects to /topic/boards
+        stage.show();
     }
 
     public void changePassword(){

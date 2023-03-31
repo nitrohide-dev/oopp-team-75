@@ -41,9 +41,11 @@ public class PasswordChangeCtrl {
                     alert.showAndWait();
                 }
                 else{
-                    if(server.changePassword(hashPassword(password.getText()))){
-                        System.out.println("nice");
-                    };
+//                    if(server.changePassword(hashPassword(password.getText()))){
+//                        System.out.println("nice");
+//                    };
+                    Stage stage = (Stage) password.getScene().getWindow();
+                    stage.close();
                 }
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Please fill out both fields.");

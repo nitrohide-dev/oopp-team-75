@@ -2,6 +2,7 @@ package server.api.services;
 
 import commons.Board;
 import commons.CreateBoardModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
 import server.exceptions.BoardDoesNotExist;
@@ -24,7 +25,7 @@ public class BoardService {
 	 * @return list of all boards
 	 */
 	public List<Board> getAll() {
-		return repo.findAll();
+		return (List<Board>)  repo.findAll();
 	}
 
 	/**
