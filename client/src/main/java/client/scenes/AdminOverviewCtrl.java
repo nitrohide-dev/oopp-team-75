@@ -36,6 +36,7 @@ public class AdminOverviewCtrl{
 
     private void refresh(){
         boards = server.getAllBoards();
+        System.out.println(boards);
         for(Board b : boards){
             this.addBoardToListView(b.getKey());
         }
