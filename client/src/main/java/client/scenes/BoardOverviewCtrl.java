@@ -263,12 +263,12 @@ public class BoardOverviewCtrl {
      * creates the menu bar and appends the boards name and the buttons with functionalities to it
      * the menu is added to the right side of the scene
      */
-  public void addMenu(){
+    public void addMenu(){
         if(borderPane.getRight()!=null)
-          {
-              borderPane.setRight(null);
-              return;
-          }
+        {
+            borderPane.setRight(null);
+            return;
+        }
         ListView menuBar = new ListView();
         menuBar.prefHeightProperty().bind(borderPane.heightProperty());
         menuBar.setMaxWidth(150);
@@ -276,10 +276,10 @@ public class BoardOverviewCtrl {
         menuBar.getItems().add(new Label(getBoard().getTitle()));
         menuBar.setId("sideMenu");
         menuBar.setOnMouseClicked(null);
-      Button KeyCopyButton = new Button();
-      menuBar.getItems().add(createCopyKeyButton());;
-      menuBar.getItems().add(createRenameBoardButton(menuBar));
-      menuBar.getItems().add(createBoardDeletionButton());
+        Button KeyCopyButton = new Button();
+        menuBar.getItems().add(createCopyKeyButton());;
+        menuBar.getItems().add(createRenameBoardButton(menuBar));
+        menuBar.getItems().add(createBoardDeletionButton());
 //      TranslateTransition menuBarTranslation = new TranslateTransition(Duration.millis(400), menuBar);
 //
 //      menuBarTranslation.setFromX(772);
@@ -293,8 +293,8 @@ public class BoardOverviewCtrl {
 //            menuBarTranslation.setRate(-1);
 //          menuBarTranslation.play();
 //      });
-      borderPane.setRight(menuBar);
-  }
+        borderPane.setRight(menuBar);
+    }
     /**
      * This eventHandler is waiting for the addButton to be clicked, after that creates
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
@@ -712,7 +712,7 @@ public class BoardOverviewCtrl {
      */
     public void goToPrevious() {
         borderPane.setRight(null);
-     mainCtrl.showUserMenu();
+        mainCtrl.showUserMenu();
     }
 
     public void changeImageUrl() {
