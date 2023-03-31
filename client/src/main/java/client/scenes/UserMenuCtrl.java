@@ -119,9 +119,7 @@ public class UserMenuCtrl {
      */
     public void openBoard(HBox itemBox) {
         String name = ((Label) itemBox.getChildren().get(0)).getText();
-        System.out.println(name);
         Board board = server.findBoard(name);
-        System.out.println(board.toString());
         mainCtrl.showBoard(board);
     }
 

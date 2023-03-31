@@ -53,6 +53,9 @@ public class MainCtrl {
     private UserMenuCtrl userMenuCtrl;
     private Scene boardCreate;
     private BoardCreateCtrl boardCreateCtrl;
+
+    private AdminOverviewCtrl adminOverviewCtrl;
+    private Scene adminOverview;
     @Inject
     public MainCtrl(ServerUtils server){
         this.server = server;
@@ -62,15 +65,12 @@ public class MainCtrl {
 //                           Pair<AddQuoteCtrl, Parent> add,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                             Pair<UserMenuCtrl, Parent> userMenu,
-                           Pair<BoardCreateCtrl, Parent> boardCreate) throws IOException {
+                           Pair<BoardCreateCtrl, Parent> boardCreate,
+                            Pair<AdminOverviewCtrl, Parent> adminOverview) throws IOException {
         this.primaryStage = primaryStage;
+
         this.landingCtrl = landing.getKey();
         this.landing = new Scene(landing.getValue());
-//        this.overviewCtrl = overview.getKey();
-//        this.overview = new Scene(overview.getValue());
-//
-//        this.addCtrl = add.getKey();
-//        this.add = new Scene(add.getValue());
 
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
@@ -87,11 +87,14 @@ public class MainCtrl {
 
         this.boardCreateCtrl = boardCreate.getKey();
         this.boardCreate = new Scene(boardCreate.getValue());
-        showLanding();
 
+        this.adminOverviewCtrl = adminOverview.getKey();
+        this.adminOverview = new Scene(adminOverview.getValue());
+
+        //showLanding();
+        primaryStage.setScene(this.adminOverview);
 
         primaryStage.show();
-        System.out.println(System.getProperty("user.dir"));
 
 
 

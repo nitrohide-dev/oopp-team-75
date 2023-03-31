@@ -19,15 +19,13 @@ import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import client.scenes.BoardOverviewCtrl;
-import client.scenes.LandingPageCtrl;
-import client.scenes.MainCtrl;
+
+import client.scenes.*;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
-import client.scenes.UserMenuCtrl;
-import client.scenes.BoardCreateCtrl;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -50,8 +48,9 @@ public class Main extends Application {
         var board = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "BoardOverview.fxml");
         var userMenu = FXML.load(UserMenuCtrl.class,"client","scenes","UserMenu.fxml");
         var boardCreate = FXML.load(BoardCreateCtrl.class,"client","scenes","BoardCreate.fxml");
+        var adminOverview = FXML.load(AdminOverviewCtrl.class,"client","scenes","AdminOverview.fxml");
         mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, landing, board,userMenu,boardCreate);
+        mainCtrl.initialize(primaryStage, landing, board,userMenu,boardCreate,adminOverview);
 
 
     }
