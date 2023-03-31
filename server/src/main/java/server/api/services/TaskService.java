@@ -1,6 +1,7 @@
 package server.api.services;
 
 import commons.Task;
+import commons.TaskMoveModel;
 import org.springframework.stereotype.Service;
 import server.database.TaskRepository;
 import server.exceptions.TaskDoesNotExist;
@@ -50,6 +51,14 @@ public class TaskService {
 //		Task task = taskList.createTask(model.name);
 //		return taskRepository.save(task);
 //	}
+
+	public Task moveTask(TaskMoveModel model) throws TaskDoesNotExist {
+
+		Task task = repo.findById(model.getTask_id()).get();
+		task.setTaskList(model.getTasklist());
+		return repo.save(task);
+	}
+
 
 	/**
 	 * Deletes a task from the database

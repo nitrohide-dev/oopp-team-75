@@ -1,9 +1,12 @@
 package server.api.services;
 
+import commons.Task;
 import commons.TaskList;
+import commons.TaskMoveModel;
 import org.springframework.stereotype.Service;
 import server.database.ListRepository;
 import server.exceptions.ListDoesNotExist;
+import server.exceptions.TaskDoesNotExist;
 
 import java.util.List;
 
