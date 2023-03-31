@@ -79,7 +79,15 @@ public class UserMenuCtrl {
      * @param text name/key of the board
      */
     public void addBoardToListView(String text) {
-
+        ObservableList<HBox> boardsList = boardsListView.getItems();
+        for(int i=0;i<boardsList.size();i++)
+        {
+            HBox box = (HBox) boardsList.get(i);
+            String text2 = ((Label) box.getChildren().get(0)).getText();
+            if(text2.equals(text)) {
+                return;
+            }
+        }
         HBox itemBox = new HBox();
         Label itemLabel = new Label(text);
         itemLabel.setPrefWidth(120);
@@ -106,18 +114,18 @@ public class UserMenuCtrl {
      * @param key the key of the board to be remvoed
      */
     public void removeBoard(String key) {
-       ObservableList<HBox> boardsList = boardsListView.getItems();
-       HBox itemBox = null;
-       for(int i=0;i<boardsList.size();i++)
-       {
-           HBox box = (HBox) boardsList.get(i);
-           String text = ((Label) box.getChildren().get(0)).getText();
-           if(text.equals(key)) {
-               itemBox = box;
-               boardsList.remove(itemBox);
-               break;
-           }
-       }
+        ObservableList<HBox> boardsList = boardsListView.getItems();
+        HBox itemBox = null;
+        for(int i=0;i<boardsList.size();i++)
+        {
+            HBox box = (HBox) boardsList.get(i);
+            String text = ((Label) box.getChildren().get(0)).getText();
+            if(text.equals(key)) {
+                itemBox = box;
+                boardsList.remove(itemBox);
+                break;
+            }
+        }
         String name = ((Label) itemBox.getChildren().get(0)).getText();
         removeBoardForUser(name);
         boardsListView.getItems().remove(itemBox);

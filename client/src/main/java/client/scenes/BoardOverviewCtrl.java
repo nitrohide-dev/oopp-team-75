@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -22,12 +21,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.*;
-import javafx.scene.layout.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
+
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -164,6 +169,10 @@ public class BoardOverviewCtrl {
         return mainCtrl.getCurrBoard();
     }
 
+    /**
+     * creates the exit button located in the top-right of the boardoverview
+     * clicking on it will take you back to the main menu
+     */
     public void configureExitButton(){
         String path = Path.of("", "client", "images", "ExitButton.png").toString();
         Button exitButton = buttonBuilder(path);
@@ -172,6 +181,10 @@ public class BoardOverviewCtrl {
         });
         header.getChildren().add(exitButton);
     }
+    /**
+     * creates the menu button located in the top-right of the boardoverview menu
+     * clicking on it ppen the menu bar or close it if its already open
+     */
     public void configureMenuButton(){
         String path = Path.of("", "client", "images", "Dots.png").toString();
         Button menuButton = buttonBuilder(path);
@@ -180,62 +193,93 @@ public class BoardOverviewCtrl {
         });
         header.getChildren().add(menuButton);
     }
+    /**
+     * creates the key copy button
+     * clicking on it will copy the board key to the user's clipboard
+     * @return the key copy button
+     */
+    public Button createCopyKeyButton(){
+        Button KeyCopyButton = new Button();
+        KeyCopyButton.setText("Copy Board Key");
+        KeyCopyButton.setOnAction(e -> {
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent clipboardContent = new ClipboardContent();
+            clipboardContent.putString(getBoard().getKey());
+            clipboard.setContent(clipboardContent);
+        });
+        KeyCopyButton.setId("smButton");
+        return KeyCopyButton;
+    }
+    /**
+     * creates the board rename button
+     * clicking on it will show a popup that asks you for the new name of the board
+     * @param menuBar the menubar, needed to change its board title after its edition by the user
+     * @return the key rename button
+     */
+    public Button createRenameBoardButton(ListView menuBar){
+        Button boardRenameButton = new Button();
+        boardRenameButton.setText("rename board");
+        boardRenameButton.setOnAction(e ->
+        {
+            getBoard().setTitle(inputBoardName());
+            server.updateBoard(getBoard());
+            Label text = (Label) menuBar.getItems().get(0);
+            text.setText(getBoard().getTitle());
+            refresh(getBoard());
+        });
+        boardRenameButton.setId("smButton");
+        return boardRenameButton;
+    }
+    /**
+     * creates the board deletion button
+     * clicking on it will delete the current board from the server and take the user back to the main menu
+     * when clicked on, it will show a confirmation popup first to prevent accidental deletion
+     * @return the key deletion button
+     */
+    public Button createBoardDeletionButton(){
+        Button boardDeletionButton = new Button();
+        boardDeletionButton.setText("delete board");
+        boardDeletionButton.setOnAction(e->{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Delete Confirmation Dialog");
+            alert.setHeaderText("Delete TaskList");
+            alert.setContentText("Are you sure you want to delete '"+getBoard().getTitle()+"'?");
+            //add css to dialog pane
+            alert.getDialogPane().getStylesheets().add(
+                    Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
+            //make preferred size bigger
+            alert.getDialogPane().setPrefSize(400, 200);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK){
+                mainCtrl.getUserMenuCtrl().removeBoard(getBoard().getKey());
+                goToPrevious();
+                server.deleteBoard(getBoard().getKey());
+            }
+        });
+        boardDeletionButton.setId("smButton");
+        return boardDeletionButton;
+    }
+     /**
+     * creates the menu bar and appends the boards name and the buttons with functionalities to it
+     * the menu is added to the right side of the scene
+     */
   public void addMenu(){
         if(borderPane.getRight()!=null)
-        {
-            borderPane.setRight(null);
-            return;
-        }
-      ListView menuBar = new ListView();
-      menuBar.prefHeightProperty().bind(borderPane.heightProperty());
-      menuBar.setMaxWidth(150);
-      menuBar.setTranslateX(0);
-      menuBar.getItems().add(new Label(getBoard().getTitle()));
-      menuBar.setId("sideMenu");
-      menuBar.setOnMouseClicked(null);
-      Button KeyCopyButton = new Button();
-      KeyCopyButton.setText("Copy Board Key");
-      KeyCopyButton.setOnAction(e -> {
-          Clipboard clipboard = Clipboard.getSystemClipboard();
-          ClipboardContent clipboardContent = new ClipboardContent();
-          clipboardContent.putString(getBoard().getKey());
-          clipboard.setContent(clipboardContent);
-      });
-      KeyCopyButton.setId("smButton");
-      menuBar.getItems().add(KeyCopyButton);
-      Button boardRenameButton = new Button();
-      boardRenameButton.setText("rename board");
-      boardRenameButton.setOnAction(e ->
-      {
-          getBoard().setTitle(inputBoardName());
-          server.updateBoard(getBoard());
-          Label text = (Label) menuBar.getItems().get(0);
-          text.setText(getBoard().getTitle());
-          refresh(getBoard());
-      });
-      boardRenameButton.setId("smButton");
-      menuBar.getItems().add(boardRenameButton);
-      Button boardDeletionButton = new Button();
-      boardDeletionButton.setText("delete board");
-      boardDeletionButton.setOnAction(e->{
-          Alert alert = new Alert(Alert.AlertType.WARNING);
-          alert.setTitle("Delete Confirmation Dialog");
-          alert.setHeaderText("Delete TaskList");
-          alert.setContentText("Are you sure you want to delete '"+getBoard().getTitle()+"'?");
-          //add css to dialog pane
-          alert.getDialogPane().getStylesheets().add(
-                  Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
-          //make preferred size bigger
-          alert.getDialogPane().setPrefSize(400, 200);
-          Optional<ButtonType> result = alert.showAndWait();
-          if (result.isPresent() && result.get() == ButtonType.OK){
-              mainCtrl.getUserMenuCtrl().removeBoard(getBoard().getKey());
-              goToPrevious();
-              server.deleteBoard(getBoard().getKey());
+          {
+              borderPane.setRight(null);
+              return;
           }
-      });
-      boardDeletionButton.setId("smButton");
-      menuBar.getItems().add(boardDeletionButton);
+        ListView menuBar = new ListView();
+        menuBar.prefHeightProperty().bind(borderPane.heightProperty());
+        menuBar.setMaxWidth(150);
+        menuBar.setTranslateX(0);
+        menuBar.getItems().add(new Label(getBoard().getTitle()));
+        menuBar.setId("sideMenu");
+        menuBar.setOnMouseClicked(null);
+      Button KeyCopyButton = new Button();
+      menuBar.getItems().add(createCopyKeyButton());;
+      menuBar.getItems().add(createRenameBoardButton(menuBar));
+      menuBar.getItems().add(createBoardDeletionButton());
 //      TranslateTransition menuBarTranslation = new TranslateTransition(Duration.millis(400), menuBar);
 //
 //      menuBarTranslation.setFromX(772);
@@ -245,8 +289,8 @@ public class BoardOverviewCtrl {
 //          menuBarTranslation.setRate(1);
 //          menuTranslation.play();
 //      });
-//      menuBar.setOnMouseExited(e -> {
-//          menuBarTranslation.setRate(-1);
+//        menuBar.setOnMouseExited(e -> {
+//            menuBarTranslation.setRate(-1);
 //          menuBarTranslation.play();
 //      });
       borderPane.setRight(menuBar);
@@ -664,7 +708,7 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     *
+        * sets the current scene to main menu
      */
     public void goToPrevious() {
         borderPane.setRight(null);
