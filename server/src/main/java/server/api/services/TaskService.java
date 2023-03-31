@@ -52,11 +52,17 @@ public class TaskService {
 //		return taskRepository.save(task);
 //	}
 
+	/**
+	 * moves a task from one list to another by changing the corresponding values and relations in the repository.
+	 * @param model the TaskMoveModel containing all the necessary informating for the move
+	 * @return the successfully moved task
+	 * @throws TaskDoesNotExist - when there is no task with the given id
+	 */
 	public Task moveTask(TaskMoveModel model) throws TaskDoesNotExist {
-
-		Task task = repo.findById(model.getTask_id()).get();
-		task.setTaskList(model.getTasklist());
-		return repo.save(task);
+		repo.updateInitialListOrder(model.getOld_task_order(),model.getTask_id());
+		repo.updateTargetListOrder(model.getNew_task_order(),model.getTasklist().getId());
+		repo.moveTask(model.getTask_id(),model.getTasklist().getId(),model.getNew_task_order());
+		return repo.findById(model.getTask_id()).get();
 	}
 
 

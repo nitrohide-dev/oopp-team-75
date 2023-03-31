@@ -5,6 +5,8 @@ import commons.Task;
 import commons.TaskMoveModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.TaskService;
@@ -50,7 +52,7 @@ public class TaskController {
 //     * @return the created task or bad request if the model is not correct
 //     */
 //    @PostMapping("/create")
-//    public ResponseEntity<Task> create(@RequestBody TaskModel model) {
+//    public ResponseEntity<Task> create(@RequestBody TaskModel model) {D
 //        try {
 //            Task task = taskService.createTask(model);
 //            return ResponseEntity.ok(task);
@@ -58,13 +60,19 @@ public class TaskController {
 //            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
 //        }
 //    }
-    @PostMapping("/move")
-    public ResponseEntity<Task> moveTask(@RequestBody TaskMoveModel model)
-         {
-           Board board = taskService.moveTask(model);
-           return ResponseEntity.ok(model);
-         }
 
+    /**
+     * method used to move a task from one tasklist to another.
+     * @param model the TaskMoveModel with the parameters needed to move a task inbetween lists
+     * @return the task that has been moved
+     */
+    @MessageMapping("/task/move")
+    @SendTo("/topic/task/move")
+    public ResponseEntity<Task> moveTask(TaskMoveModel model) throws TaskDoesNotExist
+    {
+        Task task = taskService.moveTask(model);
+        return ResponseEntity.ok(task);
+    }
 
 
     /**

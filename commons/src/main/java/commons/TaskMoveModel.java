@@ -8,7 +8,6 @@ import lombok.Setter;
  */
 public class TaskMoveModel {
 
-
     @Getter
     @Setter
     private Long task_id;
@@ -17,6 +16,9 @@ public class TaskMoveModel {
     private TaskList tasklist;
     @Getter
     @Setter
-    private Long task_order;
+    private int new_task_order;
+    @Getter
+    @Setter
+    private int old_task_order;
 
 }

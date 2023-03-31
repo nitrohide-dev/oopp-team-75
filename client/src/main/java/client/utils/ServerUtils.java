@@ -15,9 +15,7 @@
  */
 package client.utils;
 
-import commons.Board;
-import commons.Quote;
-import commons.CreateBoardModel;
+import commons.*;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
@@ -136,27 +134,27 @@ public class ServerUtils {
         return res.getStatus() == 200;
     }
 
-    /**
-     * Sends a request to the server to move a task from one list to another
-     * @param board - the board where the tasks are
-     * @param fromList - the name of the list that stores the task
-     * @param toList - the name of the list to which we will move the task
-     * @param task - the task that we want to move
-     * @return true if the task can be put in toList, false otherwise
-     */
-    public boolean moveTask(Board board, String fromList, String toList, HBox task) {
-        Response res =  ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/board/move")
-            .queryParam("board", board)
-            .queryParam("fromList", fromList)
-            .queryParam("toList", toList)
-            .queryParam("task", task)
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .post(Entity.entity(null, APPLICATION_JSON), Response.class);
-
-        return res.getStatus() == 200;
-    }
+//    /**
+//     * Sends a request to the server to move a task from one list to another
+//     * @param board - the board where the tasks are
+//     * @param fromList - the name of the list that stores the task
+//     * @param toList - the name of the list to which we will move the task
+//     * @param task - the task that we want to move
+//     * @return true if the task can be put in toList, false otherwise
+//     */
+//    public boolean moveTask(Board board, String fromList, String toList, HBox task) {
+//        Response res =  ClientBuilder.newClient(new ClientConfig())
+//            .target(SERVER).path("api/board/move")
+//            .queryParam("board", board)
+//            .queryParam("fromList", fromList)
+//            .queryParam("toList", toList)
+//            .queryParam("task", task)
+//            .request(APPLICATION_JSON)
+//            .accept(APPLICATION_JSON)
+//            .post(Entity.entity(null, APPLICATION_JSON), Response.class);
+//
+//        return res.getStatus() == 200;
+//    }
 
 
     // METHODS THAT ARE ACTUALLY USEFUL
@@ -192,7 +190,6 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(model, APPLICATION_JSON), Board.class);
     }
-
     private StompSession session = connect("ws://localhost:8080/websocket");
 
     private StompSession connect(String url) {
@@ -229,5 +226,8 @@ public class ServerUtils {
 
     public void updateBoard(Board board) {
         send("/app/boards", board);
+    }
+    public void moveTask(TaskMoveModel model) {
+        send("/app/task/move", model);
     }
 }
