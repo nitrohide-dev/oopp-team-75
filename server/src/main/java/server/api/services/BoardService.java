@@ -66,6 +66,11 @@ public class 	BoardService {
 		repo.deleteById(key);
 	}
 
+	public Board createList(Board board){
+		TaskList list = board.createTaskList();
+		repo.save(board);
+		return board;
+	}
 	/**
 	 * Saves a board to the database.
 	 * @param board the board to save

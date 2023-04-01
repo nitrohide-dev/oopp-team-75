@@ -15,6 +15,7 @@
  */
 package server.database;
 
+import commons.Board;
 import commons.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -50,4 +51,5 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     void moveTask(long task_id,long list_id,int task_order);
     @Query(value = "UPDATE TASK SET TITLE = ?2 WHERE ID = ?1",nativeQuery = true)
     void renameTask(long task_id,String name);
+
 }

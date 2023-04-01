@@ -46,14 +46,6 @@ public class ListService {
 		repo.renameList(id,name);
 		return repo.findById(id).get();
 	}
-	public void createList(Board board){
-		TaskList list = board.createTaskList();
-	     repo.save(list);
-	}
-	public void createTask(TaskList list)  {
-		Task task1 = list.createTask();
-		repo.save(list);
-	}
 	/**
 	 * Deletes a taskList from the database
 	 * @param id - the key of the taskList that we want to delete
@@ -64,7 +56,12 @@ public class ListService {
 			throw new ListDoesNotExist("There is no list with the provided id.");
 		repo.deleteById(id);
 	}
-
+	public String createTask(TaskList list,String name)  {
+		Task task = list.createTask();
+		task.setTitle(name);
+		repo.save(list);
+		return repo.getBoardByListID(list.getId());
+	}
 	/**
 	 * Saves a taskList to the database.
 	 * @param taskList the taskList to save

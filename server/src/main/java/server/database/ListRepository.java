@@ -23,4 +23,6 @@ public interface ListRepository extends JpaRepository<TaskList, Long> {
 
     @Query(value = "UPDATE TASK_LIST SET TITLE = ?2 WHERE ID = ?1 ",nativeQuery = true)
     void renameList(Long id,String title);
+    @Query(value = "SELECT BOARD_KEY FROM TASK_LIST WHERE ID = ?1",nativeQuery = true)
+    String getBoardByListID(long listID);
 }

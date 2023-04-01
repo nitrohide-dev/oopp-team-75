@@ -6,10 +6,12 @@ import commons.TaskList;
 import commons.TaskMoveModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import server.api.services.BoardService;
 import server.api.services.ListService;
 import server.exceptions.ListDoesNotExist;
 
@@ -20,9 +22,11 @@ import java.util.List;
 public class ListController {
 
     private final ListService listService;
+    private final BoardService boardService;
 
-    public ListController(ListService listService) {
+    public ListController(ListService listService,BoardService boardService) {
         this.listService = listService;
+        this.boardService = boardService;
     }
 
     @GetMapping(path = { "", "/" })
@@ -60,13 +64,11 @@ public class ListController {
      *
      *
      */
-    @MessageMapping("/list/createlist")
-    public void createList(Board board) {
-        listService.createList(board);
-    }
-    @MessageMapping("/list/createTask")
-    public void createTask(TaskList list) {
-        listService.createTask(list);
+    @MessageMapping("/list/createTask/{name}")
+    @SendTo("/topic/boards")
+    public Board createTask(TaskList list,@DestinationVariable String name) throws ListDoesNotExist{
+       String id = listService.createTask(list,name);
+       return boardService.findByKey(id);
     }
     /**
      * Deletes a taskList, including its children from the database by its id. If

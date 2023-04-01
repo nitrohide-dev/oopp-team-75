@@ -6,6 +6,7 @@ import commons.TaskList;
 import commons.TaskMoveModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,7 @@ public class TaskController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
+
     @MessageMapping("/task/rename/{id}")
     @SendTo("/topic/task/rename/{id}")
     public ResponseEntity<Task> renameTask(@PathVariable("id") String id,String name) {

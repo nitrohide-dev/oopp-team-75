@@ -225,7 +225,6 @@ public class BoardOverviewCtrl {
             server.updateBoard(getBoard());
             Label text = (Label) menuBar.getItems().get(0);
             text.setText(getBoard().getTitle());
-            refresh(getBoard());
         });
         boardRenameButton.setId("smButton");
         return boardRenameButton;
@@ -300,9 +299,7 @@ public class BoardOverviewCtrl {
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
      */
     public void createTaskList() {
-        TaskList taskList = getBoard().createTaskList();
-        server.updateBoard(getBoard()); // updates server
-        refresh(getBoard());
+        server.createList(getBoard());
     }
 
     /**
@@ -441,7 +438,9 @@ public class BoardOverviewCtrl {
      * @return the created task
      */
     public void createTask(String name,ListView<HBox> list) {
+        Task task = new Task(listMap.get(list),name);
         server.createTask(listMap.get(list),name);
+        server.updateBoard(getBoard());
         refresh(getBoard());
     }
     /**
