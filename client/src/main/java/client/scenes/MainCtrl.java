@@ -172,7 +172,9 @@ public class MainCtrl {
         }
     }
 
-
+    public UserMenuCtrl getUserMenuCtrl(){
+        return userMenuCtrl;
+    }
     /**
      * reads user's saved data(if they exist) from the local file
      * @return list of names of baords
