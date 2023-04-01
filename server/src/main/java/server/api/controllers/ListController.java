@@ -61,10 +61,12 @@ public class ListController {
      *
      */
     @MessageMapping("/list/createlist")
-    @SendTo("/topic/list/createlist")
-    public ResponseEntity<TaskList> createList(Board board) {
+    public void createList(Board board) {
         listService.createList(board);
-        return ResponseEntity.ok().build();
+    }
+    @MessageMapping("/list/createTask")
+    public void createTask(TaskList list) {
+        listService.createTask(list);
     }
     /**
      * Deletes a taskList, including its children from the database by its id. If

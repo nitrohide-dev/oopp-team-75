@@ -69,10 +69,7 @@ public class TaskService {
 			throw new TaskDoesNotExist("There is no task with the provided id.");
 		repo.deleteById(id);
 	}
-	public Task createTask(TaskList list, String name)  {
-		Task task = new Task(list,name);
-		return repo.save(task);
-	}
+
 
 	/**
 	 * Saves a task to the database.

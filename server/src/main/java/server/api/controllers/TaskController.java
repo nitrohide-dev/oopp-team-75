@@ -48,12 +48,6 @@ public class TaskController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
-    @MessageMapping("/list/createTask/{name}")
-    @SendTo("/topic/task/createTask/{name}")
-    public ResponseEntity<Task> createTask(TaskList list, @PathVariable("name") String name) {
-            Task task = taskService.createTask(list,name);
-            return ResponseEntity.ok(task);
-    }
     @MessageMapping("/task/rename/{id}")
     @SendTo("/topic/task/rename/{id}")
     public ResponseEntity<Task> renameTask(@PathVariable("id") String id,String name) {

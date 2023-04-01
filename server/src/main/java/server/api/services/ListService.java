@@ -46,9 +46,13 @@ public class ListService {
 		repo.renameList(id,name);
 		return repo.findById(id).get();
 	}
-	public TaskList createList(Board board){
-		TaskList ourList = new TaskList(board);
-		return repo.save(ourList);
+	public void createList(Board board){
+		TaskList list = board.createTaskList();
+	     repo.save(list);
+	}
+	public void createTask(TaskList list)  {
+		Task task1 = list.createTask();
+		repo.save(list);
 	}
 	/**
 	 * Deletes a taskList from the database

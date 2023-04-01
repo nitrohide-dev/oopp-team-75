@@ -299,11 +299,10 @@ public class BoardOverviewCtrl {
      * This eventHandler is waiting for the addButton to be clicked, after that creates
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
      */
-    public ListView<HBox> createTaskList() {
+    public void createTaskList() {
         TaskList taskList = getBoard().createTaskList();
-        ListView<HBox> list = addTaskList(taskList);
         server.updateBoard(getBoard()); // updates server
-        return list;
+        refresh(getBoard());
     }
 
     /**
@@ -430,8 +429,8 @@ public class BoardOverviewCtrl {
      * task creation method caused by the user's manual task addition.
      * @return the created task
      */
-    public HBox createTask(ListView<HBox> list) {
-        return createTask(inputTaskName(), list);
+    public void createTask(ListView<HBox> list) {
+        createTask(inputTaskName(), list);
     }
 
 
@@ -441,12 +440,9 @@ public class BoardOverviewCtrl {
      * @param list the list in which the task should be created
      * @return the created task
      */
-    public HBox createTask(String name,ListView<HBox> list) {
-        Task task1 = listMap.get(list).createTask();
-        task1.setTitle(name);
-        HBox task = addTask(name, list,task1);
-        server.updateBoard(getBoard()); // updates server
-        return task;
+    public void createTask(String name,ListView<HBox> list) {
+        server.createTask(listMap.get(list),name);
+        refresh(getBoard());
     }
     /**
      * adds a task to a given list in frontend and maps it to the corresponding Task common data type
