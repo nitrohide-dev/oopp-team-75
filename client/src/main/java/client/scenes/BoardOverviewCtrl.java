@@ -21,16 +21,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -82,6 +84,9 @@ public class BoardOverviewCtrl {
     private ImageView lockButton;
     @FXML
     private ImageView dropDownMenu;
+    @FXML
+    private BorderPane borderPane;
+    private UserMenuCtrl usermenuCtrl;
 
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -94,22 +99,17 @@ public class BoardOverviewCtrl {
 
     /**
      * Initializer
-     * Initializes the objects in the scene
+     * Initializes the initial objects in the scene
      */
     @FXML
     public void initialize() {
         ObservableList<Node> children = listContainer.getChildren();
         sampleGroup = (Group) children.get(0);
-        ListsSetup();
         // Sets ScrollPane size, so it's slightly bigger than AnchorPane
         scrollPaneMain.setPrefSize(anchorPaneMain.getPrefWidth() + 10, anchorPaneMain.getPrefHeight() + 20);
-
-        //initializes the default delete taskListsButton
-        setDeleteAction(deleteTaskListsButton, listName1.getText(),taskList1);
-        hoverOverDeleteButton(deleteTaskListsButton);
-        //initializes the addTask button
-        taskList1.setOnMouseClicked(e -> taskOperations(taskList1));
-        addTaskButton(taskList1);
+        configureExitButton();
+        configureMenuButton();
+        borderPane.setOnMouseClicked(null);
     }
 
     /**
@@ -137,6 +137,7 @@ public class BoardOverviewCtrl {
     public void load(Board board) {
         // removes all lists including their tasks
         listContainer.getChildren().clear();
+        allLists.clear();
         listMap.clear();
         taskMap.clear();
 
@@ -168,16 +169,132 @@ public class BoardOverviewCtrl {
         return mainCtrl.getCurrBoard();
     }
 
-//Deleted Scrolling, implemented using ScrollPane
     /**
-     * Connects the initial list to its name
+     * creates the exit button located in the top-right of the boardoverview
+     * clicking on it will take you back to the main menu
      */
-    private void ListsSetup() {
-        this.allLists.put(taskList1, listName1.getText());
-        dragOverHandler(taskList1);
-        dragDroppedHandler(taskList1);
+    public void configureExitButton(){
+        String path = Path.of("", "client", "images", "ExitButton.png").toString();
+        Button exitButton = buttonBuilder(path);
+        exitButton.setOnAction(e-> {
+            goToPrevious();
+        });
+        header.getChildren().add(exitButton);
     }
-
+    /**
+     * creates the menu button located in the top-right of the boardoverview menu
+     * clicking on it ppen the menu bar or close it if its already open
+     */
+    public void configureMenuButton(){
+        String path = Path.of("", "client", "images", "Dots.png").toString();
+        Button menuButton = buttonBuilder(path);
+        menuButton.setOnAction(e-> {
+            addMenu();
+        });
+        header.getChildren().add(menuButton);
+    }
+    /**
+     * creates the key copy button
+     * clicking on it will copy the board key to the user's clipboard
+     * @return the key copy button
+     */
+    public Button createCopyKeyButton(){
+        Button KeyCopyButton = new Button();
+        KeyCopyButton.setText("Copy Board Key");
+        KeyCopyButton.setOnAction(e -> {
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent clipboardContent = new ClipboardContent();
+            clipboardContent.putString(getBoard().getKey());
+            clipboard.setContent(clipboardContent);
+        });
+        KeyCopyButton.setId("smButton");
+        return KeyCopyButton;
+    }
+    /**
+     * creates the board rename button
+     * clicking on it will show a popup that asks you for the new name of the board
+     * @param menuBar the menubar, needed to change its board title after its edition by the user
+     * @return the key rename button
+     */
+    public Button createRenameBoardButton(ListView menuBar){
+        Button boardRenameButton = new Button();
+        boardRenameButton.setText("rename board");
+        boardRenameButton.setOnAction(e ->
+        {
+            getBoard().setTitle(inputBoardName());
+            server.updateBoard(getBoard());
+            Label text = (Label) menuBar.getItems().get(0);
+            text.setText(getBoard().getTitle());
+            refresh(getBoard());
+        });
+        boardRenameButton.setId("smButton");
+        return boardRenameButton;
+    }
+    /**
+     * creates the board deletion button
+     * clicking on it will delete the current board from the server and take the user back to the main menu
+     * when clicked on, it will show a confirmation popup first to prevent accidental deletion
+     * @return the key deletion button
+     */
+    public Button createBoardDeletionButton(){
+        Button boardDeletionButton = new Button();
+        boardDeletionButton.setText("delete board");
+        boardDeletionButton.setOnAction(e->{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Delete Confirmation Dialog");
+            alert.setHeaderText("Delete TaskList");
+            alert.setContentText("Are you sure you want to delete '"+getBoard().getTitle()+"'?");
+            //add css to dialog pane
+            alert.getDialogPane().getStylesheets().add(
+                    Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
+            //make preferred size bigger
+            alert.getDialogPane().setPrefSize(400, 200);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK){
+                mainCtrl.getUserMenuCtrl().removeBoard(getBoard().getKey());
+                goToPrevious();
+                server.deleteBoard(getBoard().getKey());
+            }
+        });
+        boardDeletionButton.setId("smButton");
+        return boardDeletionButton;
+    }
+     /**
+     * creates the menu bar and appends the boards name and the buttons with functionalities to it
+     * the menu is added to the right side of the scene
+     */
+    public void addMenu(){
+        if(borderPane.getRight()!=null)
+        {
+            borderPane.setRight(null);
+            return;
+        }
+        ListView menuBar = new ListView();
+        menuBar.prefHeightProperty().bind(borderPane.heightProperty());
+        menuBar.setMaxWidth(150);
+        menuBar.setTranslateX(0);
+        menuBar.getItems().add(new Label(getBoard().getTitle()));
+        menuBar.setId("sideMenu");
+        menuBar.setOnMouseClicked(null);
+        Button KeyCopyButton = new Button();
+        menuBar.getItems().add(createCopyKeyButton());;
+        menuBar.getItems().add(createRenameBoardButton(menuBar));
+        menuBar.getItems().add(createBoardDeletionButton());
+//      TranslateTransition menuBarTranslation = new TranslateTransition(Duration.millis(400), menuBar);
+//
+//      menuBarTranslation.setFromX(772);
+//      menuBarTranslation.setToX(622);
+//
+//      menuBar.setOnMouseEntered(e -> {
+//          menuBarTranslation.setRate(1);
+//          menuTranslation.play();
+//      });
+//        menuBar.setOnMouseExited(e -> {
+//            menuBarTranslation.setRate(-1);
+//          menuBarTranslation.play();
+//      });
+        borderPane.setRight(menuBar);
+    }
     /**
      * This eventHandler is waiting for the addButton to be clicked, after that creates
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
@@ -192,6 +309,7 @@ public class BoardOverviewCtrl {
     /**
      * This eventHandler is waiting for the addButton to be clicked, after that creates
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
+     * @param taskList a TaskList common object that is mapped with the created tasklist for backend-frontend communication
      */
     public ListView<HBox> addTaskList(TaskList taskList) {
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
@@ -309,13 +427,20 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * Creates a task and puts it in the first list
-     * A task contains a label and three buttons for task operations
+     * task creation method caused by the user's manual task addition.
+     * @return the created task
      */
     public HBox createTask(ListView<HBox> list) {
         return createTask(inputTaskName(), list);
     }
 
+
+    /**
+     * creates a task in the given list with the given name
+     * @param name the name of the task to be created
+     * @param list the list in which the task should be created
+     * @return the created task
+     */
     public HBox createTask(String name,ListView<HBox> list) {
         Task task1 = listMap.get(list).createTask();
         task1.setTitle(name);
@@ -323,6 +448,13 @@ public class BoardOverviewCtrl {
         server.updateBoard(getBoard()); // updates server
         return task;
     }
+    /**
+     * adds a task to a given list in frontend and maps it to the corresponding Task common data type
+     * @param name the name of the task to be added
+     * @param list the list to which the task should be added
+     * @param task1 the Task common data type to map to the task for frontend-backend communication
+     * @return the created task
+     */
     public HBox addTask(String name, ListView<HBox> list,Task task1) {
 
         //Removes the addTask button
@@ -348,6 +480,7 @@ public class BoardOverviewCtrl {
         //Re-adds the button to the end of the list
         addTaskButton(list);
         taskMap.put(box,task1);
+
         return box;
     }
 
@@ -389,6 +522,27 @@ public class BoardOverviewCtrl {
         Stage stage = (Stage) input.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(path));
 
+        input.showAndWait();
+        return input.getEditor().getText();
+    }
+    /**
+     * popup that ask you to input a board name.
+     * @return the input name
+     */
+    public String inputBoardName() {
+        TextInputDialog input = new TextInputDialog("board name");
+        input.setHeaderText("Board name");
+        input.setContentText("Please enter a name for the board:");
+        input.setTitle("Input Board Name");
+        //add css to dialog pane
+        input.getDialogPane().getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
+        //make preferred size bigger
+        input.getDialogPane().setPrefSize(400, 200);
+        //trying to add icon to dialog
+        String path = Path.of("", "client", "images", "Logo.png").toString();
+        Stage stage = (Stage) input.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(path));
         input.showAndWait();
         return input.getEditor().getText();
     }
@@ -495,7 +649,8 @@ public class BoardOverviewCtrl {
 //    }
 
     /**
-     * @param list - the list that the task is dragged from
+     * Handles the list's behaviour once a task is being dragged over it
+     * @param list the list which behaviour is to be configured
      */
     public void dragOverHandler(ListView<HBox> list) {
         list.setOnDragOver(event -> {
@@ -508,7 +663,8 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * @param list - the list that the task is dropped on
+     *  handles a list's behaviour when a task is dropped onto it
+     * @param list the list which behaviour is to be configured
      */
     public void dragDroppedHandler(ListView<HBox> list) {
         list.setOnDragDropped(event -> {
@@ -516,8 +672,6 @@ public class BoardOverviewCtrl {
             boolean success = false;
             if (db.hasString()) {
                 createTask(db.getString(),list);
-                Task task1 = listMap.get(list).createTask();
-                task1.setTitle(db.getString());
                 success = true;
                 db.clear();
             }
@@ -529,8 +683,9 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * @param box - the box that contains the task
-     * @param task - the task
+     * Handles the task's behaviour when it's being dragged AND deletes it from the given list when it's being dropped
+     * @param box - the box that contains the task which behaviour is to be configured
+     * @param task - the task label, containing its name
      * @param list - the list that contains the task
      */
     public void dragDetectHandler(HBox box,Label task,ListView<HBox> list) {
@@ -553,22 +708,17 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * @param mouseEvent - the mouse event
+        * sets the current scene to main menu
      */
-    public void goToPrevious(MouseEvent mouseEvent) {
-        //TODO write code to go to previous page
+    public void goToPrevious() {
+        borderPane.setRight(null);
+        mainCtrl.showUserMenu();
     }
 
     public void changeImageUrl() {
         // Set the image URL of ImageView
         String path = Path.of("", "client", "images", "Logo.png").toString();
-        String path2 = Path.of("", "client", "images", "ExitButton.png").toString();
-        String path3 = Path.of("", "client", "images", "Dots.png").toString();
-        String path4 = Path.of("", "client", "images", "lockUnlocked.png").toString();
         logo1.setImage(new Image(path));
-        exitButton.setImage(new Image(path2));
-        dropDownMenu.setImage(new Image(path3));
-        lockButton.setImage(new Image(path4));
     }
 }
 
