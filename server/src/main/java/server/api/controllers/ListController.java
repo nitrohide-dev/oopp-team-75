@@ -54,15 +54,17 @@ public class ListController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
-    @MessageMapping("/list/createTask/{id}")
-    @SendTo("/topic/list/createTask/{id}")
-    public ResponseEntity<Task> createTask(@PathVariable("id") String id,String name) {
-        try {
-            Task task = listService.createTask(Long.parseLong(id),name);
-            return ResponseEntity.ok(task);
-        } catch (NumberFormatException | ListDoesNotExist e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
+    /**
+     *
+     *
+     *
+     *
+     */
+    @MessageMapping("/list/createlist")
+    @SendTo("/topic/list/createlist")
+    public ResponseEntity<TaskList> createList(Board board) {
+        listService.createList(board);
+        return ResponseEntity.ok().build();
     }
     /**
      * Deletes a taskList, including its children from the database by its id. If

@@ -2,6 +2,7 @@ package server.api.controllers;
 
 import commons.Board;
 import commons.Task;
+import commons.TaskList;
 import commons.TaskMoveModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.TaskService;
 import server.exceptions.CannotCreateBoard;
+import server.exceptions.ListDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
 
 import java.util.List;
@@ -46,7 +48,12 @@ public class TaskController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
-
+    @MessageMapping("/list/createTask/{name}")
+    @SendTo("/topic/task/createTask/{name}")
+    public ResponseEntity<Task> createTask(TaskList list, @PathVariable("name") String name) {
+            Task task = taskService.createTask(list,name);
+            return ResponseEntity.ok(task);
+    }
     @MessageMapping("/task/rename/{id}")
     @SendTo("/topic/task/rename/{id}")
     public ResponseEntity<Task> renameTask(@PathVariable("id") String id,String name) {

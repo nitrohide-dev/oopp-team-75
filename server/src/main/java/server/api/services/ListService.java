@@ -1,5 +1,6 @@
 package server.api.services;
 
+import commons.Board;
 import commons.Task;
 import commons.TaskList;
 import commons.TaskMoveModel;
@@ -45,11 +46,9 @@ public class ListService {
 		repo.renameList(id,name);
 		return repo.findById(id).get();
 	}
-	public Task createTask(long id,String name) throws ListDoesNotExist {
-		if (!repo.existsById(id))
-			throw new ListDoesNotExist("There is no list with this id.");
-		Task task = new Task(repo.findById(id).get(),name);
-		return task;
+	public TaskList createList(Board board){
+		TaskList ourList = new TaskList(board);
+		return repo.save(ourList);
 	}
 	/**
 	 * Deletes a taskList from the database

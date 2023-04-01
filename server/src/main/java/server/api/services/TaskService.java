@@ -1,9 +1,11 @@
 package server.api.services;
 
 import commons.Task;
+import commons.TaskList;
 import commons.TaskMoveModel;
 import org.springframework.stereotype.Service;
 import server.database.TaskRepository;
+import server.exceptions.ListDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
 
 import java.util.List;
@@ -66,6 +68,10 @@ public class TaskService {
 		if (!repo.existsById(id))
 			throw new TaskDoesNotExist("There is no task with the provided id.");
 		repo.deleteById(id);
+	}
+	public Task createTask(TaskList list, String name)  {
+		Task task = new Task(list,name);
+		return repo.save(task);
 	}
 
 	/**

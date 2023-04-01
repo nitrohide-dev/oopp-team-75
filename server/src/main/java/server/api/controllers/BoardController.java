@@ -66,18 +66,6 @@ public class BoardController {
         }
     }
     /**
-     *
-     *
-     *
-     *
-     */
-    @MessageMapping("/board/createlist")
-    @SendTo("/topic/board/createlist")
-    public ResponseEntity<TaskList> createList(String id) {
-        boardService.createList(id);
-        return ResponseEntity.ok().build();
-    }
-    /**
      * Deletes a board, including its children from the database by its key. If
      * the key does not exist in the database, the method will respond with a
      * bad request.
