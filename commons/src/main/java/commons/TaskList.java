@@ -130,7 +130,7 @@ public class TaskList {
      * @return the created task.
      */
     public Task createTask() {
-        Task task = new Task(this);
+        Task task = new Task(this,"");
         this.tasks.add(task);
         return task;
     }

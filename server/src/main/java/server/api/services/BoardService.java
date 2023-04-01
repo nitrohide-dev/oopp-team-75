@@ -2,6 +2,7 @@ package server.api.services;
 
 import commons.Board;
 import commons.CreateBoardModel;
+import commons.TaskList;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
 import server.exceptions.BoardDoesNotExist;
@@ -41,6 +42,11 @@ public class 	BoardService {
 		return board.get();
 	}
 
+
+	public TaskList createList(String id){
+		TaskList ourList = new TaskList((Board) repo.findById(id).get());
+		return ourList;
+	}
 	/**
 	 * Creates a board from a given model
 	 * @param model model containing key, name and boolean for the board

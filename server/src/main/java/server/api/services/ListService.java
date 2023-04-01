@@ -39,24 +39,18 @@ public class ListService {
 		return repo.findById(id).get();
 	}
 
-//	/**
-//	 * Creates a taskList from a given model
-//	 * @param model - model containing name and board for the taskList
-//	 * @return The newly created taskList
-//	 * @throws CannotCreateList - when there is already a taskList with the given name
-//	 */
-//	public TaskList createList(TaskListModel model) throws CannotCreateList {
-//		Board board = model.board;
-//		boolean usedName = board.getTaskLists().stream()
-//			.map(TaskList::getTitle)
-//			.anyMatch(title -> title.equals(model.name));
-//		if (usedName) {
-//			throw new CannotCreateList("This list is already in the board.");
-//		}
-//		TaskList taskList = board.createTaskList(model.name);
-//		return listRepository.save(taskList);
-//	}
-
+	public TaskList renameList(long id,String name) throws ListDoesNotExist {
+		if (!repo.existsById(id))
+			throw new ListDoesNotExist("There is no list with this id.");
+		repo.renameList(id,name);
+		return repo.findById(id).get();
+	}
+	public Task createTask(long id,String name) throws ListDoesNotExist {
+		if (!repo.existsById(id))
+			throw new ListDoesNotExist("There is no list with this id.");
+		Task task = new Task(repo.findById(id).get(),name);
+		return task;
+	}
 	/**
 	 * Deletes a taskList from the database
 	 * @param id - the key of the taskList that we want to delete

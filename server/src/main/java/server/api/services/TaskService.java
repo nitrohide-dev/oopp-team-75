@@ -36,23 +36,14 @@ public class TaskService {
 			throw new TaskDoesNotExist("There exists no task with the provided id.");
 		return repo.findById(id).get();
 	}
-
-//	/**
-//	 * Creates a task from a given model
-//	 * @param model - model containing name and the id of the list for the task
-//	 * @return The newly created task
-//	 * @throws ListDoesNotExist - when there is no list with the given id
-//	 */
-//	public Task createTask(TaskModel model) throws ListDoesNotExist, CannotCreateTask {
-//		if (!listRepository.existsById(model.taskListId)) {
-//			throw new ListDoesNotExist("There is no list with the provided id.");
-//		}
-//		TaskList taskList = listRepository.getById(model.taskListId);
-//		Task task = taskList.createTask(model.name);
-//		return taskRepository.save(task);
-//	}
-
+   public Task renameTask(long id,String name) throws TaskDoesNotExist{
+	   if (!repo.existsById(id))
+		   throw new TaskDoesNotExist("There exists no task with the provided id.");
+	   repo.renameTask(id,name);
+	   return repo.findById(id).get();
+   }
 	/**
+	 *
 	 * moves a task from one list to another by changing the corresponding values and relations in the repository.
 	 * @param model the TaskMoveModel containing all the necessary informating for the move
 	 * @return the successfully moved task

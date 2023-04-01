@@ -37,8 +37,8 @@ public class Task {
 
     public Task() {} // for object mappers, please don't use.
 
-    public Task(TaskList taskList) {
-        this(taskList, "", "");
+    public Task(TaskList taskList,String name) {
+        this(taskList, name, "");
     }
 
     public Task(TaskList taskList, String title, String desc) {

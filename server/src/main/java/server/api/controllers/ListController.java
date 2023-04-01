@@ -6,6 +6,8 @@ import commons.TaskList;
 import commons.TaskMoveModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.ListService;
@@ -32,8 +34,9 @@ public class ListController {
      * @param id the list id
      * @return the stored taskList
      */
-    @GetMapping("/get/{id}")
-    public ResponseEntity<TaskList> getById(@PathVariable("id") String id) {
+    @MessageMapping("/list/get")
+    @SendTo("/topic/list/get")
+    public ResponseEntity<TaskList> getById(String id) {
         try {
             TaskList taskList = listService.getById(Long.parseLong(id));
             return ResponseEntity.ok(taskList);
@@ -41,23 +44,26 @@ public class ListController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
-
-//    /**
-//     * Creates a new taskList from the given model, stores it in the database, and
-//     * returns it.
-//     * @return the created taskList or bad request if the model is not correct
-//     */
-//    @PostMapping("/create")
-//    public ResponseEntity<TaskList> create(@RequestBody TaskListModel model) {
-//        try {
-//            TaskList taskList = listService.createList(model);
-//            return ResponseEntity.ok(taskList);
-//        } catch (CannotCreateList e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-//        }
-//    }
-
-
+    @MessageMapping("/list/rename/{id}")
+    @SendTo("/topic/list/rename/{id}")
+    public ResponseEntity<TaskList> renameList(@PathVariable("id") String id,String name) {
+        try {
+            TaskList taskList = listService.renameList(Long.parseLong(id),name);
+            return ResponseEntity.ok(taskList);
+        } catch (NumberFormatException | ListDoesNotExist e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+    @MessageMapping("/list/createTask/{id}")
+    @SendTo("/topic/list/createTask/{id}")
+    public ResponseEntity<Task> createTask(@PathVariable("id") String id,String name) {
+        try {
+            Task task = listService.createTask(Long.parseLong(id),name);
+            return ResponseEntity.ok(task);
+        } catch (NumberFormatException | ListDoesNotExist e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
     /**
      * Deletes a taskList, including its children from the database by its id. If
      * the id does not exist in the database or has a wrong format, the method will respond with a
@@ -65,7 +71,7 @@ public class ListController {
      * @param id the taskList id
      * @return nothing
      */
-    @DeleteMapping("/delete/{id}")
+    @MessageMapping("/list/delete")
     public ResponseEntity<TaskList> deleteById(@PathVariable("id") String id) {
         try {
             listService.deleteById(Long.parseLong(id));

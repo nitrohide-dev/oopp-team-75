@@ -48,4 +48,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
      */
     @Query(value = "UPDATE TASK SET TASK_LIST_ID = ?2, TASKS_ORDER = ?3 WHERE ID = ?1",nativeQuery = true)
     void moveTask(long task_id,long list_id,int task_order);
+    @Query(value = "UPDATE TASK SET TITLE = ?2 WHERE ID = ?1",nativeQuery = true)
+    void renameTask(long task_id,String name);
 }

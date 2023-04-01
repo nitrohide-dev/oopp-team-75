@@ -47,34 +47,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ServerUtils {
 
     private static final String SERVER = "http://localhost:8080/";
-
-    public void getQuotesTheHardWay() throws IOException {
-        var url = new URL("http://localhost:8080/api/quotes");
-        var is = url.openConnection().getInputStream();
-        var br = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
-        }
-    }
-
-    public List<Quote> getQuotes() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<>() {
-                });
-    }
-    //can we delete those old ones now?
-    public Quote addQuote(Quote quote) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
-    }
-
     /**
      * Sends request to the server that gets the board by id
      * @param id - the id
@@ -89,50 +61,34 @@ public class ServerUtils {
 //            .get(Board.class);
     }
 
-    /**
-     * Sends request to the server to create a task.
-     * The task will be added to the first taskList in the first board
-     * @param name - the name of the task
-     * @return true if the task can be created, false otherwise
-     */
-    public boolean addTask(String name) {
-        Response res =  ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/task/create")
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .post(Entity.entity(name, APPLICATION_JSON));
-        return res.getStatus() == 200;
-    }
-
-    /**
-     * Sends request to the server to remove a task.
-     * The task will be removed from its taskList
-     * @param name - the name of the task
-     * @return true if the task can be removed, false otherwise
-     */
-    public boolean deleteTask(String name, long boardId) {
-        Response res =  ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/task/delete/" + boardId)
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .post(Entity.entity(name, APPLICATION_JSON));
-        return res.getStatus() == 200;
-    }
-
-    /**
-     * Sends request to the server to remove a task.
-     * The task will be removed from its taskList
-     * @param name - the name of the task
-     * @return true if the task can be removed, false otherwise
-     */
-    public boolean editTask(String name, String newName, long boardId) {
-        Response res =  ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/task/delete/" + boardId)
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .post(Entity.entity(new Pair(name, newName), APPLICATION_JSON));
-        return res.getStatus() == 200;
-    }
+//    /**
+//     * Sends request to the server to create a task.
+//     * The task will be added to the first taskList in the first board
+//     * @param name - the name of the task
+//     * @return true if the task can be created, false otherwise
+//     */
+//    public boolean addTask(String name) {
+//        Response res =  ClientBuilder.newClient(new ClientConfig())
+//            .target(SERVER).path("api/task/create")
+//            .request(APPLICATION_JSON)
+//            .accept(APPLICATION_JSON)
+//            .post(Entity.entity(name, APPLICATION_JSON));
+//        return res.getStatus() == 200;
+//    }
+//    /**
+//     * Sends request to the server to remove a task.
+//     * The task will be removed from its taskList
+//     * @param name - the name of the task
+//     * @return true if the task can be removed, false otherwise
+//     */
+//    public boolean editTask(String name, String newName, long boardId) {
+//        Response res =  ClientBuilder.newClient(new ClientConfig())
+//            .target(SERVER).path("api/task/delete/" + boardId)
+//            .request(APPLICATION_JSON)
+//            .accept(APPLICATION_JSON)
+//            .post(Entity.entity(new Pair(name, newName), APPLICATION_JSON));
+//        return res.getStatus() == 200;
+//    }
 
 //    /**
 //     * Sends a request to the server to move a task from one list to another
@@ -230,4 +186,14 @@ public class ServerUtils {
     public void moveTask(TaskMoveModel model) {
         send("/app/task/move", model);
     }
+    public void getTask(String taskId) {
+        send("/app/task/get", taskId);
+    }
+    public void deleteTask(String taskId){ send("app/task/delete",taskId);}
+    public void getList(String listId) { send("app/list/delete",listId);}
+    public void deleteList(String listId) { send("app/list/delete",listId);}
+    public void createList(String boardId) { send("app/board/createlist",boardId);}
+    public void renameList(String listId,String listTitle) { send("app/list/renamelist/" + listId,listTitle);}
+    public void createTask(String listId,String taskTitle) { send("app/list/createTask/" + listId,taskTitle);}
+    public void renameTask(String taskId,String taskTitle) { send("app/task/rename/" + taskId,taskTitle);}
 }

@@ -17,5 +17,10 @@ package server.database;
 
 import commons.TaskList;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-public interface ListRepository extends JpaRepository<TaskList, Long> {}
+public interface ListRepository extends JpaRepository<TaskList, Long> {
+
+    @Query(value = "UPDATE TASK_LIST SET TITLE = ?2 WHERE ID = ?1 ",nativeQuery = true)
+    void renameList(Long id,String title);
+}

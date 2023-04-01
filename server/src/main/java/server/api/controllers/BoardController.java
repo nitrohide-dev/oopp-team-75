@@ -2,6 +2,7 @@ package server.api.controllers;
 
 import commons.Board;
 import commons.CreateBoardModel;
+import commons.TaskList;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
+import server.exceptions.ListDoesNotExist;
 
 import java.util.List;
 
@@ -63,7 +65,18 @@ public class BoardController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
-
+    /**
+     *
+     *
+     *
+     *
+     */
+    @MessageMapping("/board/createlist")
+    @SendTo("/topic/board/createlist")
+    public ResponseEntity<TaskList> createList(String id) {
+        boardService.createList(id);
+        return ResponseEntity.ok().build();
+    }
     /**
      * Deletes a board, including its children from the database by its key. If
      * the key does not exist in the database, the method will respond with a

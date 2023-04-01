@@ -36,8 +36,9 @@ public class TaskController {
      * @param id the task key
      * @return the stored task
      */
-    @GetMapping("/get/{id}")
-    public ResponseEntity<Task> getById(@PathVariable("id") String id) {
+    @MessageMapping("/task/get")
+    @SendTo("/topic/task/get")
+    public ResponseEntity<Task> getById(String id) {
         try {
             Task task = taskService.getById(Long.parseLong(id));
             return ResponseEntity.ok(task);
@@ -46,21 +47,16 @@ public class TaskController {
         }
     }
 
-//    /**
-//     * Creates a new task from the given model, stores it in the database, and
-//     * returns it.
-//     * @return the created task or bad request if the model is not correct
-//     */
-//    @PostMapping("/create")
-//    public ResponseEntity<Task> create(@RequestBody TaskModel model) {D
-//        try {
-//            Task task = taskService.createTask(model);
-//            return ResponseEntity.ok(task);
-//        } catch (ListDoesNotExist | CannotCreateTask e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-//        }
-//    }
-
+    @MessageMapping("/task/rename/{id}")
+    @SendTo("/topic/task/rename/{id}")
+    public ResponseEntity<Task> renameTask(@PathVariable("id") String id,String name) {
+        try {
+            Task task = taskService.renameTask(Long.parseLong(id),name);
+            return ResponseEntity.ok(task);
+        } catch (NumberFormatException | TaskDoesNotExist e ) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
     /**
      * method used to move a task from one tasklist to another.
      * @param model the TaskMoveModel with the parameters needed to move a task inbetween lists
@@ -81,8 +77,8 @@ public class TaskController {
      * @param id the task id
      * @return nothing
      */
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Object> deleteById(@PathVariable("id") String id) {
+    @MessageMapping("/task/delete")
+    public ResponseEntity<Object> deleteById(String id) {
         try {
             taskService.deleteById(Long.parseLong(id));
             return ResponseEntity.ok().build();

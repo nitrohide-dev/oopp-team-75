@@ -28,7 +28,7 @@ class TaskTest {
 
     @Test
     void constructor2() {
-        Task task = new Task(new TaskList());
+        Task task = new Task(new TaskList(),"");
         assertNotNull(task.getId());
         assertNotNull(task.getDesc());
         assertNotNull(task.getTitle());
