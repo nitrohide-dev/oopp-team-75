@@ -12,19 +12,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class ListRepositoryTest implements ListRepository{
-    private List<TaskList> lists;
 
+    private List<TaskList> lists;
     public ListRepositoryTest() {
         lists = new ArrayList<>();
     }
-     public ListRepositoryTest(List<TaskList> lists) {
-        this.lists = lists;
-    }
-
-
+    public ListRepositoryTest(List<TaskList> list) {this.lists = list;}
     @Override
     public List<TaskList> findAll() {
         return lists;
@@ -63,6 +58,7 @@ class ListRepositoryTest implements ListRepository{
         for(TaskList list : lists) {
             if(list.getId() == aLong) {
                 lists.remove(list);
+                break;
             }
         }
     }
@@ -85,7 +81,7 @@ class ListRepositoryTest implements ListRepository{
 
     @Override
     public void deleteAll(Iterable<? extends TaskList> entities) {
-        for(TaskList list : (Iterable<TaskList>) entities) {
+        for(TaskList list :  entities) {
             lists.remove(list);
         }
     }
@@ -161,6 +157,11 @@ class ListRepositoryTest implements ListRepository{
 
     @Override
     public TaskList getById(Long aLong) {
+        for(TaskList list : lists) {
+            if(list.getId() == aLong) {
+                return list;
+            }
+        }
         return null;
     }
 
