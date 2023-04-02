@@ -38,16 +38,16 @@ public class ListController {
      * @param id the list id
      * @return the stored taskList
      */
-    @MessageMapping("/list/get")
-    @SendTo("/topic/list/get")
-    public ResponseEntity<TaskList> getById(Long id) {
-        try {
-            TaskList taskList = listService.getById(id);
-            return ResponseEntity.ok(taskList);
-        } catch (NumberFormatException | ListDoesNotExist e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
-    }
+//    @MessageMapping("/list/get")
+//    @SendTo("/topic/list/get")
+//    public ResponseEntity<TaskList> getById(Long id) {
+//        try {
+//            TaskList taskList = listService.getById(id);
+//            return ResponseEntity.ok(taskList);
+//        } catch (NumberFormatException | ListDoesNotExist e) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+//        }
+//    }
     @MessageMapping("/list/rename/{id}")
     @SendTo("/topic/list/rename/{id}")
     public ResponseEntity<TaskList> renameList(@PathVariable("id") String id,String name) {
@@ -64,12 +64,12 @@ public class ListController {
      *
      *
      */
-    @MessageMapping("/list/createTask/{name}")
+    @MessageMapping("/list/createTask/{name}/{boardkey}")
     @SendTo("/topic/boards")
-    public Board createTask(Long listID,@DestinationVariable String name) throws ListDoesNotExist{
-        TaskList list = listService.getById(listID);
+    public Board createTask(int listID,@DestinationVariable("name") String name,@DestinationVariable("boardkey") String boardKey) throws ListDoesNotExist{
+        TaskList list = listService.getById(boardKey,listID);
        String id = listService.createTask(list,name);
-       return boardService.findByKey(id);
+       return boardService.findByKey(boardKey);
     }
     /**
      * Deletes a taskList, including its children from the database by its id. If

@@ -34,10 +34,10 @@ public class ListService {
 	 * @return the taskList with the given id
 	 * @throws ListDoesNotExist when there is no list with the given id in the db
 	 */
-	public TaskList getById(long id) throws ListDoesNotExist {
-		if (!repo.existsById(id))
+	public TaskList getById(String boardKey,int order) throws ListDoesNotExist {
+		if (repo.getbyId(boardKey,order)==null)
 			throw new ListDoesNotExist("There is no list with this id.");
-		return repo.findById(id).get();
+		return repo.getbyId(boardKey,order);
 	}
 
 	public TaskList renameList(long id,String name) throws ListDoesNotExist {

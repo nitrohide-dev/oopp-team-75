@@ -68,7 +68,7 @@ public class BoardOverviewCtrl {
 
     private long boardKey;
     private Map<ListView, String> allLists; // Stores all task lists
-    private final Map<ListView, Long> listMap; // Stores all task lists
+    private final Map<ListView, Integer> listMap; // Stores all task lists
     private final Map<HBox, Task> taskMap; // Stores all tasks
 
     @FXML
@@ -87,6 +87,7 @@ public class BoardOverviewCtrl {
     @FXML
     private BorderPane borderPane;
     private UserMenuCtrl usermenuCtrl;
+    private int currentOrder;
 
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -140,7 +141,7 @@ public class BoardOverviewCtrl {
         allLists.clear();
         listMap.clear();
         taskMap.clear();
-
+        currentOrder = 0;
         // creates new lists
         List<TaskList> listOfLists = board.getTaskLists();
         if (listOfLists.size() == 0)
@@ -299,12 +300,7 @@ public class BoardOverviewCtrl {
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
      */
     public void createTaskList() {
-        TaskList list = getBoard().createTaskList();
-        Long id1 = list.getId();
-        server.updateBoard(getBoard());
-        Long id2 = list.getId();
-        list.getId();
-      //  server.createList(getBoard());
+        server.createList(getBoard());
     }
 
     /**
@@ -346,7 +342,8 @@ public class BoardOverviewCtrl {
         dragOverHandler(listView);
         dragDroppedHandler(listView);
         allLists.put(listView, textField.getText());
-        listMap.put(listView, taskList.getId());
+        listMap.put(listView,currentOrder );
+        currentOrder++;
         return listView;
     }
 
@@ -443,7 +440,7 @@ public class BoardOverviewCtrl {
      * @return the created task
      */
     public void createTask(String name,ListView<HBox> list) {
-        server.createTask(listMap.get(list),name);
+        server.createTask(listMap.get(list), getBoard().getKey(),name);
         server.updateBoard(getBoard());
         refresh(getBoard());
     }
