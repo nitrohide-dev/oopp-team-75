@@ -68,7 +68,7 @@ public class BoardOverviewCtrl {
 
     private long boardKey;
     private Map<ListView, String> allLists; // Stores all task lists
-    private final Map<ListView, TaskList> listMap; // Stores all task lists
+    private final Map<ListView, Long> listMap; // Stores all task lists
     private final Map<HBox, Task> taskMap; // Stores all tasks
 
     @FXML
@@ -299,7 +299,12 @@ public class BoardOverviewCtrl {
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
      */
     public void createTaskList() {
-        server.createList(getBoard());
+        TaskList list = getBoard().createTaskList();
+        Long id1 = list.getId();
+        server.updateBoard(getBoard());
+        Long id2 = list.getId();
+        list.getId();
+      //  server.createList(getBoard());
     }
 
     /**
@@ -341,7 +346,7 @@ public class BoardOverviewCtrl {
         dragOverHandler(listView);
         dragDroppedHandler(listView);
         allLists.put(listView, textField.getText());
-        listMap.put(listView, taskList);
+        listMap.put(listView, taskList.getId());
         return listView;
     }
 
@@ -405,8 +410,8 @@ public class BoardOverviewCtrl {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK){
                 listContainer.getChildren().remove(parentGroup); // remove parent group from HBox
-                TaskList list1 = listMap.get(list);
-                getBoard().removeTaskList(list1);
+          //      TaskList list1 = listMap.get(list);
+             //   getBoard().removeTaskList(list1);
                 server.updateBoard(getBoard()); // updates server
             }
         });
@@ -438,7 +443,6 @@ public class BoardOverviewCtrl {
      * @return the created task
      */
     public void createTask(String name,ListView<HBox> list) {
-        Task task = new Task(listMap.get(list),name);
         server.createTask(listMap.get(list),name);
         server.updateBoard(getBoard());
         refresh(getBoard());
@@ -618,10 +622,10 @@ public class BoardOverviewCtrl {
      * @param task - a HBox, containing the task
      */
     public void deleteTask(ListView<HBox> list, HBox task) {
-        TaskList list1 = listMap.get(list);
-        Task task1 = taskMap.get(task);
-        list1.removeTask(task1);
-        list.getItems().remove(task);
+//        TaskList list1 = listMap.get(list);
+//        Task task1 = taskMap.get(task);
+//        list1.removeTask(task1);
+//        list.getItems().remove(task);
         server.updateBoard(getBoard()); // updates server
     }
 

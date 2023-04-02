@@ -188,12 +188,12 @@ public class ServerUtils {
         send("/app/task/get", taskId);
     }
     public void deleteTask(String taskId){ send("/app/task/delete",taskId);}
-    public void getList(String listId) { send("/app/list/delete",listId);}
+    public void getList(Long listId) { send("/app/list/get",listId);}
     public void deleteList(String listId) { send("/app/list/delete",listId);}
     public void createList(Board board) {send("/app/list/createlist",board);}
     public void renameList(String listId,String listTitle) { send("/app/list/renamelist/" + listId,listTitle);}
-    public void createTask(TaskList list,String taskTitle) {
-        send("/app/list/createTask/"+ taskTitle,list);}
+    public void createTask(Long listID,String taskTitle) {
+        send("/app/list/createTask/"+ taskTitle,listID);}
     public void renameTask(String taskId,String taskTitle) { send("/app/task/rename/" + taskId,taskTitle);}
 
 }

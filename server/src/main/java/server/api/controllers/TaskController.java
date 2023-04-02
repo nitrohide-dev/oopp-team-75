@@ -49,7 +49,6 @@ public class TaskController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
-
     @MessageMapping("/task/rename/{id}")
     @SendTo("/topic/task/rename/{id}")
     public ResponseEntity<Task> renameTask(@PathVariable("id") String id,String name) {

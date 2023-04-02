@@ -40,9 +40,9 @@ public class ListController {
      */
     @MessageMapping("/list/get")
     @SendTo("/topic/list/get")
-    public ResponseEntity<TaskList> getById(String id) {
+    public ResponseEntity<TaskList> getById(Long id) {
         try {
-            TaskList taskList = listService.getById(Long.parseLong(id));
+            TaskList taskList = listService.getById(id);
             return ResponseEntity.ok(taskList);
         } catch (NumberFormatException | ListDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
@@ -66,7 +66,8 @@ public class ListController {
      */
     @MessageMapping("/list/createTask/{name}")
     @SendTo("/topic/boards")
-    public Board createTask(TaskList list,@DestinationVariable String name) throws ListDoesNotExist{
+    public Board createTask(Long listID,@DestinationVariable String name) throws ListDoesNotExist{
+        TaskList list = listService.getById(listID);
        String id = listService.createTask(list,name);
        return boardService.findByKey(id);
     }
