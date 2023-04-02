@@ -53,8 +53,8 @@ public class TaskService {
 	 */
 	public Task moveTask(TaskMoveModel model) throws TaskDoesNotExist {
 		repo.updateInitialListOrder(model.getOld_task_order(),model.getTask_id());
-		repo.updateTargetListOrder(model.getNew_task_order(),model.getTasklist().getId());
-		repo.moveTask(model.getTask_id(),model.getTasklist().getId(),model.getNew_task_order());
+		repo.updateTargetListOrder(model.getNew_task_order(),model.getTasklist().getid());
+		repo.moveTask(model.getTask_id(),model.getTasklist().getid(),model.getNew_task_order());
 		return repo.findById(model.getTask_id()).get();
 	}
 

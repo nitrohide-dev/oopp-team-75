@@ -32,7 +32,7 @@ public class Board {
 
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @OrderColumn
     private List<TaskList> taskLists;
 

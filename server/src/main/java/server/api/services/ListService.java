@@ -30,7 +30,6 @@ public class ListService {
 
 	/**
 	 * Finds a taskList by a given id
-	 * @param id the id of the taskList that we want to get
 	 * @return the taskList with the given id
 	 * @throws ListDoesNotExist when there is no list with the given id in the db
 	 */
@@ -60,7 +59,7 @@ public class ListService {
 		Task task = list.createTask();
 		task.setTitle(name);
 		repo.save(list);
-		return repo.getBoardByListID(list.getId());
+		return repo.getBoardByListID(list.getid());
 	}
 	/**
 	 * Saves a taskList to the database.

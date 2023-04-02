@@ -20,7 +20,6 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(unique=true, nullable=false)
     private long id;
 
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
@@ -49,11 +48,11 @@ public class Task {
 
 //    getters and setters
 
-    public long getId() {
+    public long getid() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setid(long id) {
         this.id = id;
     }
 

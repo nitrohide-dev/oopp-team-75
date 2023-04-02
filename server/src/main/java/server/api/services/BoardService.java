@@ -70,8 +70,9 @@ public class 	BoardService {
 	}
 
 	public Board createList(Board board){
-		board.createTaskList();
+		TaskList list = new TaskList(board);
 		repo.save(board);
+	//	listRepo.save(list);
 		return board;
 	}
 	/**

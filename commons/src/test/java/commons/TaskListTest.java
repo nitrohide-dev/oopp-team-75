@@ -24,7 +24,7 @@ class TaskListTest {
     @Test
     void constructor1() {
         TaskList taskList = new TaskList();
-        assertNotNull(taskList.getId());
+        assertNotNull(taskList.getid());
         assertNull(taskList.getTasks());
         assertNull(taskList.getTitle());
         assertNull(taskList.getBoard());
@@ -33,7 +33,7 @@ class TaskListTest {
     @Test
     void constructor2() {
         TaskList taskList = new TaskList(new Board());
-        assertNotNull(taskList.getId());
+        assertNotNull(taskList.getid());
         assertNotNull(taskList.getTasks());
         assertNotNull(taskList.getTitle());
         assertEquals(new Board(), taskList.getBoard());
@@ -42,7 +42,7 @@ class TaskListTest {
     @Test
     void constructor3() {
         TaskList taskList = new TaskList(new Board(), "a", new ArrayList<>());
-        assertNotNull(taskList.getId());
+        assertNotNull(taskList.getid());
         assertEquals(new ArrayList<>(), taskList.getTasks());
         assertEquals("a", taskList.getTitle());
         assertEquals(new Board(), taskList.getBoard());
@@ -50,13 +50,13 @@ class TaskListTest {
 
     @Test
     void getId() {
-        assertNotNull(taskList.getId());
+        assertNotNull(taskList.getid());
     }
 
     @Test
     void setId() {
-        taskList.setId(999);
-        assertEquals(999, taskList.getId());
+        taskList.setid(999);
+        assertEquals(999, taskList.getid());
     }
 
     @Test
