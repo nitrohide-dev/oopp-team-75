@@ -28,7 +28,6 @@ public class BoardCreateCtrl  {
     public void send(){
         String boardName = boardNameField.getText();
 
-
         if (!boardName.isEmpty()) {
             if(server.findBoard(boardName)!=null){
                 Alert alert = new Alert(Alert.AlertType.ERROR, "This board already exists.");

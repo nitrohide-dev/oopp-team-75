@@ -139,7 +139,7 @@ public class MainCtrl {
         //but it causes a bug where the window is not properly set, so the buttons on the right side are not visible
         //TODO fix this bug
         Screen screen = Screen.getPrimary();
-        //Rectangle2D bounds = screen.getVisualBounds();
+//        Rectangle2D bounds = screen.getVisualBounds();
 //        primaryStage.setWidth(bounds.getWidth());
 //        primaryStage.setHeight(bounds.getHeight());
         boardOverview.getStylesheets().add(Objects.requireNonNull(getClass()
@@ -166,7 +166,8 @@ public class MainCtrl {
     }
 
     public void createBoard(String name,String title){
-        server.createBoard(new CreateBoardModel(name,title,0));
+        server.createBoard(new CreateBoardModel(name,title));
+        Board b = new Board(new CreateBoardModel(name,title));
         userMenuCtrl.addBoard(name);
         showUserMenu();
     }
@@ -226,7 +227,7 @@ public class MainCtrl {
         primaryStage = new Stage();
         setAdminPresence(true);
         primaryStage.setScene(adminOverview);
-        adminOverviewCtrl.refresh();
+        adminOverviewCtrl.init();
         primaryStage.show();
     }
 

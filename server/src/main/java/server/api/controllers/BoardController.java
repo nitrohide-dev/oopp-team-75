@@ -119,7 +119,6 @@ public class BoardController {
 
     @GetMapping("/login")
     public ResponseEntity<Boolean> authenticate(@RequestHeader String password) {
-        System.out.println("received");
         if (password.equals(hashedPassword)) {
             authentication=true;
             return ResponseEntity.ok(true);
@@ -163,7 +162,6 @@ public class BoardController {
     }
     @GetMapping("/logout")
     public ResponseEntity<Object> logOut() {
-        System.out.println("received");
         if (authentication) {
             authentication=false;
         }

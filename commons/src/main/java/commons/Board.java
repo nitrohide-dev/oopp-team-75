@@ -23,13 +23,11 @@ public class Board {
 
     @Id
     @Column(nullable=false, unique=true)
-    private java.lang.String key;
+    private String key;
 
     @Column(nullable=false)
     private String title;
 
-    @Column(nullable=false)
-    private long password;  //if password is 0, board is unlocked
 
 
     @JsonManagedReference
@@ -42,21 +40,16 @@ public class Board {
     public Board() {} // for object mappers, please don't use.
 
     public Board(String key) {
-        this(key, "", 0L, new ArrayList<>());
+        this(key, "",  new ArrayList<>());
     }
 
     public Board(CreateBoardModel model) {
-        this(model.getKey(), model.getTitle(), model.getPassword(), new ArrayList<>());
+        this(model.getKey(), model.getTitle(), new ArrayList<>());
     }
 
-    public Board(String title, String key, List<TaskList> taskLists) {
-        this(key,title,0,taskLists);
-    }
-
-    public Board(String key, String title, long password, List<TaskList> taskLists) {
+    public Board(String key, String title, List<TaskList> taskLists) {
         this.key = key;
         this.title = title;
-        this.password = password;
         this.taskLists = taskLists;
     }
 
@@ -78,13 +71,6 @@ public class Board {
         this.title = title;
     }
 
-    public long getPassword() {
-        return password;
-    }
-
-    public void setPassword(long password) {
-        this.password = password;
-    }
 
     public List<TaskList> getTaskLists() {
         return taskLists;
@@ -110,7 +96,6 @@ public class Board {
 
         if (!Objects.equals(key, board.key)) return false;
         if (!Objects.equals(title, board.title)) return false;
-        if (!Objects.equals(password, board.password)) return false;
         return Objects.equals(taskLists, board.taskLists);
     }
 
@@ -122,7 +107,6 @@ public class Board {
     public int hashCode() {
         int result = key != null ? key.hashCode() : 0;
         result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (int)( password);
         result = 31 * result + (taskLists != null ? taskLists.hashCode() : 0);
         return result;
     }

@@ -7,14 +7,12 @@ public class CreateBoardModel {
 
 	public String key;
 	public String title;
-	public int password;
 
 	public CreateBoardModel(){} // for object mappers, please don't use.
 
-	public CreateBoardModel(String key, String title, int password) {
+	public CreateBoardModel(String key, String title) {
 		this.key = key;
 		this.title = title;
-		this.password = password;
 	}
 
 	public String getKey() {
@@ -33,13 +31,6 @@ public class CreateBoardModel {
 		this.title = title;
 	}
 
-	public int getPassword() {
-		return password;
-	}
-
-	public void setPassword(int password) {
-		this.password = password;
-	}
 
 	/**
 	 * Checks if the given model is valid

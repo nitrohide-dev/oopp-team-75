@@ -29,7 +29,6 @@ public class AdminLoginCtrl {
      * logs you in as an admin
      */
     public void login(){
-        System.out.println(hashPassword("pass"));
         if(!password.getText().equals("") && server.authenticate(hashPassword(password.getText())) ){ // TBD
             password.clear();
             Stage stage = (Stage) password.getScene().getWindow();

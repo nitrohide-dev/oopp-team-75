@@ -33,11 +33,7 @@ import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -50,30 +46,6 @@ public class ServerUtils {
     private static final String SERVER = "http://localhost:8080/";
 
 
-    public void getQuotesTheHardWay() throws IOException {
-        var url = new URL("http://localhost:8080/api/quotes");
-        var is = url.openConnection().getInputStream();
-        var br = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
-        }
-    }
-
-
-    /**
-     * Sends request to the server that gets the board by id
-     * @param id - the id
-     * @return the board
-     */
-    public Board getBoard(long id) {
-        return new Board();
-//        return ClientBuilder.newClient(new ClientConfig())
-//            .target(SERVER).path("api/board/get/" + id)
-//            .request(APPLICATION_JSON)
-//            .accept(APPLICATION_JSON)
-//            .get(Board.class);
-    }
 
     /**
      * Sends request to the server to create a task.

@@ -33,11 +33,10 @@ public class AdminOverviewCtrl{
     }
 
     /**
-     * refreshes admin overview
+     * initializes admin overview
      */
-    public void refresh(){
+    public void init(){
         boards = server.getAllBoards();
-        System.out.println(boards);
         for(Board b : boards){
             this.addBoardToListView(b.getKey());
         }
