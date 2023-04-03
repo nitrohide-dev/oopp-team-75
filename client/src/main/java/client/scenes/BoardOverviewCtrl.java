@@ -11,14 +11,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
@@ -718,6 +711,30 @@ public class BoardOverviewCtrl {
         // Set the image URL of ImageView
         String path = Path.of("", "client", "images", "Logo.png").toString();
         logo1.setImage(new Image(path));
+    }
+
+    /**
+     * adds progress indicator to the task box - should be called when nested tasks are added
+     *
+     * @param box task box
+     */
+    public void addProgressIndicator(HBox box){
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setProgress(0.5); // set for the respective parameter
+        progressIndicator.getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
+        box.getChildren().add(progressIndicator);
+
+    }
+
+    /**
+     *
+     * removes progress indicator - to be called when no nested tasks are set
+     * @param box task box
+     */
+    public void removeProgressIndicator(HBox box){
+        box.getChildren().remove(3);
+
     }
 }
 

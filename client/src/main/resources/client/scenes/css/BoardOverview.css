@@ -99,3 +99,7 @@
     -fx-touch-action: manipulation;
     -fx-width: 100%;
 }
+
+.progress-indicator {
+    -fx-progress-color: green;
+}
