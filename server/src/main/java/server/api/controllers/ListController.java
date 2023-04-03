@@ -32,29 +32,12 @@ public class ListController {
 
     @GetMapping(path = { "", "/" })
     public List<TaskList> getAll() { return listService.getAll(); }
-
-    /**
-     * Gets a taskList from the database by id. If the id does not exist in the
-     * database, the method will respond with a bad request.
-     * @param id the list id
-     * @return the stored taskList
-     */
-//    @MessageMapping("/list/get")
-//    @SendTo("/topic/list/get")
-//    public ResponseEntity<TaskList> getById(Long id) {
-//        try {
-//            TaskList taskList = listService.getById(id);
-//            return ResponseEntity.ok(taskList);
-//        } catch (NumberFormatException | ListDoesNotExist e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-//        }
-//    }
-    @MessageMapping("/list/rename/{id}")
-    @SendTo("/topic/list/rename/{id}")
-    public ResponseEntity<TaskList> renameList(@PathVariable("id") String id,String name) {
+    @MessageMapping("/list/rename/{name}")
+    @SendTo("/topic/boards")
+    public Board renameList(Long id,@DestinationVariable("name") String name) {
         try {
-            TaskList taskList = listService.renameList(Long.parseLong(id),name);
-            return ResponseEntity.ok(taskList);
+            TaskList taskList = listService.renameList(id,name);
+            return taskList.getBoard();
         } catch (NumberFormatException | ListDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

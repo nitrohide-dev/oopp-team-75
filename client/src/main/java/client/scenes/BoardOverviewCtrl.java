@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
+import commons.TaskMoveModel;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -70,6 +71,7 @@ public class BoardOverviewCtrl {
     private Map<ListView, String> allLists; // Stores all task lists
     private final Map<ListView, Long> listMap; // Stores all task lists
     private final Map<HBox, Long> taskMap; // Stores all tasks
+    private final Map<Long,Integer> taskOrderMap;
 
     @FXML
     private ScrollPane scrollPaneMain;
@@ -95,6 +97,7 @@ public class BoardOverviewCtrl {
         this.allLists = new HashMap<>();
         this.listMap = new HashMap<>();
         this.taskMap = new HashMap<>();
+        this.taskOrderMap = new HashMap<>();
     }
 
     /**
@@ -157,8 +160,11 @@ public class BoardOverviewCtrl {
                 ListView<HBox> ourList = addTaskList(taskList);
                 dragOverHandler(ourList);
                 dragDroppedHandler(ourList);
-                for (Task task : taskList.getTasks())
+                for(int j=0;j<taskList.getTasks().size();j++) {
+                   Task task = taskList.getTasks().get(j);
                     addTask(task.getTitle(), ourList, task);
+                    taskOrderMap.put(task.getid(),j);
+                }
             }
         }
 
@@ -321,8 +327,10 @@ public class BoardOverviewCtrl {
         ListView<HBox> sampleList = (ListView<HBox>) samplePane.getContent();
         TextField textField = new TextField();
         textField.setId("listName1");
-        textField.setOnInputMethodTextChanged(e -> taskList.setTitle(textField.getText()));
-
+      //  textField.setOnAction(e->{
+ //           if(!(textField.getText().equals(taskList.getTitle())))
+   //             server.renameList(taskList.getid(), textField.getText());
+       // });
         ListView<HBox> listView = new ListView<>();
         listView.setOnMouseClicked(e -> taskOperations(listView));
         listView.setPrefSize(sampleList.getPrefWidth(), sampleList.getPrefHeight());
@@ -620,25 +628,6 @@ public class BoardOverviewCtrl {
     public void deleteTask(HBox task) {
         server.deleteTask(taskMap.get(task),getBoard().getKey());
     }
-
-//    /**
-//     * method that moves a task from one list to another
-//     *
-//     * @param fromList - the list containing the taskD
-//     * @param toList   - the list in which we want to put the task
-//     * @param task     the task to be moved
-//     */
-//    public void moveTask(ListView fromList, ListView toList, HBox task) {
-//        String list1 = allLists.get(fromList);
-//        String list2 = allLists.get(toList);
-//        if (list1 == null || list2 == null) return;
-//        if (list1.equals(list2)) return;
-//        if (server.moveTask(mainCtrl.getCurrBoard(), list1, list2, task)) {
-//            fromList.getItems().remove(task);
-//            toList.getItems().add(task);
-//        }
-//    }
-
     /**
      * Handles the list's behaviour once a task is being dragged over it
      * @param list the list which behaviour is to be configured
@@ -662,7 +651,7 @@ public class BoardOverviewCtrl {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-                createTask(db.getString(),list);
+               server.moveTask(new TaskMoveModel(Long.parseLong(db.getString()),listMap.get(list),Integer.MAX_VALUE));
                 success = true;
                 db.clear();
             }
@@ -684,17 +673,10 @@ public class BoardOverviewCtrl {
         box.setOnDragDetected(event -> {
             Dragboard db = box.startDragAndDrop(TransferMode.ANY);
             ClipboardContent content = new ClipboardContent();
-            content.putString(task.getText());
+            content.putString(Long.toString(taskMap.get(box)));
             db.setContent(content);
             db.setDragView(new Text(task.getText()).snapshot(null, null), event.getX(), event.getY());
             event.consume();
-        });
-        box.setOnDragDone(event -> {
-            Dragboard db = event.getDragboard();
-            if(!db.hasString())
-            {
-                deleteTask(box);
-            }
         });
     }
 

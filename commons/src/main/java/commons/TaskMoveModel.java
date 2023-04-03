@@ -13,12 +13,17 @@ public class TaskMoveModel {
     private Long task_id;
     @Getter
     @Setter
-    private TaskList tasklist;
+    private Long tasklist_id;
     @Getter
     @Setter
     private int new_task_order;
-    @Getter
-    @Setter
-    private int old_task_order;
+    public TaskMoveModel(){} // for object mappers, please don't use.
+
+    public TaskMoveModel(Long task_id,Long tasklist_id, int new_task_order) {
+
+        this.task_id = task_id;
+        this.tasklist_id = tasklist_id;
+        this.new_task_order = new_task_order;
+    }
 
 }

@@ -224,7 +224,7 @@ public class ServerUtils {
      * @param listId - the id of the list
      * @param listTitle - the new list name
      */
-    public void renameList(String listId,String listTitle) { send("/app/list/renamelist/" + listId,listTitle);}
+    public void renameList(Long listId,String listTitle) { send("/app/list/rename/" + listTitle,listId);}
     /**
      * Sends a request to the create a task in the database
      * @param listID - the ID of the list that is supposed to contain the task

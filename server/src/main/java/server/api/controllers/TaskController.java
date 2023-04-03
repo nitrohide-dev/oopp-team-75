@@ -12,6 +12,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
+import server.api.services.ListService;
 import server.api.services.TaskService;
 import server.exceptions.CannotCreateBoard;
 import server.exceptions.ListDoesNotExist;
@@ -25,10 +26,12 @@ public class TaskController {
 
     private final TaskService taskService;
     private final BoardService boardService;
+    private final ListService listService;
 
-    public TaskController(TaskService taskService, BoardService boardService) {
+    public TaskController(TaskService taskService, BoardService boardService,ListService listService) {
         this.taskService = taskService;
         this.boardService = boardService;
+        this.listService = listService;
     }
 
     @GetMapping(path = { "", "/" })
@@ -43,11 +46,9 @@ public class TaskController {
      * @return the stored task
      */
     @MessageMapping("/task/get")
-    @SendTo("/topic/task/get")
-    public ResponseEntity<Task> getById(String id) {
+    public Task getById(Long id) {
         try {
-            Task task = taskService.getById(Long.parseLong(id));
-            return ResponseEntity.ok(task);
+            return taskService.getById(id);
         } catch (NumberFormatException | TaskDoesNotExist e ) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
@@ -68,11 +69,23 @@ public class TaskController {
      * @return the task that has been moved
      */
     @MessageMapping("/task/move")
-    @SendTo("/topic/task/move")
-    public ResponseEntity<Task> moveTask(TaskMoveModel model) throws TaskDoesNotExist
+    @SendTo("/topic/boards")
+    public Board moveTask(TaskMoveModel model) throws TaskDoesNotExist,ListDoesNotExist
     {
-        Task task = taskService.moveTask(model);
-        return ResponseEntity.ok(task);
+        Task task = getById(model.getTask_id());
+        TaskList initiallist = task.getTaskList();
+        TaskList targetlist = listService.getById(model.getTasklist_id());
+        Board board = initiallist.getBoard();
+        int target_order = model.getNew_task_order();
+        initiallist.getTasks().remove(task);
+        if(target_order>targetlist.getTasks().size())
+        {
+            targetlist.getTasks().add(task);
+        }else {
+            targetlist.getTasks().add(target_order, task);
+        }
+        taskService.moveTask(task,targetlist);
+        return board;
     }
 
 

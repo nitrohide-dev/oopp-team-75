@@ -46,8 +46,10 @@ public class ListService {
 	public TaskList renameList(long id,String name) throws ListDoesNotExist {
 		if (!repo.existsById(id))
 			throw new ListDoesNotExist("There is no list with this id.");
-		repo.renameList(id,name);
-		return repo.findById(id).get();
+		TaskList list = getById(id);
+		list.setTitle(name);
+		repo.save(list);
+		return list;
 	}
 	/**
 	 * Deletes a taskList from the database
