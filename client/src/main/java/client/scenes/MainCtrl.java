@@ -18,7 +18,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
-import javafx.geometry.Rectangle2D;
+//import javafx.geometry.Rectangle2D;
 import commons.CreateBoardModel;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -38,7 +38,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MainCtrl {
@@ -58,17 +57,28 @@ public class MainCtrl {
     private UserMenuCtrl userMenuCtrl;
     private Scene boardCreate;
     private BoardCreateCtrl boardCreateCtrl;
+
+    private AdminOverviewCtrl adminOverviewCtrl;
+    private Scene adminOverview;
+    private AdminLoginCtrl adminLoginCtrl;
+    private Scene adminLogin;
+    private PasswordChangeCtrl passwordChangeCtrl;
+    private Scene passwordChange;
+
     @Inject
     public MainCtrl(ServerUtils server){
         this.server = server;
     }
 
-    public void initialize(Stage primaryStage,
-                           Pair<LandingPageCtrl, Parent> landing,
-                           Pair<BoardOverviewCtrl, Parent> boardOverview,
-                           Pair<UserMenuCtrl, Parent> userMenu,
-                           Pair<BoardCreateCtrl, Parent> boardCreate) throws IOException {
+    public void initialize(Stage primaryStage, Pair<LandingPageCtrl, Parent> landing,
+                          Pair<BoardOverviewCtrl, Parent> boardOverview,
+                            Pair<UserMenuCtrl, Parent> userMenu,
+                           Pair<BoardCreateCtrl, Parent> boardCreate,
+                            Pair<AdminOverviewCtrl, Parent> adminOverview,
+                           Pair<AdminLoginCtrl, Parent> adminLogin,
+                           Pair<PasswordChangeCtrl, Parent> passwordChange) throws IOException {
         this.primaryStage = primaryStage;
+
         this.landingCtrl = landing.getKey();
         this.landing = new Scene(landing.getValue());
 
@@ -78,15 +88,40 @@ public class MainCtrl {
         this.userMenuCtrl = userMenu.getKey();
         this.userMenu = new Scene(userMenu.getValue());
 
-        List<String> boardNames=this.readFromCsv();
-        userMenuCtrl.setBoardNames(boardNames);
-        for(String board:boardNames)
-            userMenuCtrl.addBoardToList(board,0);
+
 
         this.boardCreateCtrl = boardCreate.getKey();
         this.boardCreate = new Scene(boardCreate.getValue());
+
+        this.adminOverviewCtrl = adminOverview.getKey();
+        this.adminOverview = new Scene(adminOverview.getValue());
+
+        this.adminLoginCtrl = adminLogin.getKey();
+        this.adminLogin = new Scene(adminLogin.getValue());
+
+        this.passwordChangeCtrl = passwordChange.getKey();
+        this.passwordChange = new Scene(passwordChange.getValue());
+
         showLanding();
+        //primaryStage.setScene(this.adminOverview);
+
         primaryStage.show();
+
+        List<String> boardNames=this.readFromCsv();
+        for(String board : boardNames){
+            userMenuCtrl.addBoard(board);
+        }
+
+
+
+    }
+
+    public Board getCurrBoard() {
+        return currBoard;
+    }
+
+    public void setCurrBoard(Board board) {
+        currBoard = board;
     }
 
     public void showLanding(){
@@ -101,16 +136,16 @@ public class MainCtrl {
     public void showBoard(Board board) {
         currBoard = board;
         primaryStage.setTitle("Board: Your Board");
-        primaryStage.setMaximized(true);
+        //primaryStage.setMaximized(true);
         primaryStage.setMinWidth(750);
         primaryStage.setMinHeight(600);
         //this fixes a bug where the maximized window will be opened in pref size.
         //but it causes a bug where the window is not properly set, so the buttons on the right side are not visible
         //TODO fix this bug
         Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
-        primaryStage.setWidth(bounds.getWidth());
-        primaryStage.setHeight(bounds.getHeight());
+//        Rectangle2D bounds = screen.getVisualBounds();
+//        primaryStage.setWidth(bounds.getWidth());
+//        primaryStage.setHeight(bounds.getHeight());
         boardOverview.getStylesheets().add(Objects.requireNonNull(getClass()
                 .getResource("css/BoardOverview.css")).toExternalForm());
         boardOverviewCtrl.changeImageUrl();
@@ -132,10 +167,11 @@ public class MainCtrl {
 
     }
 
-    public void createBoard(String key, String title, int password){
-        userMenuCtrl.addBoardToList(key,password);
-        Board board = server.createBoard(new CreateBoardModel(key,title,password));
-        showBoard(board);
+    public void createBoard(String name,String title){
+        server.createBoard(new CreateBoardModel(name,title));
+        Board b = new Board(new CreateBoardModel(name,title));
+        userMenuCtrl.addBoard(name);
+        showUserMenu();
     }
 
     /**
@@ -165,24 +201,62 @@ public class MainCtrl {
         if(!dir.exists()) {
             return boardNames;
         }
-        HashMap<String, Long> data = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
             String line= reader.readLine();
             line= line.substring(1,line.length()-1);
             String[] boards = line.split(",* ");
             for(String string : boards) {
-                String[] tokens = string.split("=");
-                if (tokens.length == 2) {
 
-                    String key = tokens[0].trim();
-
-                    boardNames.add(key);
-                    long value = Integer.parseInt(tokens[1].trim());
-                    data.put(key, value);
-                }
+                String key = string.trim();
+                if(!key.equals("") && server.findBoard(key)!=null){
+                    boardNames.add(key);}
             }
         }
-        userMenuCtrl.setBoards(data);
         return boardNames;
+    }
+
+    public void adminLogin() {
+        Stage create = new Stage();
+        create.setScene(adminLogin);
+        create.initModality(Modality.APPLICATION_MODAL);
+        create.showAndWait();
+    }
+    public void adminOverview(){
+        primaryStage.close();
+        primaryStage = new Stage();
+        setAdminPresence(true);
+        primaryStage.setScene(adminOverview);
+        adminOverviewCtrl.init();
+        primaryStage.show();
+    }
+
+    /**
+     * Used only by admin
+     * @param board Board to view
+     */
+    public void showBoardNewWindow(Board board) {
+        Stage stage = new Stage();
+        currBoard = board;
+        stage.setTitle("Board: Your Board");
+        stage.setMinWidth(750);
+        stage.setMinHeight(600);
+        stage.setScene(boardOverview);
+        boardOverview.getStylesheets().add(Objects.requireNonNull(getClass()
+                .getResource("css/BoardOverview.css")).toExternalForm());
+        boardOverviewCtrl.changeImageUrl();
+        boardOverviewCtrl.load(board);
+        boardOverviewCtrl.connect();
+        stage.show();
+    }
+
+    public void changePassword(){
+        Stage create = new Stage();
+        create.setScene(passwordChange);
+        create.initModality(Modality.APPLICATION_MODAL);
+        create.showAndWait();
+
+    }
+    public void setAdminPresence(boolean adminPresence) {
+        boardOverviewCtrl.setAdminPresence(adminPresence);
     }
 }

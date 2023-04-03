@@ -82,6 +82,8 @@ public class BoardOverviewCtrl {
     private BorderPane borderPane;
     private UserMenuCtrl usermenuCtrl;
 
+    private boolean adminPresence=false;
+
     @Inject
     public BoardOverviewCtrl(MainCtrl mainCtrl, ServerUtils server) {
         this.mainCtrl = mainCtrl;
@@ -171,7 +173,12 @@ public class BoardOverviewCtrl {
         String path = Path.of("", "client", "images", "ExitButton.png").toString();
         Button exitButton = buttonBuilder(path);
         exitButton.setOnAction(e-> {
-            goToPrevious();
+            if(!adminPresence){
+                goToPrevious();}
+            else{
+                Stage stage = (Stage) scrollPaneMain.getScene().getWindow();
+                stage.close();
+            }
         });
         header.getChildren().add(exitButton);
     }
@@ -713,6 +720,10 @@ public class BoardOverviewCtrl {
         // Set the image URL of ImageView
         String path = Path.of("", "client", "images", "Logo.png").toString();
         logo1.setImage(new Image(path));
+    }
+
+    public void setAdminPresence(boolean adminPresence) {
+        this.adminPresence = adminPresence;
     }
 }
 
