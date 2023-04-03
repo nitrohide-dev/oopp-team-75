@@ -15,20 +15,25 @@
  */
 package client;
 
+import client.scenes.BoardCreateCtrl;
 import client.scenes.BoardOverviewCtrl;
 import client.scenes.LandingPageCtrl;
+import client.scenes.MainCtrl;
+import client.scenes.UserMenuCtrl;
+import client.utils.ServerUtils;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
-
-import client.scenes.MainCtrl;
 
 public class MyModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(BoardCreateCtrl.class).in(Scopes.SINGLETON);
         binder.bind(BoardOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(LandingPageCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(UserMenuCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
     }
 }

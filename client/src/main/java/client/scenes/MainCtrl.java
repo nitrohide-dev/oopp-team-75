@@ -26,6 +26,8 @@ import javafx.stage.Screen;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 
@@ -47,8 +49,11 @@ public class MainCtrl {
     private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
 
+    @Getter
+    @Setter
     private Board currBoard;
     private Scene userMenu;
+    @Getter
     private UserMenuCtrl userMenuCtrl;
     private Scene boardCreate;
     private BoardCreateCtrl boardCreateCtrl;
@@ -79,7 +84,6 @@ public class MainCtrl {
 
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
-
 
         this.userMenuCtrl = userMenu.getKey();
         this.userMenu = new Scene(userMenu.getValue());
@@ -147,15 +151,13 @@ public class MainCtrl {
         boardOverviewCtrl.changeImageUrl();
         primaryStage.setScene(boardOverview);
         boardOverviewCtrl.load(board);
-        boardOverviewCtrl.connect();
-        // connects to /topic/boards
-    }
+        boardOverviewCtrl.connect(); // connects to /topic/boards
 
+    }
 
     public void showUserMenu(){
         primaryStage.setScene(userMenu);
     }
-
 
     public void showBoardCreate(){
         Stage create = new Stage();
@@ -188,9 +190,6 @@ public class MainCtrl {
         }
     }
 
-    public UserMenuCtrl getUserMenuCtrl(){
-        return userMenuCtrl;
-    }
     /**
      * reads user's saved data(if they exist) from the local file
      * @return list of names of baords
