@@ -54,7 +54,7 @@
                         <Font size="25.0" />
                      </font>
                   </Button>
-                  <Button alignment="CENTER" contentDisplay="CENTER" layoutX="138.0" layoutY="367.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="245.0" text="Admin login">
+                  <Button onAction="#login" alignment="CENTER" contentDisplay="CENTER" layoutX="138.0" layoutY="367.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="245.0" text="Admin login">
                      <font>
                         <Font size="25.0" />
                      </font>

@@ -16,7 +16,6 @@
 package client.utils;
 
 import commons.Board;
-import commons.Quote;
 import commons.CreateBoardModel;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -34,11 +33,7 @@ import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -50,46 +45,7 @@ public class ServerUtils {
 
     private static final String SERVER = "http://localhost:8080/";
 
-    public void getQuotesTheHardWay() throws IOException {
-        var url = new URL("http://localhost:8080/api/quotes");
-        var is = url.openConnection().getInputStream();
-        var br = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
-        }
-    }
 
-    public List<Quote> getQuotes() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<>() {
-                });
-    }
-    //can we delete those old ones now?
-    public Quote addQuote(Quote quote) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
-    }
-
-    /**
-     * Sends request to the server that gets the board by id
-     * @param id - the id
-     * @return the board
-     */
-    public Board getBoard(long id) {
-        return new Board();
-//        return ClientBuilder.newClient(new ClientConfig())
-//            .target(SERVER).path("api/board/get/" + id)
-//            .request(APPLICATION_JSON)
-//            .accept(APPLICATION_JSON)
-//            .get(Board.class);
-    }
 
     /**
      * Sends request to the server to create a task.
@@ -230,4 +186,36 @@ public class ServerUtils {
     public void updateBoard(Board board) {
         send("/app/boards", board);
     }
+
+    /**
+     * initial authentication on the side of the server
+     * @param password password hashed
+     * @return whether it was successful or not
+     */
+    public boolean authenticate(String password) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/login")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .header("password",password)
+                .get(Boolean.class);
+    }
+
+
+    public boolean changePassword(String passwordHashed) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/changePassword")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .header("passwordHashed",passwordHashed)
+                .get(Boolean.class);
+    }
+
+    public void logout(){
+        ClientBuilder.newClient(new ClientConfig())
+         .target(SERVER).path("api/boards/logout")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON);
+    }
+
 }

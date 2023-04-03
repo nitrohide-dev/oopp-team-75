@@ -24,7 +24,7 @@ public class BoardService {
 	 * @return list of all boards
 	 */
 	public List<Board> getAll() {
-		return repo.findAll();
+		return (List<Board>)  repo.findAll();
 	}
 
 	/**
