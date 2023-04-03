@@ -8,7 +8,7 @@ build/
 **/*.mv.db
 
 **/*.swp
-
+client/src/main/resources/data.csv
 ### STS ###
 .apt_generated
 .classpath
@@ -20,7 +20,6 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-
 ### IntelliJ IDEA ###
 .idea
 *.iws
