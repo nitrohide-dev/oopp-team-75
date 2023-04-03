@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import org.springframework.messaging.simp.stomp.StompSession;
 
 import java.nio.file.Path;
 
@@ -25,22 +26,24 @@ public class LandingPageCtrl {
 
 
     @Inject
-    public LandingPageCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public LandingPageCtrl(MainCtrl mainCtrl, ServerUtils server) {
         this.mainCtrl = mainCtrl;
         this.server = server;
     }
 
     public void connect(){
-        String ip = server_ip.getText();
-        server_ip.setText("connecting");
-        if (ip.equals(""))
-            ip = "localhost:8080";
-        if (!server.testServer(ip)) {
-            server_ip.setText("could not connect");
-            return;
-        }
-        server.setServer(ip);
-        mainCtrl.showUserMenu();
+        final String text = server_ip.getText();
+        final String ip = "".equals(text) ? "localhost:8080" : text;
+        server_ip.setText("connecting...");
+        new Thread(() -> {
+            final StompSession session = server.safeConnect(ip);
+            if (session != null) {
+                server.setSERVER("http://" + ip + "/");
+                server.setSession(session);
+                Platform.runLater(() -> mainCtrl.showUserMenu());
+            } else Platform.runLater(() -> server_ip.setText(ip));
+
+        }).start();
     }
 
     public void exit(){

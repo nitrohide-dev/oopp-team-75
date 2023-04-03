@@ -43,24 +43,18 @@ import java.util.Optional;
 public class BoardOverviewCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    @FXML
-    public Group group;
-    @FXML
-    public HBox header;
-    @FXML
-    public ScrollPane sPaneListView;
 
-    @FXML
-    private ListView<HBox> taskList1;
+    @FXML public Group group;
+    @FXML public HBox header;
+    @FXML public ScrollPane sPaneListView;
 
-    @FXML
-    private TextField listName1;
+    @FXML private ListView<HBox> taskList1;
 
-    @FXML
-    private Button deleteTaskListsButton;
+    @FXML private TextField listName1;
 
-    @FXML
-    private HBox listContainer;
+    @FXML private Button deleteTaskListsButton;
+
+    @FXML private HBox listContainer;
 
     private Group sampleGroup;
 
@@ -84,7 +78,7 @@ public class BoardOverviewCtrl {
     private ImageView dropDownMenu;
 
     @Inject
-    public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public BoardOverviewCtrl(MainCtrl mainCtrl, ServerUtils server) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.allLists = new HashMap<>();

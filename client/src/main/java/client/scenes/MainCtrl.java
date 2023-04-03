@@ -26,6 +26,8 @@ import javafx.stage.Screen;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 
@@ -48,6 +50,8 @@ public class MainCtrl {
     private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
 
+    @Getter
+    @Setter
     private Board currBoard;
     private Scene userMenu;
     private UserMenuCtrl userMenuCtrl;
@@ -58,51 +62,30 @@ public class MainCtrl {
         this.server = server;
     }
 
-    public void initialize(Stage primaryStage, Pair<LandingPageCtrl, Parent> landing,
-//                           Pair<AddQuoteCtrl, Parent> add,
+    public void initialize(Stage primaryStage,
+                           Pair<LandingPageCtrl, Parent> landing,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
-                            Pair<UserMenuCtrl, Parent> userMenu,
+                           Pair<UserMenuCtrl, Parent> userMenu,
                            Pair<BoardCreateCtrl, Parent> boardCreate) throws IOException {
         this.primaryStage = primaryStage;
         this.landingCtrl = landing.getKey();
         this.landing = new Scene(landing.getValue());
-//        this.overviewCtrl = overview.getKey();
-//        this.overview = new Scene(overview.getValue());
-//
-//        this.addCtrl = add.getKey();
-//        this.add = new Scene(add.getValue());
 
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
-
 
         this.userMenuCtrl = userMenu.getKey();
         this.userMenu = new Scene(userMenu.getValue());
 
         List<String> boardNames=this.readFromCsv();
         userMenuCtrl.setBoardNames(boardNames);
-        for(String board:boardNames){
+        for(String board:boardNames)
             userMenuCtrl.addBoardToList(board,0);
-        }
 
         this.boardCreateCtrl = boardCreate.getKey();
         this.boardCreate = new Scene(boardCreate.getValue());
         showLanding();
-
-
         primaryStage.show();
-        System.out.println(System.getProperty("user.dir"));
-
-
-
-    }
-
-    public Board getCurrBoard() {
-        return currBoard;
-    }
-
-    public void setCurrBoard(Board board) {
-        currBoard = board;
     }
 
     public void showLanding(){
@@ -132,15 +115,13 @@ public class MainCtrl {
         boardOverviewCtrl.changeImageUrl();
         primaryStage.setScene(boardOverview);
         boardOverviewCtrl.load(board);
-        boardOverviewCtrl.connect();
-        // connects to /topic/boards
-    }
+        boardOverviewCtrl.connect(); // connects to /topic/boards
 
+    }
 
     public void showUserMenu(){
         primaryStage.setScene(userMenu);
     }
-
 
     public void showBoardCreate(){
         Stage create = new Stage();
@@ -150,10 +131,10 @@ public class MainCtrl {
 
     }
 
-    public void createBoard(String name,String title, int password){
-        userMenuCtrl.addBoardToList(name,password);
-        server.createBoard(new CreateBoardModel(name,title,password));
-        showUserMenu();
+    public void createBoard(String key, String title, int password){
+        userMenuCtrl.addBoardToList(key,password);
+        Board board = server.createBoard(new CreateBoardModel(key,title,password));
+        showBoard(board);
     }
 
     /**
@@ -171,7 +152,6 @@ public class MainCtrl {
             writer.write(userMenuCtrl.getBoards().toString());
         }
     }
-
 
     /**
      * reads user's saved data(if they exist) from the local file
