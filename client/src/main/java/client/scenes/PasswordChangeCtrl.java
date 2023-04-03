@@ -40,6 +40,9 @@ public class PasswordChangeCtrl {
                     alert.showAndWait();
                 }
                 else{
+                    server.changePassword(hashPassword(password.getText()));
+                    password.clear();
+                    password1.clear();
                     Stage stage = (Stage) password.getScene().getWindow();
                     stage.close();
                 }

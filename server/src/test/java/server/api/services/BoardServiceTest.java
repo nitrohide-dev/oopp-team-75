@@ -21,9 +21,9 @@ class BoardServiceTest {
         boardRepository = new BoardRepositoryTest();
         boardService = new BoardService(boardRepository);
 
-        boardService.create(new CreateBoardModel("key", "name", 1234));
-        boardService.create(new CreateBoardModel("key2", "name2", 1994));
-        boardService.create(new CreateBoardModel("key3", "name3", 2334));
+        boardService.create(new CreateBoardModel("key", "name"));
+        boardService.create(new CreateBoardModel("key2", "name2"));
+        boardService.create(new CreateBoardModel("key3", "name3"));
     }
 
     @Test
@@ -40,7 +40,7 @@ class BoardServiceTest {
 
     @Test
     void findByKey() {
-        assertEquals(new Board(new CreateBoardModel("key3", "name3", 2334)), boardService.findByKey("key3"));
+        assertEquals(new Board(new CreateBoardModel("key3", "name3")), boardService.findByKey("key3"));
     }
 
     @Test
@@ -57,20 +57,20 @@ class BoardServiceTest {
 
     @Test
     void createSameKey() {
-        assertThrows(CannotCreateBoard.class, () -> boardService.create(new CreateBoardModel("key3", "name1", 1100)));
+        assertThrows(CannotCreateBoard.class, () -> boardService.create(new CreateBoardModel("key3", "name1")));
     }
 
     @Test
     void createCorrectly() throws CannotCreateBoard {
         boardService = new BoardService(boardRepository);
-        boardService.create(new CreateBoardModel("key4", "name4", 7777));
-        assertEquals(new Board(new CreateBoardModel("key4", "name4", 7777)),boardService.findByKey("key4"));
+        boardService.create(new CreateBoardModel("key4", "name4"));
+        assertEquals(new Board(new CreateBoardModel("key4", "name4")),boardService.findByKey("key4"));
     }
 
     @Test
     void createWrongModel() {
-        assertThrows(CannotCreateBoard.class, () -> boardService.create(new CreateBoardModel("key4", null,12344)));
-        assertThrows(CannotCreateBoard.class, () -> boardService.create(new CreateBoardModel(null, "tablename",12344)));
+        assertThrows(CannotCreateBoard.class, () -> boardService.create(new CreateBoardModel("key4", null)));
+        assertThrows(CannotCreateBoard.class, () -> boardService.create(new CreateBoardModel(null, "tablename")));
     }
 
     @Test
@@ -99,8 +99,8 @@ class BoardServiceTest {
 
     @Test
     void save() throws BoardDoesNotExist {
-        boardService.save(new Board(new CreateBoardModel("key5", "pony", 5555)));
-        assertEquals(new Board(new CreateBoardModel("key5", "pony", 5555)), boardService.findByKey("key5"));
+        boardService.save(new Board(new CreateBoardModel("key5", "pony")));
+        assertEquals(new Board(new CreateBoardModel("key5", "pony")), boardService.findByKey("key5"));
     }
 
     @Test

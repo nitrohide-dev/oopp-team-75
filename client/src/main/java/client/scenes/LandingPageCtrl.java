@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import org.springframework.messaging.simp.stomp.StompSession;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 public class LandingPageCtrl {
@@ -40,7 +41,13 @@ public class LandingPageCtrl {
             if (session != null) {
                 server.setSERVER("http://" + ip + "/");
                 server.setSession(session);
-                Platform.runLater(() -> mainCtrl.showUserMenu());
+                Platform.runLater(() -> {
+                    try {
+                        mainCtrl.showUserMenuFirstTime();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
             } else Platform.runLater(() -> server_ip.setText(ip));
 
         }).start();

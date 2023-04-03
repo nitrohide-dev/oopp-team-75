@@ -50,6 +50,7 @@ public class UserMenuCtrl {
 
     public void initialize() throws IOException {
 
+
     }
 
     /**

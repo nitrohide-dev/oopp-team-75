@@ -107,10 +107,6 @@ public class MainCtrl {
 
         primaryStage.show();
 
-        List<String> boardNames=this.readFromCsv();
-        for(String board : boardNames){
-            userMenuCtrl.addBoard(board);
-        }
 
 
 
@@ -155,10 +151,18 @@ public class MainCtrl {
 
     }
 
-    public void showUserMenu(){
+    public void showUserMenuFirstTime() throws IOException {
+        List<String> boardNames=readFromCsv();
+        for(String board : boardNames){
+            userMenuCtrl.addBoard(board);
+        }
         primaryStage.setScene(userMenu);
     }
 
+    public void showUserMenu()  {
+
+        primaryStage.setScene(userMenu);
+    }
     public void showBoardCreate(){
         Stage create = new Stage();
         create.setScene(boardCreate);
@@ -208,7 +212,7 @@ public class MainCtrl {
             for(String string : boards) {
 
                 String key = string.trim();
-                if(!key.equals("") && server.findBoard(key)!=null){
+                if(!key.equals("") ){
                     boardNames.add(key);}
             }
         }
