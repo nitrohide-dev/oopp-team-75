@@ -467,13 +467,16 @@ public class BoardOverviewCtrl {
         Button removeButton = buttonBuilder(path);
         path = Path.of("", "client", "images", "pencil.png").toString();
         Button editButton = buttonBuilder(path);
-        path = Path.of("", "client", "images", "eye.png").toString();
-        Button viewButton = buttonBuilder(path);
-        HBox box = new HBox(task, viewButton, editButton, removeButton);
+
+        HBox box = new HBox(task, editButton, removeButton);
         dragDetectHandler(box,task,list);
         removeButton.setOnAction(e -> deleteTask(list, box));
         editButton.setOnAction(e -> editTask(box));
-        viewButton.setOnAction(e -> viewTask(box));
+        box.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                viewTask(box); // changed view button for double click
+            }
+        });
         disableTaskButtons(box);
         HBox.setHgrow(task, Priority.NEVER);
         list.getItems().add(box);
@@ -575,13 +578,11 @@ public class BoardOverviewCtrl {
     private void disableTaskButtons(HBox box) {
         Button removeButton = (Button) box.getChildren().get(1);
         Button editButton = (Button) box.getChildren().get(2);
-        Button viewButton = (Button) box.getChildren().get(3);
         removeButton.setDisable(true);
         removeButton.setVisible(false);
         editButton.setDisable(true);
         editButton.setVisible(false);
-        viewButton.setDisable(true);
-        viewButton.setVisible(false);
+
     }
 
     /**
@@ -591,13 +592,11 @@ public class BoardOverviewCtrl {
     private void enableTaskButtons(HBox box) {
         Button removeButton = (Button) box.getChildren().get(1);
         Button editButton = (Button) box.getChildren().get(2);
-        Button viewButton = (Button) box.getChildren().get(3);
         removeButton.setDisable(false);
         removeButton.setVisible(true);
         editButton.setDisable(false);
         editButton.setVisible(true);
-        viewButton.setDisable(false);
-        viewButton.setVisible(true);
+
     }
 
     /**
