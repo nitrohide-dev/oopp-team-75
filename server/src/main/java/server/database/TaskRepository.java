@@ -18,9 +18,11 @@ package server.database;
 import commons.Board;
 import commons.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import server.exceptions.TaskDoesNotExist;
 
+import javax.transaction.Transactional;
 import java.util.Collection;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
@@ -49,7 +51,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
      */
     @Query(value = "UPDATE TASK SET TASK_LIST_ID = ?2, TASKS_ORDER = ?3 WHERE ID = ?1",nativeQuery = true)
     void moveTask(long task_id,long list_id,int task_order);
-    @Query(value = "UPDATE TASK SET TITLE = ?2 WHERE ID = ?1",nativeQuery = true)
-    void renameTask(long task_id,String name);
 
+    @Modifying
+    @Transactional
+    @Query (value = "DELETE FROM TASK WHERE ID = ?1",nativeQuery = true)
+    void deleteTask(long task_id);
 }

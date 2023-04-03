@@ -4,6 +4,7 @@ import commons.Task;
 import commons.TaskList;
 import commons.TaskMoveModel;
 import org.springframework.stereotype.Service;
+import server.database.ListRepository;
 import server.database.TaskRepository;
 import server.exceptions.ListDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
@@ -13,10 +14,12 @@ import java.util.List;
 @Service
 public class TaskService {
 
+   private final ListRepository listRepo;
 	private final TaskRepository repo;
 
-	public TaskService(TaskRepository repo) {
+	public TaskService(TaskRepository repo,ListRepository listRepo) {
 		this.repo = repo;
+		this.listRepo = listRepo;
 	}
 
 	/**
@@ -38,11 +41,12 @@ public class TaskService {
 			throw new TaskDoesNotExist("There exists no task with the provided id.");
 		return repo.findById(id).get();
 	}
-   public Task renameTask(long id,String name) throws TaskDoesNotExist{
+   public void renameTask(long id,String name) throws TaskDoesNotExist {
 	   if (!repo.existsById(id))
 		   throw new TaskDoesNotExist("There exists no task with the provided id.");
-	   repo.renameTask(id,name);
-	   return repo.findById(id).get();
+	   Task task = getById(id);
+	   task.setTitle(name);
+	   repo.save(task);
    }
 	/**
 	 *
@@ -67,7 +71,7 @@ public class TaskService {
 	public void deleteById(long id) throws TaskDoesNotExist {
 		if (!repo.existsById(id))
 			throw new TaskDoesNotExist("There is no task with the provided id.");
-		repo.deleteById(id);
+		repo.deleteTask(id);
 	}
 
 

@@ -84,11 +84,7 @@ public class BoardController {
         }
 
     }
-    @MessageMapping("/list/createlist")
-    @SendTo("/topic/boards")
-    public Board createList(Board board) {
-        return boardService.createList(board);
-    }
+
 
     @MessageMapping("/boards") // sets address to /app/boards
     @SendTo("/topic/boards") // sends result to /topic/boards

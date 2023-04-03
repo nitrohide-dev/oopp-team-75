@@ -15,6 +15,7 @@ import server.api.services.BoardService;
 import server.api.services.ListService;
 import server.exceptions.ListDoesNotExist;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -58,18 +59,23 @@ public class ListController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
+    @MessageMapping("/list/createlist")
+    @SendTo("/topic/boards")
+    public Board createList(Board board) {
+        return listService.createList(board);
+    }
     /**
      *
      *
      *
      *
      */
-    @MessageMapping("/list/createTask/{name}/{boardkey}")
+    @MessageMapping("/list/createTask/{name}")
     @SendTo("/topic/boards")
-    public Board createTask(int listID,@DestinationVariable("name") String name,@DestinationVariable("boardkey") String boardKey) throws ListDoesNotExist{
-        TaskList list = listService.getById(boardKey,listID);
+    public Board createTask(Long listID,@DestinationVariable("name") String name) throws ListDoesNotExist{
+        TaskList list = (listService.getById(listID));
        String id = listService.createTask(list,name);
-       return boardService.findByKey(boardKey);
+       return boardService.findByKey(id);
     }
     /**
      * Deletes a taskList, including its children from the database by its id. If
@@ -79,10 +85,10 @@ public class ListController {
      * @return nothing
      */
     @MessageMapping("/list/delete")
-    public ResponseEntity<TaskList> deleteById(@PathVariable("id") String id) {
+    @SendTo("/topic/boards")
+    public Board deleteById(@PathVariable("id") Long id) {
         try {
-            listService.deleteById(Long.parseLong(id));
-            return ResponseEntity.ok().build();
+            return listService.deleteById(id);
         } catch (NumberFormatException | ListDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

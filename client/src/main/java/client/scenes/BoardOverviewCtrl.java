@@ -68,8 +68,8 @@ public class BoardOverviewCtrl {
 
     private long boardKey;
     private Map<ListView, String> allLists; // Stores all task lists
-    private final Map<ListView, Integer> listMap; // Stores all task lists
-    private final Map<HBox, Task> taskMap; // Stores all tasks
+    private final Map<ListView, Long> listMap; // Stores all task lists
+    private final Map<HBox, Long> taskMap; // Stores all tasks
 
     @FXML
     private ScrollPane scrollPaneMain;
@@ -87,7 +87,6 @@ public class BoardOverviewCtrl {
     @FXML
     private BorderPane borderPane;
     private UserMenuCtrl usermenuCtrl;
-    private int currentOrder;
 
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -141,17 +140,26 @@ public class BoardOverviewCtrl {
         allLists.clear();
         listMap.clear();
         taskMap.clear();
-        currentOrder = 0;
         // creates new lists
         List<TaskList> listOfLists = board.getTaskLists();
+        Long tempID = Long.parseLong("-1");
         if (listOfLists.size() == 0)
             return;
-        for (TaskList taskList : listOfLists) {
-            ListView<HBox> ourList = addTaskList(taskList);
-            dragOverHandler(ourList);
-            dragDroppedHandler(ourList);
-            for(Task task : taskList.getTasks())
-                addTask(task.getTitle(),ourList,task);
+        for (int i=0;i<listOfLists.size();i++) {
+            TaskList taskList = listOfLists.get(i);
+            if(taskList.getid()==tempID)
+            {
+                board.getTaskLists().remove(taskList);
+                i--;
+            }
+            else {
+                tempID=taskList.getid();
+                ListView<HBox> ourList = addTaskList(taskList);
+                dragOverHandler(ourList);
+                dragDroppedHandler(ourList);
+                for (Task task : taskList.getTasks())
+                    addTask(task.getTitle(), ourList, task);
+            }
         }
 
         // sets attributes accordingly
@@ -342,8 +350,7 @@ public class BoardOverviewCtrl {
         dragOverHandler(listView);
         dragDroppedHandler(listView);
         allLists.put(listView, textField.getText());
-        listMap.put(listView,currentOrder );
-        currentOrder++;
+        listMap.put(listView,taskList.getid());
         return listView;
     }
 
@@ -406,10 +413,7 @@ public class BoardOverviewCtrl {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK){
-                listContainer.getChildren().remove(parentGroup); // remove parent group from HBox
-          //      TaskList list1 = listMap.get(list);
-             //   getBoard().removeTaskList(list1);
-                server.updateBoard(getBoard()); // updates server
+             server.deleteList(listMap.get(list));
             }
         });
     }
@@ -440,9 +444,7 @@ public class BoardOverviewCtrl {
      * @return the created task
      */
     public void createTask(String name,ListView<HBox> list) {
-        server.createTask(listMap.get(list), getBoard().getKey(),name);
-        server.updateBoard(getBoard());
-        refresh(getBoard());
+        server.createTask(listMap.get(list),name);
     }
     /**
      * adds a task to a given list in frontend and maps it to the corresponding Task common data type
@@ -467,7 +469,7 @@ public class BoardOverviewCtrl {
         Button viewButton = buttonBuilder(path);
         HBox box = new HBox(task, viewButton, editButton, removeButton);
         dragDetectHandler(box,task,list);
-        removeButton.setOnAction(e -> deleteTask(list, box));
+        removeButton.setOnAction(e -> deleteTask(box));
         editButton.setOnAction(e -> editTask(box));
         viewButton.setOnAction(e -> viewTask(box));
         disableTaskButtons(box);
@@ -475,7 +477,7 @@ public class BoardOverviewCtrl {
         list.getItems().add(box);
         //Re-adds the button to the end of the list
         addTaskButton(list);
-        taskMap.put(box,task1);
+        taskMap.put(box,task1.getid());
 
         return box;
     }
@@ -602,10 +604,7 @@ public class BoardOverviewCtrl {
      */
     public void editTask(HBox task) {
         String name = inputTaskName();
-        ((Label) task.getChildren().get(0)).setText(name);
-        Task task1 = taskMap.get(task);
-        task1.setTitle(name);
-        server.updateBoard(getBoard()); // updates server
+      server.renameTask(getBoard().getKey(),taskMap.get(task),name);
     }
 
     /**
@@ -618,12 +617,8 @@ public class BoardOverviewCtrl {
      * Deletes given task
      * @param task - a HBox, containing the task
      */
-    public void deleteTask(ListView<HBox> list, HBox task) {
-//        TaskList list1 = listMap.get(list);
-//        Task task1 = taskMap.get(task);
-//        list1.removeTask(task1);
-//        list.getItems().remove(task);
-        server.updateBoard(getBoard()); // updates server
+    public void deleteTask(HBox task) {
+        server.deleteTask(taskMap.get(task),getBoard().getKey());
     }
 
 //    /**
@@ -698,7 +693,7 @@ public class BoardOverviewCtrl {
             Dragboard db = event.getDragboard();
             if(!db.hasString())
             {
-                deleteTask(list, box);
+                deleteTask(box);
             }
         });
     }

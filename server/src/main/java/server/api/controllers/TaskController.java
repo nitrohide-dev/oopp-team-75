@@ -11,6 +11,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import server.api.services.BoardService;
 import server.api.services.TaskService;
 import server.exceptions.CannotCreateBoard;
 import server.exceptions.ListDoesNotExist;
@@ -23,9 +24,11 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
+    private final BoardService boardService;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, BoardService boardService) {
         this.taskService = taskService;
+        this.boardService = boardService;
     }
 
     @GetMapping(path = { "", "/" })
@@ -49,12 +52,12 @@ public class TaskController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
-    @MessageMapping("/task/rename/{id}")
-    @SendTo("/topic/task/rename/{id}")
-    public ResponseEntity<Task> renameTask(@PathVariable("id") String id,String name) {
+    @MessageMapping("/task/rename/{boardKey}/{name}")
+    @SendTo("/topic/boards")
+    public Board renameTask(Long id,@DestinationVariable("name")String name,@DestinationVariable("boardKey") String boardKey) {
         try {
-            Task task = taskService.renameTask(Long.parseLong(id),name);
-            return ResponseEntity.ok(task);
+            taskService.renameTask(id,name);
+            return boardService.findByKey(boardKey);
         } catch (NumberFormatException | TaskDoesNotExist e ) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
@@ -79,11 +82,12 @@ public class TaskController {
      * @param id the task id
      * @return nothing
      */
-    @MessageMapping("/task/delete")
-    public ResponseEntity<Object> deleteById(String id) {
+    @MessageMapping("/task/delete/{key}")
+    @SendTo("/topic/boards")
+    public Board deleteById(Long id,@DestinationVariable("key") String boardKey) {
         try {
-            taskService.deleteById(Long.parseLong(id));
-            return ResponseEntity.ok().build();
+            taskService.deleteById(id);
+            return boardService.findByKey(boardKey);
         } catch (TaskDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

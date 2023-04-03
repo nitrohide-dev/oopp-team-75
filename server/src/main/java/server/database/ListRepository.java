@@ -17,7 +17,10 @@ package server.database;
 
 import commons.TaskList;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import javax.transaction.Transactional;
 
 public interface ListRepository extends JpaRepository<TaskList, Long> {
 
@@ -25,7 +28,9 @@ public interface ListRepository extends JpaRepository<TaskList, Long> {
     void renameList(Long id,String title);
     @Query(value = "SELECT BOARD_KEY FROM TASK_LIST WHERE ID = ?1",nativeQuery = true)
     String getBoardByListID(long listID);
-    @Query(value = "SELECT * FROM TASK_LIST WHERE BOARD_KEY = ?1 AND TASK_LISTS_ORDER = ?2 LIMIT 1",nativeQuery = true)
-    TaskList getbyId(String boardKey,int order);
+    @Modifying
+    @Transactional
+    @Query (value = "DELETE FROM TASK_LIST WHERE ID = ?1",nativeQuery = true)
+    void deleteList(long list_id);
 
 }

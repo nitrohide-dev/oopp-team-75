@@ -16,11 +16,9 @@ import java.util.Optional;
 public class 	BoardService {
 
 	private final BoardRepository repo;
-	private final ListRepository listRepo;
 
-	public BoardService(BoardRepository repo,ListRepository listRepo) {
+	public BoardService(BoardRepository repo) {
 		this.repo = repo;
-		this.listRepo = listRepo;
 	}
 
 	/**
@@ -69,12 +67,6 @@ public class 	BoardService {
 		repo.deleteById(key);
 	}
 
-	public Board createList(Board board){
-		TaskList list = new TaskList(board);
-		repo.save(board);
-	//	listRepo.save(list);
-		return board;
-	}
 	/**
 	 * Saves a board to the database.
 	 * @param board the board to save
