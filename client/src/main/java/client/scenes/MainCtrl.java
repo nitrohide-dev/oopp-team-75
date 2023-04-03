@@ -54,6 +54,7 @@ public class MainCtrl {
     @Setter
     private Board currBoard;
     private Scene userMenu;
+    @Getter
     private UserMenuCtrl userMenuCtrl;
     private Scene boardCreate;
     private BoardCreateCtrl boardCreateCtrl;
