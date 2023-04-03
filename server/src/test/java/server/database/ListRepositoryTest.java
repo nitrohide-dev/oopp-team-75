@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,12 +13,16 @@ import java.util.function.Function;
 
 
 class ListRepositoryTest implements ListRepository{
-
     private List<TaskList> lists;
+
     public ListRepositoryTest() {
         lists = new ArrayList<>();
     }
-    public ListRepositoryTest(List<TaskList> list) {this.lists = list;}
+    public ListRepositoryTest(List<TaskList> lists) {
+        this.lists = lists;
+    }
+
+
     @Override
     public List<TaskList> findAll() {
         return lists;
@@ -52,13 +55,11 @@ class ListRepositoryTest implements ListRepository{
     public long count() {
         return lists.size();
     }
-
     @Override
     public void deleteById(Long aLong) {
         for(TaskList list : lists) {
             if(list.getId() == aLong) {
                 lists.remove(list);
-                break;
             }
         }
     }
@@ -81,7 +82,7 @@ class ListRepositoryTest implements ListRepository{
 
     @Override
     public void deleteAll(Iterable<? extends TaskList> entities) {
-        for(TaskList list :  entities) {
+        for(TaskList list : (Iterable<TaskList>) entities) {
             lists.remove(list);
         }
     }
@@ -107,6 +108,11 @@ class ListRepositoryTest implements ListRepository{
 
     @Override
     public Optional<TaskList> findById(Long aLong) {
+        for(TaskList list : lists) {
+            if(list.getId() == aLong) {
+                return Optional.of(list);
+            }
+        }
         return Optional.empty();
     }
 
@@ -157,11 +163,6 @@ class ListRepositoryTest implements ListRepository{
 
     @Override
     public TaskList getById(Long aLong) {
-        for(TaskList list : lists) {
-            if(list.getId() == aLong) {
-                return list;
-            }
-        }
         return null;
     }
 

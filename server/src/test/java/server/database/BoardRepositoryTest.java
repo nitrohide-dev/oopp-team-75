@@ -62,7 +62,6 @@ public class BoardRepositoryTest implements BoardRepository {
         for (int i = 0; i < boards.size(); i++) {
             if (boards.get(i).getKey().equals(s)) {
                 boards.remove(i);
-                break;
             }
         }
 
@@ -124,7 +123,6 @@ public class BoardRepositoryTest implements BoardRepository {
 
     @Override
     public boolean existsById(String s) {
-        // checks if an entity with the given id exists
         for(Board board : boards) {
             if(board.getKey().equals(s)) {
                 return true;
