@@ -17,20 +17,16 @@ package server.database;
 
 import commons.TaskList;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-
-import javax.transaction.Transactional;
-
 public interface ListRepository extends JpaRepository<TaskList, Long> {
 
-    @Query(value = "UPDATE TASK_LIST SET TITLE = ?2 WHERE ID = ?1 ",nativeQuery = true)
-    void renameList(Long id,String title);
+    /**
+     * gets the board key of a list with the given id
+     * @param listID - the id of the taskList that we want the boardkey of
+     * @return  the board key of the board of the list
+     */
     @Query(value = "SELECT BOARD_KEY FROM TASK_LIST WHERE ID = ?1",nativeQuery = true)
     String getBoardByListID(long listID);
-    @Modifying
-    @Transactional
-    @Query (value = "DELETE FROM TASK_LIST WHERE ID = ?1",nativeQuery = true)
-    void deleteList(long list_id);
+
 
 }

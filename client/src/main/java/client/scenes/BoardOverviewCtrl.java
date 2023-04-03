@@ -166,7 +166,7 @@ public class BoardOverviewCtrl {
         //initializes the default delete taskListsButton
         setDeleteAction(deleteTaskListsButton, listName1.getText(),taskList1);
         hoverOverDeleteButton(deleteTaskListsButton);
-        }
+    }
 
 
 
@@ -305,8 +305,7 @@ public class BoardOverviewCtrl {
         borderPane.setRight(menuBar);
     }
     /**
-     * This eventHandler is waiting for the addButton to be clicked, after that creates
-     * new Group of TextField, ScrollPane and a Deletion Button - new taskList
+     * Creates a taskList in the given board
      */
     public void createTaskList() {
         server.createList(getBoard().getKey());
@@ -416,7 +415,7 @@ public class BoardOverviewCtrl {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK){
-             server.deleteList(listMap.get(list));
+                server.deleteList(listMap.get(list));
             }
         });
     }
@@ -433,7 +432,6 @@ public class BoardOverviewCtrl {
 
     /**
      * task creation method caused by the user's manual task addition.
-     * @return the created task
      */
     public void createTask(ListView<HBox> list) {
         createTask(inputTaskName(), list);
@@ -444,7 +442,6 @@ public class BoardOverviewCtrl {
      * creates a task in the given list with the given name
      * @param name the name of the task to be created
      * @param list the list in which the task should be created
-     * @return the created task
      */
     public void createTask(String name,ListView<HBox> list) {
         server.createTask(listMap.get(list),name);
@@ -602,12 +599,12 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * Edits the chosen task
+     * renames the chosen task
      * @param task the task box
      */
     public void editTask(HBox task) {
         String name = inputTaskName();
-      server.renameTask(getBoard().getKey(),taskMap.get(task),name);
+        server.renameTask(getBoard().getKey(),taskMap.get(task),name);
     }
 
     /**
@@ -646,7 +643,8 @@ public class BoardOverviewCtrl {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-               server.moveTask(new TaskMoveModel(Long.parseLong(db.getString()),listMap.get(list),Integer.MAX_VALUE),getBoard().getKey());
+                TaskMoveModel model = new TaskMoveModel(Long.parseLong(db.getString()), listMap.get(list),Integer.MAX_VALUE);
+                server.moveTask(model,getBoard().getKey());
                 success = true;
                 db.clear();
             }
@@ -658,7 +656,7 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * Handles the task's behaviour when it's being dragged AND deletes it from the given list when it's being dropped
+     * Handles the task's behaviour when it's being dragged AND when a task gets dropped onto it
      * @param box - the box that contains the task which behaviour is to be configured
      * @param task - the task label, containing its name
      * @param list - the list that contains the task
@@ -677,7 +675,9 @@ public class BoardOverviewCtrl {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-                server.moveTask(new TaskMoveModel(Long.parseLong(db.getString()),listMap.get(list),taskOrderMap.get(taskMap.get(box))+1),getBoard().getKey());
+                int order = taskOrderMap.get(taskMap.get(box))+1;
+                TaskMoveModel model = new TaskMoveModel(Long.parseLong(db.getString()),listMap.get(list),order);
+                server.moveTask(model,getBoard().getKey());
                 success = true;
                 db.clear();
             }

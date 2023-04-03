@@ -15,15 +15,13 @@
  */
 package server.database;
 
-import commons.Board;
+
 import commons.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import server.exceptions.TaskDoesNotExist;
-
 import javax.transaction.Transactional;
-import java.util.Collection;
+
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
@@ -40,7 +38,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
      */
     @Modifying
     @Transactional
-    @Query(value = "UPDATE TASK SET TASKS_ORDER = TASKS_ORDER-1 WHERE TASK_LIST_ID IN(SELECT TASK_LIST_ID FROM TASK WHERE ID = ?2) AND TASKS_ORDER > ?1 ",nativeQuery = true)
+    @Query(value = "UPDATE TASK SET TASKS_ORDER = TASKS_ORDER-1 WHERE TASK_LIST_" +
+            "ID IN(SELECT TASK_LIST_ID FROM TASK WHERE ID = ?2) AND TASKS_ORDER > ?1 ",nativeQuery = true)
     void updateInitialListOrder(int task_order,long task_id);
     /**
      * query for updating the task order of the target list
@@ -50,7 +49,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
      */
     @Modifying
     @Transactional
-    @Query(value = "UPDATE TASK SET TASKS_ORDER = TASKS_ORDER+1 WHERE TASK_LIST_ID = ?2 AND TASKS_ORDER >= ?1 ",nativeQuery = true)
+    @Query(value = "UPDATE TASK SET " +
+            "TASKS_ORDER = TASKS_ORDER+1 WHERE TASK_LIST_ID = ?2 AND TASKS_ORDER >= ?1 ",nativeQuery = true)
     void updateTargetListOrder(int task_order,long list_id);
     /**
      * query for putting the drag and dropped task into the correct list
@@ -63,8 +63,4 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query(value = "UPDATE TASK SET TASK_LIST_ID = ?2, TASKS_ORDER = ?3 WHERE ID = ?1",nativeQuery = true)
     void moveTask(long task_id,long list_id,int order);
 
-    @Modifying
-    @Transactional
-    @Query (value = "DELETE FROM TASK WHERE ID = ?1",nativeQuery = true)
-    void deleteTask(long task_id);
 }

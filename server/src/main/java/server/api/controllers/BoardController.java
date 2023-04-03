@@ -2,10 +2,8 @@ package server.api.controllers;
 
 import commons.Board;
 import commons.CreateBoardModel;
-import commons.TaskList;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
-import server.exceptions.ListDoesNotExist;
+
 
 import java.util.List;
 
@@ -84,12 +82,23 @@ public class BoardController {
         }
 
     }
+    /**
+     * creates a tasklist in the given board
+     * @param boardKey - the key of the board in which the tasklist should be added
+     * @return the board with the key sent
+     */
     @MessageMapping("/list/createlist")
     @SendTo("/topic/boards")
     public Board createList(String boardKey) {
         return boardService.createList(boardService.findByKey(boardKey));
     }
 
+
+    /**
+     * updates the board by saving its data to the database
+     * @param board the board to be saved
+     * @return the board that was sent
+     */
     @MessageMapping("/boards") // sets address to /app/boards
     @SendTo("/topic/boards") // sends result to /topic/boards
     public Board update(Board board) throws Exception {

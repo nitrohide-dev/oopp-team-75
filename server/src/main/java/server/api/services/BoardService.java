@@ -2,10 +2,8 @@ package server.api.services;
 
 import commons.Board;
 import commons.CreateBoardModel;
-import commons.TaskList;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
-import server.database.ListRepository;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 
@@ -66,6 +64,11 @@ public class 	BoardService {
 			throw new BoardDoesNotExist("There is no board with the given key.");
 		repo.deleteById(key);
 	}
+	/**
+	 * Creates a list in the database
+	 * @param board - the board the list is in
+	 * @return the board the list is in
+	 */
 	public Board createList(Board board){
 		board.createTaskList();
 		repo.save(board);

@@ -3,6 +3,7 @@ package commons;
 import lombok.Getter;
 import lombok.Setter;
 
+
 /**
  * Class to use for moving tasks
  */
