@@ -1,6 +1,6 @@
-## Meeting week 7
+## Meeting week 8
 
-## This is the agenda for our meeting with the TA in week 7
+## This is the agenda for our meeting with the TA in week 8
 
 Location: Drebbelweg building IZ2\
 Date: 04/04/2023\
