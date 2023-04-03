@@ -89,7 +89,6 @@ public class BoardController {
      */
     @DeleteMapping("/delete/{key}")
     public ResponseEntity<Object> deleteByKey(@PathVariable("key") String key) {
-        if(!authentication) return null;
         try {
             boardService.deleteByKey(key);
             return ResponseEntity.ok().build();
