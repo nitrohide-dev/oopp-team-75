@@ -25,6 +25,7 @@ public class TaskList {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OrderColumn
     private List<Task> tasks;
 
     @JsonBackReference
@@ -44,7 +45,6 @@ public class TaskList {
         this.board = board;
         this.title = title;
         this.tasks = tasks;
-        board.getTaskLists().add(this);
     }
 
 //    getters and setters

@@ -69,12 +69,14 @@ public class TaskService {
 	public Task save(Task task) {
 		return repo.save(task);
 	}
-     public void moveTask(Task task,TaskList targetlist) throws TaskDoesNotExist
+     public void moveTask(Task task,TaskList targetlist,int order) throws TaskDoesNotExist
 	 {
 		 if (!repo.existsById(task.getid()))
 			 throw new TaskDoesNotExist("There is no task with the provided id.");
-		 task.setTaskList(targetlist);
-		 repo.save(task);
-		 System.out.println("lol idk");
+		 int initOrder = repo.getOrderById(task.getid());
+		 repo.updateInitialListOrder(initOrder,task.getid());
+		 repo.updateTargetListOrder(order,targetlist.getid());
+		 repo.moveTask(task.getid(),targetlist.getid(),order);
+		 System.out.println(3);
 	 }
 }

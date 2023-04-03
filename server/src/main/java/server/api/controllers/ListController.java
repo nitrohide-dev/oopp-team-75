@@ -42,11 +42,6 @@ public class ListController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
-    @MessageMapping("/list/createlist")
-    @SendTo("/topic/boards")
-    public Board createList(Board board) {
-        return listService.createList(board);
-    }
     /**
      *
      *
@@ -69,7 +64,7 @@ public class ListController {
      */
     @MessageMapping("/list/delete")
     @SendTo("/topic/boards")
-    public Board deleteById(@PathVariable("id") Long id) {
+    public Board deleteById(Long id) {
         try {
             return listService.deleteById(id);
         } catch (NumberFormatException | ListDoesNotExist e) {

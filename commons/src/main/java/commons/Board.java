@@ -33,6 +33,7 @@ public class Board {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OrderColumn
     private List<TaskList> taskLists;
 
 //    constructors
@@ -132,9 +133,10 @@ public class Board {
      * returns it.
      * @return the created {@code TaskList}.
      */
-    public TaskList addTaskList(TaskList taskList) {
-        this.taskLists.add(taskList);
-        return taskList;
+    public TaskList createTaskList() {
+        TaskList list = new TaskList(this);
+        this.taskLists.add(list);
+        return list;
     }
 
     /**

@@ -66,7 +66,12 @@ public class 	BoardService {
 			throw new BoardDoesNotExist("There is no board with the given key.");
 		repo.deleteById(key);
 	}
+	public Board createList(Board board){
+		board.createTaskList();
+		repo.save(board);
+		return repo.findById(board.getKey()).get();
 
+	}
 	/**
 	 * Saves a board to the database.
 	 * @param board the board to save

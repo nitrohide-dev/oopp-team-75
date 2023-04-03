@@ -189,8 +189,8 @@ public class ServerUtils {
      * Sends a request to the server to move a task from one board to another
      * @param TaskMoveModel - the model used for this operation
      */
-    public void moveTask(TaskMoveModel model) {
-        send("/app/task/move", model);
+    public void moveTask(TaskMoveModel model ,String boardKey) {
+        send("/app/task/move/" + boardKey, model);
     }
     /**
      * Sends a request to the server to get a task from the database
@@ -218,7 +218,7 @@ public class ServerUtils {
      * Sends a request to the server to create a list in the database
      * @param board - the Board that is to contain the list
      */
-    public void createList(Board board) {send("/app/list/createlist",board);}
+    public void createList(String boardKey) {send("/app/list/createlist",boardKey);}
     /**
      * Sends a request to the server to rename a list in the database
      * @param listId - the id of the list

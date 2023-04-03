@@ -68,24 +68,19 @@ public class TaskController {
      * @param model the TaskMoveModel with the parameters needed to move a task inbetween lists
      * @return the task that has been moved
      */
-    @MessageMapping("/task/move")
+    @MessageMapping("/task/move/{key}")
     @SendTo("/topic/boards")
-    public Board moveTask(TaskMoveModel model) throws TaskDoesNotExist,ListDoesNotExist
+    public Board moveTask(TaskMoveModel model,@DestinationVariable("key")String boardKey) throws TaskDoesNotExist,ListDoesNotExist
     {
-        Task task = getById(model.getTask_id());
-        TaskList initiallist = task.getTaskList();
-        TaskList targetlist = listService.getById(model.getTasklist_id());
-        Board board = initiallist.getBoard();
-        int target_order = model.getNew_task_order();
-        initiallist.getTasks().remove(task);
-        if(target_order>targetlist.getTasks().size())
-        {
-            targetlist.getTasks().add(task);
-        }else {
-            targetlist.getTasks().add(target_order, task);
-        }
-        taskService.moveTask(task,targetlist);
-        return board;
+        Task task =  getById(model.getTask_id());
+        TaskList list = listService.getById(model.getTasklist_id());
+        int order = model.getNew_task_order();
+        if(order==Integer.MAX_VALUE)
+         order=list.getTasks().size();
+        if(list.getid()==task.getTaskList().getid())
+         order--;
+        taskService.moveTask(task,list,order);
+        return boardService.findByKey(boardKey);
     }
 
 

@@ -143,28 +143,20 @@ public class BoardOverviewCtrl {
         allLists.clear();
         listMap.clear();
         taskMap.clear();
+
         // creates new lists
         List<TaskList> listOfLists = board.getTaskLists();
-        Long tempID = Long.parseLong("-1");
         if (listOfLists.size() == 0)
             return;
-        for (int i=0;i<listOfLists.size();i++) {
-            TaskList taskList = listOfLists.get(i);
-            if(taskList.getid()==tempID)
-            {
-                board.getTaskLists().remove(taskList);
-                i--;
-            }
-            else {
-                tempID=taskList.getid();
-                ListView<HBox> ourList = addTaskList(taskList);
-                dragOverHandler(ourList);
-                dragDroppedHandler(ourList);
-                for(int j=0;j<taskList.getTasks().size();j++) {
-                   Task task = taskList.getTasks().get(j);
-                    addTask(task.getTitle(), ourList, task);
-                    taskOrderMap.put(task.getid(),j);
-                }
+        for (TaskList taskList : listOfLists) {
+            ListView<HBox> ourList = addTaskList(taskList);
+            dragOverHandler(ourList);
+            dragDroppedHandler(ourList);
+            List<Task> listOfTasks = taskList.getTasks();
+            for (int i = 0; i < listOfTasks.size(); i++) {
+                Task task = listOfTasks.get(i);
+                addTask(task.getTitle(), ourList, task);
+                taskOrderMap.put(task.getid(),i);
             }
         }
 
@@ -174,7 +166,10 @@ public class BoardOverviewCtrl {
         //initializes the default delete taskListsButton
         setDeleteAction(deleteTaskListsButton, listName1.getText(),taskList1);
         hoverOverDeleteButton(deleteTaskListsButton);
-    }
+        }
+
+
+
 
     /**
      * Shortened variant to make access to the board easier.
@@ -314,7 +309,7 @@ public class BoardOverviewCtrl {
      * new Group of TextField, ScrollPane and a Deletion Button - new taskList
      */
     public void createTaskList() {
-        server.createList(getBoard());
+        server.createList(getBoard().getKey());
     }
 
     /**
@@ -476,7 +471,7 @@ public class BoardOverviewCtrl {
         path = Path.of("", "client", "images", "eye.png").toString();
         Button viewButton = buttonBuilder(path);
         HBox box = new HBox(task, viewButton, editButton, removeButton);
-        dragDetectHandler(box,task,list);
+        dragHandler(box,task,list);
         removeButton.setOnAction(e -> deleteTask(box));
         editButton.setOnAction(e -> editTask(box));
         viewButton.setOnAction(e -> viewTask(box));
@@ -651,7 +646,7 @@ public class BoardOverviewCtrl {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-               server.moveTask(new TaskMoveModel(Long.parseLong(db.getString()),listMap.get(list),Integer.MAX_VALUE));
+               server.moveTask(new TaskMoveModel(Long.parseLong(db.getString()),listMap.get(list),Integer.MAX_VALUE),getBoard().getKey());
                 success = true;
                 db.clear();
             }
@@ -668,7 +663,7 @@ public class BoardOverviewCtrl {
      * @param task - the task label, containing its name
      * @param list - the list that contains the task
      */
-    public void dragDetectHandler(HBox box,Label task,ListView<HBox> list) {
+    public void dragHandler(HBox box,Label task,ListView<HBox> list) {
         ObservableList<Node> children = anchorPaneMain.getChildren();
         box.setOnDragDetected(event -> {
             Dragboard db = box.startDragAndDrop(TransferMode.ANY);
@@ -676,6 +671,19 @@ public class BoardOverviewCtrl {
             content.putString(Long.toString(taskMap.get(box)));
             db.setContent(content);
             db.setDragView(new Text(task.getText()).snapshot(null, null), event.getX(), event.getY());
+            event.consume();
+        });
+        box.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasString()) {
+                server.moveTask(new TaskMoveModel(Long.parseLong(db.getString()),listMap.get(list),taskOrderMap.get(taskMap.get(box))+1),getBoard().getKey());
+                success = true;
+                db.clear();
+            }
+
+            event.setDropCompleted(success);
+
             event.consume();
         });
     }

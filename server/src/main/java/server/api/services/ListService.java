@@ -5,6 +5,7 @@ import commons.Task;
 import commons.TaskList;
 import commons.TaskMoveModel;
 import org.springframework.stereotype.Service;
+import server.database.BoardRepository;
 import server.database.ListRepository;
 import server.database.TaskRepository;
 import server.exceptions.ListDoesNotExist;
@@ -18,10 +19,11 @@ public class ListService {
 
 	private final ListRepository repo;
 	private final TaskRepository taskRepo;
-
-	public ListService(ListRepository repo,TaskRepository taskRepo) {
+	private final BoardRepository boardRepo;
+	public ListService(ListRepository repo,TaskRepository taskRepo,BoardRepository boardRepo) {
 		this.repo = repo;
 		this.taskRepo = taskRepo;
+		this.boardRepo = boardRepo;
 	}
 
 	/**
@@ -57,25 +59,18 @@ public class ListService {
 	 * @throws ListDoesNotExist - when there is no list with the given id in the db
 	 */
 	public Board deleteById(long id) throws ListDoesNotExist {
-		TaskList list = getById(id);
-		Board board = list.getBoard();
-		board.removeTaskList(list);
-		list.setTasks(new ArrayList<Task>());
-		repo.save(list);
 		if (!repo.existsById(id))
-			throw new ListDoesNotExist("There is no list with the provided id.");
-		repo.deleteList(id);
-		return board;
-	}
-	public Board createList(Board board){
-		TaskList list = new TaskList(board);
-		repo.save(list);
+		throw new ListDoesNotExist("There is no list with the provided id.");
+         TaskList list = getById(id);
+        Board board = list.getBoard();
+		board.getTaskLists().remove(list);
+		boardRepo.save(board);
 		return board;
 	}
 	public String createTask(TaskList list,String name)  {
 		Task task = list.createTask();
 		task.setTitle(name);
-		taskRepo.save(task);
+		repo.save(list);
 		return repo.getBoardByListID(list.getid());
 	}
 	/**

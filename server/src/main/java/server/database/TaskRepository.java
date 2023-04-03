@@ -27,22 +27,31 @@ import java.util.Collection;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-//    /**
-//     * query for updating the task order of the initial list
-//     * so that the order stays correct after the moving of the task
-//     * @param task_id the id of the task that is being moved
-//     * @param task_order the value of TASKS_ORDER of the task before the move
-//     */
-//    @Query(value = "UPDATE TASK SET TASKS_ORDER = TASKS_ORDER-1 WHERE TASK_LIST_ID IN(SELECT TASK_LIST_ID FROM TASK WHERE ID = ?2) AND TASKS_ORDER > ?1 ",nativeQuery = true)
-//    void updateInitialListOrder(int task_order,long task_id);
-//    /**
-//     * query for updating the task order of the target list
-//     * so that the order stays correct after the moving of the task
-//     * @param task_order the target value of TASKS_ORDER of the task after the move
-//     * @param list_id the list into which the task will be moved
-//     */
-//    @Query(value = "UPDATE TASK SET TASKS_ORDER = TASKS_ORDER+1 WHERE TASK_LIST_ID = ?2 AND TASKS_ORDER >= ?1 ",nativeQuery = true)
-//    void updateTargetListOrder(int task_order,long list_id);
+
+    @Query(value = "SELECT TASKS_ORDER FROM TASK WHERE ID = ?1",nativeQuery = true)
+    int getOrderById(long task_id);
+
+    /**
+     * query for updating the task order of the initial list
+     * so that the order stays correct after the moving of the task
+     * @param task_id the id of the task that is being moved
+     * @param task_order the value of TASKS_ORDER of the task before the move
+     *
+     */
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE TASK SET TASKS_ORDER = TASKS_ORDER-1 WHERE TASK_LIST_ID IN(SELECT TASK_LIST_ID FROM TASK WHERE ID = ?2) AND TASKS_ORDER > ?1 ",nativeQuery = true)
+    void updateInitialListOrder(int task_order,long task_id);
+    /**
+     * query for updating the task order of the target list
+     * so that the order stays correct after the moving of the task
+     * @param task_order the target value of TASKS_ORDER of the task after the move
+     * @param list_id the list into which the task will be moved
+     */
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE TASK SET TASKS_ORDER = TASKS_ORDER+1 WHERE TASK_LIST_ID = ?2 AND TASKS_ORDER >= ?1 ",nativeQuery = true)
+    void updateTargetListOrder(int task_order,long list_id);
     /**
      * query for putting the drag and dropped task into the correct list
      * @param task_id the id of the task to be moved in the database
@@ -51,8 +60,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
      */
     @Modifying
     @Transactional
-    @Query(value = "UPDATE TASK SET TASK_LIST_ID = ?2 WHERE ID = ?1",nativeQuery = true)
-    void moveTask(long task_id,long list_id);
+    @Query(value = "UPDATE TASK SET TASK_LIST_ID = ?2, TASKS_ORDER = ?3 WHERE ID = ?1",nativeQuery = true)
+    void moveTask(long task_id,long list_id,int order);
 
     @Modifying
     @Transactional
