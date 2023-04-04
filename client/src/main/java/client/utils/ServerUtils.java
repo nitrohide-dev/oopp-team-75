@@ -40,7 +40,6 @@ import java.util.function.Consumer;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ServerUtils {
 
-    private static final String SERVER = "http://localhost:8080/";
 
 
     // METHODS THAT ARE ACTUALLY USEFUL
@@ -53,7 +52,6 @@ public class ServerUtils {
     private StompSession session;
 
     // Yes, I am indeed bold enough to remove those methods. What are going to do about it?
->>>>>>> client/src/main/java/client/utils/ServerUtils.java
 
     public Board findBoard(String key) {
         return ClientBuilder.newClient(new ClientConfig())
@@ -86,8 +84,6 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(model, APPLICATION_JSON), Board.class);
     }
-    private StompSession session = connect("ws://localhost:8080/websocket");
-=======
 
     public StompSession safeConnect(String url) {
         try {
@@ -135,21 +131,21 @@ public class ServerUtils {
     public void updateBoard(Board board) { send("/app/boards", board);}
     /**
      * Sends a request to the server to move a task from one board to another
-     * @param TaskMoveModel - the model used for this operation
+     * @param model - the model used for this operation
      */
     public void moveTask(TaskMoveModel model ,String boardKey) {
         send("/app/task/move/" + boardKey, model);
     }
     /**
      * Sends a request to the server to get a task from the database
-     * @param TaskId - the id of the task
+     * @param taskId - the id of the task
      */
     public void getTask(String taskId) {
         send("/app/task/get", taskId);
     }
     /**
      * Sends a request to the server to delete a task from the database
-     * @param TaskId - the id of the task
+     * @param taskId - the id of the task
      */
     public void deleteTask(Long taskId,String boardKey){ send("/app/task/delete/"+boardKey,taskId);}
     /**
@@ -164,7 +160,7 @@ public class ServerUtils {
     public void deleteList(Long listId) { send("/app/list/delete",listId);}
     /**
      * Sends a request to the server to create a list in the database
-     * @param board - the Board that is to contain the list
+     * @param boardKey - the Board that is to contain the list
      */
     public void createList(String boardKey) {send("/app/list/createlist",boardKey);}
     /**
@@ -176,7 +172,6 @@ public class ServerUtils {
     /**
      * Sends a request to the create a task in the database
      * @param listID - the ID of the list that is supposed to contain the task
-     * @param boardkey - the key of the board in which the task is added
      * @param taskTitle - the title of the created task
      */
     public void createTask(Long listID,String taskTitle) {

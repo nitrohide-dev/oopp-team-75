@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.exceptions.BoardDoesNotExist;
+import server.exceptions.CannotCreateBoard;
+
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
