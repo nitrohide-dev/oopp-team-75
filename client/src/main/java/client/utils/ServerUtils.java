@@ -21,6 +21,8 @@ import commons.TaskMoveModel;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import lombok.Getter;
+import lombok.Setter;
 import org.glassfish.jersey.client.ClientConfig;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
@@ -36,14 +38,22 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-
-@SuppressWarnings("ALL")
 public class ServerUtils {
 
     private static final String SERVER = "http://localhost:8080/";
 
 
     // METHODS THAT ARE ACTUALLY USEFUL
+    @Getter
+    @Setter
+    private String SERVER;
+
+    @Getter
+    @Setter
+    private StompSession session;
+
+    // Yes, I am indeed bold enough to remove those methods. What are going to do about it?
+>>>>>>> client/src/main/java/client/utils/ServerUtils.java
 
     public Board findBoard(String key) {
         return ClientBuilder.newClient(new ClientConfig())
@@ -77,7 +87,15 @@ public class ServerUtils {
                 .post(Entity.entity(model, APPLICATION_JSON), Board.class);
     }
     private StompSession session = connect("ws://localhost:8080/websocket");
+=======
 
+    public StompSession safeConnect(String url) {
+        try {
+            return connect("ws://" + url + "/websocket");
+        } catch (Exception e) {
+            return null;
+        }
+    }
     private StompSession connect(String url) {
         WebSocketClient client = new StandardWebSocketClient();
         WebSocketStompClient stomp = new WebSocketStompClient(client);
@@ -93,7 +111,7 @@ public class ServerUtils {
     }
 
     public <T> void subscribe(String dest, Class<T> type, Consumer<T> consumer) {
-        session.subscribe(dest , new StompFrameHandler() {
+        session.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
                 return type;
@@ -170,6 +188,37 @@ public class ServerUtils {
      */
     public void renameTask(String boardKey,Long taskId,String taskTitle) {
         send("/app/task/rename/" + boardKey+"/"+taskTitle,taskId);
+    }
+
+    /**
+     * initial authentication on the side of the server
+     * @param password password hashed
+     * @return whether it was successful or not
+     */
+    public boolean authenticate(String password) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/login")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .header("password",password)
+                .get(Boolean.class);
+    }
+
+
+    public boolean changePassword(String passwordHashed) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/changePassword")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .header("passwordHashed",passwordHashed)
+                .get(Boolean.class);
+    }
+
+    public void logout(){
+        ClientBuilder.newClient(new ClientConfig())
+         .target(SERVER).path("api/boards/logout")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON);
     }
 
 }

@@ -24,7 +24,7 @@ public class 	BoardService {
 	 * @return list of all boards
 	 */
 	public List<Board> getAll() {
-		return repo.findAll();
+		return (List<Board>)  repo.findAll();
 	}
 
 	/**
@@ -36,8 +36,9 @@ public class 	BoardService {
 		if (key == null)
 			throw new IllegalArgumentException("key cannot be null");
 		Optional<Board> board = repo.findById(key);
-		if (board.isEmpty())
+		if (board.isEmpty() || board.get() == null) {
 			return null;
+		}
 		return board.get();
 	}
 	/**
@@ -80,7 +81,9 @@ public class 	BoardService {
 	 * @param board the board to save
 	 * @return the saved board
 	 */
-	public Board save(Board board) {
+	public Board save(Board board) throws BoardDoesNotExist {
+		if (board == null)
+			throw new BoardDoesNotExist("There is no board to be saved");
 		return repo.save(board);
 	}
 }

@@ -46,24 +46,18 @@ import java.util.Optional;
 public class BoardOverviewCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    @FXML
-    public Group group;
-    @FXML
-    public HBox header;
-    @FXML
-    public ScrollPane sPaneListView;
 
-    @FXML
-    private ListView<HBox> taskList1;
+    @FXML public Group group;
+    @FXML public HBox header;
+    @FXML public ScrollPane sPaneListView;
 
-    @FXML
-    private TextField listName1;
+    @FXML private ListView<HBox> taskList1;
 
-    @FXML
-    private Button deleteTaskListsButton;
+    @FXML private TextField listName1;
 
-    @FXML
-    private HBox listContainer;
+    @FXML private Button deleteTaskListsButton;
+
+    @FXML private HBox listContainer;
 
     private Group sampleGroup;
 
@@ -90,8 +84,10 @@ public class BoardOverviewCtrl {
     private BorderPane borderPane;
     private UserMenuCtrl usermenuCtrl;
 
+    private boolean adminPresence=false;
+
     @Inject
-    public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public BoardOverviewCtrl(MainCtrl mainCtrl, ServerUtils server) {
         this.mainCtrl = mainCtrl;
         this.server = server;
         this.allLists = new HashMap<>();
@@ -187,7 +183,12 @@ public class BoardOverviewCtrl {
         String path = Path.of("", "client", "images", "ExitButton.png").toString();
         Button exitButton = buttonBuilder(path);
         exitButton.setOnAction(e-> {
-            goToPrevious();
+            if(!adminPresence){
+                goToPrevious();}
+            else{
+                Stage stage = (Stage) scrollPaneMain.getScene().getWindow();
+                stage.close();
+            }
         });
         header.getChildren().add(exitButton);
     }
@@ -700,6 +701,10 @@ public class BoardOverviewCtrl {
         // Set the image URL of ImageView
         String path = Path.of("", "client", "images", "Logo.png").toString();
         logo1.setImage(new Image(path));
+    }
+
+    public void setAdminPresence(boolean adminPresence) {
+        this.adminPresence = adminPresence;
     }
 }
 
