@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 
-class TaskRepositoryTest implements TaskRepository{
+public class TaskRepositoryTest implements TaskRepository{
     private List<Task> tasks;
 
     public TaskRepositoryTest() {
