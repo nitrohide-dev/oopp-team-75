@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
+import commons.TaskMoveModel;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -62,8 +63,9 @@ public class BoardOverviewCtrl {
 
     private long boardKey;
     private Map<ListView, String> allLists; // Stores all task lists
-    private final Map<ListView, TaskList> listMap; // Stores all task lists
-    private final Map<HBox, Task> taskMap; // Stores all tasks
+    private final Map<ListView, Long> listMap; // Stores all task lists
+    private final Map<HBox, Long> taskMap; // Stores all tasks
+    private final Map<Long,Integer> taskOrderMap;
 
     @FXML
     private ScrollPane scrollPaneMain;
@@ -91,6 +93,7 @@ public class BoardOverviewCtrl {
         this.allLists = new HashMap<>();
         this.listMap = new HashMap<>();
         this.taskMap = new HashMap<>();
+        this.taskOrderMap = new HashMap<>();
     }
 
     /**
@@ -145,8 +148,12 @@ public class BoardOverviewCtrl {
             ListView<HBox> ourList = addTaskList(taskList);
             dragOverHandler(ourList);
             dragDroppedHandler(ourList);
-            for(Task task : taskList.getTasks())
-                addTask(task.getTitle(),ourList,task);
+            List<Task> listOfTasks = taskList.getTasks();
+            for (int i = 0; i < listOfTasks.size(); i++) {
+                Task task = listOfTasks.get(i);
+                addTask(task.getTitle(), ourList, task);
+                taskOrderMap.put(task.getid(),i);
+            }
         }
 
         // sets attributes accordingly
@@ -156,6 +163,9 @@ public class BoardOverviewCtrl {
         setDeleteAction(deleteTaskListsButton, listName1.getText(),taskList1);
         hoverOverDeleteButton(deleteTaskListsButton);
     }
+
+
+
 
     /**
      * Shortened variant to make access to the board easier.
@@ -226,7 +236,6 @@ public class BoardOverviewCtrl {
             server.updateBoard(getBoard());
             Label text = (Label) menuBar.getItems().get(0);
             text.setText(getBoard().getTitle());
-            refresh(getBoard());
         });
         boardRenameButton.setId("smButton");
         return boardRenameButton;
@@ -297,14 +306,10 @@ public class BoardOverviewCtrl {
         borderPane.setRight(menuBar);
     }
     /**
-     * This eventHandler is waiting for the addButton to be clicked, after that creates
-     * new Group of TextField, ScrollPane and a Deletion Button - new taskList
+     * Creates a taskList in the given board
      */
-    public ListView<HBox> createTaskList() {
-        TaskList taskList = getBoard().createTaskList();
-        ListView<HBox> list = addTaskList(taskList);
-        server.updateBoard(getBoard()); // updates server
-        return list;
+    public void createTaskList() {
+        server.createList(getBoard().getKey());
     }
 
     /**
@@ -317,8 +322,10 @@ public class BoardOverviewCtrl {
         ListView<HBox> sampleList = (ListView<HBox>) samplePane.getContent();
         TextField textField = new TextField();
         textField.setId("listName1");
-        textField.setOnInputMethodTextChanged(e -> taskList.setTitle(textField.getText()));
-
+      //  textField.setOnAction(e->{
+ //           if(!(textField.getText().equals(taskList.getTitle())))
+   //             server.renameList(taskList.getid(), textField.getText());
+       // });
         ListView<HBox> listView = new ListView<>();
         listView.setOnMouseClicked(e -> taskOperations(listView));
         listView.setPrefSize(sampleList.getPrefWidth(), sampleList.getPrefHeight());
@@ -346,7 +353,7 @@ public class BoardOverviewCtrl {
         dragOverHandler(listView);
         dragDroppedHandler(listView);
         allLists.put(listView, textField.getText());
-        listMap.put(listView, taskList);
+        listMap.put(listView,taskList.getid());
         return listView;
     }
 
@@ -409,10 +416,7 @@ public class BoardOverviewCtrl {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK){
-                listContainer.getChildren().remove(parentGroup); // remove parent group from HBox
-                TaskList list1 = listMap.get(list);
-                getBoard().removeTaskList(list1);
-                server.updateBoard(getBoard()); // updates server
+                server.deleteList(listMap.get(list));
             }
         });
     }
@@ -429,10 +433,9 @@ public class BoardOverviewCtrl {
 
     /**
      * task creation method caused by the user's manual task addition.
-     * @return the created task
      */
-    public HBox createTask(ListView<HBox> list) {
-        return createTask(inputTaskName(), list);
+    public void createTask(ListView<HBox> list) {
+        createTask(inputTaskName(), list);
     }
 
 
@@ -440,14 +443,9 @@ public class BoardOverviewCtrl {
      * creates a task in the given list with the given name
      * @param name the name of the task to be created
      * @param list the list in which the task should be created
-     * @return the created task
      */
-    public HBox createTask(String name,ListView<HBox> list) {
-        Task task1 = listMap.get(list).createTask();
-        task1.setTitle(name);
-        HBox task = addTask(name, list,task1);
-        server.updateBoard(getBoard()); // updates server
-        return task;
+    public void createTask(String name,ListView<HBox> list) {
+        server.createTask(listMap.get(list),name);
     }
     /**
      * adds a task to a given list in frontend and maps it to the corresponding Task common data type
@@ -471,8 +469,8 @@ public class BoardOverviewCtrl {
         path = Path.of("", "client", "images", "eye.png").toString();
         Button viewButton = buttonBuilder(path);
         HBox box = new HBox(task, viewButton, editButton, removeButton);
-        dragDetectHandler(box,task,list);
-        removeButton.setOnAction(e -> deleteTask(list, box));
+        dragHandler(box,task,list);
+        removeButton.setOnAction(e -> deleteTask(box));
         editButton.setOnAction(e -> editTask(box));
         viewButton.setOnAction(e -> viewTask(box));
         disableTaskButtons(box);
@@ -480,7 +478,7 @@ public class BoardOverviewCtrl {
         list.getItems().add(box);
         //Re-adds the button to the end of the list
         addTaskButton(list);
-        taskMap.put(box,task1);
+        taskMap.put(box,task1.getid());
 
         return box;
     }
@@ -602,15 +600,12 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * Edits the chosen task
+     * renames the chosen task
      * @param task the task box
      */
     public void editTask(HBox task) {
         String name = inputTaskName();
-        ((Label) task.getChildren().get(0)).setText(name);
-        Task task1 = taskMap.get(task);
-        task1.setTitle(name);
-        server.updateBoard(getBoard()); // updates server
+        server.renameTask(getBoard().getKey(),taskMap.get(task),name);
     }
 
     /**
@@ -623,32 +618,9 @@ public class BoardOverviewCtrl {
      * Deletes given task
      * @param task - a HBox, containing the task
      */
-    public void deleteTask(ListView<HBox> list, HBox task) {
-        TaskList list1 = listMap.get(list);
-        Task task1 = taskMap.get(task);
-        list1.removeTask(task1);
-        list.getItems().remove(task);
-        server.updateBoard(getBoard()); // updates server
+    public void deleteTask(HBox task) {
+        server.deleteTask(taskMap.get(task),getBoard().getKey());
     }
-
-//    /**
-//     * method that moves a task from one list to another
-//     *
-//     * @param fromList - the list containing the taskD
-//     * @param toList   - the list in which we want to put the task
-//     * @param task     the task to be moved
-//     */
-//    public void moveTask(ListView fromList, ListView toList, HBox task) {
-//        String list1 = allLists.get(fromList);
-//        String list2 = allLists.get(toList);
-//        if (list1 == null || list2 == null) return;
-//        if (list1.equals(list2)) return;
-//        if (server.moveTask(mainCtrl.getCurrBoard(), list1, list2, task)) {
-//            fromList.getItems().remove(task);
-//            toList.getItems().add(task);
-//        }
-//    }
-
     /**
      * Handles the list's behaviour once a task is being dragged over it
      * @param list the list which behaviour is to be configured
@@ -672,7 +644,8 @@ public class BoardOverviewCtrl {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-                createTask(db.getString(),list);
+                TaskMoveModel model = new TaskMoveModel(Long.parseLong(db.getString()), listMap.get(list),Integer.MAX_VALUE);
+                server.moveTask(model,getBoard().getKey());
                 success = true;
                 db.clear();
             }
@@ -684,27 +657,35 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * Handles the task's behaviour when it's being dragged AND deletes it from the given list when it's being dropped
+     * Handles the task's behaviour when it's being dragged AND when a task gets dropped onto it
      * @param box - the box that contains the task which behaviour is to be configured
      * @param task - the task label, containing its name
      * @param list - the list that contains the task
      */
-    public void dragDetectHandler(HBox box,Label task,ListView<HBox> list) {
+    public void dragHandler(HBox box,Label task,ListView<HBox> list) {
         ObservableList<Node> children = anchorPaneMain.getChildren();
         box.setOnDragDetected(event -> {
             Dragboard db = box.startDragAndDrop(TransferMode.ANY);
             ClipboardContent content = new ClipboardContent();
-            content.putString(task.getText());
+            content.putString(Long.toString(taskMap.get(box)));
             db.setContent(content);
             db.setDragView(new Text(task.getText()).snapshot(null, null), event.getX(), event.getY());
             event.consume();
         });
-        box.setOnDragDone(event -> {
+        box.setOnDragDropped(event -> {
             Dragboard db = event.getDragboard();
-            if(!db.hasString())
-            {
-                deleteTask(list, box);
+            boolean success = false;
+            if (db.hasString()) {
+                int order = taskOrderMap.get(taskMap.get(box))+1;
+                TaskMoveModel model = new TaskMoveModel(Long.parseLong(db.getString()),listMap.get(list),order);
+                server.moveTask(model,getBoard().getKey());
+                success = true;
+                db.clear();
             }
+
+            event.setDropCompleted(success);
+
+            event.consume();
         });
     }
 

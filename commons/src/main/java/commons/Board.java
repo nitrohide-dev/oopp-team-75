@@ -119,9 +119,9 @@ public class Board {
      * @return the created {@code TaskList}.
      */
     public TaskList createTaskList() {
-        TaskList taskList = new TaskList(this);
-        this.taskLists.add(taskList);
-        return taskList;
+        TaskList list = new TaskList(this);
+        this.taskLists.add(list);
+        return list;
     }
 
     /**

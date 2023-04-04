@@ -44,7 +44,7 @@ class TaskRepositoryTest implements TaskRepository{
         List<Task> queryTasks = new ArrayList<>();
         for(Long i : (Iterable<Long>) longs) {
             for(Task task : tasks) {
-                if(task.getId() == i) {
+                if(task.getid() == i) {
                     queryTasks.add(task);
                 }
             }
@@ -60,7 +60,7 @@ class TaskRepositoryTest implements TaskRepository{
     @Override
     public void deleteById(Long aLong) {
         for(Task task : tasks) {
-            if(task.getId() == aLong) {
+            if(task.getid() == aLong) {
                 tasks.remove(task);
                 break;
             }
@@ -70,7 +70,7 @@ class TaskRepositoryTest implements TaskRepository{
     @Override
     public void delete(Task entity) {
         for(Task task : tasks) {
-            if(task.getId() == entity.getId()) {
+            if(task.getid() == entity.getid()) {
                 tasks.remove(task);
                 break;
             }
@@ -82,7 +82,7 @@ class TaskRepositoryTest implements TaskRepository{
     public void deleteAllById(Iterable<? extends Long> longs) {
         for(Long i : (Iterable<Long>) longs) {
             for(Task task : tasks) {
-                if(task.getId() == i) {
+                if(task.getid() == i) {
                     tasks.remove(task);
                     break;
                 }
@@ -94,7 +94,7 @@ class TaskRepositoryTest implements TaskRepository{
     public void deleteAll(Iterable<? extends Task> entities) {
         for(Task task : (Iterable<Task>) entities) {
             for(Task task2 : tasks) {
-                if(task.getId() == task2.getId()) {
+                if(task.getid() == task2.getid()) {
                     tasks.remove(task2);
                     break;
                 }
@@ -110,7 +110,7 @@ class TaskRepositoryTest implements TaskRepository{
     @Override
     public <S extends Task> S save(S entity) {
         for(Task task : tasks) {
-            if(task.getId() == entity.getId()) {
+            if(task.getid() == entity.getid()) {
                 tasks.remove(task);
                 tasks.add(entity);
                 return entity;
@@ -133,7 +133,7 @@ class TaskRepositoryTest implements TaskRepository{
     @Override
     public boolean existsById(Long aLong) {
         for(Task task : tasks) {
-            if(task.getId() == aLong) {
+            if(task.getid() == aLong) {
                 return true;
             }
         }
@@ -213,5 +213,20 @@ class TaskRepositoryTest implements TaskRepository{
     @Override
     public <S extends Task, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
+    }
+    @Override
+    public int getOrderById(long id){
+        return 0;
+    }
+    @Override
+    public void updateInitialListOrder(int order,long id){
+
+    }
+    @Override
+    public void updateTargetListOrder(int order,long id){
+
+    }
+    public void moveTask(long id1,long id2,int order){
+
     }
 }
