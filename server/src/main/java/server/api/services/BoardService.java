@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class BoardService {
+public class 	BoardService {
 
 	private final BoardRepository repo;
 
@@ -41,7 +41,6 @@ public class BoardService {
 		}
 		return board.get();
 	}
-
 	/**
 	 * Creates a board from a given model
 	 * @param model model containing key, name and boolean for the board
@@ -66,7 +65,17 @@ public class BoardService {
 			throw new BoardDoesNotExist("There is no board with the given key.");
 		repo.deleteById(key);
 	}
+	/**
+	 * Creates a list in the database
+	 * @param board - the board the list is in
+	 * @return the board the list is in
+	 */
+	public Board createList(Board board){
+		board.createTaskList();
+		repo.save(board);
+		return repo.findById(board.getKey()).get();
 
+	}
 	/**
 	 * Saves a board to the database.
 	 * @param board the board to save

@@ -1,17 +1,17 @@
 package server.api.controllers;
-
+import commons.Board;
 import commons.TaskList;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.server.ResponseStatusException;
+import server.api.services.BoardService;
 import server.api.services.ListService;
 import server.exceptions.ListDoesNotExist;
-
 import java.util.List;
 
 @RestController
@@ -19,57 +19,57 @@ import java.util.List;
 public class ListController {
 
     private final ListService listService;
+    private final BoardService boardService;
 
-    public ListController(ListService listService) {
+    public ListController(ListService listService,BoardService boardService) {
         this.listService = listService;
+        this.boardService = boardService;
     }
 
     @GetMapping(path = { "", "/" })
     public List<TaskList> getAll() { return listService.getAll(); }
 
     /**
-     * Gets a taskList from the database by id. If the id does not exist in the
-     * database, the method will respond with a bad request.
-     * @param id the list id
-     * @return the stored taskList
+     * renames a list to the given name
+     * @param name - the new name of the list
+     * @param id - the id of the list which name should be change
+     * @return the board the list belongs to
      */
-    @GetMapping("/get/{id}")
-    public ResponseEntity<TaskList> getById(@PathVariable("id") String id) {
+    @MessageMapping("/list/rename/{name}")
+    @SendTo("/topic/boards")
+    public Board renameList(Long id,@DestinationVariable("name") String name) {
         try {
-            TaskList taskList = listService.getById(Long.parseLong(id));
-            return ResponseEntity.ok(taskList);
+            TaskList taskList = listService.renameList(id,name);
+            return taskList.getBoard();
         } catch (NumberFormatException | ListDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
-
-//    /**
-//     * Creates a new taskList from the given model, stores it in the database, and
-//     * returns it.
-//     * @return the created taskList or bad request if the model is not correct
-//     */
-//    @PostMapping("/create")
-//    public ResponseEntity<TaskList> create(@RequestBody TaskListModel model) {
-//        try {
-//            TaskList taskList = listService.createList(model);
-//            return ResponseEntity.ok(taskList);
-//        } catch (CannotCreateList e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-//        }
-//    }
-
+    /**
+     * creates task with a given name in a given list
+     * @param listID - the id of the list to add the task to
+     * @param name - the name of the task to be created
+     * @return the board the new task should belong too
+     */
+    @MessageMapping("/list/createTask/{name}")
+    @SendTo("/topic/boards")
+    public Board createTask(Long listID,@DestinationVariable("name") String name) throws ListDoesNotExist{
+        TaskList list = (listService.getById(listID));
+        String id = listService.createTask(list,name);
+        return boardService.findByKey(id);
+    }
     /**
      * Deletes a taskList, including its children from the database by its id. If
      * the id does not exist in the database or has a wrong format, the method will respond with a
      * bad request.
-     * @param id the taskList id
-     * @return nothing
+     * @param id - the id of the tasklist
+     * @return the board the tasklist belongs to
      */
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<TaskList> deleteById(@PathVariable("id") String id) {
+    @MessageMapping("/list/delete")
+    @SendTo("/topic/boards")
+    public Board deleteById(Long id) {
         try {
-            listService.deleteById(Long.parseLong(id));
-            return ResponseEntity.ok().build();
+            return listService.deleteById(id);
         } catch (NumberFormatException | ListDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

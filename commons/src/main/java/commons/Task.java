@@ -20,7 +20,6 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(unique=true, nullable=false)
     private long id;
 
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
@@ -37,8 +36,8 @@ public class Task {
 
     public Task() {} // for object mappers, please don't use.
 
-    public Task(TaskList taskList) {
-        this(taskList, "", "");
+    public Task(TaskList taskList,String name) {
+        this(taskList, name, "");
     }
 
     public Task(TaskList taskList, String title, String desc) {
@@ -49,11 +48,11 @@ public class Task {
 
 //    getters and setters
 
-    public long getId() {
+    public long getid() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setid(long id) {
         this.id = id;
     }
 
