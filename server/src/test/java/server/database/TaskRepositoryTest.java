@@ -92,6 +92,10 @@ public class TaskRepositoryTest implements TaskRepository{
 
     @Override
     public void deleteAll(Iterable<? extends Task> entities) {
+        if (entities == null) {
+            return;
+        }
+
         for(Task task : (Iterable<Task>) entities) {
             for(Task task2 : tasks) {
                 if(task.getid() == task2.getid()) {

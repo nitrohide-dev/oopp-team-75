@@ -101,11 +101,18 @@ public class BoardController {
     /**
      * creates a tasklist in the given board
      * @param boardKey - the key of the board in which the tasklist should be added
+     * @throws ResponseStatusException - if the key is null, a bad request is sent
      * @return the board with the key sent
      */
     @MessageMapping("/list/createlist")
     @SendTo("/topic/boards")
     public Board createList(String boardKey) {
+        if (boardKey == null || boardKey.isEmpty()){
+            throw new IllegalArgumentException("Board key cannot be null");
+        }
+        if (boardService.findByKey(boardKey)==null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Board does not exist");
+        }
         return boardService.createList(boardService.findByKey(boardKey));
     }
 
