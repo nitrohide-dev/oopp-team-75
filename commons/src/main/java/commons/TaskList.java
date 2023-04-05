@@ -2,8 +2,6 @@ package commons;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,27 +26,18 @@ public class TaskList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(unique=true, nullable=false)
-    @Getter
-    @Setter
     private long id;
 
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
-    @Getter
-    @Setter
     private String title;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @OrderColumn
-    @Getter
-    @Setter
     private List<Task> tasks;
 
     @JsonBackReference
     @ManyToOne
-    @Getter
-    @Setter
     private Board board;
 
 //    constructors
@@ -66,6 +55,39 @@ public class TaskList {
         this.tasks = tasks;
     }
 
+//    getters and setters
+
+    public long getid() {
+        return id;
+    }
+
+    public void setid(long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 
 //    equals and hashcode
 

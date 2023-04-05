@@ -1,23 +1,12 @@
 package commons;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Class to validate and create a board.
  */
 public class CreateBoardModel {
 
-	@Getter
-	@Setter
 	public String key;
-	@Getter
-	@Setter
 	public String title;
-	@Getter
-	@Setter
-	public String password;
-
 
 	public CreateBoardModel(){} // for object mappers, please don't use.
 
@@ -25,6 +14,24 @@ public class CreateBoardModel {
 		this.key = key;
 		this.title = title;
 	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+
 	/**
 	 * Checks if the given model is valid
 	 * @return true if all requirements are met, false otherwise
