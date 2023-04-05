@@ -106,6 +106,15 @@ public class ListRepositoryTest implements ListRepository{
         return entity;
     }
 
+    public void add(TaskList entity) throws Exception {
+        for(TaskList list : lists) {
+            if(list.getid() == entity.getid()) {
+                throw new Exception("List already exists");
+            }
+        }
+        lists.add(entity);
+    }
+
     @Override
     public <S extends TaskList> List<S> saveAll(Iterable<S> entities) {
         for(TaskList list : (Iterable<TaskList>) entities) {

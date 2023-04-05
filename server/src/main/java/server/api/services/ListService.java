@@ -68,6 +68,7 @@ public class ListService {
 		TaskList list = getById(id);
         Board board = list.getBoard();
 		board.getTaskLists().remove(list);
+		repo.delete(list);
 		boardRepo.save(board);
 		return board;
 	}

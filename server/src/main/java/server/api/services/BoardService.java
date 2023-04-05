@@ -86,6 +86,20 @@ public class 	BoardService {
 		repo.save(board);
 		return repo.findById(board.getKey()).get();
 	}
+
+	/**
+	 * Creates a list in the database with a given id and name
+	 * @param board - the board the list is in
+	 * @param id - the id of the list
+	 * @param name - the name of the list
+	 * @return
+	 */
+	public Board createList(Board board, long id, String name){
+		board.createTaskList(id, name);
+		repo.save(board);
+		return repo.findById(board.getKey()).get();
+	}
+
 	/**
 	 * Saves a board to the database.
 	 * @param board the board to save

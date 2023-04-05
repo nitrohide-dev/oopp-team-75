@@ -115,6 +115,7 @@ public class BoardRepositoryTest implements BoardRepository {
         for(Board board : boards) {
             if(board.getKey().equals(entity.getKey())) {
                 boards.remove(board);
+                listRepo.deleteAll(entity.getTaskLists());
                 listRepo.saveAll(entity.getTaskLists());
                 boards.add(entity);
                 return entity;

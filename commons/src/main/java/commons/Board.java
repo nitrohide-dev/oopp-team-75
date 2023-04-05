@@ -145,6 +145,24 @@ public class Board {
     }
 
     /**
+     * Creates a new task list with the given id and title
+     * @param id id of the task list
+     * @param title title of the task list
+     * @return the created task list
+     * @throws IllegalArgumentException
+     */
+    public TaskList createTaskList(long id, String title) throws IllegalArgumentException{
+        TaskList list = new TaskList(this);
+        if(this.taskLists.contains(list)){
+            throw new IllegalArgumentException("TaskList already exists");
+        }
+        list.setid(id);
+        list.setTitle(title);
+        this.taskLists.add(list);
+        return list;
+    }
+
+    /**
      * Removes {@code taskList} from this board and sets its parent to null.
      * @param taskList to be deleted tasklist
      */
