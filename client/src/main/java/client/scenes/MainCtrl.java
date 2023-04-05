@@ -112,14 +112,6 @@ public class MainCtrl {
 
     }
 
-    public Board getCurrBoard() {
-        return currBoard;
-    }
-
-    public void setCurrBoard(Board board) {
-        currBoard = board;
-    }
-
     public void showLanding(){
         primaryStage.setMinWidth(600);
         primaryStage.setMinHeight(400);
@@ -172,8 +164,7 @@ public class MainCtrl {
     }
 
     public void createBoard(String name,String title){
-        server.createBoard(new CreateBoardModel(name,title));
-        Board b = new Board(new CreateBoardModel(name,title));
+        Board b = server.createBoard(new CreateBoardModel(name,title));
         userMenuCtrl.addBoard(name);
         showUserMenu();
     }

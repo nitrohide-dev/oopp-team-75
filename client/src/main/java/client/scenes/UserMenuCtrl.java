@@ -45,7 +45,7 @@ public class UserMenuCtrl {
     public UserMenuCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-        this.boardNames=new ArrayList<>();
+        this.boardNames = new ArrayList<>();
     }
 
     public void initialize() throws IOException {
