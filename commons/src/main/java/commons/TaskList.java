@@ -2,19 +2,17 @@ package commons;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Getter;
-import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Column;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import javax.persistence.OrderColumn;
+import javax.persistence.ManyToOne;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -28,27 +26,18 @@ public class TaskList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(unique=true, nullable=false)
-    @Getter
-    @Setter
     private long id;
 
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
-    @Getter
-    @Setter
     private String title;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @OrderColumn
-    @Getter
-    @Setter
     private List<Task> tasks;
 
     @JsonBackReference
     @ManyToOne
-    @Getter
-    @Setter
     private Board board;
 
 //    constructors
@@ -60,11 +49,45 @@ public class TaskList {
     }
 
     public TaskList(Board board, String title, List tasks) {
+
         this.board = board;
         this.title = title;
         this.tasks = tasks;
     }
 
+//    getters and setters
+
+    public long getid() {
+        return id;
+    }
+
+    public void setid(long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 
 //    equals and hashcode
 
@@ -107,14 +130,14 @@ public class TaskList {
      * @return the created task.
      */
     public Task createTask() {
-        Task task = new Task(this);
+        Task task = new Task(this,"");
         this.tasks.add(task);
         return task;
     }
 
     /**
      * Removes {@code task} from this taskList and sets its parent to null.
-     * @param task
+     * @param task name of task
      */
     public void removeTask(Task task) {
         if (task == null)
@@ -140,8 +163,8 @@ public class TaskList {
 
     /**
      * Inserts {@code task1} before {@code task2} in this taskList.
-     * @param task1
-     * @param task2
+     * @param task1 first task
+     * @param task2 second task
      */
     public void insertTask(Task task1, Task task2) {
         if (task2 == null)

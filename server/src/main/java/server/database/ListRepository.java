@@ -17,5 +17,16 @@ package server.database;
 
 import commons.TaskList;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+public interface ListRepository extends JpaRepository<TaskList, Long> {
 
-public interface ListRepository extends JpaRepository<TaskList, Long> {}
+    /**
+     * gets the board key of a list with the given id
+     * @param listID - the id of the taskList that we want the boardkey of
+     * @return  the board key of the board of the list
+     */
+    @Query(value = "SELECT BOARD_KEY FROM TASK_LIST WHERE ID = ?1",nativeQuery = true)
+    String getBoardByListID(long listID);
+
+
+}

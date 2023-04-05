@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class BoardService {
+public class 	BoardService {
 
 	private final BoardRepository repo;
 
@@ -24,7 +24,7 @@ public class BoardService {
 	 * @return list of all boards
 	 */
 	public List<Board> getAll() {
-		return repo.findAll();
+		return (List<Board>)  repo.findAll();
 	}
 
 	/**
@@ -36,11 +36,11 @@ public class BoardService {
 		if (key == null)
 			throw new IllegalArgumentException("key cannot be null");
 		Optional<Board> board = repo.findById(key);
-		if (board.isEmpty())
+		if (board.isEmpty() || board.get() == null) {
 			return null;
+		}
 		return board.get();
 	}
-
 	/**
 	 * Creates a board from a given model
 	 * @param model model containing key, name and boolean for the board
@@ -65,13 +65,25 @@ public class BoardService {
 			throw new BoardDoesNotExist("There is no board with the given key.");
 		repo.deleteById(key);
 	}
+	/**
+	 * Creates a list in the database
+	 * @param board - the board the list is in
+	 * @return the board the list is in
+	 */
+	public Board createList(Board board){
+		board.createTaskList();
+		repo.save(board);
+		return repo.findById(board.getKey()).get();
 
+	}
 	/**
 	 * Saves a board to the database.
 	 * @param board the board to save
 	 * @return the saved board
 	 */
-	public Board save(Board board) {
+	public Board save(Board board) throws BoardDoesNotExist {
+		if (board == null)
+			throw new BoardDoesNotExist("There is no board to be saved");
 		return repo.save(board);
 	}
 }

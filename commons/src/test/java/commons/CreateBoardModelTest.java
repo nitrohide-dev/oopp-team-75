@@ -15,7 +15,7 @@ class CreateBoardModelTest {
 
     @BeforeEach
     void setup() {
-        model = new CreateBoardModel("a", "a", "a");
+        model = new CreateBoardModel("a", "a");
     }
 
     @Test
@@ -23,15 +23,13 @@ class CreateBoardModelTest {
         CreateBoardModel model = new CreateBoardModel();
         assertNull(model.getKey());
         assertNull(model.getTitle());
-        assertNull(model.getPassword());
     }
 
     @Test
     void constructor2() {
-        CreateBoardModel model = new CreateBoardModel("a", "a", "a");
+        CreateBoardModel model = new CreateBoardModel("a", "a");
         assertEquals("a", model.getKey());
         assertEquals("a", model.getTitle());
-        assertEquals("a", model.getPassword());
     }
 
     @Test
@@ -61,27 +59,14 @@ class CreateBoardModelTest {
     }
 
     @Test
-    void getPassword() {
-        assertEquals("a", model.getPassword());
-        assertNotEquals("b", model.getPassword());
-    }
-
-    @Test
-    void setPassword() {
-        model.setPassword("b");
-        assertNotEquals("a", model.getPassword());
-        assertEquals("b", model.getPassword());
-    }
-
-    @Test
     void isValid() {
-        CreateBoardModel model1 = new CreateBoardModel("a", "a", "a");
-        CreateBoardModel model2 = new CreateBoardModel(null, "a", "a");
-        CreateBoardModel model3 = new CreateBoardModel("a", null, "a");
-        CreateBoardModel model4 = new CreateBoardModel("a", "a", null);
+        CreateBoardModel model1 = new CreateBoardModel("a", "a");
+        CreateBoardModel model2 = new CreateBoardModel(null, "a");
+        CreateBoardModel model3 = new CreateBoardModel("a", null);
+        CreateBoardModel model4 = new CreateBoardModel("a", "a");
         assertTrue(model1.isValid());
         assertFalse(model2.isValid());
         assertFalse(model3.isValid());
-        assertFalse(model4.isValid());
+        assertTrue(model4.isValid());
     }
 }

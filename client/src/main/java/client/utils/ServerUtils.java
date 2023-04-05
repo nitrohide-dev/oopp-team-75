@@ -16,14 +16,13 @@
 package client.utils;
 
 import commons.Board;
-//import commons.Quote;
 import commons.CreateBoardModel;
+import commons.TaskMoveModel;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
-import javafx.scene.layout.HBox;
-import javafx.util.Pair;
+import lombok.Getter;
+import lombok.Setter;
 import org.glassfish.jersey.client.ClientConfig;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
@@ -33,132 +32,26 @@ import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-
 public class ServerUtils {
 
-    private static final String SERVER = "http://localhost:8080/";
-
-    public void getQuotesTheHardWay() throws IOException {
-        var url = new URL("http://localhost:8080/api/quotes");
-        var is = url.openConnection().getInputStream();
-        var br = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
-        }
-    }
-//
-//    public List<Quote> getQuotes() {
-//        return ClientBuilder.newClient(new ClientConfig()) //
-//                .target(SERVER).path("api/quotes") //
-//                .request(APPLICATION_JSON) //
-//                .accept(APPLICATION_JSON) //
-//                .get(new GenericType<List<Quote>>() {});
-//    }
-//
-//    public Quote addQuote(Quote quote) {
-//        return ClientBuilder.newClient(new ClientConfig()) //
-//                .target(SERVER).path("api/quotes") //
-//                .request(APPLICATION_JSON) //
-//                .accept(APPLICATION_JSON) //
-//                .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
-//    }
-
-    /**
-     * Sends request to the server that gets the board by id
-     * @param id - the id
-     * @return the board
-     */
-    public Board getBoard(long id) {
-        return new Board();
-//        return ClientBuilder.newClient(new ClientConfig())
-//            .target(SERVER).path("api/board/get/" + id)
-//            .request(APPLICATION_JSON)
-//            .accept(APPLICATION_JSON)
-//            .get(Board.class);
-    }
-
-    /**
-     * Sends request to the server to create a task.
-     * The task will be added to the first taskList in the first board
-     * @param name - the name of the task
-     * @return true if the task can be created, false otherwise
-     */
-    public boolean addTask(String name) {
-        Response res =  ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/task/create")
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .post(Entity.entity(name, APPLICATION_JSON));
-        return res.getStatus() == 200;
-    }
-
-    /**
-     * Sends request to the server to remove a task.
-     * The task will be removed from its taskList
-     * @param name - the name of the task
-     * @return true if the task can be removed, false otherwise
-     */
-    public boolean deleteTask(String name, long boardId) {
-        Response res =  ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/task/delete/" + boardId)
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .post(Entity.entity(name, APPLICATION_JSON));
-        return res.getStatus() == 200;
-    }
-
-    /**
-     * Sends request to the server to remove a task.
-     * The task will be removed from its taskList
-     * @param name - the name of the task
-     * @return true if the task can be removed, false otherwise
-     */
-    public boolean editTask(String name, String newName, long boardId) {
-        Response res =  ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/task/delete/" + boardId)
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .post(Entity.entity(new Pair(name, newName), APPLICATION_JSON));
-        return res.getStatus() == 200;
-    }
-
-    /**
-     * Sends a request to the server to move a task from one list to another
-     * @param board - the board where the tasks are
-     * @param fromList - the name of the list that stores the task
-     * @param toList - the name of the list to which we will move the task
-     * @param task - the task that we want to move
-     * @return true if the task can be put in toList, false otherwise
-     */
-    public boolean moveTask(Board board, String fromList, String toList, HBox task) {
-        Response res =  ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/board/move")
-            .queryParam("board", board)
-            .queryParam("fromList", fromList)
-            .queryParam("toList", toList)
-            .queryParam("task", task)
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .post(Entity.entity(null, APPLICATION_JSON), Response.class);
-
-        if (res.getStatus() == 200) return true;
-        else return false;
-    }
 
 
     // METHODS THAT ARE ACTUALLY USEFUL
+    @Getter
+    @Setter
+    private String SERVER;
+
+    @Getter
+    @Setter
+    private StompSession session;
+
+    // Yes, I am indeed bold enough to remove those methods. What are going to do about it?
 
     public Board findBoard(String key) {
         return ClientBuilder.newClient(new ClientConfig())
@@ -192,8 +85,13 @@ public class ServerUtils {
                 .post(Entity.entity(model, APPLICATION_JSON), Board.class);
     }
 
-    private StompSession session = connect("ws://localhost:8080/websocket");
-
+    public StompSession safeConnect(String url) {
+        try {
+            return connect("ws://" + url + "/websocket");
+        } catch (Exception e) {
+            return null;
+        }
+    }
     private StompSession connect(String url) {
         WebSocketClient client = new StandardWebSocketClient();
         WebSocketStompClient stomp = new WebSocketStompClient(client);
@@ -209,7 +107,7 @@ public class ServerUtils {
     }
 
     public <T> void subscribe(String dest, Class<T> type, Consumer<T> consumer) {
-        session.subscribe(dest , new StompFrameHandler() {
+        session.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
                 return type;
@@ -222,11 +120,100 @@ public class ServerUtils {
         });
     }
 
+
     public void send(String dest, Object o) {
         session.send(dest, o);
     }
-
-    public void updateBoard(Board board) {
-        send("/app/boards", board);
+    /**
+     * Sends a request to the server to update the board
+     * @param board - the board to be update
+     */
+    public void updateBoard(Board board) { send("/app/boards", board);}
+    /**
+     * Sends a request to the server to move a task from one board to another
+     * @param model - the model used for this operation
+     */
+    public void moveTask(TaskMoveModel model ,String boardKey) {
+        send("/app/task/move/" + boardKey, model);
     }
+    /**
+     * Sends a request to the server to get a task from the database
+     * @param taskId - the id of the task
+     */
+    public void getTask(String taskId) {
+        send("/app/task/get", taskId);
+    }
+    /**
+     * Sends a request to the server to delete a task from the database
+     * @param taskId - the id of the task
+     */
+    public void deleteTask(Long taskId,String boardKey){ send("/app/task/delete/"+boardKey,taskId);}
+    /**
+     * Sends a request to the server to get a list from the database
+     * @param listId - the id of the list
+     */
+    public void getList(Long listId) { send("/app/list/get",listId);}
+    /**
+     * Sends a request to the server to delete a list from the database
+     * @param listId - the id of the list
+     */
+    public void deleteList(Long listId) { send("/app/list/delete",listId);}
+    /**
+     * Sends a request to the server to create a list in the database
+     * @param boardKey - the Board that is to contain the list
+     */
+    public void createList(String boardKey) {send("/app/list/createlist",boardKey);}
+    /**
+     * Sends a request to the server to rename a list in the database
+     * @param listId - the id of the list
+     * @param listTitle - the new list name
+     */
+    public void renameList(Long listId,String listTitle) { send("/app/list/rename/" + listTitle,listId);}
+    /**
+     * Sends a request to the create a task in the database
+     * @param listID - the ID of the list that is supposed to contain the task
+     * @param taskTitle - the title of the created task
+     */
+    public void createTask(Long listID,String taskTitle) {
+        send("/app/list/createTask/"+ taskTitle,listID);}
+    /**
+     * Sends a request to the server to rename a task in the database
+     * @param taskId - the id of the task
+     * @param taskTitle - the new task name
+     */
+    public void renameTask(String boardKey,Long taskId,String taskTitle) {
+        send("/app/task/rename/" + boardKey+"/"+taskTitle,taskId);
+    }
+
+    /**
+     * initial authentication on the side of the server
+     * @param password password hashed
+     * @return whether it was successful or not
+     */
+    public boolean authenticate(String password) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/login")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .header("password",password)
+                .get(Boolean.class);
+    }
+
+
+    public boolean changePassword(String passwordHashed) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/boards/changePassword")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .header("passwordHashed",passwordHashed)
+                .get(Boolean.class);
+    }
+
+    public void logout(){
+        ClientBuilder.newClient(new ClientConfig())
+         .target(SERVER).path("api/boards/logout")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON);
+    }
+
 }

@@ -1,14 +1,14 @@
 package commons;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Getter;
-import lombok.Setter;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.ManyToOne;
 import java.util.Objects;
-import java.util.Set;
 
 
 @Entity
@@ -20,50 +20,64 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(unique=true, nullable=false)
-    @Getter
-    @Setter
     private long id;
 
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
-    @Getter
-    @Setter
     private String title;
-    @JsonManagedReference
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Getter
-    @Setter
-    private Set<Tag> tags;
-    @JsonManagedReference
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @Getter
-    @Setter
-    @OrderColumn
-    private List<SubTask> subtasks;
 
     @Column(nullable=false)
-    @Getter
-    @Setter
     private String desc;
 
     @JsonBackReference
     @ManyToOne
-    @Getter
-    @Setter
     private TaskList taskList;
 
 //    constructors
 
     public Task() {} // for object mappers, please don't use.
 
-    public Task(TaskList taskList) {
-        this(taskList, "", "");
+    public Task(TaskList taskList,String name) {
+        this(taskList, name, "");
     }
 
     public Task(TaskList taskList, String title, String desc) {
         this.taskList = taskList;
         this.title = title;
         this.desc = desc;
+    }
+
+//    getters and setters
+
+    public long getid() {
+        return id;
+    }
+
+    public void setid(long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public TaskList getTaskList() {
+        return taskList;
+    }
+
+    public void setTaskList(TaskList taskList) {
+        this.taskList = taskList;
     }
 
 //    equals and hashcode
@@ -77,10 +91,15 @@ public class Task {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Task)) return false;
+
         Task task = (Task) o;
-        return id == task.id && Objects.equals(title, task.title) && Objects.equals(tags, task.tags) && Objects.equals(subtasks, task.subtasks) && Objects.equals(desc, task.desc);
+
+        if (id != task.id) return false;
+        if (!Objects.equals(title, task.title)) return false;
+        return Objects.equals(desc, task.desc);
     }
+
     /**
      * Generates a hashcode using all attributes except the parent taskList, since
      * that would introduce infinite recursion.
@@ -88,8 +107,9 @@ public class Task {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, tags, subtasks, desc);
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (desc != null ? desc.hashCode() : 0);
+        return result;
     }
-
-
 }

@@ -2,56 +2,67 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Board;
-import commons.CreateBoardModel;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import org.springframework.messaging.simp.stomp.StompSession;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 public class LandingPageCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     @FXML
+    public HBox header;
+    @FXML
     private TextField server_ip;
     @FXML
-    private Button connect_button;
-    @FXML
     private ImageView logo1;
+    @FXML
+    private ImageView exitButton;
 
 
     @Inject
-    public LandingPageCtrl(ServerUtils server, MainCtrl mainCtrl, Button connect_button) {
+    public LandingPageCtrl(MainCtrl mainCtrl, ServerUtils server) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-        this.connect_button = connect_button;
     }
 
     public void connect(){
-        String boardKey = "a";
-        // gets board from the database, or creates one if it doesn't exist
-        Board board = server.findBoard(boardKey);
-        if (board == null)
-            board = server.createBoard(new CreateBoardModel(boardKey, "a", "a"));
-        mainCtrl.showBoard(board);
-        // need to implement backend, hardcoded it for now
-        clearFields();
+        final String text = server_ip.getText();
+        final String ip = "".equals(text) ? "localhost:8080" : text;
+        server_ip.setText("connecting...");
+        new Thread(() -> {
+            final StompSession session = server.safeConnect(ip);
+            if (session != null) {
+                server.setSERVER("http://" + ip + "/");
+                server.setSession(session);
+                Platform.runLater(() -> {
+                    try {
+                        mainCtrl.showUserMenuFirstTime();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            } else Platform.runLater(() -> server_ip.setText(ip));
+
+        }).start();
     }
 
-    private void clearFields() {
-        server_ip.clear();
+    public void exit(){
+        Platform.exit();
+        System.exit(0);
     }
 
     public void changeImageUrl() {
-    // Set the image URL of ImageView
+        // Set the image URL of ImageView
         String path = Path.of("", "client", "images", "Logo.png").toString();
+        String path2 = Path.of("", "client", "images", "ExitButton.png").toString();
         logo1.setImage(new Image(path));
-    }
-
-    public void refresh() {
-        //make something to refresh the data from the databases.
+        exitButton.setImage(new Image(path2));
     }
 }
