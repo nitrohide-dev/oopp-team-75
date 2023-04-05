@@ -98,12 +98,14 @@ public class ListRepositoryTest implements ListRepository{
 
     @Override
     public <S extends TaskList> S save(S entity) {
-        //check if the list already exists
+
         for(TaskList list : lists) {
             if(list.getid() == entity.getid()) {
                 lists.remove(list);
-                taskRepo.deleteAll(entity.getTasks());
-                taskRepo.saveAll(entity.getTasks());
+                if (entity.getTasks() != null) {
+                    taskRepo.deleteAll(list.getTasks());
+                    taskRepo.saveAll(entity.getTasks());
+                }
                 lists.add(entity);
                 return entity;
             }
