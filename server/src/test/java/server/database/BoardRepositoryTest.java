@@ -15,11 +15,23 @@ import java.util.function.Function;
 public class BoardRepositoryTest implements BoardRepository {
 
     private final List<Board> boards;
+    private final ListRepositoryTest listRepo;
     public BoardRepositoryTest() {
         boards = new ArrayList<>();
+        listRepo = new ListRepositoryTest();
     }
     public BoardRepositoryTest(List<Board> boards) {
         this.boards = boards;
+        listRepo = new ListRepositoryTest();
+    }
+    public BoardRepositoryTest(List<Board> boards, ListRepositoryTest listRepo) {
+        this.boards = boards;
+        this.listRepo = listRepo;
+    }
+
+    public BoardRepositoryTest(ListRepositoryTest listRepo) {
+        boards = new ArrayList<>();
+        this.listRepo = listRepo;
     }
 
 
@@ -99,16 +111,24 @@ public class BoardRepositoryTest implements BoardRepository {
 
     @Override
     public <S extends Board> S save(S entity) {
-        boards.remove(entity);
+        //check if board already exists
+        for(Board board : boards) {
+            if(board.getKey().equals(entity.getKey())) {
+                boards.remove(board);
+                listRepo.saveAll(entity.getTaskLists());
+                boards.add(entity);
+                return entity;
+            }
+        }
         boards.add(entity);
+        listRepo.saveAll(entity.getTaskLists());
         return entity;
     }
 
     @Override
     public <S extends Board> List<S> saveAll(Iterable<S> entities) {
         for(S entity : entities) {
-            boards.remove(entity);
-            boards.add(entity);
+            save(entity);
         }
         return (List<S>) boards;
     }

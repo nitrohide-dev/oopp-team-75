@@ -94,6 +94,14 @@ public class ListRepositoryTest implements ListRepository{
 
     @Override
     public <S extends TaskList> S save(S entity) {
+        //check if the list already exists
+        for(TaskList list : lists) {
+            if(list.getid() == entity.getid()) {
+                lists.remove(list);
+                lists.add(entity);
+                return entity;
+            }
+        }
         lists.add(entity);
         return entity;
     }
@@ -101,6 +109,7 @@ public class ListRepositoryTest implements ListRepository{
     @Override
     public <S extends TaskList> List<S> saveAll(Iterable<S> entities) {
         for(TaskList list : (Iterable<TaskList>) entities) {
+            lists.remove(list);
             lists.add(list);
         }
         return (List<S>) entities;

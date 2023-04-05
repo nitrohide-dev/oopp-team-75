@@ -31,11 +31,12 @@ class ListServiceTest {
 
     @BeforeEach
     private void setup() throws CannotCreateBoard {
-        boardRepository = new BoardRepositoryTest();
-        boardService = new BoardService(boardRepository);
 
         listRepository = new ListRepositoryTest();
         taskRepository = new TaskRepositoryTest();
+        boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
+        boardService = new BoardService(boardRepository);
+
         listService = new ListService(listRepository, taskRepository, boardRepository);
 
 
@@ -67,7 +68,15 @@ class ListServiceTest {
     }
 
     @Test
-    void getAllMultiple(){
+    void getAllCreate2(){
+        boardService.createList(board1);
+        boardService.createList(board1);
+        System.out.println("HEREREREEEEREREERREER "+boardService.getAll()+listService.getAll());
+        assertEquals(2, listService.getAll().size());
+    }
+
+    @Test
+    void getAllCreate3(){
         boardService.createList(board1);
         boardService.createList(board1);
         boardService.createList(board1);
@@ -75,13 +84,27 @@ class ListServiceTest {
         assertEquals(3, listService.getAll().size());
     }
 
+
     @Test
-    void getAllMultipleInDifferentBoards(){
+    void getAllInDifferentBoards(){
         boardService.createList(board1);
         boardService.createList(board2);
         boardService.createList(board3);
         System.out.println("HEREHEREREEEERERREER "+boardService.getAll()+listService.getAll());
         assertEquals(3, listService.getAll().size());
+    }
+
+    @Test
+    void getAllMultipleInDifferentBoards(){
+        boardService.createList(board1);
+        boardService.createList(board1);
+        boardService.createList(board2);
+        boardService.createList(board2);
+        boardService.createList(board3);
+        boardService.createList(board3);
+        boardService.createList(board3);
+        System.out.println("HEREHEREREEEERERREER "+boardService.getAll()+listService.getAll());
+        assertEquals(7, listService.getAll().size());
     }
     @Test
     void getById() {

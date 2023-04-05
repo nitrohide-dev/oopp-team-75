@@ -73,7 +73,6 @@ public class 	BoardService {
 		board.createTaskList();
 		repo.save(board);
 		return repo.findById(board.getKey()).get();
-
 	}
 	/**
 	 * Saves a board to the database.
