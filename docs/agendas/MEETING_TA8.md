@@ -22,7 +22,7 @@ are there more points outside the agenda that we have to discuss?_
 - Matus and Konrad can work on either client-side or server-side functionalities(probably mostly minor ones)
 - Atanas and Robert will work on client-side functionalities for tags and subtasks
   - Robert will look for bugs in the code and in the UI so we can fix them before the deadline
-  - Rovert should not code much himself to prevent imbalance in code contributions
+  - Robert should not code much himself to prevent imbalance in code contributions
 - Arpi and Jimmy will work on server-side functionalities for tags and subtasks
  - they will possibly extend upon Konrad's template for tag and subtask backend
 
