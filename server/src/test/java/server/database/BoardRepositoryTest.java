@@ -16,13 +16,14 @@ public class BoardRepositoryTest implements BoardRepository {
 
     private final List<Board> boards;
     private final ListRepositoryTest listRepo;
+    private final TaskRepositoryTest taskRepo = new TaskRepositoryTest();
     public BoardRepositoryTest() {
         boards = new ArrayList<>();
-        listRepo = new ListRepositoryTest();
+        listRepo = new ListRepositoryTest(taskRepo);
     }
     public BoardRepositoryTest(List<Board> boards) {
         this.boards = boards;
-        listRepo = new ListRepositoryTest();
+        listRepo = new ListRepositoryTest(taskRepo);
     }
     public BoardRepositoryTest(List<Board> boards, ListRepositoryTest listRepo) {
         this.boards = boards;

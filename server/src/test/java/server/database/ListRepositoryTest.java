@@ -14,12 +14,16 @@ import java.util.function.Function;
 
 public class ListRepositoryTest implements ListRepository{
     private List<TaskList> lists;
+    private final TaskRepository taskRepo;
 
-    public ListRepositoryTest() {
+    public ListRepositoryTest(TaskRepository taskRepo) {
+        this.taskRepo = taskRepo;
         lists = new ArrayList<>();
     }
-    public ListRepositoryTest(List<TaskList> lists) {
+
+    public ListRepositoryTest(List<TaskList> lists, TaskRepository taskRepo) {
         this.lists = lists;
+        this.taskRepo = taskRepo;
     }
 
 
@@ -98,10 +102,13 @@ public class ListRepositoryTest implements ListRepository{
         for(TaskList list : lists) {
             if(list.getid() == entity.getid()) {
                 lists.remove(list);
+                taskRepo.deleteAll(entity.getTasks());
+                taskRepo.saveAll(entity.getTasks());
                 lists.add(entity);
                 return entity;
             }
         }
+        taskRepo.saveAll(entity.getTasks());
         lists.add(entity);
         return entity;
     }

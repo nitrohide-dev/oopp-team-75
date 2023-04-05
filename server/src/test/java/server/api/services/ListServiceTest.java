@@ -26,8 +26,8 @@ class ListServiceTest {
     private ListService listService;
     private BoardService boardService;
     private BoardRepository boardRepository;
-    private TaskRepository taskRepository;
-    private  TaskService taskService;
+    private TaskRepository taskRepo;
+    private TaskService taskService;
 
     private Board board1;
     private Board board2;
@@ -35,17 +35,14 @@ class ListServiceTest {
 
 
     @BeforeEach
-    private void setup() throws CannotCreateBoard {
-
-        listRepository = new ListRepositoryTest();
-        taskRepository = new TaskRepositoryTest();
+    public void setup() throws CannotCreateBoard {
+        taskRepo = new TaskRepositoryTest();
+        listRepository = new ListRepositoryTest(taskRepo);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
+
         boardService = new BoardService(boardRepository);
-
-        listService = new ListService(listRepository, taskRepository, boardRepository);
-
-
-        taskService = new TaskService(taskRepository, listRepository);
+        listService = new ListService(listRepository, taskRepo, boardRepository);
+        taskService = new TaskService(taskRepo, listRepository);
 
         boardService.create(new CreateBoardModel("1", "1"));
         boardService.create(new CreateBoardModel("2", "2"));
@@ -59,7 +56,7 @@ class ListServiceTest {
     @Test
     void getAllNew() {
         boardRepository = new BoardRepositoryTest();
-        listRepository = new ListRepositoryTest();
+        listRepository = new ListRepositoryTest(taskRepo);
 
         assertEquals(0,listService.getAll().size());
 
@@ -68,7 +65,6 @@ class ListServiceTest {
     @Test
     void getAllCreate1() {
         boardService.createList(board1);
-        System.out.println("HEREREREREREERREER "+boardService.getAll()+listService.getAll());
         assertEquals(1, listService.getAll().size());
     }
 
@@ -76,7 +72,6 @@ class ListServiceTest {
     void getAllCreate2(){
         boardService.createList(board1);
         boardService.createList(board1);
-        System.out.println("HEREREREEEEREREERREER "+boardService.getAll()+listService.getAll());
         assertEquals(2, listService.getAll().size());
     }
 
@@ -85,7 +80,6 @@ class ListServiceTest {
         boardService.createList(board1);
         boardService.createList(board1);
         boardService.createList(board1);
-        System.out.println("HEREREREEEEREREERREER "+boardService.getAll()+listService.getAll());
         assertEquals(3, listService.getAll().size());
     }
 
@@ -95,7 +89,6 @@ class ListServiceTest {
         boardService.createList(board1);
         boardService.createList(board2);
         boardService.createList(board3);
-        System.out.println("HEREHEREREEEERERREER "+boardService.getAll()+listService.getAll());
         assertEquals(3, listService.getAll().size());
     }
 
@@ -108,13 +101,12 @@ class ListServiceTest {
         boardService.createList(board3);
         boardService.createList(board3);
         boardService.createList(board3);
-        System.out.println("HEREHEREREEEERERREER "+boardService.getAll()+listService.getAll());
         assertEquals(7, listService.getAll().size());
     }
     @Test
     void getById() {
-        taskRepository = new TaskRepositoryTest();
-        listRepository = new ListRepositoryTest();
+        taskRepo = new TaskRepositoryTest();
+        listRepository = new ListRepositoryTest(taskRepo);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
         assertThrows(ListDoesNotExist.class, () -> listService.getById(Long.valueOf("1")));
     }
@@ -151,10 +143,10 @@ class ListServiceTest {
 
     @Test
     void deleteById() {
-        taskRepository = new TaskRepositoryTest();
-        listRepository = new ListRepositoryTest();
+        taskRepo = new TaskRepositoryTest();
+        listRepository = new ListRepositoryTest(taskRepo);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
-        assertThrows(ListDoesNotExist.class, () -> listService.deleteById(Long.valueOf("1")));
+        assertThrows(ListDoesNotExist.class, () -> listService.deleteById(Long.parseLong("1")));
     }
 
     @Test
@@ -195,8 +187,8 @@ class ListServiceTest {
 
     @Test
     void save() throws ListDoesNotExist {
-        taskRepository = new TaskRepositoryTest();
-        listRepository = new ListRepositoryTest();
+        taskRepo = new TaskRepositoryTest();
+        listRepository = new ListRepositoryTest(taskRepo);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
         TaskList list = new TaskList();
         list.setid(1000L);
@@ -240,8 +232,8 @@ class ListServiceTest {
 
     @Test
     void renameList() {
-        listRepository = new ListRepositoryTest();
-        taskRepository = new TaskRepositoryTest();
+        listRepository = new ListRepositoryTest(taskRepo);
+        taskRepo = new TaskRepositoryTest();
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
         assertThrows(ListDoesNotExist.class, () -> listService.renameList(1L, "test"));
     }

@@ -111,7 +111,7 @@ public class TaskRepositoryTest implements TaskRepository{
     public <S extends Task> S save(S entity) {
         for(Task task : tasks) {
             if(task.getid() == entity.getid()) {
-                tasks.remove(task);
+                tasks.remove(entity);
                 tasks.add(entity);
                 return entity;
             }
