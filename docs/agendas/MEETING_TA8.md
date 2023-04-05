@@ -25,6 +25,7 @@ are there more points outside the agenda that we have to discuss?_
   - Robert should not code much himself to prevent imbalance in code contributions
 - Arpi and Jimmy will work on server-side functionalities for tags and subtasks
   - they will possibly extend upon Konrad's template for tag and subtask backend
+  
 [15:30-15:40] Deadline coming: HUE and Product Pitch, what needs to be done/repaired?
 - deadlines have been extended, so we have more time to work on the final touches
 - product pitch is decent, but we need to make it longer (incorporate new app functionalities into the pitch?)
