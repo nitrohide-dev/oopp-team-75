@@ -126,7 +126,19 @@ public class TaskRepositoryTest implements TaskRepository{
 
     @Override
     public <S extends Task> List<S> saveAll(Iterable<S> entities) {
-        return null;
+        //saves all entities in the iterable
+        for(S entity : (Iterable<S>) entities) {
+            for(Task task : tasks) {
+                if(task.getid() == entity.getid()) {
+                    tasks.remove(entity);
+                    tasks.add(entity);
+                    break;
+                }
+            }
+            tasks.add(entity);
+        }
+        return (List<S>) entities;
+
     }
 
     @Override

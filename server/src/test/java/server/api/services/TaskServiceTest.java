@@ -48,10 +48,9 @@ class TaskServiceTest {
 
     @Test
     void getAllNew() {
-        //TODO: fix this test
-//        boardService.createList(board1, 1L, "1");
-//        listService.createTask(listRepository.findById(1L).get(), "1");
-//        assertEquals(1, taskService.getAll().size());
+        boardService.createList(board1, 1L, "1");
+        listService.createTask(listRepository.findById(1L).get(), "1");
+        assertEquals(1, taskService.getAll().size());
     }
 
     @Test

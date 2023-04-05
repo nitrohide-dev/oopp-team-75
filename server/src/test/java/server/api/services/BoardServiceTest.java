@@ -113,4 +113,14 @@ class BoardServiceTest {
         assertThrows(BoardDoesNotExist.class, () -> boardService.save(null));
     }
 
+    @Test
+    void createOneList() throws CannotCreateBoard {
+        boardService.createList(boardService.findByKey("key2"));
+        assertEquals(1, boardService.findByKey("key2").getTaskLists().size());
+    }
+
+    @Test
+    void noList() throws CannotCreateBoard {
+        assertEquals(0, boardService.findByKey("key2").getTaskLists().size());
+    }
 }
