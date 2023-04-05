@@ -11,8 +11,12 @@ import server.database.ListRepositoryTest;
 import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
 import server.exceptions.CannotCreateBoard;
+import server.exceptions.ListDoesNotExist;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class ListServiceTest {
@@ -108,7 +112,40 @@ class ListServiceTest {
     }
     @Test
     void getById() {
+        taskRepository = new TaskRepositoryTest();
+        listRepository = new ListRepositoryTest();
+        boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
+        assertThrows(ListDoesNotExist.class, () -> listService.getById(Long.valueOf("1")));
+    }
 
+    @Test
+    void getByIdCreate1() throws ListDoesNotExist {
+        boardService.createList(board1, 1000);
+        assertEquals(listRepository.findById(1000L), Optional.of(listService.getById(1000L)));
+    }
+
+    @Test
+    void getByIdCreate2() throws ListDoesNotExist {
+        boardService.createList(board1, 1000);
+        boardService.createList(board1, 1001);
+        assertEquals(listRepository.findById(1001L), Optional.of(listService.getById(1001L)));
+        assertEquals(listRepository.findById(1000L), Optional.of(listService.getById(1000L)));
+    }
+
+    @Test
+    void getByIdMultipleBoards() throws ListDoesNotExist {
+        boardService.createList(board1, 1000);
+        boardService.createList(board1, 1001);
+        boardService.createList(board2, 1002);
+        boardService.createList(board2, 1003);
+        boardService.createList(board3, 1004);
+        boardService.createList(board3, 1005);
+        assertEquals(listRepository.findById(1001L), Optional.of(listService.getById(1001L)));
+        assertEquals(listRepository.findById(1000L), Optional.of(listService.getById(1000L)));
+        assertEquals(listRepository.findById(1002L), Optional.of(listService.getById(1002L)));
+        assertEquals(listRepository.findById(1003L), Optional.of(listService.getById(1003L)));
+        assertEquals(listRepository.findById(1004L), Optional.of(listService.getById(1004L)));
+        assertEquals(listRepository.findById(1005L), Optional.of(listService.getById(1005L)));
     }
 
     @Test

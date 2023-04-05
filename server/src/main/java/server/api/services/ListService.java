@@ -1,4 +1,5 @@
 package server.api.services;
+
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
@@ -7,6 +8,7 @@ import server.database.BoardRepository;
 import server.database.ListRepository;
 import server.database.TaskRepository;
 import server.exceptions.ListDoesNotExist;
+
 import java.util.List;
 
 @Service
@@ -35,7 +37,7 @@ public class ListService {
 	 * @throws ListDoesNotExist when there is no list with the given id in the db
 	 */
 	public TaskList getById(Long id) throws ListDoesNotExist {
-		if (repo.findById(id)==null)
+		if (repo.findById(id).isEmpty())
 			throw new ListDoesNotExist("There is no list with this id.");
 		return repo.findById(id).get();
 	}
