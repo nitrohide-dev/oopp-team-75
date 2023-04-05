@@ -32,7 +32,7 @@ class ListServiceTest {
     @BeforeEach
     private void setup() throws CannotCreateBoard {
         boardRepository = new BoardRepositoryTest();
-        boardService = new BoardService(boardRepository, taskRepository, listRepository);
+        boardService = new BoardService(boardRepository);
 
         listRepository = new ListRepositoryTest();
         taskRepository = new TaskRepositoryTest();

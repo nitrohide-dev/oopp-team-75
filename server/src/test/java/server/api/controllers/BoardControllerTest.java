@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import server.api.services.BoardService;
 import server.database.BoardRepository;
 import server.database.BoardRepositoryTest;
-import server.database.ListRepository;
-import server.database.TaskRepository;
 import server.exceptions.CannotCreateBoard;
 
 import java.io.IOException;
@@ -25,12 +23,10 @@ class BoardControllerTest {
     private BoardController boardController;
     private BoardRepository boardRepository;
     private BoardService boardService;
-    private TaskRepository taskRepo;
-    private ListRepository listRepo;
     @BeforeEach
     private void setup() throws CannotCreateBoard, IOException {
         boardRepository = new BoardRepositoryTest();
-        boardService = new BoardService(boardRepository, taskRepo, listRepo);
+        boardService = new BoardService(boardRepository);
         this.boardController = new BoardController(boardService);
         boardController.authenticate("testing");
 

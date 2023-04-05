@@ -99,6 +99,7 @@ public class BoardRepositoryTest implements BoardRepository {
 
     @Override
     public <S extends Board> S save(S entity) {
+        boards.remove(entity);
         boards.add(entity);
         return entity;
     }
@@ -106,6 +107,7 @@ public class BoardRepositoryTest implements BoardRepository {
     @Override
     public <S extends Board> List<S> saveAll(Iterable<S> entities) {
         for(S entity : entities) {
+            boards.remove(entity);
             boards.add(entity);
         }
         return (List<S>) boards;

@@ -4,8 +4,6 @@ import commons.Board;
 import commons.CreateBoardModel;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
-import server.database.ListRepository;
-import server.database.TaskRepository;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 
@@ -16,13 +14,8 @@ import java.util.Optional;
 public class 	BoardService {
 
 	private final BoardRepository repo;
-	private final TaskRepository taskRepo;
-	private final ListRepository listRepo;
-
-	public BoardService(BoardRepository repo, TaskRepository taskRepo, ListRepository listRepo) {
+	public BoardService(BoardRepository repo) {
 		this.repo = repo;
-		this.taskRepo = taskRepo;
-		this.listRepo = listRepo;
 	}
 
 	/**
@@ -30,7 +23,7 @@ public class 	BoardService {
 	 * @return list of all boards
 	 */
 	public List<Board> getAll() {
-		return (List<Board>)  repo.findAll();
+		return repo.findAll();
 	}
 
 	/**
@@ -78,7 +71,6 @@ public class 	BoardService {
 	 */
 	public Board createList(Board board){
 		board.createTaskList();
-		repo.delete(board); //otherwise it will save a new board
 		repo.save(board);
 		return repo.findById(board.getKey()).get();
 

@@ -24,7 +24,7 @@ class BoardServiceTest {
     @BeforeEach
     private void setup() throws CannotCreateBoard {
         boardRepository = new BoardRepositoryTest();
-        boardService = new BoardService(boardRepository, taskRepo, listRepo);
+        boardService = new BoardService(boardRepository);
 
         boardService.create(new CreateBoardModel("key", "name"));
         boardService.create(new CreateBoardModel("key2", "name2"));
@@ -34,7 +34,7 @@ class BoardServiceTest {
     @Test
     void getAllEmpty() {
         boardRepository = new BoardRepositoryTest();
-        boardService = new BoardService(boardRepository, taskRepo, listRepo);
+        boardService = new BoardService(boardRepository);
         assertEquals(0, boardService.getAll().size());
     }
 
@@ -51,7 +51,7 @@ class BoardServiceTest {
     @Test
     void findByKeyEmpty() {
         boardRepository = new BoardRepositoryTest();
-        boardService = new BoardService(boardRepository, taskRepo, listRepo);
+        boardService = new BoardService(boardRepository);
         assertEquals(null, boardService.findByKey("imaginary"));
     }
 
@@ -67,7 +67,7 @@ class BoardServiceTest {
 
     @Test
     void createCorrectly() throws CannotCreateBoard {
-        boardService = new BoardService(boardRepository, taskRepo, listRepo);
+        boardService = new BoardService(boardRepository);
         boardService.create(new CreateBoardModel("key4", "name4"));
         assertEquals(new Board(new CreateBoardModel("key4", "name4")),boardService.findByKey("key4"));
     }
@@ -92,7 +92,7 @@ class BoardServiceTest {
     @Test
     void deleteByKeyEmpty() {
         boardRepository = new BoardRepositoryTest();
-        boardService = new BoardService(boardRepository, taskRepo, listRepo);
+        boardService = new BoardService(boardRepository);
         assertThrows(BoardDoesNotExist.class, () -> boardService.deleteByKey("key3"));
     }
 
