@@ -34,7 +34,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -232,7 +231,7 @@ public class BoardOverviewCtrl {
         boardRenameButton.setOnAction(e ->
         {
             String name = inputBoardName();
-            if (name == null || name == "") return;
+            if (name == null || name.equals("")) return;
             getBoard().setTitle(name);
             server.updateBoard(getBoard());
             Label text = (Label) menuBar.getItems().get(0);
