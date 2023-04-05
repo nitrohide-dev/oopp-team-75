@@ -103,7 +103,7 @@ public class ListRepositoryTest implements ListRepository{
             if(list.getid() == entity.getid()) {
                 lists.remove(list);
                 if (entity.getTasks() != null) {
-                    taskRepo.deleteAll(list.getTasks());
+                    taskRepo.deleteAll(entity.getTasks());
                     taskRepo.saveAll(entity.getTasks());
                 }
                 lists.add(entity);

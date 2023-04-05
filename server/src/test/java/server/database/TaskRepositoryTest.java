@@ -126,6 +126,9 @@ public class TaskRepositoryTest implements TaskRepository{
 
     @Override
     public <S extends Task> List<S> saveAll(Iterable<S> entities) {
+        if (entities == null) {
+            return new ArrayList<>();
+        }
         //saves all entities in the iterable
         for(S entity : (Iterable<S>) entities) {
             for(Task task : tasks) {
