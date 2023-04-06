@@ -49,7 +49,7 @@
     -fx-border-color: #0a58ca;
 }
 
-.button {
+#addButton {
     -fx-background-color: #2f58cd;
     -fx-text-fill: white;
     -fx-font-weight: bold;
@@ -76,14 +76,19 @@
     -fx-background-color: transparent;
 }
 
-#sideMenu .list-cell { -fx-text-fill: white; }
-#sideMenu .list-cell:odd {
+#sideMenu .list-cell {
+    -fx-border-color:#2f58cd ;
     -fx-background-color:#2f58cd ;
-    fx-border-width: 0;
+    -fx-alignment: CENTER;
 }
-#sideMenu .list-cell:even {
-    -fx-background-color: #2f58cd;
-    fx-border-width: 0;
+
+#sideMenu .label {
+    -fx-text-fill: white;
+    -fx-max-width: 190px;
+    -fx-alignment: CENTER;
+    -fx-font-weight: EXTRA_BOLD;
+    -fx-font-size: 20px;
+    -fx-font-family: "Roboto Light";
 }
 
 #smButton {
@@ -98,8 +103,8 @@
 
 
 #smButton {
-    -fx-text-fill: black;
-    -fx-background-color: #8da1ff;
+    -fx-text-fill: white;
+    -fx-background-color: #3795bd;
     -fx-border-radius: 6px;
     -fx-transition: all .2s,box-shadow .08s ease-in;
     -fx-touch-action: manipulation;

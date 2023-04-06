@@ -33,6 +33,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -212,16 +213,17 @@ public class BoardOverviewCtrl {
      * @return the key copy button
      */
     public Button createCopyKeyButton(){
-        Button KeyCopyButton = new Button();
-        KeyCopyButton.setText("Copy Board Key");
-        KeyCopyButton.setOnAction(e -> {
+        Button keyCopyButton = new Button();
+        keyCopyButton.setText("Copy Board Key");
+        keyCopyButton.setOnAction(e -> {
             Clipboard clipboard = Clipboard.getSystemClipboard();
             ClipboardContent clipboardContent = new ClipboardContent();
             clipboardContent.putString(getBoard().getKey());
             clipboard.setContent(clipboardContent);
         });
-        KeyCopyButton.setId("smButton");
-        return KeyCopyButton;
+        keyCopyButton.setId("smButton");
+        keyCopyButton.setMinWidth(150);
+        return keyCopyButton;
     }
 
     /**
@@ -232,7 +234,7 @@ public class BoardOverviewCtrl {
      */
     public Button createRenameBoardButton(ListView menuBar){
         Button boardRenameButton = new Button();
-        boardRenameButton.setText("rename board");
+        boardRenameButton.setText("Rename Board");
         boardRenameButton.setOnAction(e ->
         {
             String name = inputBoardName();
@@ -243,6 +245,7 @@ public class BoardOverviewCtrl {
             text.setText(getBoard().getTitle());
         });
         boardRenameButton.setId("smButton");
+        boardRenameButton.setMinWidth(150);
         return boardRenameButton;
     }
 
@@ -254,7 +257,7 @@ public class BoardOverviewCtrl {
      */
     public Button createBoardDeletionButton(){
         Button boardDeletionButton = new Button();
-        boardDeletionButton.setText("delete board");
+        boardDeletionButton.setText("Delete Board");
         boardDeletionButton.setOnAction(e->{
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Delete Confirmation Dialog");
@@ -273,6 +276,7 @@ public class BoardOverviewCtrl {
             }
         });
         boardDeletionButton.setId("smButton");
+        boardDeletionButton.setMinWidth(150);
         return boardDeletionButton;
     }
 
@@ -288,15 +292,12 @@ public class BoardOverviewCtrl {
         }
         ListView menuBar = new ListView();
         menuBar.prefHeightProperty().bind(borderPane.heightProperty());
-        menuBar.setMaxWidth(150);
+        menuBar.setMaxWidth(200);
         menuBar.setTranslateX(0);
-        menuBar.getItems().add(new Label(getBoard().getTitle()));
+        Label label = new Label(getBoard().getTitle());
         menuBar.setId("sideMenu");
         menuBar.setOnMouseClicked(null);
-        Button KeyCopyButton = new Button();
-        menuBar.getItems().add(createCopyKeyButton());;
-        menuBar.getItems().add(createRenameBoardButton(menuBar));
-        menuBar.getItems().add(createBoardDeletionButton());
+        menuBar.getItems().addAll(label, createCopyKeyButton(), createRenameBoardButton(menuBar), createBoardDeletionButton());
         menuBar.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
 //      TranslateTransition menuBarTranslation = new TranslateTransition(Duration.millis(400), menuBar);
 //
@@ -400,11 +401,12 @@ public class BoardOverviewCtrl {
      */
     public void addTaskButton(ListView<HBox> listView){
         Button addTaskButton = new Button("ADD TASK");
+        addTaskButton.setId("addButton");
         addTaskButton.setAlignment(Pos.CENTER);
         addTaskButton.setShape(new Ellipse(150, 25));
         addTaskButton.setMinSize(150, 25);
         HBox box = new HBox(addTaskButton);
-        box.setPadding(new Insets(4, 17, 4, 17));
+        box.setPadding(new Insets(4, 16, 4, 16));
         listView.getItems().add(box);
         addTaskButton.setOnAction(e -> createTask(listView));
     }

@@ -83,7 +83,7 @@ public class UserMenuCtrl {
         boardNames.add(text);
         HBox itemBox = new HBox();
         Label itemLabel = new Label(text);
-        itemLabel.setPrefWidth(120);
+        itemLabel.setPrefWidth(193);
         itemLabel.setPadding(new Insets(6, 1, 6, 1));
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
@@ -96,6 +96,7 @@ public class UserMenuCtrl {
                 openBoard(itemBox);
             }
         });
+        resetOptionButtons();
 
         boardsListView.getItems().add(itemBox);
     }
@@ -113,7 +114,7 @@ public class UserMenuCtrl {
         HBox itemBox = null;
         for(int i=0;i<boardsList.size();i++)
         {
-            HBox box = (HBox) boardsList.get(i);
+            HBox box = boardsList.get(i);
             String text = ((Label) box.getChildren().get(0)).getText();
             if(text.equals(key)) {
                 itemBox = box;
@@ -121,7 +122,6 @@ public class UserMenuCtrl {
                 break;
             }
         }
-        String name = ((Label) itemBox.getChildren().get(0)).getText();
         boardsListView.getItems().remove(itemBox);
 
     }
@@ -146,6 +146,37 @@ public class UserMenuCtrl {
     }
 
     /**
+     * When any of the boards is clicked it gives the user option to remove it
+     */
+    public void boardOperations() {
+        int index = boardsListView.getSelectionModel().getSelectedIndex();
+        if (index >= boardsListView.getItems().size()) return;
+        resetOptionButtons();
+        enableBoardButtons(boardsListView.getItems().get(index));
+    }
+
+    /**
+     * resets the buttons for button operations to their default settings
+     */
+    private void resetOptionButtons() {
+        for (int i = 0; i < boardsListView.getItems().size(); i++) {
+            Button removeButton = (Button) boardsListView.getItems().get(i).getChildren().get(1);
+            removeButton.setDisable(true);
+            removeButton.setVisible(false);
+        }
+    }
+
+    /**
+     * Enables and shows the delete button for boards
+     * @param box the board box
+     */
+    private void enableBoardButtons(HBox box) {
+        Button removeButton = (Button) box.getChildren().get(1);
+        removeButton.setDisable(false);
+        removeButton.setVisible(true);
+    }
+
+    /**
      * Creates delete button
      *
      * @param path path to image
@@ -160,7 +191,7 @@ public class UserMenuCtrl {
         Button button = new Button();
         button.setMaxSize(20, 20);
         button.setBackground(null);
-        button.setPadding(new Insets(6, 1, 6, 3));
+        button.setPadding(new Insets(6, 1, 6, 1));
         button.setGraphic(picture);
         return button;
     }
