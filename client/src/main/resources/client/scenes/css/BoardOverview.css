@@ -49,6 +49,12 @@
     -fx-border-color: #0a58ca;
 }
 
+.button {
+    -fx-background-color: #2f58cd;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
 #listName1 {
     -fx-background-color: transparent;
     -fx-text-fill: white;

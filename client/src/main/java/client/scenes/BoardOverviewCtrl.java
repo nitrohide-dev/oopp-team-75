@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -30,6 +31,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -382,7 +384,7 @@ public class BoardOverviewCtrl {
         textField.setLayoutY(0);
         textField.setAlignment(javafx.geometry.Pos.CENTER);
         textField.setFont(new Font(19));
-        textField.setText("Name your list!");
+        textField.setPromptText("Name your list");
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
         scrollPane.setPrefSize(samplePane.getPrefWidth(), samplePane.getPrefHeight());
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -397,9 +399,12 @@ public class BoardOverviewCtrl {
      * @param listView the listview
      */
     public void addTaskButton(ListView<HBox> listView){
-        Button addTaskButton = new Button("+");
-        addTaskButton.setPadding(new Insets(2, 80, 2, 80));
+        Button addTaskButton = new Button("ADD TASK");
+        addTaskButton.setAlignment(Pos.CENTER);
+        addTaskButton.setShape(new Ellipse(150, 25));
+        addTaskButton.setMinSize(150, 25);
         HBox box = new HBox(addTaskButton);
+        box.setPadding(new Insets(4, 17, 4, 17));
         listView.getItems().add(box);
         addTaskButton.setOnAction(e -> createTask(listView));
     }
