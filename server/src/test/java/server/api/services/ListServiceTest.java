@@ -256,4 +256,28 @@ class ListServiceTest {
         listService.renameList(1000L, "test");
         assertEquals("test", listService.getById(1000L).getTitle());
     }
+
+    @Test
+    void createTask() throws ListDoesNotExist {
+        boardService.createList(board1, 1000L);
+        listService.createTask(board1.getTaskLists().get(0), "test");
+        assertEquals("test", listService.getById(1000L).getTasks().get(0).getTitle());
+    }
+
+    @Test
+    void createTask2() throws ListDoesNotExist {
+        boardService.createList(board1, 1000L);
+        listService.createTask(board1.getTaskLists().get(0), "test");
+        listService.createTask(board1.getTaskLists().get(0), "test2");
+        assertEquals("test", listService.getById(1000L).getTasks().get(0).getTitle());
+        assertEquals("test2", listService.getById(1000L).getTasks().get(1).getTitle());
+    }
+
+    @Test
+    void createTask3() throws  ListDoesNotExist{
+        boardService.createList(board1, 1000L);
+        listService.createTask(board1.getTaskLists().get(0), "test");
+        // tests if the taskrepository is called
+        assertEquals(1, taskRepo.count());
+    }
 }
