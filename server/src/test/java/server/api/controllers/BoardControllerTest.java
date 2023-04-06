@@ -16,7 +16,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 class BoardControllerTest {
@@ -184,7 +189,8 @@ class BoardControllerTest {
         assertEquals(hashedPassword, hashedPassword1);
     }
 
-//    private final static String PASSWORD_FILE = System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt";
+//    private final static String PASSWORD_FILE = System.getProperty("user.dir")
+//    + "/server/src/main/java/server/api/configs/pwd.txt";
 //    @Test
 //    public void testReadPasswordCreatesFileAndWritesHashedPassword() throws IOException {
 //        String password = "test123";

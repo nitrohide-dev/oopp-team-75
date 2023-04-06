@@ -1,6 +1,5 @@
 package server.database;
 
-import commons.Board;
 import commons.TaskList;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;

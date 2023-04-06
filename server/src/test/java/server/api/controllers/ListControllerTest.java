@@ -7,7 +7,12 @@ import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.ListService;
 import server.api.services.TaskService;
-import server.database.*;
+import server.database.BoardRepository;
+import server.database.BoardRepositoryTest;
+import server.database.ListRepository;
+import server.database.ListRepositoryTest;
+import server.database.TaskRepository;
+import server.database.TaskRepositoryTest;
 import server.exceptions.CannotCreateBoard;
 import server.exceptions.ListDoesNotExist;
 
@@ -98,7 +103,8 @@ class ListControllerTest {
         listController.createTask(1000L, "task");
         listController.createTask(1000L, "task1");
         listController.createTask(1001L, "task");
-        assertEquals(3, listRepository.findById(1000L).get().getTasks().size()+listRepository.findById(1001L).get().getTasks().size());
+        assertEquals(3, listRepository.findById(1000L).get().getTasks().size()
+                +listRepository.findById(1001L).get().getTasks().size());
     }
     @Test
     void deleteById() {
