@@ -1,5 +1,6 @@
 package server.database;
 
+import commons.Board;
 import commons.TaskList;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -98,20 +99,18 @@ public class ListRepositoryTest implements ListRepository{
 
     @Override
     public <S extends TaskList> S save(S entity) {
-
+        //saves the list and all its tasks
+        if (entity == null) {
+            return null;
+        }
         for(TaskList list : lists) {
             if(list.getid() == entity.getid()) {
                 lists.remove(list);
-                if (entity.getTasks() != null) {
-                    taskRepo.deleteAll(entity.getTasks());
-                    taskRepo.saveAll(entity.getTasks());
-                }
-                lists.add(entity);
-                return entity;
+                break;
             }
         }
-        taskRepo.saveAll(entity.getTasks());
         lists.add(entity);
+        taskRepo.saveAll(entity.getTasks());
         return entity;
     }
 
@@ -121,7 +120,7 @@ public class ListRepositoryTest implements ListRepository{
                 throw new Exception("List already exists");
             }
         }
-        lists.add(entity);
+        save(entity);
     }
 
     @Override
@@ -192,6 +191,11 @@ public class ListRepositoryTest implements ListRepository{
 
     @Override
     public TaskList getById(Long aLong) {
+        for(TaskList list : lists) {
+            if(list.getid() == aLong) {
+                return list;
+            }
+        }
         return null;
     }
 
@@ -222,6 +226,11 @@ public class ListRepositoryTest implements ListRepository{
 
     @Override
     public <S extends TaskList> boolean exists(Example<S> example) {
+        for(TaskList list : lists) {
+            if(list.getid() == example.getProbe().getid()) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -231,6 +240,11 @@ public class ListRepositoryTest implements ListRepository{
     }
     @Override
     public String getBoardByListID(long id){
-        return "key";
+        for(TaskList list : lists) {
+            if(list.getid() == id) {
+                return list.getBoard().getKey();
+            }
+        }
+        return null;
     }
 }

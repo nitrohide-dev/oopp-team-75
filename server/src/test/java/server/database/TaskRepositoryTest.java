@@ -1,6 +1,7 @@
 package server.database;
 
 import commons.Task;
+import commons.TaskList;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -62,7 +63,8 @@ public class TaskRepositoryTest implements TaskRepository{
         for(Task task : tasks) {
             if(task.getid() == aLong) {
                 tasks.remove(task);
-                break;
+                System.out.println("Deleted task with id:  --- "+ task.getid());
+
             }
         }
     }
@@ -70,7 +72,7 @@ public class TaskRepositoryTest implements TaskRepository{
     @Override
     public void delete(Task entity) {
         for(Task task : tasks) {
-            if(task.getid() == entity.getid()) {
+            if(task.equals(entity)) {
                 tasks.remove(task);
                 break;
             }
@@ -84,7 +86,6 @@ public class TaskRepositoryTest implements TaskRepository{
             for(Task task : tasks) {
                 if(task.getid() == i) {
                     tasks.remove(task);
-                    break;
                 }
             }
         }
@@ -100,7 +101,6 @@ public class TaskRepositoryTest implements TaskRepository{
             for(Task task2 : tasks) {
                 if(task.getid() == task2.getid()) {
                     tasks.remove(task2);
-                    break;
                 }
             }
         }
@@ -114,8 +114,8 @@ public class TaskRepositoryTest implements TaskRepository{
     @Override
     public <S extends Task> S save(S entity) {
         for(Task task : tasks) {
-            if(task.getid() == entity.getid()) {
-                tasks.remove(entity);
+            if(task.equals(entity)) {
+                tasks.remove(task);
                 tasks.add(entity);
                 return entity;
             }
@@ -127,18 +127,11 @@ public class TaskRepositoryTest implements TaskRepository{
     @Override
     public <S extends Task> List<S> saveAll(Iterable<S> entities) {
         if (entities == null) {
-            return new ArrayList<>();
+            return null;
         }
-        //saves all entities in the iterable
-        for(S entity : (Iterable<S>) entities) {
-            for(Task task : tasks) {
-                if(task.getid() == entity.getid()) {
-                    tasks.remove(entity);
-                    tasks.add(entity);
-                    break;
-                }
-            }
-            tasks.add(entity);
+        for(Task task : (Iterable<Task>) entities) {
+            delete(task);
+            save(task);
         }
         return (List<S>) entities;
 
@@ -146,6 +139,11 @@ public class TaskRepositoryTest implements TaskRepository{
 
     @Override
     public Optional<Task> findById(Long aLong) {
+        for(Task task : tasks) {
+            if(task.getid() == aLong) {
+                return Optional.of(task);
+            }
+        }
         return Optional.empty();
     }
 
@@ -196,6 +194,11 @@ public class TaskRepositoryTest implements TaskRepository{
 
     @Override
     public Task getById(Long aLong) {
+        for(Task task : tasks) {
+            if(task.getid() == aLong) {
+                return task;
+            }
+        }
         return null;
     }
 
@@ -206,7 +209,8 @@ public class TaskRepositoryTest implements TaskRepository{
 
     @Override
     public <S extends Task> List<S> findAll(Example<S> example) {
-        return null;
+
+        return (List<S>) tasks;
     }
 
     @Override
@@ -245,6 +249,7 @@ public class TaskRepositoryTest implements TaskRepository{
     public void updateTargetListOrder(int order,long id){
 
     }
+    @Override
     public void moveTask(long id1,long id2,int order){
 
     }
