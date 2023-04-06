@@ -163,8 +163,6 @@ public class BoardOverviewCtrl {
     }
 
 
-
-
     /**
      * Shortened variant to make access to the board easier.
      * @return the current board
@@ -177,9 +175,10 @@ public class BoardOverviewCtrl {
      * creates the exit button located in the top-right of the boardoverview
      * clicking on it will take you back to the main menu
      */
-    public void configureExitButton(){
+    public void configureExitButton() {
         String path = Path.of("", "client", "images", "ExitButton.png").toString();
         Button exitButton = buttonBuilder(path);
+        exitButton.setPrefSize(30, 30);
         exitButton.setOnAction(e-> {
             if(!adminPresence){
                 goToPrevious();}
@@ -190,6 +189,7 @@ public class BoardOverviewCtrl {
         });
         header.getChildren().add(exitButton);
     }
+
     /**
      * creates the menu button located in the top-right of the boardoverview menu
      * clicking on it ppen the menu bar or close it if its already open
@@ -197,11 +197,13 @@ public class BoardOverviewCtrl {
     public void configureMenuButton(){
         String path = Path.of("", "client", "images", "Dots.png").toString();
         Button menuButton = buttonBuilder(path);
+        menuButton.setPrefSize(30, 30);
         menuButton.setOnAction(e-> {
             addMenu();
         });
         header.getChildren().add(menuButton);
     }
+
     /**
      * creates the key copy button
      * clicking on it will copy the board key to the user's clipboard
@@ -219,6 +221,7 @@ public class BoardOverviewCtrl {
         KeyCopyButton.setId("smButton");
         return KeyCopyButton;
     }
+
     /**
      * creates the board rename button
      * clicking on it will show a popup that asks you for the new name of the board
@@ -240,6 +243,7 @@ public class BoardOverviewCtrl {
         boardRenameButton.setId("smButton");
         return boardRenameButton;
     }
+
     /**
      * creates the board deletion button
      * clicking on it will delete the current board from the server and take the user back to the main menu
@@ -252,7 +256,7 @@ public class BoardOverviewCtrl {
         boardDeletionButton.setOnAction(e->{
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Delete Confirmation Dialog");
-            alert.setHeaderText("Delete TaskList");
+            alert.setHeaderText("Delete Board");
             alert.setContentText("Are you sure you want to delete '"+getBoard().getTitle()+"'?");
             //add css to dialog pane
             alert.getDialogPane().getStylesheets().add(
@@ -269,11 +273,12 @@ public class BoardOverviewCtrl {
         boardDeletionButton.setId("smButton");
         return boardDeletionButton;
     }
+
      /**
      * creates the menu bar and appends the boards name and the buttons with functionalities to it
      * the menu is added to the right side of the scene
      */
-    public void addMenu(){
+    public void addMenu() {
         if(borderPane.getRight()!=null)
         {
             borderPane.setRight(null);
@@ -290,6 +295,7 @@ public class BoardOverviewCtrl {
         menuBar.getItems().add(createCopyKeyButton());;
         menuBar.getItems().add(createRenameBoardButton(menuBar));
         menuBar.getItems().add(createBoardDeletionButton());
+        menuBar.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
 //      TranslateTransition menuBarTranslation = new TranslateTransition(Duration.millis(400), menuBar);
 //
 //      menuBarTranslation.setFromX(772);
@@ -305,6 +311,7 @@ public class BoardOverviewCtrl {
 //      });
         borderPane.setRight(menuBar);
     }
+
     /**
      * Creates a taskList in the given board
      */
@@ -384,6 +391,7 @@ public class BoardOverviewCtrl {
         scrollPane.setId("sPaneListView");
 
     }
+
     /**
      * Method for adding a TaskButton, used when creating a taskList, it creates new tasks
      * @param listView the listview
@@ -447,6 +455,7 @@ public class BoardOverviewCtrl {
     public void createTask(String name,ListView<HBox> list) {
         server.createTask(listMap.get(list),name);
     }
+
     /**
      * adds a task to a given list in frontend and maps it to the corresponding Task common data type
      * @param name the name of the task to be added
@@ -460,7 +469,7 @@ public class BoardOverviewCtrl {
         list.getItems().remove(list.getItems().get(list.getItems().size()-1));
 
         Label task = new Label(name);
-        task.setPrefWidth(120);
+        task.setPrefWidth(115);
         task.setPadding(new Insets(6, 1, 6, 1));
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
@@ -495,9 +504,9 @@ public class BoardOverviewCtrl {
         picture.setFitHeight(18);
         picture.setFitWidth(18);
         Button button = new Button();
-        button.setMaxSize(20, 20);
+        button.setPrefSize(20, 20);
         button.setBackground(null);
-        button.setPadding(new Insets(6, 1, 6, 3));
+        button.setPadding(new Insets(6, 1, 6, 2));
         button.setGraphic(picture);
         return button;
     }
@@ -631,6 +640,7 @@ public class BoardOverviewCtrl {
     public void deleteTask(HBox task) {
         server.deleteTask(taskMap.get(task),getBoard().getKey());
     }
+
     /**
      * Handles the list's behaviour once a task is being dragged over it
      * @param list the list which behaviour is to be configured
