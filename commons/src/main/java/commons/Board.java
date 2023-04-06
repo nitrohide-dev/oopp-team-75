@@ -136,10 +136,10 @@ public class Board {
      */
     public TaskList createTaskList(long id) throws IllegalArgumentException{
         TaskList list = new TaskList(this);
+        list.setid(id);
         if(this.taskLists.contains(list)){
             throw new IllegalArgumentException("TaskList already exists");
         }
-        list.setid(id);
         this.taskLists.add(list);
         return list;
     }
