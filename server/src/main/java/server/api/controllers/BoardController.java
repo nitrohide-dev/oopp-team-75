@@ -125,11 +125,16 @@ public class BoardController {
     @MessageMapping("/boards") // sets address to /app/boards
     @SendTo("/topic/boards") // sends result to /topic/boards
     public Board update(Board board) throws Exception {
+//        if (board == null) {
+//            throw new IllegalArgumentException("Board cannot be null");
+//        }
         boardService.save(board);
         return board;
     }
 
     public static String hashPassword(String password) {
+        if(password == null || password.isEmpty())
+            throw new IllegalArgumentException("Password cannot be null or empty");
         // Use a secure hash function to hash the password
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -147,10 +152,16 @@ public class BoardController {
             authentication=true;
             return ResponseEntity.ok(true);
         } else {
+            authentication=false;
             return ResponseEntity.ok(false);
         }
     }
 
+    /**
+     * Reads the password from the file or creates a new one if the file does not exist
+     * @param password the password to be hashed and saved
+     * @throws IOException if the file cannot be created
+     */
     public static void readPassword(String password) throws IOException {
         File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
         if(!dir.exists()) {
@@ -190,6 +201,14 @@ public class BoardController {
             authentication=false;
         }
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Checks if the user is authenticated
+     * @return true if the user is authenticated
+     */
+    public boolean isAuthentication() {
+        return authentication;
     }
 }
 

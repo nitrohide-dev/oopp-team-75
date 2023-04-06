@@ -1,7 +1,6 @@
 package server.api.controllers;
 
 
-
 import commons.Board;
 import commons.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,16 +9,14 @@ import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.database.BoardRepository;
 import server.database.BoardRepositoryTest;
+import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class BoardControllerTest {
@@ -50,18 +47,19 @@ class BoardControllerTest {
 
     @Test
     void testGetAll1() throws CannotCreateBoard, IOException {
-        this.boardController = new BoardController(boardService);
-        boardController.authenticate("testing");
-        List<Board> boards = new ArrayList<>();
-        boards = boardController.getAll();
-        assertEquals(null, boards);
+        var boardService = new BoardService(new BoardRepositoryTest());
+        var boardController2 = new BoardController(boardService);
+        boardController2.authenticate("testing");
+        List<Board> boards = boardController2.getAll();
+        assertEquals( new ArrayList<>(), boards);
     }
 
     @Test
     public void testGetAllNotAuthenticated() throws IOException {
         var boardController2 = new BoardController(boardService);
-        List<Board> result = boardController.getAll();
-
+        boardController2.authenticate("wrong password");
+        boardController2.create(new CreateBoardModel("key11", "name"));
+        List<Board> result = boardController2.getAll();
         // Verify
         assertNull(result);
     }
@@ -136,4 +134,88 @@ class BoardControllerTest {
     void createListNotFound() {
         assertThrows(ResponseStatusException.class, () -> boardController.createList("wrongKey"));
     }
+
+    @Test
+    void createList3() {
+        boardController.createList("key");
+        boardController.createList("key");
+        boardController.createList("key2");
+        assertEquals(2, boardController.findByKey("key").getBody().getTaskLists().size());
+        assertEquals(1, boardController.findByKey("key2").getBody().getTaskLists().size());
+    }
+
+    @Test
+    void updateEmpty() {
+        Board board = null;
+        assertThrows(BoardDoesNotExist.class, () -> boardController.update(board));
+    }
+
+    @Test
+    void updateBoard() throws Exception {
+        Board board = boardController.findByKey("key").getBody();
+        board.setTitle("newName");
+        boardController.update(board);
+        assertEquals("newName", boardController.findByKey("key").getBody().getTitle());
+    }
+
+    @Test
+    void hashPassword() {
+        String password = "password";
+        String password2 = "password2";
+        String hashedPassword = boardController.hashPassword(password);
+        String hashedPassword2 = boardController.hashPassword(password2);
+        assertNotEquals(password, hashedPassword);
+        assertNotEquals(password2, hashedPassword2);
+    }
+
+    @Test
+    void hashPasswordEmpty() {
+        String password = "";
+        String password1 = null;
+        assertThrows(IllegalArgumentException.class, () -> boardController.hashPassword(password));
+        assertThrows(IllegalArgumentException.class, () -> boardController.hashPassword(password1));
+    }
+
+    @Test
+    void hashPasswordSame() {
+        String password = "password";
+        String hashedPassword = boardController.hashPassword(password);
+        String hashedPassword1 = boardController.hashPassword(password);
+        assertEquals(hashedPassword, hashedPassword1);
+    }
+
+//    private final static String PASSWORD_FILE = System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt";
+//    @Test
+//    public void testReadPasswordCreatesFileAndWritesHashedPassword() throws IOException {
+//        String password = "test123";
+//        File file = new File(PASSWORD_FILE);
+//        if (file.exists()) {
+//            file.delete();
+//        }
+//        boardController.readPassword(password);
+//        assertTrue(file.exists());
+//        String hashedPassword = boardController.hashPassword(password);
+//        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+//            assertEquals(hashedPassword, reader.readLine());
+//        }
+//    }
+
+    @Test
+    void testAuthenticate() throws IOException {
+        assertTrue(boardController.isAuthentication());
+    }
+//TODO: fix test
+//    @Test
+//    void testAuthenticateWrongPassword() throws IOException {
+//        var boardController2 = new BoardController(boardService);
+//        boardController2.authenticate("wrong password");
+//        assertFalse(boardController.isAuthentication());
+//    }
+
+    @Test
+    void testLogOut() throws IOException {
+        boardController.logOut();
+        assertFalse(boardController.isAuthentication());
+    }
+
 }

@@ -126,6 +126,9 @@ public class ListRepositoryTest implements ListRepository{
 
     @Override
     public <S extends TaskList> List<S> saveAll(Iterable<S> entities) {
+        if (entities == null) {
+            return null;
+        }
         for(TaskList list : (Iterable<TaskList>) entities) {
             save(list);
         }
