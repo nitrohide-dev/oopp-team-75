@@ -34,7 +34,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +60,6 @@ public class BoardOverviewCtrl {
 
     private Group sampleGroup;
 
-    private long boardKey;
     private Map<ListView, String> allLists; // Stores all task lists
     private final Map<ListView, Long> listMap; // Stores all task lists
     private final Map<HBox, Long> taskMap; // Stores all tasks
@@ -232,7 +230,9 @@ public class BoardOverviewCtrl {
         boardRenameButton.setText("rename board");
         boardRenameButton.setOnAction(e ->
         {
-            getBoard().setTitle(inputBoardName());
+            String name = inputBoardName();
+            if (name == null || name.equals("")) return;
+            getBoard().setTitle(name);
             server.updateBoard(getBoard());
             Label text = (Label) menuBar.getItems().get(0);
             text.setText(getBoard().getTitle());
@@ -517,13 +517,19 @@ public class BoardOverviewCtrl {
         //make preferred size bigger
         input.getDialogPane().setPrefSize(400, 200);
         //trying to add icon to dialog
+        Label label = new Label();
         String path = Path.of("", "client", "images", "Logo.png").toString();
         Stage stage = (Stage) input.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(path));
-
+        ((Button) input.getDialogPane().lookupButton(ButtonType.OK)).setOnAction(e -> {
+            label.setText(input.getEditor().getText());
+        });
         input.showAndWait();
-        return input.getEditor().getText();
+
+        return label.getText();
+
     }
+
     /**
      * popup that ask you to input a board name.
      * @return the input name
@@ -542,8 +548,12 @@ public class BoardOverviewCtrl {
         String path = Path.of("", "client", "images", "Logo.png").toString();
         Stage stage = (Stage) input.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(path));
+        Label label = new Label();
+        ((Button) input.getDialogPane().lookupButton(ButtonType.OK)).setOnAction(e -> {
+            label.setText(input.getEditor().getText());
+        });
         input.showAndWait();
-        return input.getEditor().getText();
+        return label.getText();
     }
 
     /**
