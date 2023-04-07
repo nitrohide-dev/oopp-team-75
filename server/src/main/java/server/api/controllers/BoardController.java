@@ -4,26 +4,27 @@ import commons.Board;
 import commons.models.CreateBoardModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
+import server.api.services.TagService;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 
-import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -39,10 +40,12 @@ public class BoardController {
     private boolean authentication;
     private static String hashedPassword;
     private final BoardService boardService;
+    private final TagService tagService;
 
-    public BoardController(BoardService boardService) throws IOException {
+    public BoardController(BoardService boardService, TagService tagService) {
         this.boardService = boardService;
         this.authentication= false;
+        this.tagService = tagService;
     }
 
     /**
@@ -52,7 +55,7 @@ public class BoardController {
     @GetMapping(path = { "", "/" })
     public List<Board> getAll() {
         if(!authentication) return null;
-        return (List<Board>) boardService.getAll(); }
+        return boardService.getAll(); }
 
     /**
      * Gets a board from the database by key. If the key does not exist in the
@@ -99,11 +102,11 @@ public class BoardController {
 
     }
     /**
-     * creates a tasklist in the given board
-     * @param boardKey - the key of the board in which the tasklist should be added
+     * creates a task list in the given board
+     * @param boardKey - the key of the board in which the task list should be added
      * @return the board with the key sent
      */
-    @MessageMapping("/list/createlist")
+    @MessageMapping("/list/createList")
     @SendTo("/topic/boards")
     public Board createList(String boardKey) {
         return boardService.createList(boardService.findByKey(boardKey));
@@ -122,8 +125,12 @@ public class BoardController {
         return board;
     }
 
+    /**
+     * Use a secure hash function to hash the password
+     * @param password the password to be hashed
+     * @return the hashed password
+     */
     public static String hashPassword(String password) {
-        // Use a secure hash function to hash the password
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
@@ -133,6 +140,11 @@ public class BoardController {
         }
     }
 
+    /**
+     * Checks if the password is correct
+     * @param password the password to be checked
+     * @return true if the password is correct, false otherwise
+     */
     @GetMapping("/login")
     public ResponseEntity<Boolean> authenticate(@RequestHeader String password) {
 
@@ -144,6 +156,11 @@ public class BoardController {
         }
     }
 
+    /**
+     * Reads the password from the file or creates a new one if it does not exist
+     * @param password the password to be hashed and saved
+     * @throws IOException if the file cannot be created
+     */
     public static void readPassword(String password) throws IOException {
         File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
         if(!dir.exists()) {
@@ -165,6 +182,12 @@ public class BoardController {
             }
         }
     }
+
+    /**
+     * Changes the password
+     * @param passwordHashed the new password to be hashed and saved
+     * @return true if the password was changed, false otherwise
+     */
     @GetMapping("/changePassword")
     public ResponseEntity<Boolean> changePassword(@RequestHeader String passwordHashed){
         hashedPassword = passwordHashed;
@@ -177,12 +200,29 @@ public class BoardController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Logs out the user
+     */
     @GetMapping("/logout")
     public ResponseEntity<Object> logOut() {
         if (authentication) {
             authentication=false;
         }
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Creates a new tag and adds it to the database
+     * @param title the title of the tag
+     * @param boardKey the key of the board in which the tag should be added
+     * @return the board with the key sent
+     */
+    @MessageMapping("/tag/create/{title}")
+    @SendTo("/topic/boards")
+    public Board createTag(@DestinationVariable String title, String boardKey) {
+        tagService.createTag(title);
+        return boardService.findByKey(boardKey);
     }
 }
 

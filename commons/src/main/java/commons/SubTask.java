@@ -44,6 +44,8 @@ public class SubTask {
     }
 
 
+    public SubTask() {} // for JPA
+
     // equals and hashcode
 
     /**
