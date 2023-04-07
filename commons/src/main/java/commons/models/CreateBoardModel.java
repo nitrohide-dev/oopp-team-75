@@ -1,4 +1,4 @@
-package commons;
+package commons.models;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,9 +11,11 @@ public class CreateBoardModel {
 	@Getter
 	@Setter
 	public String key;
+
 	@Getter
 	@Setter
 	public String title;
+
 	@Getter
 	@Setter
 	public String password;
@@ -25,6 +27,7 @@ public class CreateBoardModel {
 		this.key = key;
 		this.title = title;
 	}
+
 	/**
 	 * Checks if the given model is valid
 	 * @return true if all requirements are met, false otherwise

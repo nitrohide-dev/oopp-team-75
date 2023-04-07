@@ -39,11 +39,13 @@ public class Task {
     @Getter
     @Setter
     private String title;
+
     @JsonManagedReference
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Getter
     @Setter
     private Set<Tag> tags;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @Getter
@@ -92,6 +94,7 @@ public class Task {
         return id == task.id && Objects.equals(title, task.title)
                 && Objects.equals(tags, task.tags) && Objects.equals(subtasks, task.subtasks) && Objects.equals(desc, task.desc);
     }
+
     /**
      * Generates a hashcode using all attributes except the parent taskList, since
      * that would introduce infinite recursion.

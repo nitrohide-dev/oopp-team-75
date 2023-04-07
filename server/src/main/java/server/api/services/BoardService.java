@@ -1,7 +1,7 @@
 package server.api.services;
 
 import commons.Board;
-import commons.CreateBoardModel;
+import commons.models.CreateBoardModel;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
 import server.exceptions.BoardDoesNotExist;

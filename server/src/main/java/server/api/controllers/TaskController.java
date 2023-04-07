@@ -3,7 +3,7 @@ package server.api.controllers;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
-import commons.TaskMoveModel;
+import commons.models.TaskMoveModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;

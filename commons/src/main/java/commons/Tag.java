@@ -31,11 +31,13 @@ public class Tag {
     @Setter
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
     private String title;
+
     @JsonManagedReference
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Getter
     @Setter
     private Set<Task> tasks;
+
     @JsonManagedReference
     @ManyToOne
     @Getter

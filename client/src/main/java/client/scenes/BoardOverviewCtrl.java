@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
-import commons.TaskMoveModel;
+import commons.models.TaskMoveModel;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

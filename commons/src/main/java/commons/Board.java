@@ -2,6 +2,7 @@ package commons;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import commons.models.CreateBoardModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,6 +34,7 @@ public class Board {
     @Getter
     @Setter
     private String title;
+
     @Column(nullable=false)
     @Getter
     @Setter
@@ -44,6 +46,7 @@ public class Board {
     @Getter
     @Setter
     private List<TaskList> taskLists;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @Getter

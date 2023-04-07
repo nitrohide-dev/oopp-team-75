@@ -19,7 +19,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
 //import javafx.geometry.Rectangle2D;
-import commons.CreateBoardModel;
+import commons.models.CreateBoardModel;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;

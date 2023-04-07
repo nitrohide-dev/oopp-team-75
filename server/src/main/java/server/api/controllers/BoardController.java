@@ -1,7 +1,7 @@
 package server.api.controllers;
 
 import commons.Board;
-import commons.CreateBoardModel;
+import commons.models.CreateBoardModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;

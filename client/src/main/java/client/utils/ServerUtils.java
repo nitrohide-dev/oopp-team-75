@@ -16,8 +16,8 @@
 package client.utils;
 
 import commons.Board;
-import commons.CreateBoardModel;
-import commons.TaskMoveModel;
+import commons.models.CreateBoardModel;
+import commons.models.TaskMoveModel;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
