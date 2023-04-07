@@ -150,7 +150,6 @@ public class MainCtrl {
         boardOverviewCtrl.connect(); // connects to /topic/boards
 
     }
-
     public void showUserMenuFirstTime() throws IOException {
         List<String> boardNames=readFromCsv();
         for(String board : boardNames){
