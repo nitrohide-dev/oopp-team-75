@@ -45,7 +45,7 @@
                <Image url="@../images/Logo.png" />
             </ImageView>
             <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-            <ImageView fx:id="exitButton" fitHeight="46.0" fitWidth="44.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="exitButton" fitHeight="26.0" fitWidth="26.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
