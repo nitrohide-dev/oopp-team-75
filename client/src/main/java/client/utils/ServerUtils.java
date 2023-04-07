@@ -16,6 +16,7 @@
 package client.utils;
 
 import commons.Board;
+import commons.Tag;
 import commons.models.CreateBoardModel;
 import commons.models.TaskMoveModel;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -32,14 +33,15 @@ import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
+
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ServerUtils {
-    // METHODS THAT ARE ACTUALLY USEFUL
     @Getter
     @Setter
     private String SERVER;
@@ -48,8 +50,11 @@ public class ServerUtils {
     @Setter
     private StompSession session;
 
+    //REST API
+
     /**
      * Connects to the server and subscribes to the given topic.
+     *
      * @param key the key of the board to find
      */
     public Board findBoard(String key) {
@@ -62,10 +67,9 @@ public class ServerUtils {
 
     /**
      * @param key the key of the board to delete
-     * @return
      */
-    public Board deleteBoard(String key) {
-        return ClientBuilder.newClient(new ClientConfig())
+    public void deleteBoard(String key) {
+        ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/delete/" + key)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
@@ -74,6 +78,7 @@ public class ServerUtils {
 
     /**
      * Gets all boards from the database
+     *
      * @return a list of all boards in the database
      */
     public List<Board> getAllBoards() {
@@ -86,10 +91,9 @@ public class ServerUtils {
 
     /**
      * @param model the model used to create the board
-     * @return the created board
      */
-    public Board createBoard(CreateBoardModel model) {
-        return ClientBuilder.newClient(new ClientConfig())
+    public void createBoard(CreateBoardModel model) {
+        ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/create")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
@@ -98,6 +102,7 @@ public class ServerUtils {
 
     /**
      * Adding a catch to catch exceptions when connecting to the server
+     *
      * @param url the url to connect to
      * @return the stomp session
      */
@@ -111,6 +116,7 @@ public class ServerUtils {
 
     /**
      * connects to websocket
+     *
      * @param url the url to connect to
      * @return the stomp session
      */
@@ -149,73 +155,9 @@ public class ServerUtils {
         });
     }
 
-
-    public void send(String dest, Object o) {
-        session.send(dest, o);
-    }
-    /**
-     * Sends a request to the server to update the board
-     * @param board - the board to be update
-     */
-    public void updateBoard(Board board) { send("/app/boards", board);}
-    /**
-     * Sends a request to the server to move a task from one board to another
-     * @param model - the model used for this operation
-     */
-    public void moveTask(TaskMoveModel model ,String boardKey) {
-        send("/app/task/move/" + boardKey, model);
-    }
-    /**
-     * Sends a request to the server to get a task from the database
-     * @param taskId - the id of the task
-     */
-    public void getTask(String taskId) {
-        send("/app/task/get", taskId);
-    }
-    /**
-     * Sends a request to the server to delete a task from the database
-     * @param taskId - the id of the task
-     */
-    public void deleteTask(Long taskId,String boardKey){ send("/app/task/delete/"+boardKey,taskId);}
-    /**
-     * Sends a request to the server to get a list from the database
-     * @param listId - the id of the list
-     */
-    public void getList(Long listId) { send("/app/list/get",listId);}
-    /**
-     * Sends a request to the server to delete a list from the database
-     * @param listId - the id of the list
-     */
-    public void deleteList(Long listId) { send("/app/list/delete",listId);}
-    /**
-     * Sends a request to the server to create a list in the database
-     * @param boardKey - the Board that is to contain the list
-     */
-    public void createList(String boardKey) {send("/app/list/createlist",boardKey);}
-    /**
-     * Sends a request to the server to rename a list in the database
-     * @param listId - the id of the list
-     * @param listTitle - the new list name
-     */
-    public void renameList(Long listId,String listTitle) { send("/app/list/rename/" + listTitle,listId);}
-    /**
-     * Sends a request to the create a task in the database
-     * @param listID - the ID of the list that is supposed to contain the task
-     * @param taskTitle - the title of the created task
-     */
-    public void createTask(Long listID,String taskTitle) {
-        send("/app/list/createTask/"+ taskTitle,listID);}
-    /**
-     * Sends a request to the server to rename a task in the database
-     * @param taskId - the id of the task
-     * @param taskTitle - the new task name
-     */
-    public void renameTask(String boardKey,Long taskId,String taskTitle) {
-        send("/app/task/rename/" + boardKey+"/"+taskTitle,taskId);
-    }
-
     /**
      * initial authentication on the side of the server
+     *
      * @param password password hashed
      * @return whether it was successful or not
      */
@@ -224,32 +166,175 @@ public class ServerUtils {
                 .target(SERVER).path("api/boards/login")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .header("password",password)
+                .header("password", password)
                 .get(Boolean.class);
     }
 
 
     /**
      * Changes the password of the admin
+     *
      * @param passwordHashed the new password hashed
-     * @return
      */
-    public boolean changePassword(String passwordHashed) {
-        return ClientBuilder.newClient(new ClientConfig())
+    public void changePassword(String passwordHashed) {
+        ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/changePassword")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .header("passwordHashed",passwordHashed)
+                .header("passwordHashed", passwordHashed)
                 .get(Boolean.class);
     }
 
     /**
      * Logs out the admin
      */
-    public void logout(){
+    public void logout() {
         ClientBuilder.newClient(new ClientConfig())
-         .target(SERVER).path("api/boards/logout")
+                .target(SERVER).path("api/boards/logout")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON);
+    }
+
+    //STOMP API (Websockets)
+    public void send(String dest, Object o) {
+        session.send(dest, o);
+    }
+
+    /**
+     * Sends a request to the server to update the board
+     *
+     * @param board - the board to be updated
+     */
+    public void updateBoard(Board board) {
+        send("/app/boards", board);
+    }
+
+    /**
+     * Sends a request to the server to move a task from one board to another
+     *
+     * @param model - the model used for this operation
+     */
+    public void moveTask(TaskMoveModel model, String boardKey) {
+        send("/app/task/move/" + boardKey, model);
+    }
+
+    /**
+     * Sends a request to the server to get a task from the database
+     *
+     * @param taskId - the id of the task
+     */
+    public void getTask(String taskId) {
+        send("/app/task/get", taskId);
+    }
+
+    /**
+     * Sends a request to the server to delete a task from the database
+     *
+     * @param taskId - the id of the task
+     */
+    public void deleteTask(Long taskId, String boardKey) {
+        send("/app/task/delete/" + boardKey, taskId);
+    }
+
+    /**
+     * Sends a request to the server to get a list from the database
+     *
+     * @param listId - the id of the list
+     */
+    public void getList(Long listId) {
+        send("/app/list/get", listId);
+    }
+
+    /**
+     * Sends a request to the server to delete a list from the database
+     *
+     * @param listId - the id of the list
+     */
+    public void deleteList(Long listId) {
+        send("/app/list/delete", listId);
+    }
+
+    /**
+     * Sends a request to the server to create a list in the database
+     *
+     * @param boardKey - the Board that is to contain the list
+     */
+    public void createList(String boardKey) {
+        send("/app/list/createList", boardKey);
+    }
+
+    /**
+     * Sends a request to the server to rename a list in the database
+     *
+     * @param listId    - the id of the list
+     * @param listTitle - the new list name
+     */
+    public void renameList(Long listId, String listTitle) {
+        send("/app/list/rename/" + listTitle, listId);
+    }
+
+    /**
+     * Sends a request to create a task in the database
+     *
+     * @param listID    - the ID of the list that is supposed to contain the task
+     * @param taskTitle - the title of the created task
+     */
+    public void createTask(Long listID, String taskTitle) {
+        send("/app/list/createTask/" + taskTitle, listID);
+    }
+
+    /**
+     * Sends a request to the server to rename a task in the database
+     *
+     * @param taskId    - the id of the task
+     * @param taskTitle - the new task name
+     */
+    public void renameTask(String boardKey, Long taskId, String taskTitle) {
+        send("/app/task/rename/" + boardKey + "/" + taskTitle, taskId);
+    }
+
+    /**
+     * Gets a tag from the database by ID
+     * @param id - the id of the tag
+     * @return the tag with the given id
+     */
+    public Tag getTag(String id) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tag/getById/" + id)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(Tag.class);
+    }
+
+    public Set getTagsByTask(String taskKey) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tag/getByTask/" + taskKey)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(Set.class);
+    }
+
+    public Set getTagsByBoard(String boardKey) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tag/getByBoard/" + boardKey)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(Set.class);
+    }
+
+    public void deleteTag(String tagKey, String boardKey) {
+        send("/app/tag/delete/" + tagKey, boardKey);
+    }
+
+    public void editTag(String tagKey, String boardKey, String newTitle) {
+        send("/app/tag/edit/" + boardKey + "/" + tagKey, newTitle);
+    }
+
+    public void createTag(String boardKey, String tagTitle) {
+        send("/app/tag/create/" + tagTitle, boardKey);
+    }
+
+    public void setTag(String taskKey, Tag tag) {
+        send("/app/task/addTag/" + taskKey, tag);
     }
 }

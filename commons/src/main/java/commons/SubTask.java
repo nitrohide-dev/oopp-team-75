@@ -41,6 +41,8 @@ public class SubTask {
         this.title = title;
     }
 
+    public SubTask() {} // for JPA
+
     // equals and hashcode
 
     /**

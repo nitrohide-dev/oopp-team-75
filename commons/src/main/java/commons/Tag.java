@@ -50,6 +50,8 @@ public class Tag {
         this.title = title;
     }
 
+    public Tag() {} // for JPA
+
     // equals and hashcode
 
     /**

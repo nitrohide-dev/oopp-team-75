@@ -106,4 +106,13 @@ public class Task {
     }
 
 
+    /**
+     * @param tag the tag to add to this task
+     */
+    public void setTag(Tag tag) {
+        if (tag == null) {
+            throw new IllegalArgumentException("Tag cannot be null");
+        }
+        tags.add(tag);
+    }
 }

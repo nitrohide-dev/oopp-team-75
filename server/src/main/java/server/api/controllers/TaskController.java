@@ -1,6 +1,7 @@
 package server.api.controllers;
 
 import commons.Board;
+import commons.Tag;
 import commons.Task;
 import commons.TaskList;
 import commons.models.TaskMoveModel;
@@ -8,9 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.ListService;
@@ -58,7 +59,7 @@ public class TaskController {
      * if the task does not exist in the database, the method responds with a bad request
      * @param id - the id of the task
      * @param name - the new name of the task
-     * @boardKey - the key of the board in which the task is
+     * @param boardKey - the key of the board in which the task is
      * @return the board the task is in
      */
     @MessageMapping("/task/rename/{boardKey}/{name}")
@@ -72,8 +73,8 @@ public class TaskController {
         }
     }
     /**
-     * method used to move a task from one tasklist to another.
-     * @param model the TaskMoveModel with the parameters needed to move a task inbetween lists
+     * method used to move a task from one task list to another.
+     * @param model the TaskMoveModel with the parameters needed to move a task between lists
      * @param boardKey - the key of the board the task is in
      * @return the board the task is in
      */
@@ -99,14 +100,20 @@ public class TaskController {
      * @param id - the id of the task
      * @return the board the task was in
      */
-    @MessageMapping("/task/delete/{key}")
+    @MessageMapping("/task/delete")
     @SendTo("/topic/boards")
-    public Board deleteById(Long id,@DestinationVariable("key") String boardKey) {
+    public Board deleteById(Long id) {
         try {
-
             return boardService.findByKey(taskService.deleteById(id));
         } catch (TaskDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
+    }
+
+    @MessageMapping("/task/addTag/{key}")
+    @SendTo("/topic/boards")
+    public Board addTag(Tag tag, @DestinationVariable("key") String taskId) {
+        var boardKey =  taskService.addTag(Long.valueOf(taskId),tag);
+        return boardService.findByKey(boardKey);
     }
 }

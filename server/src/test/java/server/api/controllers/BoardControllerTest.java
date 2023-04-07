@@ -1,21 +1,20 @@
 package server.api.controllers;
 
 
-
 import commons.Board;
 import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.api.services.BoardService;
+import server.api.services.TagService;
 import server.database.BoardRepository;
 import server.database.BoardRepositoryTest;
-import server.exceptions.CannotCreateBoard;
+import server.database.TagRepository;
+import server.database.TagRepositoryTest;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 class BoardControllerTest {
@@ -23,11 +22,13 @@ class BoardControllerTest {
     private BoardController boardController;
     private BoardRepository boardRepository;
     private BoardService boardService;
+    private TagRepository tagRepository;
     @BeforeEach
-    private void setup() throws CannotCreateBoard, IOException {
+    public void setup() {
+        tagRepository = new TagRepositoryTest();
         boardRepository = new BoardRepositoryTest();
         boardService = new BoardService(boardRepository);
-        this.boardController = new BoardController(boardService);
+        this.boardController = new BoardController(boardService, new TagService(tagRepository));
         boardController.authenticate("testing");
 
         boardController.create(new CreateBoardModel("key", "name"));
@@ -36,12 +37,12 @@ class BoardControllerTest {
     }
 
     @Test
-    void testGetAll() throws CannotCreateBoard {
+    void testGetAll() {
         List<Board> boards = boardController.getAll();
         assertEquals(3, boards.size());
-        assertTrue(boards.get(0).equals(new Board(new CreateBoardModel("key", "name"))));
-        assertTrue(boards.get(1).equals(new Board(new CreateBoardModel("key2", "name2"))));
-        assertTrue(boards.get(2).equals(new Board(new CreateBoardModel("key3", "name3"))));
+        assertEquals(boards.get(0), new Board(new CreateBoardModel("key", "name")));
+        assertEquals(boards.get(1), new Board(new CreateBoardModel("key2", "name2")));
+        assertEquals(boards.get(2), new Board(new CreateBoardModel("key3", "name3")));
     }
 
 }

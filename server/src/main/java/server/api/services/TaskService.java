@@ -1,5 +1,6 @@
 package server.api.services;
 
+import commons.Tag;
 import commons.Task;
 import commons.TaskList;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class TaskService {
     private final ListRepository listRepo;
 	private final TaskRepository repo;
 
-	public TaskService(TaskRepository repo,ListRepository listRepo) {
+	public TaskService(TaskRepository repo, ListRepository listRepo) {
 		this.repo = repo;
 		this.listRepo = listRepo;
 	}
@@ -66,19 +67,31 @@ public class TaskService {
 	/**
 	 * moves a task to the target list and places it in a specific place
 	 * @param task the task to move
-	 * @param targetlist the list to which the task should be moved
+	 * @param targetList the list to which the task should be moved
 	 * @param order the place in the new list which the task should occupy
      * @throws TaskDoesNotExist if the task with the given id doesn't exist in the database
 	 */
-	public void moveTask(Task task,TaskList targetlist,int order) throws TaskDoesNotExist
+	public void moveTask(Task task,TaskList targetList,int order) throws TaskDoesNotExist
 	{
 		if (!repo.existsById(task.getId()))
 			throw new TaskDoesNotExist("There is no task with the provided id.");
 		int initOrder = repo.getOrderById(task.getId());
 		repo.updateInitialListOrder(initOrder,task.getId());
-		repo.updateTargetListOrder(order,targetlist.getId());
-		repo.moveTask(task.getId(),targetlist.getId(),order);
-		System.out.println(3);
+		repo.updateTargetListOrder(order,targetList.getId());
+		repo.moveTask(task.getId(),targetList.getId(),order);
+	}
+
+	/**
+	 * Adds a tag to a task
+	 * @param id the id of the task
+	 * @param tag the tag to add
+	 * @return the key of the board in which the task is
+	 */
+	public String addTag(Long id, Tag tag) {
+		Task task = repo.findById(id).get();
+		task.setTag(tag);
+		repo.save(task);
+		return listRepo.getBoardByListID(task.getTaskList().getId());
 	}
 
 	/**
