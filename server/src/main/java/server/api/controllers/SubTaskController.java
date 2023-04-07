@@ -3,6 +3,8 @@ import commons.SubTask;
 import commons.TaskList;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,18 +23,7 @@ public class SubTaskController {
     public SubTaskController(SubTaskService SubtaskService) {
         this.SubtaskService = SubtaskService;
     }
-    /**
-     * creates a subtask in the database with a given title
-     * @param title the subtask title
-     * @return the stored subtask
-     */
-    @PostMapping("/create")
-    public ResponseEntity<SubTask> createSubTask(String title) {
 
-        SubTask subTask = SubtaskService.createSubTask(title);
-        return ResponseEntity.ok(subTask);
-
-    }
     /**
      * Gets a subtask from the database by id. If the id does not exist in the
      * database, the method will respond with a bad request.
@@ -74,4 +65,7 @@ public class SubTaskController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
+
+
+
 }

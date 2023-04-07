@@ -13,15 +13,7 @@ public class SubTaskService {
     public SubTaskService(SubTaskRepository repo) {
         this.repo = repo;
     }
-    /**
-     * Creates a subtask in the database from a title string
-     * @param title - the name of the subtask
-     * @return The newly created subtask
-     */
-    public SubTask createSubTask(String title){
-        SubTask SubTask = new SubTask(title);
-        return repo.save(SubTask);
-    }
+
     /**
      * gets a subtask from the database by its id
      * @param id - the id of the subtask

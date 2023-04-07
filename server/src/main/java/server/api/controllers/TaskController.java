@@ -1,10 +1,12 @@
 package server.api.controllers;
 
 import commons.Board;
+import commons.SubTask;
 import commons.Task;
 import commons.TaskList;
 import commons.models.TaskMoveModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -108,5 +110,18 @@ public class TaskController {
         } catch (TaskDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
+    }
+
+    /**
+     * creates a subtask in the database with a given title
+     * @param title the subtask title
+     * @return the stored subtask
+     */
+    @MessageMapping("/task/create/{title}")
+    @SendTo("/topic/boards")
+    public Board createSubTask(Long taskID,@DestinationVariable("title") String title) {
+        Task task = getById(taskID);
+        String id = taskService.createSubTask(task,title);
+        return boardService.findByKey(id);
     }
 }

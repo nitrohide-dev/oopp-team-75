@@ -45,7 +45,8 @@ public class Tag {
     private Board board;
 
     // constructor
-
+    public Tag() {
+    }
     public Tag(String title) {
         this.title = title;
     }

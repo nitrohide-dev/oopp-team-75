@@ -36,10 +36,13 @@ public class SubTask {
     private Task task;
 
     // constructor
-
-    public SubTask(String title) {
-        this.title = title;
+    public SubTask() {
     }
+    public SubTask(Task task, String title) {
+        this.title = title;
+        this.task = task;
+    }
+
 
     // equals and hashcode
 

@@ -252,4 +252,12 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON);
     }
+
+
+    public void createSubTask(Long taskID,String subTaskTitle) {
+        send("/app/list/createSubTask/"+subTaskTitle,taskID);}
+
+    //    public void createList(String boardKey) {send("/app/list/createlist",boardKey);}
+        public void createTask(Long listID,String taskTitle) {
+            send("/app/list/createTask/"+ taskTitle,listID);}
 }
