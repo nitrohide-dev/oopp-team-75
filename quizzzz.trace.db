@@ -917,3 +917,15 @@ alter table task_list add constraint FK86xpabjenxv5ych0mvqvviwp9 foreign key (bo
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1303)
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1292)
 	at server.Main.main(Main.java:32)
+2023-04-06 17:54:40 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * TASK[*]"; SQL statement:
+SELECT * TASK [42000-200]
+2023-04-06 17:55:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * TASK[*]"; SQL statement:
+SELECT * TASK [42000-200]
+2023-04-06 17:55:06 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * TASK[*]"; SQL statement:
+SELECT * TASK [42000-200]
+2023-04-06 17:55:13 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * BOARD[*]"; SQL statement:
+SELECT * BOARD [42000-200]
