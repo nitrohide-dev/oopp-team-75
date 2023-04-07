@@ -5,9 +5,11 @@ import commons.Task;
 import commons.TaskList;
 import commons.TaskMoveModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,6 +55,16 @@ public class TaskController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
+
+    @GetMapping("/find/{id}")
+    public ResponseEntity<Task> findById(@PathVariable("id") Long id) {
+        try {
+            return ResponseEntity.ok(taskService.getById(id));
+        } catch (NumberFormatException | TaskDoesNotExist e ) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
     /**
      * renames a task in the database
      * if the task does not exist in the database, the method responds with a bad request
@@ -71,6 +83,7 @@ public class TaskController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
+
     /**
      * method used to move a task from one tasklist to another.
      * @param model the TaskMoveModel with the parameters needed to move a task inbetween lists
@@ -91,7 +104,6 @@ public class TaskController {
         taskService.moveTask(task,list,order);
         return boardService.findByKey(boardKey);
     }
-
 
     /**
      * Deletes a task by its id. If the id does not exist in the database

@@ -18,8 +18,8 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
-//import javafx.geometry.Rectangle2D;
 import commons.CreateBoardModel;
+import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
@@ -43,25 +43,37 @@ import java.util.List;
 public class MainCtrl {
     private ServerUtils server;
 
+    @Getter
+    @Setter
+    private Board currBoard;
+    @Getter
+    @Setter
+    private Task currTask;
+
     private Stage primaryStage;
+
     private LandingPageCtrl landingCtrl;
     private Scene landing;
+
     private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
 
     @Getter
-    @Setter
-    private Board currBoard;
-    private Scene userMenu;
-    @Getter
     private UserMenuCtrl userMenuCtrl;
+    private Scene userMenu;
+
     private Scene boardCreate;
     private BoardCreateCtrl boardCreateCtrl;
 
+    private TaskOverviewCtrl taskOverviewCtrl;
+    private Scene taskOverview;
+
     private AdminOverviewCtrl adminOverviewCtrl;
     private Scene adminOverview;
+
     private AdminLoginCtrl adminLoginCtrl;
     private Scene adminLogin;
+
     private PasswordChangeCtrl passwordChangeCtrl;
     private Scene passwordChange;
 
@@ -76,7 +88,8 @@ public class MainCtrl {
                            Pair<BoardCreateCtrl, Parent> boardCreate,
                             Pair<AdminOverviewCtrl, Parent> adminOverview,
                            Pair<AdminLoginCtrl, Parent> adminLogin,
-                           Pair<PasswordChangeCtrl, Parent> passwordChange) throws IOException {
+                           Pair<PasswordChangeCtrl, Parent> passwordChange,
+                           Pair<TaskOverviewCtrl, Parent> taskOverview) throws IOException {
         this.primaryStage = primaryStage;
 
         this.landingCtrl = landing.getKey();
@@ -88,7 +101,8 @@ public class MainCtrl {
         this.userMenuCtrl = userMenu.getKey();
         this.userMenu = new Scene(userMenu.getValue());
 
-
+        this.taskOverviewCtrl = taskOverview.getKey();
+        this.taskOverview = new Scene(taskOverview.getValue());
 
         this.boardCreateCtrl = boardCreate.getKey();
         this.boardCreate = new Scene(boardCreate.getValue());
@@ -106,9 +120,6 @@ public class MainCtrl {
         //primaryStage.setScene(this.adminOverview);
 
         primaryStage.show();
-
-
-
 
     }
 
@@ -155,7 +166,8 @@ public class MainCtrl {
 
         primaryStage.setScene(userMenu);
     }
-    public void showBoardCreate(){
+
+    public void showBoardCreate() {
         Stage create = new Stage();
         create.setScene(boardCreate);
         create.initModality(Modality.APPLICATION_MODAL);
@@ -165,8 +177,20 @@ public class MainCtrl {
 
     public void createBoard(String name,String title){
         Board b = server.createBoard(new CreateBoardModel(name,title));
+        if (b == null) return;
         userMenuCtrl.addBoard(name);
         showUserMenu();
+    }
+
+    public void showTaskOverview(Long taskId) {
+        Task task = server.getTask(taskId);
+        if (task == null) return;
+        currTask = task;
+        System.out.println(task.getTitle());
+        Stage taskStage = new Stage();
+        taskStage.setScene(taskOverview);
+        taskStage.initModality(Modality.APPLICATION_MODAL);
+        taskStage.showAndWait();
     }
 
     /**
@@ -216,7 +240,8 @@ public class MainCtrl {
         create.initModality(Modality.APPLICATION_MODAL);
         create.showAndWait();
     }
-    public void adminOverview(){
+
+    public void adminOverview() {
         primaryStage.close();
         primaryStage = new Stage();
         setAdminPresence(true);
@@ -244,13 +269,13 @@ public class MainCtrl {
         stage.show();
     }
 
-    public void changePassword(){
+    public void changePassword() {
         Stage create = new Stage();
         create.setScene(passwordChange);
         create.initModality(Modality.APPLICATION_MODAL);
         create.showAndWait();
-
     }
+
     public void setAdminPresence(boolean adminPresence) {
         boardOverviewCtrl.setAdminPresence(adminPresence);
     }

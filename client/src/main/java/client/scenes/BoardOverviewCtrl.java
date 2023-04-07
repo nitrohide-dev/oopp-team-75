@@ -45,6 +45,7 @@ import java.util.Optional;
 
 
 public class BoardOverviewCtrl {
+
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
 
@@ -65,7 +66,7 @@ public class BoardOverviewCtrl {
     private Map<ListView, String> allLists; // Stores all task lists
     private final Map<ListView, Long> listMap; // Stores all task lists
     private final Map<HBox, Long> taskMap; // Stores all tasks
-    private final Map<Long,Integer> taskOrderMap;
+    private final Map<Long, Integer> taskOrderMap;
 
     @FXML
     private ScrollPane scrollPaneMain;
@@ -637,7 +638,9 @@ public class BoardOverviewCtrl {
      * The user can see detailed info about the task
      * @param task - a HBox, containing the task
      */
-    public void viewTask(HBox task) {}
+    public void viewTask(HBox task) {
+        mainCtrl.showTaskOverview(taskMap.get(task));
+    }
 
     /**
      * Deletes given task

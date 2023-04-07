@@ -17,7 +17,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -134,7 +133,7 @@ public class UserMenuCtrl {
     public void openBoard(HBox itemBox) {
         String name = ((Label) itemBox.getChildren().get(0)).getText();
         Board board = server.findBoard(name);
-        if(board==null){
+        if (board == null){
             Alert alert = new Alert(Alert.AlertType.ERROR, "Board does not exist.");
             alert.showAndWait();
             removeBoard(name);

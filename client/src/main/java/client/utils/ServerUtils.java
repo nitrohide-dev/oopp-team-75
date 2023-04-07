@@ -17,6 +17,7 @@ package client.utils;
 
 import commons.Board;
 import commons.CreateBoardModel;
+import commons.Task;
 import commons.TaskMoveModel;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -143,8 +144,12 @@ public class ServerUtils {
      * Sends a request to the server to get a task from the database
      * @param taskId - the id of the task
      */
-    public void getTask(String taskId) {
-        send("/app/task/get", taskId);
+    public Task getTask(Long taskId) {
+        return ClientBuilder.newClient(new ClientConfig())
+            .target(SERVER).path("api/tasks/find/" + taskId)
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .get(Task.class);
     }
 
     /**
