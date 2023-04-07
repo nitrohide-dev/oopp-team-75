@@ -16,6 +16,7 @@
 package client.utils;
 
 import commons.Board;
+import commons.SubTask;
 import commons.Tag;
 import commons.models.CreateBoardModel;
 import commons.models.TaskMoveModel;
@@ -337,4 +338,49 @@ public class ServerUtils {
     public void setTag(String taskKey, Tag tag) {
         send("/app/task/addTag/" + taskKey, tag);
     }
+
+    public SubTask getSubTask(String id){
+        return ClientBuilder.newClient(new ClientConfig())
+            .target(SERVER).path("api/subtask/getById/" + id)
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .get(SubTask.class);
+    }
+
+    public Set getSubTasksByTask(String taskKey) {
+        return ClientBuilder.newClient(new ClientConfig())
+            .target(SERVER).path("api/subtask/getByTask/" + taskKey)
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .get(Set.class);
+    }
+
+    public Set getSubTasksByBoard(String boardKey) {
+        return ClientBuilder.newClient(new ClientConfig())
+            .target(SERVER).path("api/subtask/getByBoard/" + boardKey)
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .get(Set.class);
+    }
+
+    public void renameSubTask(String subTaskKey, String taskKey, String newTitle) {
+        send("/app/subtask/rename/" + taskKey + "/" + subTaskKey, newTitle);
+    }
+
+    public void createSubTask(String taskKey, String subTaskTitle) {
+        send("/app/subtask/create/" + taskKey, subTaskTitle);
+    }
+
+    public void deleteSubTask(String subTaskKey, String taskKey) {
+        send("/app/subtask/delete/" + subTaskKey, taskKey);
+    }
+
+    public void editSubTask(String subTaskKey, String taskKey, String newTitle) {
+        send("/app/subtask/edit/" + taskKey + "/" + subTaskKey, newTitle);
+    }
+
+    public void setSubTask(String taskKey, SubTask subTask) {
+        send("/app/task/addSubTask/" + taskKey, subTask);
+    }
+
 }

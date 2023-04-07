@@ -4,6 +4,8 @@ import commons.SubTask;
 import org.springframework.stereotype.Service;
 import server.database.SubTaskRepository;
 import server.exceptions.SubTaskDoesNotExist;
+
+import java.util.List;
 import java.util.Set;
 @Service
 public class SubTaskService {
@@ -43,5 +45,23 @@ public class SubTaskService {
         if (!repo.existsById(id))
             throw new SubTaskDoesNotExist("There is no subtask with the provided id.");
         repo.deleteById(id);
+    }
+    /**
+     * renames a subtask
+     * @param id - the id of the subtask
+     * @param name - the new name of the subtask
+     * @throws SubTaskDoesNotExist when there is no subtask for the given subtask id already
+     */
+
+    public void renameSubTask(long id,String name) throws SubTaskDoesNotExist {
+        if (!repo.existsById(id))
+            throw new SubTaskDoesNotExist("There exists no subtask with the provided id.");
+        SubTask subTask = getById(id);
+        subTask.setTitle(name);
+        repo.save(subTask);
+    }
+
+    public List<SubTask> getAll(){
+        return repo.findAll();
     }
 }

@@ -71,4 +71,23 @@ public class SubTaskController {
         }
     }
 
+    /**
+     * renames a subtask in the database
+     * if the subtask does not exist in the database, the method responds with a bad request
+     * @param id - the id of the subtask
+     * @param name - the new name of the subtask
+     * @param boardKey - the key of the board in which the subtask is
+     * @return the board the subtask is in
+     */
+    @MessageMapping("/subtask/rename/{boardKey}/{name}")
+    @SendTo("/topic/boards")
+    public Board renameSubTask(Long id,@DestinationVariable("name")String name,@DestinationVariable("boardKey") String boardKey) {
+        try {
+            SubtaskService.renameSubTask(id, name);
+            return boardService.findByKey(boardKey);
+        } catch (SubTaskDoesNotExist e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
 }
