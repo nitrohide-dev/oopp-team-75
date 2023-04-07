@@ -79,7 +79,7 @@ public class ListService {
 		Task task = list.createTask();
 		task.setTitle(name);
 		repo.save(list);
-		return repo.getBoardByListID(list.getid());
+		return repo.getBoardByListID(list.getId());
 	}
 	/**
 	 * Saves a taskList to the database.

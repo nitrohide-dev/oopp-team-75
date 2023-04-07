@@ -19,7 +19,7 @@ public class TagService {
      * @return The newly created tag
      */
     public Tag createTag(String title){
-          Tag tag = new Tag(title);
+        Tag tag = new Tag(title);
         return repo.save(tag);
     }
     /**
@@ -30,7 +30,7 @@ public class TagService {
     public void editTag(long id,String title)throws TagDoesNotExist{
         if (!repo.existsById(id))
             throw new TagDoesNotExist("There exists no tag with the provided id.");
-         Tag tag = repo.findById(id).get();
+        Tag tag = repo.findById(id).get();
         tag.setTitle(title);
         repo.save(tag);
     }
@@ -51,8 +51,8 @@ public class TagService {
      * @return a set of tags of the task
      */
     public Set<Tag> getAllTagsByTask(long task_id){
-       Set<Tag> allTags = (Set<Tag>) repo.getTagsByTask(task_id);
-       return allTags;
+        Set<Tag> allTags = (Set<Tag>) repo.getTagsByTask(task_id);
+        return allTags;
     }
     /**
      * TO DO

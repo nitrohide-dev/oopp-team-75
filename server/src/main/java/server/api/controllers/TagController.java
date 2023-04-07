@@ -1,13 +1,20 @@
 package server.api.controllers;
 
 import commons.Tag;
-import commons.TaskList;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.TagService;
 import server.exceptions.TagDoesNotExist;
+
 import java.util.Set;
 
 @RestController
@@ -24,23 +31,24 @@ public class TagController {
      * @param title the tag title
     * @return the stored tag
     */
-    @PostMapping("/create")
-   public ResponseEntity<Tag> createTag(String title) {
+    @MessageMapping("/tag/create")
+    @SendTo("/topic/boards")
+    public ResponseEntity<Tag> createTag(String title) {
+        Tag tag = tagService.createTag(title);
+        return ResponseEntity.ok(tag);
 
-           Tag tag = tagService.createTag(title);
-            return ResponseEntity.ok(tag);
-
-   }
+    }
     /**
      * changes the tag's title to title
      * @param id the id of the tag that is having its title changed
      * @param title the tag title to change the tag to
      * @throws TagDoesNotExist when a tag with the given id does not exist in the db
      */
-    @PostMapping("/edit/{id}")
-    public ResponseEntity<Tag> editTag(@PathVariable("id") String id, String title)throws TagDoesNotExist {
+    @MessageMapping("/tag/edit/{id}")
+    @SendTo("/topic/boards")
+    public ResponseEntity<Tag> editTag(@DestinationVariable("id") String id, String title)throws TagDoesNotExist {
         try {
-         tagService.editTag(Long.parseLong(id),title);
+            tagService.editTag(Long.parseLong(id),title);
             return ResponseEntity.ok().build();
 
         } catch (NumberFormatException | TagDoesNotExist e) {
@@ -53,8 +61,8 @@ public class TagController {
      * @param id the tag key
      * @return the stored tag
      */
-    @GetMapping("/get/{id}")
-    public ResponseEntity<Tag> getById(@PathVariable("id") String id) throws TagDoesNotExist{
+    @MessageMapping("/tag/get/{id}")
+    public ResponseEntity<Tag> getById(@DestinationVariable("id") String id) throws TagDoesNotExist{
         try {
             Tag tag = tagService.getById(Long.parseLong(id));
             return ResponseEntity.ok(tag);
@@ -68,10 +76,10 @@ public class TagController {
      * @param id the task id
      * @return the stored tag list
      */
-    @GetMapping("/getbytask/{id}")
-    public ResponseEntity<Set<Tag>> getByTask(@PathVariable("id") String id) {
-            Set<Tag> tags = tagService.getAllTagsByTask(Long.parseLong(id));
-            return ResponseEntity.ok(tags);
+    @MessageMapping("/tag/getByTask/{id}")
+    public ResponseEntity<Set<Tag>> getByTask(@DestinationVariable("id") String id) {
+        Set<Tag> tags = tagService.getAllTagsByTask(Long.parseLong(id));
+        return ResponseEntity.ok(tags);
     }
     /**
      * Gets a set of tags appended to a given board, using its id

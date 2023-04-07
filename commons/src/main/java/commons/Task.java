@@ -5,7 +5,17 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -79,7 +89,8 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && Objects.equals(title, task.title) && Objects.equals(tags, task.tags) && Objects.equals(subtasks, task.subtasks) && Objects.equals(desc, task.desc);
+        return id == task.id && Objects.equals(title, task.title)
+                && Objects.equals(tags, task.tags) && Objects.equals(subtasks, task.subtasks) && Objects.equals(desc, task.desc);
     }
     /**
      * Generates a hashcode using all attributes except the parent taskList, since

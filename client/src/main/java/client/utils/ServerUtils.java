@@ -39,10 +39,6 @@ import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ServerUtils {
-
-
-
-
     // METHODS THAT ARE ACTUALLY USEFUL
     @Getter
     @Setter
@@ -52,8 +48,10 @@ public class ServerUtils {
     @Setter
     private StompSession session;
 
-    // Yes, I am indeed bold enough to remove those methods. What are going to do about it?
-
+    /**
+     * Connects to the server and subscribes to the given topic.
+     * @param key the key of the board to find
+     */
     public Board findBoard(String key) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/find/" + key)
@@ -62,6 +60,10 @@ public class ServerUtils {
                 .get(Board.class);
     }
 
+    /**
+     * @param key the key of the board to delete
+     * @return
+     */
     public Board deleteBoard(String key) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/delete/" + key)
@@ -70,6 +72,10 @@ public class ServerUtils {
                 .delete(Board.class);
     }
 
+    /**
+     * Gets all boards from the database
+     * @return a list of all boards in the database
+     */
     public List<Board> getAllBoards() {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/")
@@ -78,6 +84,10 @@ public class ServerUtils {
                 .get(new GenericType<List<Board>>() {});
     }
 
+    /**
+     * @param model the model used to create the board
+     * @return the created board
+     */
     public Board createBoard(CreateBoardModel model) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/create")
@@ -86,6 +96,11 @@ public class ServerUtils {
                 .post(Entity.entity(model, APPLICATION_JSON), Board.class);
     }
 
+    /**
+     * Adding a catch to catch exceptions when connecting to the server
+     * @param url the url to connect to
+     * @return the stomp session
+     */
     public StompSession safeConnect(String url) {
         try {
             return connect("ws://" + url + "/websocket");
@@ -93,6 +108,12 @@ public class ServerUtils {
             return null;
         }
     }
+
+    /**
+     * connects to websocket
+     * @param url the url to connect to
+     * @return the stomp session
+     */
     private StompSession connect(String url) {
         WebSocketClient client = new StandardWebSocketClient();
         WebSocketStompClient stomp = new WebSocketStompClient(client);
@@ -107,6 +128,13 @@ public class ServerUtils {
         throw new IllegalStateException();
     }
 
+    /**
+     * Subscribes to a topic to get updates
+     * @param dest the destination to subscribe to
+     * @param type the type of the payload
+     * @param consumer the consumer to handle the payload
+     * @param <T> the type of the payload
+     */
     public <T> void subscribe(String dest, Class<T> type, Consumer<T> consumer) {
         session.subscribe(dest, new StompFrameHandler() {
             @Override
@@ -201,6 +229,11 @@ public class ServerUtils {
     }
 
 
+    /**
+     * Changes the password of the admin
+     * @param passwordHashed the new password hashed
+     * @return
+     */
     public boolean changePassword(String passwordHashed) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/boards/changePassword")
@@ -210,11 +243,13 @@ public class ServerUtils {
                 .get(Boolean.class);
     }
 
+    /**
+     * Logs out the admin
+     */
     public void logout(){
         ClientBuilder.newClient(new ClientConfig())
          .target(SERVER).path("api/boards/logout")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON);
     }
-
 }

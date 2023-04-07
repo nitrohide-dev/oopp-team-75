@@ -60,7 +60,7 @@ public class TaskService {
 		TaskList list = task.getTaskList();
 		list.getTasks().remove(task);
 		listRepo.save(list);
-		return listRepo.getBoardByListID(list.getid());
+		return listRepo.getBoardByListID(list.getId());
 	}
 
 	/**
@@ -72,12 +72,12 @@ public class TaskService {
 	 */
 	public void moveTask(Task task,TaskList targetlist,int order) throws TaskDoesNotExist
 	{
-		if (!repo.existsById(task.getid()))
+		if (!repo.existsById(task.getId()))
 			throw new TaskDoesNotExist("There is no task with the provided id.");
-		int initOrder = repo.getOrderById(task.getid());
-		repo.updateInitialListOrder(initOrder,task.getid());
-		repo.updateTargetListOrder(order,targetlist.getid());
-		repo.moveTask(task.getid(),targetlist.getid(),order);
+		int initOrder = repo.getOrderById(task.getId());
+		repo.updateInitialListOrder(initOrder,task.getId());
+		repo.updateTargetListOrder(order,targetlist.getId());
+		repo.moveTask(task.getId(),targetlist.getId(),order);
 		System.out.println(3);
 	}
 

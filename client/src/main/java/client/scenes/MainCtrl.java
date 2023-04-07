@@ -120,6 +120,9 @@ public class MainCtrl {
         currBoard = board;
     }
 
+    /**
+     * Starts the landing page
+     */
     public void showLanding(){
         primaryStage.setMinWidth(600);
         primaryStage.setMinHeight(400);
@@ -129,19 +132,16 @@ public class MainCtrl {
         landing.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/styles.css")).toExternalForm());
     }
 
+    /**
+     * Starts the main scene with the board
+     * @param board board to show
+     */
     public void showBoard(Board board) {
         currBoard = board;
         primaryStage.setTitle("Board: Your Board");
-        //primaryStage.setMaximized(true);
         primaryStage.setMinWidth(750);
         primaryStage.setMinHeight(600);
-        //this fixes a bug where the maximized window will be opened in pref size.
-        //but it causes a bug where the window is not properly set, so the buttons on the right side are not visible
-        //TODO fix this bug
         Screen screen = Screen.getPrimary();
-//        Rectangle2D bounds = screen.getVisualBounds();
-//        primaryStage.setWidth(bounds.getWidth());
-//        primaryStage.setHeight(bounds.getHeight());
         boardOverview.getStylesheets().add(Objects.requireNonNull(getClass()
                 .getResource("css/BoardOverview.css")).toExternalForm());
         boardOverviewCtrl.changeImageUrl();
@@ -150,6 +150,11 @@ public class MainCtrl {
         boardOverviewCtrl.connect(); // connects to /topic/boards
 
     }
+
+    /**
+     * shows user menu the first time
+     * @throws IOException exception for input
+     */
     public void showUserMenuFirstTime() throws IOException {
         List<String> boardNames=readFromCsv();
         for(String board : boardNames){
@@ -158,10 +163,16 @@ public class MainCtrl {
         primaryStage.setScene(userMenu);
     }
 
+    /**
+     * show the user menu
+     */
     public void showUserMenu()  {
-
         primaryStage.setScene(userMenu);
     }
+
+    /**
+     * shows the board creation page
+     */
     public void showBoardCreate(){
         Stage create = new Stage();
         create.setScene(boardCreate);
@@ -170,6 +181,11 @@ public class MainCtrl {
 
     }
 
+    /**
+     * Creates a new board
+     * @param name name of the board
+     * @param title title of the board
+     */
     public void createBoard(String name,String title){
         server.createBoard(new CreateBoardModel(name,title));
         Board b = new Board(new CreateBoardModel(name,title));
@@ -218,12 +234,19 @@ public class MainCtrl {
         return boardNames;
     }
 
+    /**
+     * Used to log in as admin
+     */
     public void adminLogin() {
         Stage create = new Stage();
         create.setScene(adminLogin);
         create.initModality(Modality.APPLICATION_MODAL);
         create.showAndWait();
     }
+
+    /**
+     * Starts the admin overview
+     */
     public void adminOverview(){
         primaryStage.close();
         primaryStage = new Stage();
@@ -252,6 +275,9 @@ public class MainCtrl {
         stage.show();
     }
 
+    /**
+     * Used to change password
+     */
     public void changePassword(){
         Stage create = new Stage();
         create.setScene(passwordChange);
@@ -259,6 +285,11 @@ public class MainCtrl {
         create.showAndWait();
 
     }
+
+    /**
+     * check if admin is logged in
+     * @param adminPresence true if admin is logged in
+     */
     public void setAdminPresence(boolean adminPresence) {
         boardOverviewCtrl.setAdminPresence(adminPresence);
     }

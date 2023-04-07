@@ -62,6 +62,10 @@ public class Board {
         this(model.getKey(), model.getTitle(), model.getPassword(), new ArrayList<>(),new ArrayList<>());
     }
 
+    public Board(String key, String title, List<TaskList> taskLists) {
+        this(key, title, "", taskLists,new ArrayList<>());
+    }
+
     public Board(String key, String title, String password, List<TaskList> taskLists,List<Tag> tags) {
         this.key = key;
         this.title = title;
@@ -81,19 +85,21 @@ public class Board {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Board board = (Board) o;
-        return Objects.equals(key, board.key) && Objects.equals(title, board.title) && Objects.equals(password, board.password) && Objects.equals(taskLists, board.taskLists) && Objects.equals(tags, board.tags);
+        return Objects.equals(key, board.key) && Objects.equals(title, board.title)
+                && Objects.equals(password, board.password) && Objects.equals(taskLists, board.taskLists)
+                && Objects.equals(tags, board.tags);
     }
 
 
 
-/**
+    /**
      * Generates a hashcode using all attributes.
      * @return the generated hashcode
      */
-@Override
-public int hashCode() {
-    return Objects.hash(key, title, password, taskLists, tags);
-}
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, title, password, taskLists, tags);
+    }
 
 //    actual methods
 

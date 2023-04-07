@@ -43,7 +43,7 @@ class ListRepositoryTest implements ListRepository{
         List<TaskList> queryLists = new ArrayList<>();
         for(Long i : (Iterable<Long>) longs) {
             for(TaskList list : lists) {
-                if(list.getid() == i) {
+                if(list.getId() == i) {
                     queryLists.add(list);
                 }
             }
@@ -58,7 +58,7 @@ class ListRepositoryTest implements ListRepository{
     @Override
     public void deleteById(Long aLong) {
         for(TaskList list : lists) {
-            if(list.getid() == aLong) {
+            if(list.getId() == aLong) {
                 lists.remove(list);
             }
         }
@@ -73,7 +73,7 @@ class ListRepositoryTest implements ListRepository{
     public void deleteAllById(Iterable<? extends Long> longs) {
         for(Long i : (Iterable<Long>) longs) {
             for(TaskList list : lists) {
-                if(list.getid() == i) {
+                if(list.getId() == i) {
                     lists.remove(list);
                 }
             }
@@ -109,7 +109,7 @@ class ListRepositoryTest implements ListRepository{
     @Override
     public Optional<TaskList> findById(Long aLong) {
         for(TaskList list : lists) {
-            if(list.getid() == aLong) {
+            if(list.getId() == aLong) {
                 return Optional.of(list);
             }
         }
@@ -119,7 +119,7 @@ class ListRepositoryTest implements ListRepository{
     @Override
     public boolean existsById(Long aLong) {
         for(TaskList list : lists) {
-            if(list.getid() == aLong) {
+            if(list.getId() == aLong) {
                 return true;
             }
         }

@@ -27,7 +27,8 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
      @param task_id the id of the task to look up tags of
      @return the taglist corresponding to a given task
      */
-    @Query(value = "SELECT t1.ID,t1.TITLE,t1.BOARD_KEY FROM TAG t1 JOIN TAG_TASKS t2 ON t1.ID = t2.TAG_ID  WHERE t2.TASK_ID = ?1 ", nativeQuery = true)
+    @Query(value = "SELECT t1.ID,t1.TITLE,t1.BOARD_KEY FROM TAG t1 JOIN TAG_TASKS t2 ON t1.ID = t2.TAG_ID  " +
+            "WHERE t2.TASK_ID = ?1 ", nativeQuery = true)
     Collection<Tag> getTagsByTask(long task_id);
     /**
      * Finds the tags of a specific board in the database

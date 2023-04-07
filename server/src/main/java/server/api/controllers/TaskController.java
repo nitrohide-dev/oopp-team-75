@@ -86,7 +86,7 @@ public class TaskController {
         int order = model.getNew_task_order();
         if(order==Integer.MAX_VALUE)
             order=list.getTasks().size();
-        if(list.getid()==task.getTaskList().getid())
+        if(list.getId()==task.getTaskList().getId())
             order--;
         taskService.moveTask(task,list,order);
         return boardService.findByKey(boardKey);
