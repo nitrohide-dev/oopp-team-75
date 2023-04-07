@@ -36,8 +36,6 @@ public class SubTask {
     private Task task;
 
     // constructor
-    public SubTask() {
-    }
     public SubTask(Task task, String title) {
         this.title = title;
         this.task = task;
