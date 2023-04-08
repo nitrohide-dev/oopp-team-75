@@ -35,7 +35,7 @@ public class Board {
     @Setter
     private String title;
 
-    @Column(nullable=false)
+    @Column(nullable=true)
     @Getter
     @Setter
     private String password;
