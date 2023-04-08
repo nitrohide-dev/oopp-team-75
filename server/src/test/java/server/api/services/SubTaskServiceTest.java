@@ -1,5 +1,7 @@
 package server.api.services;
 
+import commons.SubTask;
+import commons.TaskList;
 import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,12 +11,10 @@ import server.database.ListRepository;
 import server.database.ListRepositoryTest;
 import server.database.SubTaskRepository;
 import server.database.SubTaskRepositoryTest;
-import server.database.TagRepository;
 import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
 import server.exceptions.CannotCreateBoard;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class SubTaskServiceTest {
     private BoardRepository boardRepository;
@@ -32,6 +32,14 @@ class SubTaskServiceTest {
     private ListRepository listRepository;
 
     private BoardService boardService;
+
+    private TaskList taskList;
+
+    private TaskList taskList2;
+
+    private TaskList taskList3;
+
+    private SubTask[] subTasks;
 
     @BeforeEach
     void setUp() throws CannotCreateBoard {
@@ -51,6 +59,18 @@ class SubTaskServiceTest {
         boardService.createList(boardService.findByKey("key1"));
         boardService.createList(boardService.findByKey("key2"));
         boardService.createList(boardService.findByKey("key3"));
+
+        taskList = boardService.getAll().get(0).getTaskLists().get(0);
+        taskList2 = boardService.getAll().get(1).getTaskLists().get(0);
+        taskList3 = boardService.getAll().get(2).getTaskLists().get(0);
+
+        listService.createTask(taskList, "task1");
+        listService.createTask(taskList, "task2");
+        listService.createTask(taskList3, "task3");
+
+
+        subTasks = new SubTask[3];
+
     }
 
     @Test

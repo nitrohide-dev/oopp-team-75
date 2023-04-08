@@ -16,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -68,8 +69,9 @@ public class Task {
 
     public Task() {} // for object mappers, please don't use.
 
+    // TODO: pass tags correctly
     public Task(TaskList taskList,String name) {
-        this(taskList, name, "");
+        this(taskList, name, "", null, new ArrayList());
     }
 
     public Task(TaskList taskList, String title, String desc) {
@@ -77,6 +79,26 @@ public class Task {
         this.title = title;
         this.desc = desc;
     }
+
+    public Task(TaskList taskList, String title, String desc, Set<Tag> tags) {
+        this.taskList = taskList;
+        this.title = title;
+        this.desc = desc;
+        this.tags = tags;
+    }
+
+    public Task(TaskList taskList, String title, String desc, Set<Tag> tags, List<SubTask> subtasks) {
+        this.taskList = taskList;
+        this.title = title;
+        this.desc = desc;
+        this.tags = tags;
+        this.subtasks = subtasks;
+    }
+
+    /**
+     * Creates a new subtask and adds it to this task.
+     * @return the newly created subtask
+     */
 
     public SubTask createSubTask() {
         SubTask subTask = new SubTask(this, "");
