@@ -21,7 +21,7 @@
          <AnchorPane fx:id="anchorPaneMain" pickOnBounds="false" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
             <Button layoutX="701.0" layoutY="14.0" mnemonicParsing="false" onAction="#createTaskList" style="-fx-background-color: white;" text="+" textAlignment="CENTER" textOverrun="CLIP" AnchorPane.rightAnchor="31.0">
                <font>
-                  <Font name="Roboto" size="15.0" />
+                  <Font size="18.0" />
                </font></Button>
 
             <HBox fx:id="listContainer" prefHeight="100.0" prefWidth="200.0" spacing="40.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="50.0">
