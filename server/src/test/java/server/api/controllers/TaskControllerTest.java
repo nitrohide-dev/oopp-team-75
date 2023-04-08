@@ -1,6 +1,10 @@
 package server.api.controllers;
 
-import commons.*;
+import commons.Board;
+import commons.CreateBoardModel;
+import commons.Task;
+import commons.TaskList;
+import commons.TaskMoveModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
@@ -148,7 +152,8 @@ class TaskControllerTest {
 
     @Test
     void renameTaskException() {
-        assertThrows(ResponseStatusException.class, () -> taskController.renameTask(100L, "wubba-lubba-dub-dub", board1.getKey()));
+        assertThrows(ResponseStatusException.class, () -> taskController.renameTask(100L
+                , "wubba-lubba-dub-dub", board1.getKey()));
     }
 
     @Test

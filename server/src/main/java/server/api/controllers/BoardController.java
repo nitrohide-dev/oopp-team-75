@@ -135,9 +135,9 @@ public class BoardController {
     public static String hashPassword(String password) throws NoSuchAlgorithmException {
         if(password == null || password.isEmpty())
             throw new IllegalArgumentException("Password cannot be null or empty");
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
-            return Base64.getEncoder().encodeToString(hash);
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().encodeToString(hash);
     }
 
     @GetMapping("/login")
