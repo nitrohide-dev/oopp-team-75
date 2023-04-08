@@ -70,4 +70,11 @@ class CreateBoardModelTest {
         assertFalse(model3.isValid());
         assertTrue(model4.isValid());
     }
+
+    @Test
+    void setPassword(){
+        assertEquals(null, model.getPassword());
+        model.setPassword("a");
+        assertEquals("a", model.getPassword());
+    }
 }

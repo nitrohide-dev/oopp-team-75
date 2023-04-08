@@ -80,6 +80,7 @@ public class Tag {
             if (task.getId() == task_id) {
                 return true;
             }
+            else continue;
         }
         return false;
     }

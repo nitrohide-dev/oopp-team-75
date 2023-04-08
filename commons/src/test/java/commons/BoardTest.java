@@ -157,4 +157,44 @@ class BoardTest {
         assertEquals(null, tl2.getBoard());
         assertThrows(IllegalArgumentException.class, () -> board.removeTaskList(null));
     }
+    @Test
+    void getPassword(){
+        assertEquals(null, board.getPassword());
+        assertNotEquals("123", board.getPassword());
+    }
+    @Test
+    void setPassword(){
+        board.setPassword("123");
+        assertEquals("123", board.getPassword());
+        assertNotEquals(null, board.getPassword());
+    }
+
+    @Test
+    void getTags() {
+        List<Tag> goodList = new ArrayList<>();
+        List<Tag> naughtyList = new ArrayList<>();
+        naughtyList.add(null);
+        assertEquals(goodList, board.getTags());
+        assertNotEquals(naughtyList, board.getTags());
+    }
+
+    @Test
+    void setTags() {
+        List<Tag> goodList = new ArrayList<>();
+        List<Tag> naughtyList = new ArrayList<>();
+        goodList.add(null);
+        board.setTags(goodList);
+        assertEquals(goodList, board.getTags());
+        assertNotEquals(naughtyList, board.getTags());
+    }
+
+    @Test
+    void createTag() {
+        Tag tag1 = board.createTag("name");
+        assertEquals(1, board.getTags().size());
+        assertEquals(tag1, board.getTags().get(0));
+        Tag tag2 = board.createTag("name2");
+        assertEquals(2, board.getTags().size());
+        assertEquals(tag2, board.getTags().get(1));
+    }
 }
