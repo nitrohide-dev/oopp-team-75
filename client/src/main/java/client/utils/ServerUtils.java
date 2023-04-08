@@ -40,9 +40,10 @@ import java.util.function.Consumer;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ServerUtils {
 
+    @Getter
+    @Setter
+    private String domain;
 
-
-    // METHODS THAT ARE ACTUALLY USEFUL
     @Getter
     @Setter
     private String SERVER;
@@ -50,8 +51,6 @@ public class ServerUtils {
     @Getter
     @Setter
     private StompSession session;
-
-    // Yes, I am indeed bold enough to remove those methods. What are going to do about it?
 
     public Board findBoard(String key) {
         return ClientBuilder.newClient(new ClientConfig())

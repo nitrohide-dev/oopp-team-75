@@ -21,6 +21,16 @@ public class AdminOverviewCtrl{
     private ServerUtils server;
     private MainCtrl mainCtrl;
 
+    @FXML private ImageView logo;
+    @FXML private ImageView exit;
+    @FXML private ImageView password;
+
+    public void initialize() {
+        logo.setImage(new Image(Path.of("", "client", "images", "Logo.png").toString()));
+        exit.setImage(new Image(Path.of("", "client", "images", "ExitButton.png").toString()));
+        password.setImage(new Image(Path.of("", "client", "images", "password.png").toString()));
+    }
+
     private List<Board> boards;
 
     public ListView<HBox> boardsListView;
@@ -29,7 +39,6 @@ public class AdminOverviewCtrl{
     public AdminOverviewCtrl(ServerUtils server, MainCtrl mainCtrl){
         this.server = server;
         this.mainCtrl = mainCtrl;
-
     }
 
     /**
@@ -37,9 +46,9 @@ public class AdminOverviewCtrl{
      */
     public void init(){
         boards = server.getAllBoards();
-        for(Board b : boards){
+        for(Board b : boards)
             this.addBoardToListView(b.getKey());
-        }
+
     }
 
 
@@ -47,11 +56,10 @@ public class AdminOverviewCtrl{
      * logs admin out
      */
     @FXML
-    private void logOut(){
+    private void exit(){
         boards= new ArrayList<>();
         boardsListView.getItems().clear();
         mainCtrl.showUserMenu();
-        mainCtrl.setAdminPresence(false);
         server.logout();
     }
 
@@ -69,14 +77,11 @@ public class AdminOverviewCtrl{
         itemLabel.setPadding(new Insets(6, 1, 6, 1));
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
-        removeButton.setOnAction(event -> {
-            removeBoard(itemBox);
-        });
+        removeButton.setOnAction(event -> removeBoard(itemBox));
         itemBox.getChildren().addAll(itemLabel, removeButton);
         itemBox.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
+            if (event.getClickCount() == 2)
                 openBoard(itemBox);
-            }
         });
 
         boardsListView.getItems().add(itemBox);
@@ -90,7 +95,7 @@ public class AdminOverviewCtrl{
     private void openBoard(HBox itemBox) {
         String name = ((Label) itemBox.getChildren().get(0)).getText();
         Board board = server.findBoard(name);
-        mainCtrl.showBoardNewWindow(board);
+        mainCtrl.showBoard(board);
     }
 
     /**
@@ -124,7 +129,7 @@ public class AdminOverviewCtrl{
      */
     @FXML
     private void changePassword(){
-        mainCtrl.changePassword();
+        mainCtrl.showChangePassword();
     }
 
 }
