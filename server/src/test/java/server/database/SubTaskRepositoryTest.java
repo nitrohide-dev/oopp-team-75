@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -23,10 +24,7 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
     public SubTaskRepositoryTest() {
         subTasks = new ArrayList<>();
     }
-    @Override
-    public List<SubTask> getSubTasksOfTask(long task_id) {
-        return subTasks;
-    }
+
 
     @Override
     public List<SubTask> findAll() {
@@ -63,6 +61,16 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
 
     @Override
     public void deleteById(Long aLong) {
+        if (aLong == null) {
+            throw new IllegalArgumentException("id must not be null");
+        }
+        if (aLong < 0) {
+            throw new IllegalArgumentException("id must not be negative");
+        }
+        if (findById(aLong).isEmpty()) {
+            throw new IllegalArgumentException("id must exist");
+        }
+
         for(SubTask subTask : subTasks) {
             if(subTask.getId() == aLong) {
                 subTasks.remove(subTask);
@@ -78,6 +86,9 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
 
     @Override
     public void deleteAllById(Iterable<? extends Long> longs) {
+        for (Long aLong : longs) {
+            deleteById(aLong);
+        }
 
     }
 
@@ -215,5 +226,16 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
     @Override
     public <S extends SubTask, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
+    }
+
+    @Override
+    public Collection<SubTask> getSubTasksOfTask(long task_id) {
+        List<SubTask> querySubTasks = new ArrayList<>();
+        for(SubTask subTask : subTasks) {
+            if(subTask.getTask().getId() == task_id) {
+                querySubTasks.add(subTask);
+            }
+        }
+        return querySubTasks;
     }
 }

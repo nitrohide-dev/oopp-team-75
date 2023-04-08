@@ -106,6 +106,18 @@ public class Task {
         return subTask;
     }
 
+    /**
+     * Removes a subtask from this task.
+     * @param subTask the subtask to remove
+     */
+    public void removeSubTask(SubTask subTask) {
+        if (subTask == null)
+            throw new NullPointerException("Subtask cannot be null");
+        if (!this.subtasks.remove(subTask))
+            throw new IllegalArgumentException("Subtask does not belong to this task");
+        subTask.setTask(null);
+    }
+
 //    equals and hashcode
 
     /**

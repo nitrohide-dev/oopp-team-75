@@ -16,6 +16,13 @@ import java.util.function.Function;
 public class TaskRepositoryTest implements TaskRepository{
     private List<Task> tasks;
 
+    private SubTaskRepository repo;
+
+    public TaskRepositoryTest(SubTaskRepository repo) {
+        tasks = new ArrayList<>();
+        this.repo = repo;
+    }
+
     public TaskRepositoryTest() {
         tasks = new ArrayList<>();
     }
@@ -117,16 +124,37 @@ public class TaskRepositoryTest implements TaskRepository{
             }
         }
         tasks.add(entity);
+        repo.saveAll(repo.getSubTasksOfTask(entity.getId()));
         return entity;
     }
 
     @Override
     public <S extends Task> List<S> saveAll(Iterable<S> entities) {
-        return null;
+        List<S> savedTasks = new ArrayList<>();
+        for(Task task : (Iterable<Task>) entities) {
+            for(Task task2 : tasks) {
+                if(task.getId() == task2.getId()) {
+                    tasks.remove(task2);
+                    tasks.add(task);
+
+                    savedTasks.add((S) task);
+                    break;
+                }
+            }
+            tasks.add(task);
+            savedTasks.add((S) task);
+            repo.saveAll(repo.getSubTasksOfTask(task.getId()));
+        }
+        return savedTasks;
     }
 
     @Override
     public Optional<Task> findById(Long aLong) {
+        for(Task task : tasks) {
+            if(task.getId() == aLong) {
+                return Optional.of(task);
+            }
+        }
         return Optional.empty();
     }
 
