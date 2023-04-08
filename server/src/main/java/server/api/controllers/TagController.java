@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import server.api.services.BoardService;
 import server.api.services.TagService;
 import server.exceptions.TagDoesNotExist;
 
@@ -22,9 +23,9 @@ import java.util.Set;
 @RequestMapping("/api/tags")
 public class TagController {
     private final TagService tagService;
-    private final BoardController boardService;
+    private final BoardService boardService;
 
-    public TagController(TagService tagService, BoardController boardService) {
+    public TagController(TagService tagService, BoardService boardService) {
         this.tagService = tagService;
         this.boardService = boardService;
     }
@@ -40,7 +41,7 @@ public class TagController {
                          @DestinationVariable("boardKey") String boardKey) {
         try {
             tagService.editTag(Long.parseLong(id),title);
-            return boardService.findByKey(boardKey).getBody();
+            return boardService.findByKey(boardKey);
         } catch (NumberFormatException | TagDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
@@ -94,7 +95,7 @@ public class TagController {
     public Board deleteById(@DestinationVariable("id") String id, String boardKey) throws TagDoesNotExist {
         try {
             tagService.deleteById(Long.parseLong(id));
-            return boardService.findByKey(boardKey).getBody();
+            return boardService.findByKey(boardKey);
         } catch (NumberFormatException | TagDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
