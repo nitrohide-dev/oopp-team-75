@@ -147,15 +147,10 @@ class TaskServiceTest {
         assertEquals(4, taskService.getAll().size());
     }
 
-//    @Test
-//    void renameTask() throws TaskDoesNotExist {
-//        taskService.renameTask(taskService.getById(10L), "new name");
-//        assertEquals("new name", taskService.getById(10L).getTitle());
-//    }
+    @Test
+    void renameTask() throws TaskDoesNotExist {
+        taskService.renameTask(10L, "new name");
+        assertEquals("new name", taskService.getById(10L).getTitle());
+    }
 
-//    @Test
-//    void moveTask() throws ListDoesNotExist, TaskDoesNotExist {
-//        taskService.moveTask(taskService.getById(10L), list2, 2);
-//        assertEquals(1, list2.getTasks().size());
-//    }
 }

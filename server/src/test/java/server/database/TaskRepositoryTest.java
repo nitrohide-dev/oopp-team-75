@@ -238,7 +238,7 @@ public class TaskRepositoryTest implements TaskRepository{
     }
     @Override
     public int getOrderById(long id){
-        return 0;
+        return (int)id;
     }
     @Override
     public void updateInitialListOrder(int order,long id){
