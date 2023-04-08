@@ -9,7 +9,7 @@
 
 <HBox alignment="CENTER" spacing="20.0" styleClass="background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminLoginCtrl">
    <children>
-      <Label style="-fx-font-weight: extra_bold;" text="Password" textFill="WHITE">
+      <Label text="Password" textFill="WHITE">
          <font>
             <Font size="20.0" />
          </font>
