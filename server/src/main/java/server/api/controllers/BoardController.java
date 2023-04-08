@@ -132,17 +132,12 @@ public class BoardController {
         return board;
     }
 
-    public static String hashPassword(String password) {
+    public static String hashPassword(String password) throws NoSuchAlgorithmException {
         if(password == null || password.isEmpty())
             throw new IllegalArgumentException("Password cannot be null or empty");
-        // Use a secure hash function to hash the password
-        try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(hash);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Hash function not available", e);
-        }
     }
 
     @GetMapping("/login")
@@ -162,7 +157,7 @@ public class BoardController {
      * @param password the password to be hashed and saved
      * @throws IOException if the file cannot be created
      */
-    public static void readPassword(String password) throws IOException {
+    public static void readPassword(String password) throws IOException, NoSuchAlgorithmException {
         File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
         if(!dir.exists()) {
             System.out.println("Your initial password is: "+password+"\nChange it for increased security");

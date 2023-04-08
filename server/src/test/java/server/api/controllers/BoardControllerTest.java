@@ -13,6 +13,7 @@ import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ class BoardControllerTest {
     private BoardController boardController;
     private BoardRepository boardRepository;
     private BoardService boardService;
+
     @BeforeEach
     private void setup() throws CannotCreateBoard, IOException {
         boardRepository = new BoardRepositoryTest();
@@ -164,11 +166,11 @@ class BoardControllerTest {
     }
 
     @Test
-    void hashPassword() {
+    void hashPassword() throws NoSuchAlgorithmException {
         String password = "password";
         String password2 = "password2";
-        String hashedPassword = boardController.hashPassword(password);
-        String hashedPassword2 = boardController.hashPassword(password2);
+        String hashedPassword = BoardController.hashPassword(password);
+        String hashedPassword2 = BoardController.hashPassword(password2);
         assertNotEquals(password, hashedPassword);
         assertNotEquals(password2, hashedPassword2);
     }
@@ -177,15 +179,15 @@ class BoardControllerTest {
     void hashPasswordEmpty() {
         String password = "";
         String password1 = null;
-        assertThrows(IllegalArgumentException.class, () -> boardController.hashPassword(password));
-        assertThrows(IllegalArgumentException.class, () -> boardController.hashPassword(password1));
+        assertThrows(IllegalArgumentException.class, () -> BoardController.hashPassword(password));
+        assertThrows(IllegalArgumentException.class, () -> BoardController.hashPassword(password1));
     }
 
     @Test
-    void hashPasswordSame() {
+    void hashPasswordSame() throws NoSuchAlgorithmException {
         String password = "password";
-        String hashedPassword = boardController.hashPassword(password);
-        String hashedPassword1 = boardController.hashPassword(password);
+        String hashedPassword = BoardController.hashPassword(password);
+        String hashedPassword1 = BoardController.hashPassword(password);
         assertEquals(hashedPassword, hashedPassword1);
     }
 

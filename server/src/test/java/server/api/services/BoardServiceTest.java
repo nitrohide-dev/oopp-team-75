@@ -58,6 +58,7 @@ class BoardServiceTest {
     @Test
     void findByKeyNotExisting() {
         assertEquals(null, boardService.findByKey("imaginary"));
+        assertThrows(IllegalArgumentException.class, () -> boardService.findByKey(null));
     }
 
     @Test

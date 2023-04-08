@@ -18,6 +18,7 @@ import server.exceptions.ListDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class TaskServiceTest {
@@ -129,6 +130,7 @@ class TaskServiceTest {
     void deleteById() throws TaskDoesNotExist, ListDoesNotExist {
         taskService.deleteById(10L);
         assertEquals(1, listService.getById(1L).getTasks().size());
+        assertThrows(TaskDoesNotExist.class, () -> taskService.deleteById(100L));
     }
 
     @Test
@@ -143,10 +145,19 @@ class TaskServiceTest {
     void renameTask() throws TaskDoesNotExist {
         taskService.renameTask(10L, "new name");
         assertEquals("new name", taskService.getById(10L).getTitle());
+        assertThrows(TaskDoesNotExist.class, () -> taskService.renameTask(100L, "new name"));
     }
 
     @Test
     void moveTask() throws TaskDoesNotExist, ListDoesNotExist {
+        Task task1 = new Task(list1,"1");
+        task1.setid(10L);
+        System.out.println(board1.getTaskLists());
+        taskService.moveTask(task1, list1, 1);
+        assertEquals(2, listService.getById(1L).getTasks().size());
+        assertEquals(10L, listService.getById(1L).getTasks().get(0).getid());
+        Task task300 = new Task(list3,"3");
+        assertThrows(TaskDoesNotExist.class, () -> taskService.moveTask(task300, list1, 1));
     }
 
 
