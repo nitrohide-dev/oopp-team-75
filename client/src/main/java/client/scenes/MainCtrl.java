@@ -120,9 +120,6 @@ public class MainCtrl {
         currBoard = board;
     }
 
-    /**
-     * Starts the landing page
-     */
     public void showLanding(){
         primaryStage.setMinWidth(600);
         primaryStage.setMinHeight(400);
@@ -139,9 +136,16 @@ public class MainCtrl {
     public void showBoard(Board board) {
         currBoard = board;
         primaryStage.setTitle("Board: Your Board");
+        //primaryStage.setMaximized(true);
         primaryStage.setMinWidth(750);
         primaryStage.setMinHeight(600);
+        //this fixes a bug where the maximized window will be opened in pref size.
+        //but it causes a bug where the window is not properly set, so the buttons on the right side are not visible
+        //TODO fix this bug
         Screen screen = Screen.getPrimary();
+//        Rectangle2D bounds = screen.getVisualBounds();
+//        primaryStage.setWidth(bounds.getWidth());
+//        primaryStage.setHeight(bounds.getHeight());
         boardOverview.getStylesheets().add(Objects.requireNonNull(getClass()
                 .getResource("css/BoardOverview.css")).toExternalForm());
         boardOverviewCtrl.changeImageUrl();
@@ -167,6 +171,7 @@ public class MainCtrl {
      * show the user menu
      */
     public void showUserMenu()  {
+
         primaryStage.setScene(userMenu);
     }
 

@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.UserMenuCtrl">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.UserMenuCtrl">
   <children>
       <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="163.0" prefWidth="900.0">
         <items>
@@ -26,11 +35,11 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <ScrollPane layoutX="53.0" layoutY="102.0" prefHeight="343.0" prefWidth="263.0">
+                  <ScrollPane fitToHeight="true" hbarPolicy="NEVER" layoutX="54.0" layoutY="89.0" prefHeight="343.0" prefWidth="241.0">
                      <content>
-                        <ListView fx:id="boardsListView" prefHeight="341.0" prefWidth="261.0" />
+                        <ListView fx:id="boardsListView" onMouseClicked="#boardOperations" prefHeight="342.0" prefWidth="239.0" />
                      </content></ScrollPane>
-                  <Label layoutX="53.0" layoutY="55.0" prefHeight="34.0" prefWidth="263.0" text="Your boards:">
+                  <Label layoutX="54.0" layoutY="29.0" prefHeight="34.0" prefWidth="263.0" text="Your boards:">
                      <font>
                         <Font size="30.0" />
                      </font>

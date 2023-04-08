@@ -109,10 +109,48 @@ public class Board {
     /**
      * Adds the given {@code TaskList}, adds it to the end of this board and
      * returns it.
+     * And gives it a random id.
      * @return the created {@code TaskList}.
      */
     public TaskList createTaskList() {
         TaskList list = new TaskList(this);
+        long random = (long) (Math.random() * 1000000);
+        list.setid(random);
+        this.taskLists.add(list);
+        return list;
+    }
+
+    /**
+     * Creates a new task list with the given id
+     * and adds it to the end of this board.
+     * @param id id of the task list
+     * @return the created task list
+     * @throws IllegalArgumentException
+     */
+    public TaskList createTaskList(long id) throws IllegalArgumentException{
+        TaskList list = new TaskList(this);
+        list.setid(id);
+        if(this.taskLists.contains(list)){
+            throw new IllegalArgumentException("TaskList already exists");
+        }
+        this.taskLists.add(list);
+        return list;
+    }
+
+    /**
+     * Creates a new task list with the given id and title
+     * @param id id of the task list
+     * @param title title of the task list
+     * @return the created task list
+     * @throws IllegalArgumentException
+     */
+    public TaskList createTaskList(long id, String title) throws IllegalArgumentException{
+        TaskList list = new TaskList(this);
+        if(this.taskLists.contains(list)){
+            throw new IllegalArgumentException("TaskList already exists");
+        }
+        list.setid(id);
+        list.setTitle(title);
         this.taskLists.add(list);
         return list;
     }

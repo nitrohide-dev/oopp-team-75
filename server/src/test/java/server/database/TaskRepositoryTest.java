@@ -77,7 +77,7 @@ public class TaskRepositoryTest implements TaskRepository{
     @Override
     public void delete(Task entity) {
         for(Task task : tasks) {
-            if(task.getId() == entity.getId()) {
+            if(task.equals(entity)) {
                 tasks.remove(task);
                 break;
             }
@@ -99,6 +99,10 @@ public class TaskRepositoryTest implements TaskRepository{
 
     @Override
     public void deleteAll(Iterable<? extends Task> entities) {
+        if (entities == null) {
+            return;
+        }
+
         for(Task task : (Iterable<Task>) entities) {
             for(Task task2 : tasks) {
                 if(task.getId() == task2.getId()) {
@@ -124,7 +128,6 @@ public class TaskRepositoryTest implements TaskRepository{
             }
         }
         tasks.add(entity);
-        repo.saveAll(repo.getSubTasksOfTask(entity.getId()));
         return entity;
     }
 
@@ -254,6 +257,7 @@ public class TaskRepositoryTest implements TaskRepository{
     public void updateTargetListOrder(int order,long id){
 
     }
+    @Override
     public void moveTask(long id1,long id2,int order){
 
     }

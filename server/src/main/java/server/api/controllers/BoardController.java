@@ -9,9 +9,12 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +24,7 @@ import server.api.services.TagService;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 
+import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -102,13 +106,20 @@ public class BoardController {
 
     }
     /**
-     * creates a task list in the given board
-     * @param boardKey - the key of the board in which the task list should be added
+     * creates a tasklist in the given board
+     * @param boardKey - the key of the board in which the tasklist should be added
+     * @throws ResponseStatusException - if the key is null, a bad request is sent
      * @return the board with the key sent
      */
-    @MessageMapping("/list/createList")
+    @MessageMapping("/list/createlist")
     @SendTo("/topic/boards")
     public Board createList(String boardKey) {
+        if (boardKey == null || boardKey.isEmpty()){
+            throw new IllegalArgumentException("Board key cannot be null");
+        }
+        if (boardService.findByKey(boardKey)==null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Board does not exist");
+        }
         return boardService.createList(boardService.findByKey(boardKey));
     }
 
@@ -157,11 +168,11 @@ public class BoardController {
     }
 
     /**
-     * Reads the password from the file or creates a new one if it does not exist
+     * Reads the password from the file or creates a new one if the file does not exist
      * @param password the password to be hashed and saved
      * @throws IOException if the file cannot be created
      */
-    public static void readPassword(String password) throws IOException {
+    public static void readPassword(String password) throws IOException, NoSuchAlgorithmException {
         File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
         if(!dir.exists()) {
             System.out.println("Your initial password is: "+password+"\nChange it for increased security");
@@ -223,6 +234,14 @@ public class BoardController {
     public Board createTag(@DestinationVariable String title, String boardKey) {
         boardService.createTag(boardKey, title);
         return boardService.findByKey(boardKey);
+    }
+
+    /**
+     * Checks if the user is authenticated
+     * @return true if the user is authenticated
+     */
+    public boolean isAuthentication() {
+        return authentication;
     }
 }
 

@@ -14,12 +14,16 @@ import java.util.function.Function;
 
 public class ListRepositoryTest implements ListRepository{
     private List<TaskList> lists;
+    private final TaskRepository taskRepo;
 
-    public ListRepositoryTest() {
+    public ListRepositoryTest(TaskRepository taskRepo) {
+        this.taskRepo = taskRepo;
         lists = new ArrayList<>();
     }
-    public ListRepositoryTest(List<TaskList> lists) {
+
+    public ListRepositoryTest(List<TaskList> lists, TaskRepository taskRepo) {
         this.lists = lists;
+        this.taskRepo = taskRepo;
     }
 
 
@@ -60,6 +64,7 @@ public class ListRepositoryTest implements ListRepository{
         for(TaskList list : lists) {
             if(list.getId() == aLong) {
                 lists.remove(list);
+                taskRepo.deleteAll(list.getTasks());
             }
         }
     }
@@ -94,14 +99,37 @@ public class ListRepositoryTest implements ListRepository{
 
     @Override
     public <S extends TaskList> S save(S entity) {
+        //saves the list and all its tasks
+        if (entity == null) {
+            return null;
+        }
+        for(TaskList list : lists) {
+            if(list.getid() == entity.getid()) {
+                lists.remove(list);
+                break;
+            }
+        }
         lists.add(entity);
+        taskRepo.saveAll(entity.getTasks());
         return entity;
+    }
+
+    public void add(TaskList entity) throws Exception {
+        for(TaskList list : lists) {
+            if(list.getid() == entity.getid()) {
+                throw new Exception("List already exists");
+            }
+        }
+        save(entity);
     }
 
     @Override
     public <S extends TaskList> List<S> saveAll(Iterable<S> entities) {
+        if (entities == null) {
+            return null;
+        }
         for(TaskList list : (Iterable<TaskList>) entities) {
-            lists.add(list);
+            save(list);
         }
         return (List<S>) entities;
     }
@@ -163,6 +191,11 @@ public class ListRepositoryTest implements ListRepository{
 
     @Override
     public TaskList getById(Long aLong) {
+        for(TaskList list : lists) {
+            if(list.getid() == aLong) {
+                return list;
+            }
+        }
         return null;
     }
 
@@ -193,6 +226,11 @@ public class ListRepositoryTest implements ListRepository{
 
     @Override
     public <S extends TaskList> boolean exists(Example<S> example) {
+        for(TaskList list : lists) {
+            if(list.getid() == example.getProbe().getid()) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -202,6 +240,11 @@ public class ListRepositoryTest implements ListRepository{
     }
     @Override
     public String getBoardByListID(long id){
-        return "key";
+        for(TaskList list : lists) {
+            if(list.getid() == id) {
+                return list.getBoard().getKey();
+            }
+        }
+        return null;
     }
 }

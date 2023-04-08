@@ -239,7 +239,6 @@ public class ServerUtils {
     public void send(String dest, Object o) {
         session.send(dest, o);
     }
-
     /**
      * Sends a request to the server to update the board
      *
@@ -251,25 +250,20 @@ public class ServerUtils {
 
     /**
      * Sends a request to the server to move a task from one board to another
-     *
      * @param model - the model used for this operation
      */
     public void moveTask(TaskMoveModel model, String boardKey) {
         send("/app/task/move/" + boardKey, model);
     }
-
     /**
      * Sends a request to the server to get a task from the database
-     *
      * @param taskId - the id of the task
      */
     public void getTask(String taskId) {
         send("/app/task/get", taskId);
     }
-
     /**
      * Sends a request to the server to delete a task from the database
-     *
      * @param taskId - the id of the task
      */
     public void deleteTask(Long taskId, String boardKey) {
