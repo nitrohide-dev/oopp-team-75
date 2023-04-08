@@ -1,5 +1,6 @@
 package server.api.services;
 
+import commons.SubTask;
 import commons.Tag;
 import commons.Task;
 import commons.TaskList;
@@ -101,6 +102,18 @@ public class TaskService {
 	 */
 	public Task save(Task task) {
 		return repo.save(task);
+	}
+
+	/**
+	 * Creates a subtask in the database from a title string
+	 * @param title - the name of the subtask
+	 * @return The key of the board in which the subtask is
+	 */
+	public String createSubTask(Task task, String title){
+		SubTask subTask = task.createSubTask();
+		subTask.setTitle(title);
+		repo.save(task);
+		return listRepo.getBoardByListID(task.getTaskList().getId());
 	}
 
 }

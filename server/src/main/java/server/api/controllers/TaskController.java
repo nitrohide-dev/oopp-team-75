@@ -104,6 +104,7 @@ public class TaskController {
     @SendTo("/topic/boards")
     public Board deleteById(Long id) {
         try {
+
             return boardService.findByKey(taskService.deleteById(id));
         } catch (TaskDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
@@ -115,5 +116,18 @@ public class TaskController {
     public Board addTag(Tag tag, @DestinationVariable("key") String taskId) {
         var boardKey =  taskService.addTag(Long.valueOf(taskId),tag);
         return boardService.findByKey(boardKey);
+    }
+
+    /**
+     * creates a subtask in the database with a given title
+     * @param title the subtask title
+     * @return the stored subtask
+     */
+    @MessageMapping("/task/create/{title}")
+    @SendTo("/topic/boards")
+    public Board createSubTask(Long taskID,@DestinationVariable("title") String title) throws TaskDoesNotExist {
+        Task task = taskService.getById(taskID);
+        String id = taskService.createSubTask(task,title);
+        return boardService.findByKey(id);
     }
 }

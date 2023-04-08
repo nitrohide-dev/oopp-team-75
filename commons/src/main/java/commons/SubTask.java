@@ -36,10 +36,11 @@ public class SubTask {
     private Task task;
 
     // constructor
-
-    public SubTask(String title) {
+    public SubTask(Task task, String title) {
         this.title = title;
+        this.task = task;
     }
+
 
     public SubTask() {} // for JPA
 

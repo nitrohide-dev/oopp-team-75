@@ -78,6 +78,12 @@ public class Task {
         this.desc = desc;
     }
 
+    public SubTask createSubTask() {
+        SubTask subTask = new SubTask(this, "");
+        subtasks.add(subTask);
+        return subTask;
+    }
+
 //    equals and hashcode
 
     /**
