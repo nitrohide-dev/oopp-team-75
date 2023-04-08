@@ -120,4 +120,14 @@ class ListControllerTest {
         assertEquals(0, listRepository.findAll().size());
         assertThrows(ResponseStatusException.class, () -> listController.deleteById(1000L));
     }
+
+    @Test
+    void deleteById2() {
+        boardService.createList(boardRepository.getById("key"), 1000L);
+        boardService.createList(boardRepository.getById("key2"), 1001L);
+        assertEquals(2, listRepository.findAll().size());
+        listController.deleteById(1000L);
+        assertEquals(1, listRepository.findAll().size());
+    }
+
 }

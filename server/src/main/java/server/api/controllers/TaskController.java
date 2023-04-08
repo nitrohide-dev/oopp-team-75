@@ -103,7 +103,6 @@ public class TaskController {
     @SendTo("/topic/boards")
     public Board deleteById(Long id,@DestinationVariable("key") String boardKey) {
         try {
-
             return boardService.findByKey(taskService.deleteById(id));
         } catch (TaskDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);

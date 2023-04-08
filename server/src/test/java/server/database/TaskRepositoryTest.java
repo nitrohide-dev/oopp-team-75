@@ -62,9 +62,8 @@ public class TaskRepositoryTest implements TaskRepository{
         for(Task task : tasks) {
             if(task.getid() == aLong) {
                 tasks.remove(task);
-                System.out.println("Deleted task with id:  --- "+ task.getid());
-
             }
+
         }
     }
 
@@ -238,7 +237,7 @@ public class TaskRepositoryTest implements TaskRepository{
     }
     @Override
     public int getOrderById(long id){
-        return (int)id;
+        return 0;
     }
     @Override
     public void updateInitialListOrder(int order,long id){
@@ -250,6 +249,7 @@ public class TaskRepositoryTest implements TaskRepository{
     }
     @Override
     public void moveTask(long id1,long id2,int order){
+
 
     }
 }

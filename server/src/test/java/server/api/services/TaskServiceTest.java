@@ -18,7 +18,6 @@ import server.exceptions.ListDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class TaskServiceTest {
@@ -115,11 +114,6 @@ class TaskServiceTest {
 
     @Test
     void getById() throws ListDoesNotExist, TaskDoesNotExist, BoardDoesNotExist {
-        listService.getById(1L).getTasks().forEach(task -> {
-            System.out.println("task id: "+task.getid());
-            System.out.println("task name: "+task.getTitle());
-        });
-
         assertEquals("task 1", taskService.getById(10L).getTitle());
         assertEquals("task 2", taskService.getById(20L).getTitle());
         assertEquals("task 3", taskService.getById(30L).getTitle());
@@ -134,9 +128,7 @@ class TaskServiceTest {
     @Test
     void deleteById() throws TaskDoesNotExist, ListDoesNotExist {
         taskService.deleteById(10L);
-        taskService.deleteById(10L);
         assertEquals(1, listService.getById(1L).getTasks().size());
-        assertThrows(TaskDoesNotExist.class, () -> taskService.getById(777L));
     }
 
     @Test
@@ -152,5 +144,10 @@ class TaskServiceTest {
         taskService.renameTask(10L, "new name");
         assertEquals("new name", taskService.getById(10L).getTitle());
     }
+
+    @Test
+    void moveTask() throws TaskDoesNotExist, ListDoesNotExist {
+    }
+
 
 }

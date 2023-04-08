@@ -120,6 +120,11 @@ class BoardServiceTest {
     }
 
     @Test
+    void createList(){
+        assertThrows(NullPointerException.class, () -> boardService.createList(null));
+    }
+
+    @Test
     void noList() throws CannotCreateBoard {
         assertEquals(0, boardService.findByKey("key2").getTaskLists().size());
     }

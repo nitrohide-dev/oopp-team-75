@@ -64,6 +64,7 @@ public class ListRepositoryTest implements ListRepository{
         for(TaskList list : lists) {
             if(list.getid() == aLong) {
                 lists.remove(list);
+                taskRepo.deleteAll(list.getTasks());
             }
         }
     }
