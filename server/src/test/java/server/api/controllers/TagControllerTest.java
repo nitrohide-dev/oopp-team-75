@@ -8,7 +8,14 @@ import server.api.services.BoardService;
 import server.api.services.ListService;
 import server.api.services.TagService;
 import server.api.services.TaskService;
-import server.database.*;
+import server.database.BoardRepository;
+import server.database.BoardRepositoryTest;
+import server.database.ListRepository;
+import server.database.ListRepositoryTest;
+import server.database.TagRepository;
+import server.database.TagRepositoryTest;
+import server.database.TaskRepository;
+import server.database.TaskRepositoryTest;
 import server.exceptions.CannotCreateBoard;
 import server.exceptions.TagDoesNotExist;
 
