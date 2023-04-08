@@ -4,6 +4,7 @@ import commons.Board;
 import commons.CreateBoardModel;
 import commons.Task;
 import commons.TaskList;
+import commons.TaskMoveModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
@@ -147,5 +148,27 @@ class TaskControllerTest {
     void renameTask() throws TaskDoesNotExist, ListDoesNotExist {
         taskController.renameTask(10L, "wubba-lubba-dub-dub", board1.getKey());
         assertEquals("wubba-lubba-dub-dub", taskService.getById(10L).getTitle());
+    }
+
+    @Test
+    void renameTaskException() {
+        assertThrows(ResponseStatusException.class, () -> taskController.renameTask(100L
+                , "wubba-lubba-dub-dub", board1.getKey()));
+    }
+
+    @Test
+    void deleteByIdException() {
+        assertThrows(ResponseStatusException.class, () -> taskController.deleteById(100L, board1.getKey()));
+    }
+
+    @Test
+    void moveTask() throws TaskDoesNotExist, ListDoesNotExist {
+        TaskMoveModel taskMoveModel = new TaskMoveModel(10L, 1L, 0);
+        taskController.moveTask(taskMoveModel, board1.getKey());
+        assertEquals(2, list1.getTasks().size());
+        assertEquals(20, list1.getTasks().get(1).getid());
+        TaskMoveModel taskMoveModel1= new TaskMoveModel(20L, 1l, Integer.MAX_VALUE);
+        taskController.moveTask(taskMoveModel1, board1.getKey());
+        assertEquals(20, list1.getTasks().get(1).getid());
     }
 }
