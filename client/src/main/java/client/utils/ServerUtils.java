@@ -124,11 +124,13 @@ public class ServerUtils {
     public void send(String dest, Object o) {
         session.send(dest, o);
     }
+
     /**
      * Sends a request to the server to update the board
      * @param board - the board to be update
      */
     public void updateBoard(Board board) { send("/app/boards", board);}
+
     /**
      * Sends a request to the server to move a task from one board to another
      * @param model - the model used for this operation
@@ -136,6 +138,7 @@ public class ServerUtils {
     public void moveTask(TaskMoveModel model ,String boardKey) {
         send("/app/task/move/" + boardKey, model);
     }
+
     /**
      * Sends a request to the server to get a task from the database
      * @param taskId - the id of the task
@@ -143,39 +146,47 @@ public class ServerUtils {
     public void getTask(String taskId) {
         send("/app/task/get", taskId);
     }
+
     /**
      * Sends a request to the server to delete a task from the database
      * @param taskId - the id of the task
      */
     public void deleteTask(Long taskId,String boardKey){ send("/app/task/delete/"+boardKey,taskId);}
+
     /**
      * Sends a request to the server to get a list from the database
      * @param listId - the id of the list
      */
     public void getList(Long listId) { send("/app/list/get",listId);}
+
     /**
      * Sends a request to the server to delete a list from the database
      * @param listId - the id of the list
      */
     public void deleteList(Long listId) { send("/app/list/delete",listId);}
+
     /**
      * Sends a request to the server to create a list in the database
      * @param boardKey - the Board that is to contain the list
      */
     public void createList(String boardKey) {send("/app/list/createlist",boardKey);}
+
     /**
      * Sends a request to the server to rename a list in the database
      * @param listId - the id of the list
      * @param listTitle - the new list name
      */
     public void renameList(Long listId,String listTitle) { send("/app/list/rename/" + listTitle,listId);}
+
     /**
      * Sends a request to the create a task in the database
      * @param listID - the ID of the list that is supposed to contain the task
      * @param taskTitle - the title of the created task
      */
     public void createTask(Long listID,String taskTitle) {
-        send("/app/list/createTask/"+ taskTitle,listID);}
+        send("/app/list/createTask/"+ taskTitle,listID);
+    }
+
     /**
      * Sends a request to the server to rename a task in the database
      * @param taskId - the id of the task
