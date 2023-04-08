@@ -37,4 +37,6 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
      */
     @Query(value = "SELECT * FROM TAG t1 WHERE t1.BOARD_KEY = ?1 ", nativeQuery = true)
     Collection<Tag> getTagsByBoard(long board_key);
+
+    Collection<Tag> getTagsByBoard(String board_key);
 }

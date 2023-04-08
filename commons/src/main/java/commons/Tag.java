@@ -76,4 +76,30 @@ public class Tag {
     public int hashCode() {
         return Objects.hash(id, title);
     }
+
+    public boolean isChildOfTask(long task_id) {
+        for (Task task : tasks) {
+            if (task.getId() == task_id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isChildOfBoard(String board_key) {
+        return board.getKey() == board_key;
+    }
+
+    public static Tag createTag(String title) {
+        long random = (long) (Math.random() * 1000000L);
+        Tag tag = new Tag(title);
+        tag.setId(random);
+        return tag;
+    }
+
+    public static Tag createTag(String title, long id) {
+        Tag tag = new Tag(title);
+        tag.setId(id);
+        return tag;
+    }
 }

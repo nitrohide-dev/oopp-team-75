@@ -127,4 +127,10 @@ public class Board {
         this.taskLists.remove(taskList);
         taskList.setBoard(null);
     }
+
+    public Tag createTag(String name) {
+        Tag tag = new Tag(name);
+        this.tags.add(tag);
+        return tag;
+    }
 }

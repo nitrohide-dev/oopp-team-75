@@ -1,15 +1,21 @@
 package server.api.services;
+
 import commons.Tag;
 import org.springframework.stereotype.Service;
+import server.database.BoardRepository;
 import server.database.TagRepository;
 import server.exceptions.TagDoesNotExist;
+
+import java.util.List;
 import java.util.Set;
 @Service
 public class TagService {
     private final TagRepository repo;
+    private final BoardRepository boardRepo;
 
-    public TagService(TagRepository repo) {
+    public TagService(TagRepository repo, BoardRepository boardRepo) {
         this.repo = repo;
+        this.boardRepo = boardRepo;
     }
 
 
@@ -19,7 +25,12 @@ public class TagService {
      * @return The newly created tag
      */
     public Tag createTag(String title){
-        Tag tag = new Tag(title);
+        var tag = Tag.createTag(title);
+        return repo.save(tag);
+    }
+
+    public Tag createTag(String title, Long Id){
+        var tag = Tag.createTag(title, Id);
         return repo.save(tag);
     }
     /**
@@ -55,14 +66,14 @@ public class TagService {
         return allTags;
     }
     /**
-     * TO DO
      * gets all tags of a task from the database
-     * @param task_id - the id of the task to look up tags for
+     * @param boardKey - the id of the task to look up tags for
      * @return a set of tags of the task
      */
-    public Set<Tag> getAllTagsByBoard(long task_id){
-        Set<Tag> allTags = (Set<Tag>) repo.getTagsByTask(task_id);
-        return allTags;
+    public List<Tag> getAllTagsByBoard(String boardKey){
+        var board = boardRepo.getById(boardKey);
+        var tags = board.getTags();
+        return tags;
     }
     /**
      * delete a tag from the database by its id

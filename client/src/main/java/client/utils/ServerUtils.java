@@ -195,6 +195,45 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON);
     }
 
+    /**
+     * Gets a tag from the database by ID
+     * @param id - the id of the tag
+     * @return the tag with the given id
+     */
+    public Tag getTag(String id) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tag/getById/" + id)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(Tag.class);
+    }
+
+    /**
+     * Gets all tags by task from the database
+     * @param taskKey the key of the task to get the tags from
+     * @return a set of tags
+     */
+    public Set getTagsByTask(String taskKey) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tag/getByTask/" + taskKey)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(Set.class);
+    }
+
+    /**
+     * Gets all tags by board from the database
+     * @param boardKey the key of the board to get the tags from
+     * @return a list of tags
+     */
+    public List getTagsByBoard(String boardKey) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/tag/getByBoard/" + boardKey)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(List.class);
+    }
+
     //STOMP API (Websockets)
     public void send(String dest, Object o) {
         session.send(dest, o);
@@ -294,47 +333,39 @@ public class ServerUtils {
     }
 
     /**
-     * Gets a tag from the database by ID
-     * @param id - the id of the tag
-     * @return the tag with the given id
+     * Sends a request to the server to delete a tag from the database
+     * @param tagKey - the key of the tag to be deleted
+     * @param boardKey - the key of the board to be deleted from
      */
-    public Tag getTag(String id) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/tag/getById/" + id)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(Tag.class);
-    }
-
-    public Set getTagsByTask(String taskKey) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/tag/getByTask/" + taskKey)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(Set.class);
-    }
-
-    public Set getTagsByBoard(String boardKey) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/tag/getByBoard/" + boardKey)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(Set.class);
-    }
-
     public void deleteTag(String tagKey, String boardKey) {
         send("/app/tag/delete/" + tagKey, boardKey);
     }
 
+    /**
+     * Sends a request to the server to edit a tag in the database
+     * @param tagKey - the key of the tag to be edited
+     * @param boardKey - the key of the board to be edited from
+     * @param newTitle - the new title of the tag
+     */
     public void editTag(String tagKey, String boardKey, String newTitle) {
         send("/app/tag/edit/" + boardKey + "/" + tagKey, newTitle);
     }
 
+    /**
+     * Sends a request to the server to create a tag in the database
+     * @param boardKey - the key of the board to be created from
+     * @param tagTitle - the title of the tag to be created
+     */
     public void createTag(String boardKey, String tagTitle) {
         send("/app/tag/create/" + tagTitle, boardKey);
     }
 
-    public void setTag(String taskKey, Tag tag) {
+    /**
+     * Sends a request to the server to add a tag to a task in the database
+     * @param taskKey - the key of the task to be added to
+     * @param tag - the tag to be added
+     */
+    public void addTag(String taskKey, Tag tag) {
         send("/app/task/addTag/" + taskKey, tag);
     }
 }

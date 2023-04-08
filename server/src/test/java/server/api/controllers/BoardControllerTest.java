@@ -28,7 +28,7 @@ class BoardControllerTest {
         tagRepository = new TagRepositoryTest();
         boardRepository = new BoardRepositoryTest();
         boardService = new BoardService(boardRepository);
-        this.boardController = new BoardController(boardService, new TagService(tagRepository));
+        this.boardController = new BoardController(boardService, new TagService(tagRepository, boardRepository));
         boardController.authenticate("testing");
 
         boardController.create(new CreateBoardModel("key", "name"));

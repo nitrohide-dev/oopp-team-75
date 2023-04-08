@@ -221,7 +221,7 @@ public class BoardController {
     @MessageMapping("/tag/create/{title}")
     @SendTo("/topic/boards")
     public Board createTag(@DestinationVariable String title, String boardKey) {
-        tagService.createTag(title);
+        boardService.createTag(boardKey, title);
         return boardService.findByKey(boardKey);
     }
 }

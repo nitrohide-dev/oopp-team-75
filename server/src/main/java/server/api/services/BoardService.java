@@ -1,6 +1,7 @@
 package server.api.services;
 
 import commons.Board;
+import commons.Tag;
 import commons.models.CreateBoardModel;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
@@ -85,5 +86,12 @@ public class 	BoardService {
 		if (board == null)
 			throw new BoardDoesNotExist("There is no board to be saved");
 		return repo.save(board);
+	}
+
+	public Tag createTag(String boardKey, String name) {
+		Board board = findByKey(boardKey);
+		Tag tag = board.createTag(name);
+		repo.save(board);
+		return tag;
 	}
 }
