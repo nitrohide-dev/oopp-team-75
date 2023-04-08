@@ -29,7 +29,7 @@ class TagServiceTest {
 
 
     @BeforeEach
-    void setup() throws CannotCreateBoard {
+    public void setup() throws CannotCreateBoard {
         taskRepository = new TaskRepositoryTest();
         listRepository = new ListRepositoryTest();
         tagRepository = new TagRepositoryTest();
@@ -62,6 +62,13 @@ class TagServiceTest {
     void editTagException() {
         assertThrows(TagDoesNotExist.class, () -> tagService.editTag(2, "2"));
         assertThrows(TagDoesNotExist.class, () -> tagService.editTag(3000, "2"));
+    }
+
+    @Test
+    void editTag() throws TagDoesNotExist {
+        tagService.createTag("2", 2L);
+        tagService.editTag(1L, "2");
+        assertEquals("2", tagService.getById(1L).getTitle());
     }
 
     @Test
