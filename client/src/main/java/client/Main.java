@@ -54,7 +54,7 @@ public class Main extends Application {
         var passwordChange = FXML.load(PasswordChangeCtrl.class,"client","scenes","PasswordChange.fxml");
         var taskOverview = FXML.load(TaskOverviewCtrl.class, "client", "scenes", "TaskOverview.fxml");
         mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, landing, board, userMenu, boardCreate,
+        mainCtrl.initialize(primaryStage, landing, board, userMenu,
                                 adminOverview, adminLogin, passwordChange, taskOverview);
 
     }
