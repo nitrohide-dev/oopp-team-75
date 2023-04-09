@@ -115,7 +115,7 @@ public class Board {
     public TaskList createTaskList() {
         TaskList list = new TaskList(this);
         long random = (long) (Math.random() * 1000000);
-        list.setid(random);
+        list.setId(random);
         this.taskLists.add(list);
         return list;
     }
@@ -129,7 +129,7 @@ public class Board {
      */
     public TaskList createTaskList(long id) throws IllegalArgumentException{
         TaskList list = new TaskList(this);
-        list.setid(id);
+        list.setId(id);
         if(this.taskLists.contains(list)){
             throw new IllegalArgumentException("TaskList already exists");
         }
@@ -149,7 +149,7 @@ public class Board {
         if(this.taskLists.contains(list)){
             throw new IllegalArgumentException("TaskList already exists");
         }
-        list.setid(id);
+        list.setId(id);
         list.setTitle(title);
         this.taskLists.add(list);
         return list;

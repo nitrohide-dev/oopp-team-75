@@ -37,7 +37,7 @@ class TagControllerTest {
     public void setup() throws CannotCreateBoard {
         boardController = new BoardController(boardService, tagService);
         taskRepository = new TaskRepositoryTest();
-        listRepository = new ListRepositoryTest();
+        listRepository = new ListRepositoryTest(taskRepository);
         tagRepository = new TagRepositoryTest();
         boardRepository = new BoardRepositoryTest();
         boardService = new BoardService(boardRepository);

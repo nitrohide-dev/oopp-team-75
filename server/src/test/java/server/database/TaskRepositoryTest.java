@@ -124,29 +124,33 @@ public class TaskRepositoryTest implements TaskRepository{
             if(task.getId() == entity.getId()) {
                 tasks.remove(task);
                 tasks.add(entity);
+                repo.saveAll(repo.getSubTasksOfTask(entity.getId()));
                 return entity;
             }
         }
         tasks.add(entity);
+        repo.saveAll(repo.getSubTasksOfTask(entity.getId()));
         return entity;
     }
 
     @Override
     public <S extends Task> List<S> saveAll(Iterable<S> entities) {
+        if (entities == null) {
+            return null;
+        }
         List<S> savedTasks = new ArrayList<>();
         for(Task task : (Iterable<Task>) entities) {
             for(Task task2 : tasks) {
                 if(task.getId() == task2.getId()) {
                     tasks.remove(task2);
-                    tasks.add(task);
+                    save(task);
 
                     savedTasks.add((S) task);
                     break;
                 }
             }
-            tasks.add(task);
+            save(task);
             savedTasks.add((S) task);
-            repo.saveAll(repo.getSubTasksOfTask(task.getId()));
         }
         return savedTasks;
     }

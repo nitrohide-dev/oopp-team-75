@@ -31,8 +31,8 @@ class TagServiceTest {
     @BeforeEach
     public void setup() throws CannotCreateBoard {
         taskRepository = new TaskRepositoryTest();
-        listRepository = new ListRepositoryTest();
         tagRepository = new TagRepositoryTest();
+        listRepository = new ListRepositoryTest(taskRepository);
         boardRepository = new BoardRepositoryTest();
         boardService = new BoardService(boardRepository);
         tagService = new TagService(tagRepository, boardRepository);

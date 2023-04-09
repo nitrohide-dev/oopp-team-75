@@ -104,7 +104,7 @@ public class ListRepositoryTest implements ListRepository{
             return null;
         }
         for(TaskList list : lists) {
-            if(list.getid() == entity.getid()) {
+            if(list.getId() == entity.getId()) {
                 lists.remove(list);
                 break;
             }
@@ -116,7 +116,7 @@ public class ListRepositoryTest implements ListRepository{
 
     public void add(TaskList entity) throws Exception {
         for(TaskList list : lists) {
-            if(list.getid() == entity.getid()) {
+            if(list.getId() == entity.getId()) {
                 throw new Exception("List already exists");
             }
         }
@@ -192,7 +192,7 @@ public class ListRepositoryTest implements ListRepository{
     @Override
     public TaskList getById(Long aLong) {
         for(TaskList list : lists) {
-            if(list.getid() == aLong) {
+            if(list.getId() == aLong) {
                 return list;
             }
         }
@@ -227,7 +227,7 @@ public class ListRepositoryTest implements ListRepository{
     @Override
     public <S extends TaskList> boolean exists(Example<S> example) {
         for(TaskList list : lists) {
-            if(list.getid() == example.getProbe().getid()) {
+            if(list.getId() == example.getProbe().getId()) {
                 return true;
             }
         }
@@ -241,7 +241,7 @@ public class ListRepositoryTest implements ListRepository{
     @Override
     public String getBoardByListID(long id){
         for(TaskList list : lists) {
-            if(list.getid() == id) {
+            if(list.getId() == id) {
                 return list.getBoard().getKey();
             }
         }

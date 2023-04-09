@@ -1,5 +1,6 @@
 package server.api.services;
 
+import commons.Board;
 import commons.SubTask;
 import commons.Task;
 import commons.TaskList;
@@ -15,7 +16,9 @@ import server.database.SubTaskRepositoryTest;
 import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
 import server.exceptions.CannotCreateBoard;
+import server.exceptions.ListDoesNotExist;
 import server.exceptions.SubTaskDoesNotExist;
+import server.exceptions.TaskDoesNotExist;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -46,54 +49,48 @@ class SubTaskServiceTest {
     private Task[]  tasks;
     private SubTask[] subTasks;
 
+    private Board board1;
+
     @BeforeEach
-    void setUp() throws CannotCreateBoard {
-        subTaskRepository = new SubTaskRepositoryTest();
-        listRepository = new ListRepositoryTest();
-        taskRepository = new TaskRepositoryTest(subTaskRepository);
+    void setUp() throws CannotCreateBoard, ListDoesNotExist, TaskDoesNotExist {
         boardRepository = new BoardRepositoryTest();
+        subTaskRepository = new SubTaskRepositoryTest();
+        taskRepository = new TaskRepositoryTest(subTaskRepository);
+        listRepository = new ListRepositoryTest(taskRepository);
         boardService = new BoardService(boardRepository);
-        subTaskService = new SubTaskService(subTaskRepository);
         listService = new ListService(listRepository, taskRepository, boardRepository);
         taskService = new TaskService(taskRepository, listRepository);
+        subTaskService = new SubTaskService(subTaskRepository);
+        board1 =boardService.create(new CreateBoardModel("1", "1"));
 
-        boardService.create(new CreateBoardModel("key1", "title1"   ));
-        boardService.create(new CreateBoardModel("key2", "title2"   ));
-        boardService.create(new CreateBoardModel("key3", "title3"   ));
+        boardService.createList(board1, 1L, "1");
+        boardService.createList(board1, 2L, "2");
+        boardService.createList(board1, 3L, "3");
 
-        boardService.createList(boardService.findByKey("key1"));
-        boardService.createList(boardService.findByKey("key2"));
-        boardService.createList(boardService.findByKey("key3"));
+        System.out.println("HOAOAOAOOAO"+board1.getTaskLists().get(0).getId());
+        System.out.println(board1.getTaskLists().get(1).getId());
+        System.out.println(board1.getTaskLists().get(2).getId());
 
-        taskList = boardService.getAll().get(0).getTaskLists().get(0);
-        taskList2 = boardService.getAll().get(1).getTaskLists().get(0);
-        taskList3 = boardService.getAll().get(2).getTaskLists().get(0);
+        listService.save(board1.getTaskLists().get(0));
+        listService.save(board1.getTaskLists().get(1));
+        listService.save(board1.getTaskLists().get(2));
+
+        taskList = listService.getById(1L);
+        taskList2 = listService.getById(2L);
+        taskList3 = listService.getById(3L);
+
+        tasks = new Task[3];
 
         listService.createTask(taskList, "task1");
         listService.createTask(taskList, "task2");
         listService.createTask(taskList3, "task3");
 
-        tasks = new Task[3];
-
-        tasks[0] = listService.getAll().get(0).getTasks().get(0);
-        tasks[1] = listService.getAll().get(0).getTasks().get(1);
-        tasks[2] = listService.getAll().get(2).getTasks().get(0);
+        tasks[0] = taskService.getById(1L);
+        tasks[1] = taskService.getById(2L);
+        tasks[2] = taskService.getById(3L);
 
         subTasks = new SubTask[3];
 
-        taskService.createSubTask(tasks[0], "subTask1");
-        taskService.createSubTask(tasks[0], "subTask2");
-        taskService.createSubTask(tasks[2], "subTask3");
-
-        subTasks[0] = listService.getAll().get(0).getTasks().get(0).getSubtasks().get(0);
-        subTasks[1] = listService.getAll().get(0).getTasks().get(0).getSubtasks().get(1);
-        subTasks[2] = listService.getAll().get(2).getTasks().get(0).getSubtasks().get(0);
-
-        subTasks[0].setId(1L);
-        subTasks[1].setId(2L);
-        subTasks[2].setId(3L);
-
-        System.out.println("WOLOLOLOL"+subTasks[0].getId()+" "+subTasks[1].getId()+" "+subTasks[2].getId());
 
     }
 

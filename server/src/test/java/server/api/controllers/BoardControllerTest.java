@@ -60,7 +60,7 @@ class BoardControllerTest {
     @Test
     void testGetAll1() throws CannotCreateBoard, IOException {
         var boardService = new BoardService(new BoardRepositoryTest());
-        var boardController2 = new BoardController(boardService);
+        var boardController2 = new BoardController(boardService, new TagService(tagRepository, boardRepository));
         boardController2.authenticate("testing");
         List<Board> boards = boardController2.getAll();
         assertEquals( new ArrayList<>(), boards);
@@ -68,7 +68,7 @@ class BoardControllerTest {
 
     @Test
     public void testGetAllNotAuthenticated() throws IOException {
-        var boardController2 = new BoardController(boardService);
+        var boardController2 = new BoardController(boardService, new TagService(tagRepository, boardRepository));
         boardController2.authenticate("wrong password");
         boardController2.create(new CreateBoardModel("key11", "name"));
         List<Board> result = boardController2.getAll();
