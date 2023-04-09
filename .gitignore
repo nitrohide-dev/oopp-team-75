@@ -6,6 +6,9 @@ build/
 !**/src/test/**/build/
 
 **/*.mv.db
+**/*.trace.db
+**/pwd.txt
+**/data.csv
 
 **/*.swp
 client/src/main/resources/data.csv

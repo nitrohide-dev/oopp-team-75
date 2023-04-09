@@ -174,4 +174,12 @@ public class TaskList {
             throw new IllegalArgumentException("Task2 does not exist in the taskList.");
         insertTask(index, task1);
     }
+
+    /**
+     * Inserts {@code task} at the end of this taskList.
+     * @param task task to be inserted
+     */
+    public void insertTask(Task task) {
+        this.tasks.add(task);
+    }
 }

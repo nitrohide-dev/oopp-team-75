@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 
-class TaskRepositoryTest implements TaskRepository{
+public class TaskRepositoryTest implements TaskRepository{
     private List<Task> tasks;
 
     public TaskRepositoryTest() {
@@ -62,15 +62,15 @@ class TaskRepositoryTest implements TaskRepository{
         for(Task task : tasks) {
             if(task.getid() == aLong) {
                 tasks.remove(task);
-                break;
             }
+
         }
     }
 
     @Override
     public void delete(Task entity) {
         for(Task task : tasks) {
-            if(task.getid() == entity.getid()) {
+            if(task.equals(entity)) {
                 tasks.remove(task);
                 break;
             }
@@ -84,7 +84,6 @@ class TaskRepositoryTest implements TaskRepository{
             for(Task task : tasks) {
                 if(task.getid() == i) {
                     tasks.remove(task);
-                    break;
                 }
             }
         }
@@ -92,11 +91,14 @@ class TaskRepositoryTest implements TaskRepository{
 
     @Override
     public void deleteAll(Iterable<? extends Task> entities) {
+        if (entities == null) {
+            return;
+        }
+
         for(Task task : (Iterable<Task>) entities) {
             for(Task task2 : tasks) {
                 if(task.getid() == task2.getid()) {
                     tasks.remove(task2);
-                    break;
                 }
             }
         }
@@ -110,7 +112,7 @@ class TaskRepositoryTest implements TaskRepository{
     @Override
     public <S extends Task> S save(S entity) {
         for(Task task : tasks) {
-            if(task.getid() == entity.getid()) {
+            if(task.equals(entity)) {
                 tasks.remove(task);
                 tasks.add(entity);
                 return entity;
@@ -122,11 +124,24 @@ class TaskRepositoryTest implements TaskRepository{
 
     @Override
     public <S extends Task> List<S> saveAll(Iterable<S> entities) {
-        return null;
+        if (entities == null) {
+            return null;
+        }
+        for(Task task : (Iterable<Task>) entities) {
+            delete(task);
+            save(task);
+        }
+        return (List<S>) entities;
+
     }
 
     @Override
     public Optional<Task> findById(Long aLong) {
+        for(Task task : tasks) {
+            if(task.getid() == aLong) {
+                return Optional.of(task);
+            }
+        }
         return Optional.empty();
     }
 
@@ -177,6 +192,11 @@ class TaskRepositoryTest implements TaskRepository{
 
     @Override
     public Task getById(Long aLong) {
+        for(Task task : tasks) {
+            if(task.getid() == aLong) {
+                return task;
+            }
+        }
         return null;
     }
 
@@ -187,7 +207,8 @@ class TaskRepositoryTest implements TaskRepository{
 
     @Override
     public <S extends Task> List<S> findAll(Example<S> example) {
-        return null;
+
+        return (List<S>) tasks;
     }
 
     @Override
@@ -226,7 +247,9 @@ class TaskRepositoryTest implements TaskRepository{
     public void updateTargetListOrder(int order,long id){
 
     }
+    @Override
     public void moveTask(long id1,long id2,int order){
+
 
     }
 }

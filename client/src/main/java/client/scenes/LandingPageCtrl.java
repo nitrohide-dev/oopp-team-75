@@ -10,7 +10,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import org.springframework.messaging.simp.stomp.StompSession;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 public class LandingPageCtrl {
@@ -21,48 +20,38 @@ public class LandingPageCtrl {
     @FXML
     private TextField server_ip;
     @FXML
-    private ImageView logo1;
+    private ImageView logo;
     @FXML
-    private ImageView exitButton;
-
+    private ImageView exit;
 
     @Inject
     public LandingPageCtrl(MainCtrl mainCtrl, ServerUtils server) {
         this.mainCtrl = mainCtrl;
         this.server = server;
     }
+    public void initialize() {
+        logo.setImage(new Image(Path.of("", "client", "images", "Logo.png").toString()));
+        exit.setImage(new Image(Path.of("", "client", "images", "ExitButton.png").toString()));
+    }
 
     public void connect(){
-        final String text = server_ip.getText();
-        final String ip = "".equals(text) ? "localhost:8080" : text;
+        if (server_ip.getText().isEmpty())
+            server_ip.setText("localhost:8080");
+        final String ip = server_ip.getText();
         server_ip.setText("connecting...");
         new Thread(() -> {
             final StompSession session = server.safeConnect(ip);
             if (session != null) {
+                server.setDomain(ip);
                 server.setSERVER("http://" + ip + "/");
                 server.setSession(session);
-                Platform.runLater(() -> {
-                    try {
-                        mainCtrl.showUserMenuFirstTime();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-            } else Platform.runLater(() -> server_ip.setText(ip));
-
+                Platform.runLater(() -> mainCtrl.showUserMenu());
+            } Platform.runLater(() -> server_ip.setText(ip));
         }).start();
     }
 
     public void exit(){
         Platform.exit();
         System.exit(0);
-    }
-
-    public void changeImageUrl() {
-        // Set the image URL of ImageView
-        String path = Path.of("", "client", "images", "Logo.png").toString();
-        String path2 = Path.of("", "client", "images", "ExitButton.png").toString();
-        logo1.setImage(new Image(path));
-        exitButton.setImage(new Image(path2));
     }
 }

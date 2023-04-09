@@ -39,13 +39,34 @@ public class TaskService {
 			throw new TaskDoesNotExist("There exists no task with the provided id.");
 		return repo.findById(id).get();
 	}
-    public void renameTask(long id,String name) throws TaskDoesNotExist {
+
+	/**
+	 * Checks if it is possible to change the name of a given task and saves it in the database
+	 * @param id - the id of the task
+	 * @param name - the new name for the task
+	 * @throws TaskDoesNotExist - when there is no task with such id
+	 */
+    public void renameTask(long id, String name) throws TaskDoesNotExist {
 	    if (!repo.existsById(id))
 		    throw new TaskDoesNotExist("There exists no task with the provided id.");
 	    Task task = getById(id);
 	    task.setTitle(name);
 	    repo.save(task);
     }
+
+	/**
+	 * Checks if it is possible to change the description of a given task and saves it in the database
+	 * @param id - the id of the task
+	 * @param newDesc - the new description for the task
+	 * @throws TaskDoesNotExist - when there is no task with such id
+	 */
+	public void changeTaskDesc(long id, String newDesc) throws TaskDoesNotExist {
+		if (!repo.existsById(id))
+			throw new TaskDoesNotExist("There exists no task with the provided id.");
+		Task task = getById(id);
+		task.setDesc(newDesc);
+		repo.save(task);
+	}
 
 	/**
 	 * Deletes a task from the database
@@ -70,7 +91,7 @@ public class TaskService {
 	 * @param order the place in the new list which the task should occupy
      * @throws TaskDoesNotExist if the task with the given id doesn't exist in the database
 	 */
-	public void moveTask(Task task,TaskList targetlist,int order) throws TaskDoesNotExist
+	public void moveTask(Task task, TaskList targetlist, int order) throws TaskDoesNotExist
 	{
 		if (!repo.existsById(task.getid()))
 			throw new TaskDoesNotExist("There is no task with the provided id.");

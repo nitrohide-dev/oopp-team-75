@@ -14,7 +14,6 @@ import java.util.Optional;
 public class 	BoardService {
 
 	private final BoardRepository repo;
-
 	public BoardService(BoardRepository repo) {
 		this.repo = repo;
 	}
@@ -24,7 +23,7 @@ public class 	BoardService {
 	 * @return list of all boards
 	 */
 	public List<Board> getAll() {
-		return (List<Board>)  repo.findAll();
+		return repo.findAll();
 	}
 
 	/**
@@ -74,8 +73,33 @@ public class 	BoardService {
 		board.createTaskList();
 		repo.save(board);
 		return repo.findById(board.getKey()).get();
-
 	}
+
+	/**
+	 * Creates a list in the database with a given id
+	 * @param board - the board the list is in
+	 * @param id - the id of the list
+	 * @return the board the list is in
+	 */
+	public Board createList(Board board, long id){
+		board.createTaskList(id);
+		repo.save(board);
+		return repo.findById(board.getKey()).get();
+	}
+
+	/**
+	 * Creates a list in the database with a given id and name
+	 * @param board - the board the list is in
+	 * @param id - the id of the list
+	 * @param name - the name of the list
+	 * @return
+	 */
+	public Board createList(Board board, long id, String name){
+		board.createTaskList(id, name);
+		repo.save(board);
+		return repo.findById(board.getKey()).get();
+	}
+
 	/**
 	 * Saves a board to the database.
 	 * @param board the board to save
