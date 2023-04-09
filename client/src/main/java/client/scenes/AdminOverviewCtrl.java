@@ -11,6 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class AdminOverviewCtrl{
      * initializes admin overview
      */
     public void init(){
+        boardsListView.getItems().clear();
         boards = server.getAllBoards();
         for(Board b : boards)
             this.addBoardToListView(b.getKey());
@@ -78,12 +80,13 @@ public class AdminOverviewCtrl{
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
         removeButton.setOnAction(event -> removeBoard(itemBox));
-        itemBox.getChildren().addAll(itemLabel, removeButton);
+        Region region = new Region();
+        region.setPrefSize(640, 20);
+        itemBox.getChildren().addAll(itemLabel,region, removeButton);
         itemBox.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2)
                 openBoard(itemBox);
         });
-
         boardsListView.getItems().add(itemBox);
     }
 
