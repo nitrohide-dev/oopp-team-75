@@ -16,7 +16,6 @@ import server.api.services.BoardService;
 import server.api.services.TagService;
 import server.exceptions.TagDoesNotExist;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -79,8 +78,8 @@ public class TagController {
      * @return the stored tag list
      */
     @GetMapping("/getByBoard/{id}")
-    public ResponseEntity<List<Tag>> getByBoard(@PathVariable("id") String id) {
-        List<Tag> tags = tagService.getAllTagsByBoard(id);
+    public ResponseEntity<Set<Tag>> getByBoard(@PathVariable("id") String id) {
+        Set<Tag> tags = tagService.getAllTagsByBoard(id);
         return ResponseEntity.ok(tags);
     }
 

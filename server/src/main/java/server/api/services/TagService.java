@@ -6,7 +6,6 @@ import server.database.BoardRepository;
 import server.database.TagRepository;
 import server.exceptions.TagDoesNotExist;
 
-import java.util.List;
 import java.util.Set;
 @Service
 public class TagService {
@@ -70,7 +69,7 @@ public class TagService {
      * @param boardKey - the id of the task to look up tags for
      * @return a set of tags of the task
      */
-    public List<Tag> getAllTagsByBoard(String boardKey){
+    public Set<Tag> getAllTagsByBoard(String boardKey){
         var board = boardRepo.getById(boardKey);
         var tags = board.getTags();
         return tags;

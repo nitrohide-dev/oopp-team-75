@@ -111,14 +111,14 @@ class TagServiceTest {
         boardService.createTag("1", "1");
         assertEquals(1, tagService.getAllTagsByBoard("1").size());
         boardService.createTag("1", "1");
-        assertEquals(2, tagService.getAllTagsByBoard("1").size());
+        assertEquals(1, tagService.getAllTagsByBoard("1").size());
         boardService.create(new CreateBoardModel("2", "1"));
         assertEquals(0, tagService.getAllTagsByBoard("2").size());
         boardService.createTag("2", "2");
         assertEquals(1, tagService.getAllTagsByBoard("2").size());
         boardService.createTag("2", "2");
-        assertEquals(2, tagService.getAllTagsByBoard("2").size());
-        assertEquals(2, tagService.getAllTagsByBoard("1").size());
+        assertEquals(1, tagService.getAllTagsByBoard("2").size());
+        assertEquals(1, tagService.getAllTagsByBoard("1").size());
     }
 
     @Test

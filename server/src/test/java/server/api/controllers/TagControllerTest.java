@@ -83,7 +83,7 @@ class TagControllerTest {
         assertEquals(0, tagController.getByBoard("1").getBody().size());
         boardService.createTag("1", "2");
         assertEquals(1, tagController.getByBoard("1").getBody().size());
-        assertEquals("2", tagController.getByBoard("1").getBody().get(0).getTitle());
+        assertEquals("2", tagController.getByBoard("1").getBody().iterator().next().getTitle());
     }
 
     @Test
