@@ -4,6 +4,7 @@ import commons.SubTask;
 import org.springframework.stereotype.Service;
 import server.database.SubTaskRepository;
 import server.exceptions.SubTaskDoesNotExist;
+import server.exceptions.TaskDoesNotExist;
 
 import java.util.List;
 
@@ -32,8 +33,10 @@ public class SubTaskService {
      * @param task_id - the id of the task to look up subtasks for
      * @return a set of Subtasks of the task
      */
-    public List<SubTask> getAllSubTasksOfTask(long task_id){
+    public List<SubTask> getAllSubTasksOfTask(long task_id) throws TaskDoesNotExist {
         List<SubTask> allSubTasks = repo.getSubTasksOfTask(task_id);
+        if (allSubTasks.isEmpty())
+            throw new TaskDoesNotExist("There exists no task for the provided task id.");
         return allSubTasks;
     }
     /**

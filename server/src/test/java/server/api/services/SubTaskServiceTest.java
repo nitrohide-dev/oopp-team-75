@@ -72,10 +72,6 @@ class SubTaskServiceTest {
         boardService.createList(board1, 2L, "2");
         boardService.createList(board1, 3L, "3");
 
-        System.out.println("HOAOAOAOOAO"+board1.getTaskLists().get(0).getId());
-        System.out.println(board1.getTaskLists().get(1).getId());
-        System.out.println(board1.getTaskLists().get(2).getId());
-
         listService.save(board1.getTaskLists().get(0));
         listService.save(board1.getTaskLists().get(1));
         listService.save(board1.getTaskLists().get(2));
@@ -112,14 +108,8 @@ class SubTaskServiceTest {
         subTasks[1].setId(20L);
         subTasks[2].setId(30L);
 
-        System.out.println("COXCOXCOXCOXCOX");
-        System.out.println(subTasks[0].getId());
-        System.out.println(subTasks[1].getId());
-        System.out.println(subTasks[2].getId());
-
         boardService.save(board1);
         subTaskRepository.saveAll(Arrays.asList(subTasks));
-
 
     }
 
@@ -139,7 +129,7 @@ class SubTaskServiceTest {
 
 
     @Test
-    void getAllSubTasksOfTask() {
+    void getAllSubTasksOfTask() throws TaskDoesNotExist {
         List<SubTask> subTasks = subTaskService.getAllSubTasksOfTask(1L);
     }
 
@@ -160,6 +150,11 @@ class SubTaskServiceTest {
         // tests renaming subtask 1
         subTaskService.renameSubTask(10L, "newName");
         assertEquals("newName", subTaskService.getById(10L).getTitle());
+    }
+
+    @Test
+    void renameSubTaskNotFound() {
+        assertThrows(SubTaskDoesNotExist.class, () -> subTaskService.renameSubTask(100L, "newName"));
     }
 
     @Test

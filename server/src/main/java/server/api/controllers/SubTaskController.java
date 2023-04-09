@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.SubTaskService;
 import server.exceptions.SubTaskDoesNotExist;
+import server.exceptions.TaskDoesNotExist;
 
 import java.util.List;
 
@@ -52,8 +53,11 @@ public class SubTaskController {
      */
     @GetMapping("/getByTask/{id}")
     public ResponseEntity<List<SubTask>> getByTask(@PathVariable("id") String id) {
-        List<SubTask> subtasks = SubtaskService.getAllSubTasksOfTask(Long.parseLong(id));
-        return ResponseEntity.ok(subtasks);
+        try {
+            return ResponseEntity.ok(SubtaskService.getAllSubTasksOfTask(Long.parseLong(id)));
+        } catch (NumberFormatException | TaskDoesNotExist e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
     }
 
     /**
