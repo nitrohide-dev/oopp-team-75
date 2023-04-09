@@ -476,18 +476,15 @@ public class BoardOverviewCtrl {
         list.getItems().remove(list.getItems().get(list.getItems().size()-1));
 
         Label task = new Label(name);
-        task.setPrefWidth(115);
+        task.setPrefWidth(135);
         task.setPadding(new Insets(6, 1, 6, 1));
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
-        path = Path.of("", "client", "images", "pencil.png").toString();
-        Button editButton = buttonBuilder(path);
         path = Path.of("", "client", "images", "eye.png").toString();
         Button viewButton = buttonBuilder(path);
-        HBox box = new HBox(task, viewButton, editButton, removeButton);
+        HBox box = new HBox(task, viewButton, removeButton);
         dragHandler(box,task,list);
         removeButton.setOnAction(e -> deleteTask(box));
-        editButton.setOnAction(e -> editTask(box));
         viewButton.setOnAction(e -> viewTask(box));
         disableTaskButtons(box);
         HBox.setHgrow(task, Priority.NEVER);
@@ -599,12 +596,9 @@ public class BoardOverviewCtrl {
      */
     private void disableTaskButtons(HBox box) {
         Button removeButton = (Button) box.getChildren().get(1);
-        Button editButton = (Button) box.getChildren().get(2);
-        Button viewButton = (Button) box.getChildren().get(3);
+        Button viewButton = (Button) box.getChildren().get(2);
         removeButton.setDisable(true);
         removeButton.setVisible(false);
-        editButton.setDisable(true);
-        editButton.setVisible(false);
         viewButton.setDisable(true);
         viewButton.setVisible(false);
     }
@@ -615,23 +609,11 @@ public class BoardOverviewCtrl {
      */
     private void enableTaskButtons(HBox box) {
         Button removeButton = (Button) box.getChildren().get(1);
-        Button editButton = (Button) box.getChildren().get(2);
-        Button viewButton = (Button) box.getChildren().get(3);
+        Button viewButton = (Button) box.getChildren().get(2);
         removeButton.setDisable(false);
         removeButton.setVisible(true);
-        editButton.setDisable(false);
-        editButton.setVisible(true);
         viewButton.setDisable(false);
         viewButton.setVisible(true);
-    }
-
-    /**
-     * renames the chosen task
-     * @param task the task box
-     */
-    public void editTask(HBox task) {
-        String name = inputTaskName();
-        server.renameTask(getBoard().getKey(),taskMap.get(task),name);
     }
 
     /**
