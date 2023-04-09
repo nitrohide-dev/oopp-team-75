@@ -19,7 +19,9 @@
 .header-btn:hover{
     -fx-opacity: .7;
 }
-
+.visitedBoard:hover{
+ -fx-opacity: .7;
+}
 .header-logo{
 
 }
