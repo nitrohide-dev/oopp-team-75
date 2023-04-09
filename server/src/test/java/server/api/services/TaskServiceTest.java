@@ -97,8 +97,6 @@ class TaskServiceTest {
         taskService = new TaskService(taskRepo, listRepository);
 
         boardService.create(new CreateBoardModel("1", "1"));
-        boardService.create(new CreateBoardModel("2", "2"));
-        boardService.create(new CreateBoardModel("3", "3"));
 
         board1 = boardService.findByKey("1");
         boardService.createList(board1, 1L, "1");

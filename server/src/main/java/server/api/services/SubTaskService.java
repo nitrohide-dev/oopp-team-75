@@ -6,7 +6,7 @@ import server.database.SubTaskRepository;
 import server.exceptions.SubTaskDoesNotExist;
 
 import java.util.List;
-import java.util.Set;
+
 @Service
 public class SubTaskService {
     private final SubTaskRepository repo;
@@ -32,8 +32,8 @@ public class SubTaskService {
      * @param task_id - the id of the task to look up subtasks for
      * @return a set of Subtasks of the task
      */
-    public Set<SubTask> getAllSubTasksOfTask(long task_id){
-        Set<SubTask> allSubTasks = (Set<SubTask>) repo.getSubTasksOfTask(task_id);
+    public List<SubTask> getAllSubTasksOfTask(long task_id){
+        List<SubTask> allSubTasks = repo.getSubTasksOfTask(task_id);
         return allSubTasks;
     }
     /**

@@ -4,7 +4,7 @@ import commons.SubTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface SubTaskRepository extends JpaRepository<SubTask, Long> {
 
@@ -14,5 +14,5 @@ public interface SubTaskRepository extends JpaRepository<SubTask, Long> {
      @return the set of subtasks corresponding to a given task
      */
     @Query(value = "SELECT * FROM SUB_TASK s1 WHERE s1.TASK_ID = ?1 ",nativeQuery = true)
-    Collection<SubTask> getSubTasksOfTask(long task_id);
+    List<SubTask> getSubTasksOfTask(long task_id);
 }
