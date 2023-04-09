@@ -18,6 +18,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -38,18 +39,26 @@ import java.util.Objects;
 
 public class MainCtrl {
     private ServerUtils server;
-    private Stage primaryStage;
-    private LandingPageCtrl landingCtrl;
-    private Scene landing;
-    private BoardOverviewCtrl boardOverviewCtrl;
-    private Scene boardOverview;
 
     @Getter
     @Setter
     private Board currBoard;
-    private Scene userMenu;
+    @Getter
+    @Setter
+    private Task currTask;
+
+    private Stage primaryStage;
+
+    private LandingPageCtrl landingCtrl;
+    private Scene landing;
+
+    private BoardOverviewCtrl boardOverviewCtrl;
+    private Scene boardOverview;
+
     @Getter
     private UserMenuCtrl userMenuCtrl;
+    private Scene userMenu;
+
     private Scene boardCreate;
 
     @Getter
@@ -58,10 +67,15 @@ public class MainCtrl {
 
     private AdminOverviewCtrl adminOverviewCtrl;
     private Scene adminOverview;
+
     private AdminLoginCtrl adminLoginCtrl;
     private Scene adminLogin;
+
     private PasswordChangeCtrl passwordChangeCtrl;
     private Scene passwordChange;
+
+    private TaskOverviewCtrl taskOverviewCtrl;
+    private Scene taskOverview;
 
     @Inject
     public MainCtrl(ServerUtils server){
@@ -73,7 +87,8 @@ public class MainCtrl {
                             Pair<UserMenuCtrl, Parent> userMenu,
                             Pair<AdminOverviewCtrl, Parent> adminOverview,
                            Pair<AdminLoginCtrl, Parent> adminLogin,
-                           Pair<PasswordChangeCtrl, Parent> passwordChange) throws IOException {
+                           Pair<PasswordChangeCtrl, Parent> passwordChange,
+                           Pair<TaskOverviewCtrl, Parent> taskOverview) throws IOException {
         this.primaryStage = primaryStage;
 
         this.landingCtrl = landing.getKey();
@@ -87,6 +102,9 @@ public class MainCtrl {
         this.userMenuCtrl = userMenu.getKey();
         this.userMenu = new Scene(userMenu.getValue());
         this.userMenu.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+
+        this.taskOverviewCtrl = taskOverview.getKey();
+        this.taskOverview = new Scene(taskOverview.getValue());
 
         this.adminOverviewCtrl = adminOverview.getKey();
         this.adminOverview = new Scene(adminOverview.getValue());
@@ -102,6 +120,7 @@ public class MainCtrl {
 
         showLanding();
         primaryStage.show();
+
     }
 
     public void showLanding(){
@@ -133,6 +152,18 @@ public class MainCtrl {
     public void showUserMenu() {
         userMenuCtrl.loadVisitedBoards();
         primaryStage.setScene(userMenu);
+    }
+
+    public void showTaskOverview(Long taskId) {
+        Task task = server.getTask(taskId);
+        if (task == null) return;
+        currTask = task;
+        Stage taskStage = new Stage();
+        taskStage.setTitle("Task: " + task.getTitle());
+        taskOverviewCtrl.load(task);
+        taskStage.setScene(taskOverview);
+        taskStage.initModality(Modality.APPLICATION_MODAL);
+        taskStage.showAndWait();
     }
 
     /**
@@ -193,6 +224,22 @@ public class MainCtrl {
         create.setScene(passwordChange);
         create.initModality(Modality.APPLICATION_MODAL);
         create.showAndWait();
-
     }
+
+    /**
+     * Renames a task
+     * @param newName - the new task name
+     */
+    public void renameTask(String newName) {
+        server.renameTask(this.currBoard.getKey(), this.currTask.getid(), newName);
+    }
+
+    /**
+     * Changes the description of a task
+     * @param newDesc - the new description
+     */
+    public void changeTaskDesc(String newDesc) {
+        server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getid(), newDesc);
+    }
+
 }

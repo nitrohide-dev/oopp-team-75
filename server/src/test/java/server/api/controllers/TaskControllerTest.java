@@ -140,7 +140,7 @@ class TaskControllerTest {
 
     @Test
     void deleteById() throws TaskDoesNotExist, ListDoesNotExist {
-        taskController.deleteById(10L ,taskService.getById(10L).getTaskList().getBoard().getKey());
+        taskController.deleteById(10L);
         assertEquals(1, list1.getTasks().size());
     }
 
@@ -158,7 +158,7 @@ class TaskControllerTest {
 
     @Test
     void deleteByIdException() {
-        assertThrows(ResponseStatusException.class, () -> taskController.deleteById(100L, board1.getKey()));
+        assertThrows(ResponseStatusException.class, () -> taskController.deleteById(100L));
     }
 
     @Test

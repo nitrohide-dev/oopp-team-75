@@ -20,10 +20,10 @@ import static com.google.inject.Guice.createInjector;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-
 import client.scenes.BoardOverviewCtrl;
 import client.scenes.LandingPageCtrl;
 import client.scenes.MainCtrl;
+import client.scenes.TaskOverviewCtrl;
 import client.scenes.UserMenuCtrl;
 import client.scenes.PasswordChangeCtrl;
 import client.scenes.AdminOverviewCtrl;
@@ -31,13 +31,7 @@ import client.scenes.AdminLoginCtrl;
 
 import com.google.inject.Injector;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import static com.google.inject.Guice.createInjector;
 
 public class Main extends Application {
 
@@ -58,8 +52,10 @@ public class Main extends Application {
         var adminOverview = FXML.load(AdminOverviewCtrl.class,"client","scenes","AdminOverview.fxml");
         var adminLogin = FXML.load(AdminLoginCtrl.class,"client","scenes","AdminLogin.fxml");
         var passwordChange = FXML.load(PasswordChangeCtrl.class,"client","scenes","PasswordChange.fxml");
+        var taskOverview = FXML.load(TaskOverviewCtrl.class, "client", "scenes", "TaskOverview.fxml");
         mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, landing, board,userMenu,adminOverview,adminLogin,passwordChange);
+        mainCtrl.initialize(primaryStage, landing, board, userMenu,
+                                adminOverview, adminLogin, passwordChange, taskOverview);
 
     }
 }
