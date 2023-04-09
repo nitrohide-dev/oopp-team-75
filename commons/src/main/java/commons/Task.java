@@ -41,7 +41,7 @@ public class Task {
     @Setter
     private String title;
 
-    @ManyToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "tasks", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Getter
     @Setter
     private Set<Tag> tags;
