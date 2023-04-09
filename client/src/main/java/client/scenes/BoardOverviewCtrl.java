@@ -505,7 +505,8 @@ public class BoardOverviewCtrl {
             label.setText(input.getEditor().getText());
         });
         input.showAndWait();
-
+        if(label.getText()==null)
+            return "task name";
         return label.getText();
 
     }
