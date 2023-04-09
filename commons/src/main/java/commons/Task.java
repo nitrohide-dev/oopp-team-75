@@ -149,7 +149,7 @@ public class Task {
     /**
      * @param tag the tag to add to this task
      */
-    public void setTag(Tag tag) {
+    public void addTag(Tag tag) {
         if (tag == null) {
             throw new IllegalArgumentException("Tag cannot be null");
         }

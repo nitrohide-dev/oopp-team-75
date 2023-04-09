@@ -111,7 +111,7 @@ public class TaskService {
 	 */
 	public String addTag(Long id, Tag tag) {
 		Task task = repo.findById(id).get();
-		task.setTag(tag);
+		task.addTag(tag);
 		repo.save(task);
 		return listRepo.getBoardByListID(task.getTaskList().getId());
 	}

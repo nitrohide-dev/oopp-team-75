@@ -1,9 +1,10 @@
 package server.api.services;
 
 import commons.Board;
-import commons.models.CreateBoardModel;
+import commons.Tag;
 import commons.Task;
 import commons.TaskList;
+import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.database.BoardRepository;
@@ -18,6 +19,9 @@ import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 import server.exceptions.ListDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -165,5 +169,29 @@ class TaskServiceTest {
         assertThrows(TaskDoesNotExist.class, () -> taskService.moveTask(task300, list1, 1));
     }
 
+    @Test
+    void addTag() throws TaskDoesNotExist {
+        Task task1 = new Task(list1,"1");
+        task1.setId(120L);
+        taskService.save(task1);
+        Tag tag1 = new Tag("tag1");
+        Tag tag2 = new Tag("tag2");
+        Set<Tag> tags = new HashSet<>();
+        task1.setTags(tags);
+        taskService.addTag(120L, tag1);
+        assertEquals(1, taskService.getById(120L).getTags().size());
+        assertEquals(tag1, taskService.getById(120L).getTags().iterator().next());
+        assertEquals("1", taskService.addTag(120L, tag2));
+        assertEquals(2, taskService.getById(120L).getTags().size());
+    }
 
+    @Test
+    void changeTaskDesc() throws TaskDoesNotExist {
+        Task task1 = new Task(list1,"1");
+        task1.setId(120L);
+        taskService.save(task1);
+        taskService.changeTaskDesc(120L, "new desc");
+        assertEquals("new desc", taskService.getById(120L).getDesc());
+        assertThrows(TaskDoesNotExist.class, () -> taskService.changeTaskDesc(100L, "new desc"));
+    }
 }

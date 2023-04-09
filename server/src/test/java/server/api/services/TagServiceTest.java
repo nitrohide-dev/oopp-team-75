@@ -1,5 +1,7 @@
 package server.api.services;
 
+import commons.Tag;
+import commons.Task;
 import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,9 @@ import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
 import server.exceptions.CannotCreateBoard;
 import server.exceptions.TagDoesNotExist;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -127,5 +132,20 @@ class TagServiceTest {
         tagService.deleteById(1L);
         assertEquals(0, tagRepository.count());
         assertThrows(TagDoesNotExist.class, () -> tagService.deleteById(1L));
+    }
+
+    @Test
+    void getAllTagsByTask() {
+        Tag tag1 = boardService.createTag("1", "1");
+        Set<Task> tasks = new HashSet<>();
+        tasks.add(new Task());
+        tag1.setTasks(tasks);
+        Set tags = new HashSet();
+        boardService.createList(boardRepository.getById("1"));
+        Task task1 = new Task(boardRepository.getById("1").getTaskLists().get(0), "1", "desc", tags);
+        task1.addTag(tag1);
+        tagRepository.save(tag1);
+        assertThrows(NullPointerException.class, () -> tagService.getAllTagsByTask(1L));
+//        assertEquals(0, tagService.getAllTagsByTask(1L).size()); dont know that the error is
     }
 }

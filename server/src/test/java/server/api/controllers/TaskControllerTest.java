@@ -1,9 +1,9 @@
 package server.api.controllers;
 
 import commons.Board;
-import commons.models.CreateBoardModel;
 import commons.Task;
 import commons.TaskList;
+import commons.models.CreateBoardModel;
 import commons.models.TaskMoveModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -178,5 +178,34 @@ class TaskControllerTest {
         TaskMoveModel taskMoveModel1= new TaskMoveModel(20L, 1l, Integer.MAX_VALUE);
         taskController.moveTask(taskMoveModel1, board1.getKey());
         assertEquals(20, list1.getTasks().get(1).getId());
+    }
+
+    @Test
+    void findById() {
+        assertEquals(10L, taskController.findById(10L).getBody().getId());
+        assertThrows(ResponseStatusException.class, () -> taskController.findById(100L));
+    }
+
+    @Test
+    void changeTaskDescription() throws TaskDoesNotExist, ListDoesNotExist {
+        taskController.changeTaskDesc(10L, "wubba-lubba-dub-dub", board1.getKey());
+        assertEquals("wubba-lubba-dub-dub", taskService.getById(10L).getDesc());
+        assertThrows(ResponseStatusException.class, () -> taskController.changeTaskDesc(100L
+                , "wubba-lubba-dub-dub", board1.getKey()));
+    }
+//
+//    @Test
+//    void addTag() throws TaskDoesNotExist {
+//        Tag tag = new Tag("tag");
+//        taskController.addTag(tag, "10");
+//        assertEquals(1, taskService.getById(10L).getTags().size());
+//        assertEquals("tag", taskService.getById(10L).getTags().iterator().next().getTitle());
+//    }
+
+    @Test
+    void createSubTask() throws TaskDoesNotExist, ListDoesNotExist {
+        taskController.createSubTask(10L, "10");
+        assertEquals(1, taskService.getById(10L).getSubtasks().size());
+        assertEquals("10", taskService.getById(10L).getSubtasks().get(0).getTitle());
     }
 }

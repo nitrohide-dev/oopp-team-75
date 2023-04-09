@@ -177,15 +177,15 @@ class TaskTest {
         Tag tag = new Tag();
         task.setTags(new HashSet<>());
         assertEquals(0, task.getTags().size());
-        task.setTag(tag);
+        task.addTag(tag);
         assertEquals(1, task.getTags().size());
-        task.setTag(tag);
+        task.addTag(tag);
         assertEquals(1, task.getTags().size());
     }
 
     @Test
     void setTagException() {
-        assertThrows(IllegalArgumentException.class, () -> task.setTag(null));
+        assertThrows(IllegalArgumentException.class, () -> task.addTag(null));
     }
 
     @Test

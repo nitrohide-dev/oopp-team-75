@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.FluentQuery;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -239,7 +240,10 @@ public class TagRepositoryTest implements TagRepository{
 
     @Override
     public Collection<Tag> getTagsByTask(long task_id) {
-        Collection<Tag> taskTags = new ArrayList<>();
+        Collection<Tag> taskTags = new HashSet<>();
+        if (tags.size()==0){
+            return null;
+        }
         for(Tag tag : tags) {
             if(tag.isChildOfTask(task_id)) {
                 taskTags.add(tag);
