@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -107,6 +108,8 @@ public class BoardOverviewCtrl {
         // Sets ScrollPane size, so it's slightly bigger than AnchorPane
         scrollPaneMain.setPrefSize(anchorPaneMain.getPrefWidth() + 10, anchorPaneMain.getPrefHeight() + 20);
         borderPane.setOnMouseClicked(null);
+        titleLabel.setOnMouseClicked(e -> renameBoard());
+        titleLabel.setCursor(Cursor.HAND);
     }
 
     /**
@@ -199,15 +202,17 @@ public class BoardOverviewCtrl {
      */
     public Button createRenameBoardButton(){
         Button boardRenameButton = new Button();
-        boardRenameButton.setText("rename board");
-        boardRenameButton.setOnAction(e -> {
-            String name = inputBoardName();
-            if (name == null || name.equals("")) return;
-            getBoard().setTitle(name);
-            server.updateBoard(getBoard());
-        });
+        boardRenameButton.setText("Rename board");
+        boardRenameButton.setOnAction(e -> renameBoard());
         boardRenameButton.getStyleClass().add("smButton");
         return boardRenameButton;
+    }
+
+    public void renameBoard() {
+        String name = inputBoardName();
+        if (name == null || name.equals("")) return;
+        getBoard().setTitle(name);
+        server.updateBoard(getBoard());
     }
 
     /**
