@@ -15,12 +15,17 @@ import server.database.SubTaskRepository;
 import server.database.SubTaskRepositoryTest;
 import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
+import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 import server.exceptions.ListDoesNotExist;
 import server.exceptions.SubTaskDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class SubTaskServiceTest {
@@ -52,7 +57,7 @@ class SubTaskServiceTest {
     private Board board1;
 
     @BeforeEach
-    void setUp() throws CannotCreateBoard, ListDoesNotExist, TaskDoesNotExist {
+    void setUp() throws CannotCreateBoard, ListDoesNotExist, TaskDoesNotExist, SubTaskDoesNotExist, BoardDoesNotExist {
         boardRepository = new BoardRepositoryTest();
         subTaskRepository = new SubTaskRepositoryTest();
         taskRepository = new TaskRepositoryTest(subTaskRepository);
@@ -85,33 +90,108 @@ class SubTaskServiceTest {
         listService.createTask(taskList, "task2");
         listService.createTask(taskList3, "task3");
 
-        tasks[0] = taskService.getById(1L);
-        tasks[1] = taskService.getById(2L);
-        tasks[2] = taskService.getById(3L);
+        tasks[0] = listService.getById(1L).getTasks().get(0);
+        tasks[1] = listService.getById(1L).getTasks().get(1);
+        tasks[2] = listService.getById(3L).getTasks().get(0);
+
+        tasks[0].setId(1L);
+        tasks[1].setId(2L);
+        tasks[2].setId(3L);
 
         subTasks = new SubTask[3];
+
+        taskService.createSubTask(tasks[0], "subtask1");
+        taskService.createSubTask(tasks[0], "subtask2");
+        taskService.createSubTask(tasks[2], "subtask3");
+
+        subTasks[0] = taskService.getById(1L).getSubtasks().get(0);
+        subTasks[1] = taskService.getById(1L).getSubtasks().get(1);
+        subTasks[2] = taskService.getById(3L).getSubtasks().get(0);
+
+        subTasks[0].setId(10L);
+        subTasks[1].setId(20L);
+        subTasks[2].setId(30L);
+
+        System.out.println("COXCOXCOXCOXCOX");
+        System.out.println(subTasks[0].getId());
+        System.out.println(subTasks[1].getId());
+        System.out.println(subTasks[2].getId());
+
+        boardService.save(board1);
+        subTaskRepository.saveAll(Arrays.asList(subTasks));
 
 
     }
 
     @Test
     void getById() throws SubTaskDoesNotExist {
-        assertEquals(subTasks[0], subTaskService.getById(1L));
+        assertEquals(subTasks[0], subTaskService.getById(10L));
     }
+
+    @Test
+    void getByIdNotFound() {
+        try {
+            subTaskService.getById(100L);
+        } catch (SubTaskDoesNotExist e) {
+            assertEquals("There exists no subtask with the provided id.", e.getMessage());
+        }
+    }
+
 
     @Test
     void getAllSubTasksOfTask() {
+        List<SubTask> subTasks = subTaskService.getAllSubTasksOfTask(1L);
     }
 
     @Test
-    void deleteById() {
+    void deleteById() throws SubTaskDoesNotExist, TaskDoesNotExist {
+        // delete subtask 1
+        subTaskService.deleteById(10L);
+        assertEquals(2, subTaskRepository.findAll().size());
     }
 
     @Test
-    void renameSubTask() {
+    void deleteByIdNotFound() {
+        assertThrows(SubTaskDoesNotExist.class, () -> subTaskService.deleteById(100L));
+    }
+
+    @Test
+    void renameSubTask() throws SubTaskDoesNotExist {
+        // tests renaming subtask 1
+        subTaskService.renameSubTask(10L, "newName");
+        assertEquals("newName", subTaskService.getById(10L).getTitle());
     }
 
     @Test
     void getAll() {
+        List<SubTask> subTasks = subTaskService.getAll();
+        assertEquals(3, subTasks.size());
+        assertEquals(this.subTasks[0], subTasks.get(0));
+        assertEquals(this.subTasks[1], subTasks.get(1));
+        assertEquals(this.subTasks[2], subTasks.get(2));
+    }
+
+    @Test
+    void getAllNew() throws ListDoesNotExist, CannotCreateBoard {
+        boardRepository = new BoardRepositoryTest();
+        subTaskRepository = new SubTaskRepositoryTest();
+        taskRepository = new TaskRepositoryTest(subTaskRepository);
+        listRepository = new ListRepositoryTest(taskRepository);
+        boardService = new BoardService(boardRepository);
+        listService = new ListService(listRepository, taskRepository, boardRepository);
+        taskService = new TaskService(taskRepository, listRepository);
+        subTaskService = new SubTaskService(subTaskRepository);
+        board1 =boardService.create(new CreateBoardModel("1", "1"));
+
+        boardService.createList(board1, 1L, "1");
+        listService.save(board1.getTaskLists().get(0));
+        taskList = listService.getById(1L);
+        listService.createTask(taskList, "task1");
+
+        Task task = listService.getById(1L).getTasks().get(0);
+
+        task.setId(1L);
+
+        assertEquals(0, subTaskService.getAll().size());
     }
 }

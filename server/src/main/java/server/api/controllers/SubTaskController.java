@@ -15,7 +15,9 @@ import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.SubTaskService;
 import server.exceptions.SubTaskDoesNotExist;
-import java.util.Set;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/subtasks")
 public class SubTaskController {
@@ -49,8 +51,8 @@ public class SubTaskController {
      * @return the stored subtask list
      */
     @GetMapping("/getByTask/{id}")
-    public ResponseEntity<Set<SubTask>> getByTask(@PathVariable("id") String id) {
-        Set<SubTask> subtasks = SubtaskService.getAllSubTasksOfTask(Long.parseLong(id));
+    public ResponseEntity<List<SubTask>> getByTask(@PathVariable("id") String id) {
+        List<SubTask> subtasks = SubtaskService.getAllSubTasksOfTask(Long.parseLong(id));
         return ResponseEntity.ok(subtasks);
     }
 
