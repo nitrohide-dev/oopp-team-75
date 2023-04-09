@@ -18,8 +18,6 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
-//import javafx.geometry.Rectangle2D;
-import commons.models.CreateBoardModel;
 import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -124,15 +122,6 @@ public class MainCtrl {
         primaryStage.show();
 
     }
-
-    public Board getCurrBoard() {
-        return currBoard;
-    }
-
-    public void setCurrBoard(Board board) {
-        currBoard = board;
-    }
-
     public void showLanding(){
 //        primaryStage.setMinWidth(600);
 //        primaryStage.setMinHeight(400);
@@ -165,46 +154,11 @@ public class MainCtrl {
     }
 
     /**
-     * shows user menu the first time
-     * @throws IOException exception for input
-     */
-    public void showUserMenuFirstTime() throws IOException {
-        List<String> boardNames=readFromCsv();
-        for(String board : boardNames){
-            userMenuCtrl.addBoard(board);
-        }
-        primaryStage.setScene(userMenu);
-    }
-
-    /**
      * show the user menu
      */
     public void showUserMenu() {
         userMenuCtrl.loadVisitedBoards();
         primaryStage.setScene(userMenu);
-    }
-
-    /**
-     * shows the board creation page
-     */
-    public void showBoardCreate(){
-        Stage create = new Stage();
-        create.setScene(boardCreate);
-        create.initModality(Modality.APPLICATION_MODAL);
-        create.showAndWait();
-
-    }
-
-    /**
-     * Creates a new board
-     * @param name name of the board
-     * @param title title of the board
-     */
-    public void createBoard(String name,String title) {
-        server.createBoard(new CreateBoardModel(name, title));
-        Board b = new Board(new CreateBoardModel(name, title));
-        userMenuCtrl.addBoard(name);
-        showUserMenu();
     }
 
     public void showTaskOverview(Long taskId) {
