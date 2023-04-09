@@ -19,6 +19,7 @@ import commons.Board;
 import commons.SubTask;
 import commons.Tag;
 import commons.models.CreateBoardModel;
+import commons.Task;
 import commons.models.TaskMoveModel;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -43,6 +44,11 @@ import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ServerUtils {
+
+    @Getter
+    @Setter
+    private String domain;
+
     @Getter
     @Setter
     private String SERVER;
@@ -259,15 +265,19 @@ public class ServerUtils {
      * Sends a request to the server to get a task from the database
      * @param taskId - the id of the task
      */
-    public void getTask(String taskId) {
-        send("/app/task/get", taskId);
+    public Task getTask(Long taskId) {
+        return ClientBuilder.newClient(new ClientConfig())
+            .target(SERVER).path("api/tasks/find/" + taskId)
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .get(Task.class);
     }
     /**
      * Sends a request to the server to delete a task from the database
      * @param taskId - the id of the task
      */
-    public void deleteTask(Long taskId, String boardKey) {
-        send("/app/task/delete/" + boardKey, taskId);
+    public void deleteTask(Long taskId) {
+        send("/app/task/delete" , taskId);
     }
 
     /**
@@ -325,6 +335,16 @@ public class ServerUtils {
      */
     public void renameTask(String boardKey, Long taskId, String taskTitle) {
         send("/app/task/rename/" + boardKey + "/" + taskTitle, taskId);
+    }
+
+    /**
+     * Sends a request to the server to change the description of a task
+     * @param boardKey - the key of the board of the task
+     * @param taskId - the id of the task
+     * @param newDesc - the new description
+     */
+    public void changeTaskDesc(String boardKey, long taskId, String newDesc) {
+        send("/app/task/desc/" + boardKey + "/" + newDesc, taskId);
     }
 
     /**

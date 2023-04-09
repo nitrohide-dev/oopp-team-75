@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="300.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TaskOverviewCtrl">
+   <children>
+      <VBox prefHeight="423.0" prefWidth="250.0">
+         <children>
+            <Pane prefHeight="51.0" prefWidth="200.0">
+               <children>
+                  <Label fx:id="taskName" layoutX="14.0" layoutY="9.0" prefHeight="34.0" prefWidth="184.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="cancelName" disable="true" layoutX="218.0" layoutY="13.0" mnemonicParsing="false" onAction="#cancelChange" prefHeight="25.0" prefWidth="25.0" visible="false" />
+                  <Button fx:id="editName" layoutX="205.0" layoutY="13.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#editName" prefHeight="25.0" prefWidth="25.0" />
+                  <Button fx:id="confirmName" disable="true" layoutX="193.0" layoutY="13.0" mnemonicParsing="false" onAction="#confirmNameChange" prefHeight="25.0" prefWidth="25.0" visible="false" />
+                  <TextField fx:id="newName" disable="true" layoutX="14.0" layoutY="9.0" prefHeight="34.0" prefWidth="184.0" visible="false" />
+               </children>
+            </Pane>
+            <Pane prefHeight="116.0" prefWidth="250.0">
+               <children>
+                  <TextArea fx:id="description" onMouseClicked="#editDescription" prefHeight="90.0" prefWidth="250.0" />
+                  <Button fx:id="confirmDesc" disable="true" layoutX="100.0" layoutY="90.0" mnemonicParsing="false" onAction="#confirmDescChange" prefHeight="25.0" prefWidth="25.0" visible="false" />
+                  <Button fx:id="cancelDesc" disable="true" layoutX="125.0" layoutY="90.0" mnemonicParsing="false" onAction="#cancelChange" prefHeight="25.0" prefWidth="25.0" visible="false" />
+               </children>
+            </Pane>
+            <Pane prefHeight="130.0" prefWidth="250.0" />
+            <Pane prefHeight="125.0" prefWidth="250.0" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

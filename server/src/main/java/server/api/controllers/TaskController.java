@@ -6,12 +6,14 @@ import commons.Task;
 import commons.TaskList;
 import commons.models.TaskMoveModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.ListService;
@@ -54,6 +56,16 @@ public class TaskController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
+
+    @GetMapping("/find/{id}")
+    public ResponseEntity<Task> findById(@PathVariable("id") Long id) {
+        try {
+            return ResponseEntity.ok(taskService.getById(id));
+        } catch (NumberFormatException | TaskDoesNotExist e ) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
     /**
      * renames a task in the database
      * if the task does not exist in the database, the method responds with a bad request
@@ -64,7 +76,7 @@ public class TaskController {
      */
     @MessageMapping("/task/rename/{boardKey}/{name}")
     @SendTo("/topic/boards")
-    public Board renameTask(Long id,@DestinationVariable("name")String name,@DestinationVariable("boardKey") String boardKey) {
+    public Board renameTask(Long id, @DestinationVariable("name")String name, @DestinationVariable("boardKey") String boardKey) {
         try {
             taskService.renameTask(id,name);
             return boardService.findByKey(boardKey);
@@ -72,6 +84,27 @@ public class TaskController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
+
+    /**
+     * changes task description in the database
+     * if the task does not exist in the database, the method responds with a bad request
+     * @param id - the id of the task
+     * @param newDesc - the new description of the task
+     * @boardKey - the key of the board in which the task is
+     * @return the board the task is in
+     */
+    @MessageMapping("/task/desc/{boardKey}/{name}")
+    @SendTo("/topic/boards")
+    public Board changeTaskDesc(Long id, @DestinationVariable("name")String newDesc,
+                                @DestinationVariable("boardKey") String boardKey) {
+        try {
+            taskService.changeTaskDesc(id, newDesc);
+            return boardService.findByKey(boardKey);
+        } catch (NumberFormatException | TaskDoesNotExist e ) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
     /**
      * method used to move a task from one task list to another.
      * @param model the TaskMoveModel with the parameters needed to move a task between lists
@@ -92,7 +125,6 @@ public class TaskController {
         taskService.moveTask(task,list,order);
         return boardService.findByKey(boardKey);
     }
-
 
     /**
      * Deletes a task by its id. If the id does not exist in the database
