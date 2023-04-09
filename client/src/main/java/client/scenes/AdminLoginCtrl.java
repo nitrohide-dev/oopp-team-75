@@ -32,8 +32,8 @@ public class AdminLoginCtrl {
         if(!password.getText().equals("") && server.authenticate(hashPassword(password.getText())) ){ // TBD
             password.clear();
             Stage stage = (Stage) password.getScene().getWindow();
-            mainCtrl.adminOverview();
             stage.close();
+            mainCtrl.showAdminOverview();
         }
         else{
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a correct password.");

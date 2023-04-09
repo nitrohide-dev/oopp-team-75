@@ -101,11 +101,18 @@ public class BoardController {
     /**
      * creates a tasklist in the given board
      * @param boardKey - the key of the board in which the tasklist should be added
+     * @throws ResponseStatusException - if the key is null, a bad request is sent
      * @return the board with the key sent
      */
     @MessageMapping("/list/createlist")
     @SendTo("/topic/boards")
     public Board createList(String boardKey) {
+        if (boardKey == null || boardKey.isEmpty()){
+            throw new IllegalArgumentException("Board key cannot be null");
+        }
+        if (boardService.findByKey(boardKey)==null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Board does not exist");
+        }
         return boardService.createList(boardService.findByKey(boardKey));
     }
 
@@ -118,19 +125,19 @@ public class BoardController {
     @MessageMapping("/boards") // sets address to /app/boards
     @SendTo("/topic/boards") // sends result to /topic/boards
     public Board update(Board board) throws Exception {
+//        if (board == null) {
+//            throw new IllegalArgumentException("Board cannot be null");
+//        }
         boardService.save(board);
         return board;
     }
 
-    public static String hashPassword(String password) {
-        // Use a secure hash function to hash the password
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
-            return Base64.getEncoder().encodeToString(hash);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Hash function not available", e);
-        }
+    public static String hashPassword(String password) throws NoSuchAlgorithmException {
+        if(password == null || password.isEmpty())
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().encodeToString(hash);
     }
 
     @GetMapping("/login")
@@ -140,11 +147,17 @@ public class BoardController {
             authentication=true;
             return ResponseEntity.ok(true);
         } else {
+            authentication=false;
             return ResponseEntity.ok(false);
         }
     }
 
-    public static void readPassword(String password) throws IOException {
+    /**
+     * Reads the password from the file or creates a new one if the file does not exist
+     * @param password the password to be hashed and saved
+     * @throws IOException if the file cannot be created
+     */
+    public static void readPassword(String password) throws IOException, NoSuchAlgorithmException {
         File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
         if(!dir.exists()) {
             System.out.println("Your initial password is: "+password+"\nChange it for increased security");
@@ -183,6 +196,14 @@ public class BoardController {
             authentication=false;
         }
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Checks if the user is authenticated
+     * @return true if the user is authenticated
+     */
+    public boolean isAuthentication() {
+        return authentication;
     }
 }
 
