@@ -1,72 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.UserMenuCtrl">
+<VBox prefHeight="600.0" prefWidth="900.0" styleClass="background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.UserMenuCtrl">
   <children>
-      <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="163.0" prefWidth="900.0">
-        <items>
-          <Button mnemonicParsing="false" text="Back" />
-            <Separator prefWidth="596.0" visible="false" />
-            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+      <HBox styleClass="header">
+         <children>
+            <ImageView fx:id="logo" fitHeight="45.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
                <image>
                   <Image url="@../images/Logo.png" />
                </image>
             </ImageView>
-        </items>
-         <cursor>
-            <Cursor fx:constant="DEFAULT" />
-         </cursor>
-      </ToolBar>
-      <SplitPane dividerPositions="0.41759465478841873" prefHeight="522.0" prefWidth="900.0">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+            <Label text="User Menu" textAlignment="CENTER" textFill="WHITE" HBox.hgrow="ALWAYS">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="20.0" />
+               </HBox.margin>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <ImageView fx:id="exit" fitHeight="25.0" fitWidth="25.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true" styleClass="header-btn" HBox.hgrow="NEVER">
+               <image>
+                  <Image url="@../images/ExitButton.png" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" spacing="100.0" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox spacing="10.0">
                <children>
-                  <ScrollPane layoutX="53.0" layoutY="102.0" prefHeight="343.0" prefWidth="263.0">
+                  <Label text="Visited Boards" textFill="WHITE">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" styleClass="tasklist" VBox.vgrow="ALWAYS">
                      <content>
-                        <ListView fx:id="boardsListView" prefHeight="341.0" prefWidth="261.0" />
-                     </content></ScrollPane>
-                  <Label layoutX="53.0" layoutY="55.0" prefHeight="34.0" prefWidth="263.0" text="Your boards:">
-                     <font>
-                        <Font size="30.0" />
-                     </font>
-                  </Label>
+                        <VBox fx:id="boardsListView" prefWidth="280.0" spacing="10.0">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
                </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+            </VBox>
+            <VBox spacing="10.0">
                <children>
-                  <Label layoutX="138.0" layoutY="55.0" prefHeight="43.0" prefWidth="199.0" text="Join board: ">
+                  <Label text="Enter board key:" textFill="WHITE">
                      <font>
-                        <Font size="30.0" />
+                        <Font size="24.0" />
                      </font>
                   </Label>
-                  <Button alignment="CENTER" contentDisplay="CENTER" layoutX="138.0" layoutY="179.0" mnemonicParsing="false" onAction="#joinBoard" prefHeight="55.0" prefWidth="245.0" text="Join board">
+                  <TextField fx:id="textBox" alignment="TOP_LEFT" prefWidth="245.0" promptText="board key">
                      <font>
-                        <Font size="25.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="createBoard" layoutX="138.0" layoutY="303.0" mnemonicParsing="false" onAction="#createBoard" prefHeight="55.0" prefWidth="245.0" text="Create board ">
-                     <font>
-                        <Font size="25.0" />
-                     </font>
-                  </Button>
-                  <Button onAction="#login" alignment="CENTER" contentDisplay="CENTER" layoutX="138.0" layoutY="367.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="245.0" text="Admin login">
-                     <font>
-                        <Font size="25.0" />
-                     </font>
-                  </Button>
-                  <TextField fx:id="textBox" alignment="TOP_LEFT" layoutX="138.0" layoutY="113.0" prefWidth="245.0" promptText="Enter board ID:">
-                     <font>
-                        <Font size="25.0" />
+                        <Font size="20.0" />
                      </font>
                   </TextField>
+                  <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#joinBoard" prefWidth="245.0" styleClass="button-9" text="Join">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="createBoard" mnemonicParsing="false" onAction="#createBoard" prefWidth="245.0" styleClass="button-9" text="Create">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Button>
+                  <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#login" prefWidth="245.0" styleClass="button-9" text="Admin Panel">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="50.0" />
+                     </VBox.margin>
+                  </Button>
                </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="60.0" left="40.0" right="40.0" top="40.0" />
+         </padding>
+      </HBox>
   </children>
 </VBox>
