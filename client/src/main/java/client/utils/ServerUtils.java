@@ -156,32 +156,32 @@ public class ServerUtils {
      * Sends a request to the server to delete a task from the database
      * @param taskId - the id of the task
      */
-    public void deleteTask(Long taskId,String boardKey){ send("/app/task/delete/"+boardKey,taskId);}
+    public void deleteTask(Long taskId){ send("/app/task/delete", taskId);}
 
     /**
      * Sends a request to the server to get a list from the database
      * @param listId - the id of the list
      */
-    public void getList(Long listId) { send("/app/list/get",listId);}
+    public void getList(Long listId) { send("/app/list/get", listId);}
 
     /**
      * Sends a request to the server to delete a list from the database
      * @param listId - the id of the list
      */
-    public void deleteList(Long listId) { send("/app/list/delete",listId);}
+    public void deleteList(Long listId) { send("/app/list/delete", listId);}
 
     /**
      * Sends a request to the server to create a list in the database
      * @param boardKey - the Board that is to contain the list
      */
-    public void createList(String boardKey) {send("/app/list/createlist",boardKey);}
+    public void createList(String boardKey) {send("/app/list/createlist", boardKey);}
 
     /**
      * Sends a request to the server to rename a list in the database
      * @param listId - the id of the list
      * @param listTitle - the new list name
      */
-    public void renameList(Long listId,String listTitle) { send("/app/list/rename/" + listTitle,listId);}
+    public void renameList(Long listId,String listTitle) { send("/app/list/rename/" + listTitle, listId);}
 
     /**
      * Sends a request to the create a task in the database
@@ -189,7 +189,7 @@ public class ServerUtils {
      * @param taskTitle - the title of the created task
      */
     public void createTask(Long listID,String taskTitle) {
-        send("/app/list/createTask/"+ taskTitle,listID);
+        send("/app/list/createTask/"+ taskTitle, listID);
     }
 
     /**
@@ -197,8 +197,18 @@ public class ServerUtils {
      * @param taskId - the id of the task
      * @param taskTitle - the new task name
      */
-    public void renameTask(String boardKey,Long taskId,String taskTitle) {
-        send("/app/task/rename/" + boardKey+"/"+taskTitle,taskId);
+    public void renameTask(String boardKey, Long taskId, String taskTitle) {
+        send("/app/task/rename/" + boardKey + "/" + taskTitle, taskId);
+    }
+
+    /**
+     * Sends a request to the server to change the description of a task
+     * @param boardKey - the key of the board of the task
+     * @param taskId - the id of the task
+     * @param newDesc - the new description
+     */
+    public void changeTaskDesc(String boardKey, long taskId, String newDesc) {
+        send("/app/task/desc/" + boardKey + "/" + newDesc, taskId);
     }
 
     /**
@@ -225,7 +235,7 @@ public class ServerUtils {
                 .get(Boolean.class);
     }
 
-    public void logout(){
+    public void logout() {
         ClientBuilder.newClient(new ClientConfig())
          .target(SERVER).path("api/boards/logout")
                 .request(APPLICATION_JSON)

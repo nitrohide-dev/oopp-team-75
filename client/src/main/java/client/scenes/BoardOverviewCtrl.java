@@ -647,7 +647,7 @@ public class BoardOverviewCtrl {
      * @param task - a HBox, containing the task
      */
     public void deleteTask(HBox task) {
-        server.deleteTask(taskMap.get(task),getBoard().getKey());
+        server.deleteTask(taskMap.get(task));
     }
 
     /**

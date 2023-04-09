@@ -186,8 +186,9 @@ public class MainCtrl {
         Task task = server.getTask(taskId);
         if (task == null) return;
         currTask = task;
-        System.out.println(task.getTitle());
         Stage taskStage = new Stage();
+        taskStage.setTitle("Task: " + task.getTitle());
+        taskOverviewCtrl.load(task);
         taskStage.setScene(taskOverview);
         taskStage.initModality(Modality.APPLICATION_MODAL);
         taskStage.showAndWait();
@@ -278,5 +279,21 @@ public class MainCtrl {
 
     public void setAdminPresence(boolean adminPresence) {
         boardOverviewCtrl.setAdminPresence(adminPresence);
+    }
+
+    /**
+     * Renames a task
+     * @param newName - the new task name
+     */
+    public void renameTask(String newName) {
+        server.renameTask(this.currBoard.getKey(), this.currTask.getid(), newName);
+    }
+
+    /**
+     * Changes the description of a task
+     * @param newDesc - the new description
+     */
+    public void changeTaskDesc(String newDesc) {
+        server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getid(), newDesc);
     }
 }
