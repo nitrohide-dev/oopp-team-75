@@ -46,7 +46,7 @@
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" style="visibility: 0;" styleClass="tasklist" VBox.vgrow="ALWAYS">
+                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" styleClass="tasklist" VBox.vgrow="ALWAYS">
                      <content>
                         <VBox fx:id="boardsListView" prefWidth="280.0" spacing="10.0">
                            <padding>

@@ -140,7 +140,7 @@ public class UserMenuCtrl {
         removeButton.setFitWidth(20);
         removeButton.setPickOnBounds(true); // makes clicking button easier
         removeButton.setSmooth(true);
-        removeButton.getStyleClass().add("header-btn"); //
+//        removeButton.getStyleClass().add("header-btn"); //
         removeButton.setOnMouseClicked(event -> {
             removeBoard(key);
         });

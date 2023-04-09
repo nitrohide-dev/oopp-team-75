@@ -319,7 +319,6 @@ public class BoardOverviewCtrl {
         newGroup.setLayoutY(sampleGroup.getLayoutY());
         newGroup.setTranslateX(sampleGroup.getTranslateX());
         newGroup.setTranslateY(sampleGroup.getTranslateY());
-        newGroup.getStylesheets().addAll(sampleGroup.getStylesheets()); //does not work
 
         listContainer.getChildren().add(newGroup);
         dragOverHandler(listView);

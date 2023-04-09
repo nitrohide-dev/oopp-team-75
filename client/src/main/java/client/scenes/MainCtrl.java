@@ -135,9 +135,6 @@ public class MainCtrl {
         primaryStage.setScene(userMenu);
     }
 
-    public final String domainSeparator = ": ";
-    public final String keySeparator = ", ";
-
     /**
      * writes user's favorite boards and their hashed passwords to file on their computer
      * @throws IOException exception for input
