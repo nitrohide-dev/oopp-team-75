@@ -197,4 +197,14 @@ class TaskListTest {
         assertThrows(NullPointerException.class, () -> taskList.insertTask(new Task(), null));
         assertThrows(IllegalArgumentException.class, () -> taskList.insertTask(new Task(), new Task()));
     }
+
+    @Test
+    void addTask(){
+        assertEquals(0, taskList.getTasks().size());
+        Task task1 = taskList.createTask();
+        taskList.removeTask(task1);
+        assertEquals(0, taskList.getTasks().size());
+        taskList.addTask(task1);
+        assertEquals(1, taskList.getTasks().size());
+    }
 }

@@ -8,11 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
 
@@ -186,5 +182,38 @@ class TaskTest {
     @Test
     void setTagException() {
         assertThrows(IllegalArgumentException.class, () -> task.setTag(null));
+    }
+
+    @Test
+    void constructor5(){
+        Task task = new Task(new TaskList(), "a", "a", new HashSet<>(), new ArrayList<>());
+        assertNotNull(task.getId());
+        assertEquals("a", task.getDesc());
+        assertEquals("a", task.getTitle());
+        assertEquals(new TaskList(), task.getTaskList());
+        assertEquals(0, task.getTags().size());
+        assertEquals(0, task.getSubtasks().size());
+    }
+
+    @Test
+    void constructor4(){
+        Task task = new Task(new TaskList(), "a", "a", new HashSet<>());
+        assertNotNull(task.getId());
+        assertEquals("a", task.getDesc());
+        assertEquals("a", task.getTitle());
+        assertEquals(new TaskList(), task.getTaskList());
+        assertEquals(0, task.getTags().size());
+    }
+
+    @Test
+    void removeSubTask() {
+        task.setSubtasks(new ArrayList<>());
+        SubTask subTask = new SubTask();
+        task.getSubtasks().add(subTask);
+        assertEquals(1, task.getSubtasks().size());
+        task.removeSubTask(subTask);
+        assertEquals(0, task.getSubtasks().size());
+        assertThrows(NullPointerException.class, () -> task.removeSubTask(null));
+        assertThrows(IllegalArgumentException.class, () -> task.removeSubTask(new SubTask()));
     }
 }

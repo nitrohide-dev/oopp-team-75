@@ -674,5 +674,9 @@ public class BoardOverviewCtrl {
         borderPane.setRight(null);
         mainCtrl.showUserMenu();
     }
+
+    public void setAdminPresence(boolean adminPresence) {
+        this.adminPresence = adminPresence;
+    }
 }
 

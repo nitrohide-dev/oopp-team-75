@@ -13,9 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OrderColumn;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @SuppressWarnings("SpellCheckingInspection")
 @Entity
@@ -51,25 +49,25 @@ public class Board {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @Getter
     @Setter
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
 //    constructors
 
     public Board() {} // for object mappers, please don't use.
 
     public Board(String key) {
-        this(key, "", "", new ArrayList<>(),new ArrayList<>());
+        this(key, "", "", new ArrayList<>(),new HashSet<>());
     }
 
     public Board(CreateBoardModel model) {
-        this(model.getKey(), model.getTitle(), model.getPassword(), new ArrayList<>(),new ArrayList<>());
+        this(model.getKey(), model.getTitle(), model.getPassword(), new ArrayList<>(),new HashSet<>());
     }
 
     public Board(String key, String title, List<TaskList> taskLists) {
-        this(key, title, "", taskLists,new ArrayList<>());
+        this(key, title, "", taskLists,new HashSet<>());
     }
 
-    public Board(String key, String title, String password, List<TaskList> taskLists,List<Tag> tags) {
+    public Board(String key, String title, String password, List<TaskList> taskLists,Set<Tag> tags) {
         this.key = key;
         this.title = title;
         this.taskLists = taskLists;
@@ -92,8 +90,6 @@ public class Board {
                 && Objects.equals(password, board.password) && Objects.equals(taskLists, board.taskLists)
                 && Objects.equals(tags, board.tags);
     }
-
-
 
     /**
      * Generates a hashcode using all attributes.
@@ -146,11 +142,11 @@ public class Board {
      */
     public TaskList createTaskList(long id, String title) throws IllegalArgumentException{
         TaskList list = new TaskList(this);
+        list.setId(id);
+        list.setTitle(title);
         if(this.taskLists.contains(list)){
             throw new IllegalArgumentException("TaskList already exists");
         }
-        list.setId(id);
-        list.setTitle(title);
         this.taskLists.add(list);
         return list;
     }

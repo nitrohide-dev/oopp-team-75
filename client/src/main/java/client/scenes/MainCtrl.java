@@ -293,7 +293,7 @@ public class MainCtrl {
      * @param newName - the new task name
      */
     public void renameTask(String newName) {
-        server.renameTask(this.currBoard.getKey(), this.currTask.getid(), newName);
+        server.renameTask(this.currBoard.getKey(), this.currTask.getId(), newName);
     }
 
     /**
@@ -309,7 +309,7 @@ public class MainCtrl {
      * @param newDesc - the new description
      */
     public void changeTaskDesc(String newDesc) {
-        server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getid(), newDesc);
+        server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getId(), newDesc);
     }
 
 }

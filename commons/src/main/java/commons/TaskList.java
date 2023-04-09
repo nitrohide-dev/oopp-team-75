@@ -157,7 +157,7 @@ public class TaskList {
      * Inserts {@code task} at the end of this taskList.
      * @param task task to be inserted
      */
-    public void insertTask(Task task) {
+    public void addTask(Task task) {
         this.tasks.add(task);
     }
 }
