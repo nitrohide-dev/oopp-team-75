@@ -179,15 +179,14 @@ class BoardControllerTest {
         assertNotEquals(password, hashedPassword);
         assertNotEquals(password2, hashedPassword2);
     }
-    // TODO: fix this test
 
-//    @Test
-//    void hashPasswordEmpty() {
-//        String password = "";
-//        String password1 = null;
-//        assertThrows(IllegalArgumentException.class, () -> BoardController.hashPassword(password));
-//        assertThrows(IllegalArgumentException.class, () -> BoardController.hashPassword(password1));
-//    }
+    @Test
+    void hashPasswordEmpty() {
+        String password = "";
+        String password1 = null;
+        assertThrows(IllegalArgumentException.class, () -> BoardController.hashPassword(password));
+        assertThrows(IllegalArgumentException.class, () -> BoardController.hashPassword(password1));
+    }
 
     @Test
     void hashPasswordSame() throws NoSuchAlgorithmException {

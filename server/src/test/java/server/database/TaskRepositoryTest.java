@@ -25,12 +25,10 @@ public class TaskRepositoryTest implements TaskRepository{
 
     public TaskRepositoryTest() {
         tasks = new ArrayList<>();
-        this.repo = new SubTaskRepositoryTest();
     }
 
     public TaskRepositoryTest(List<Task> tasks) {
         this.tasks = tasks;
-        this.repo = new SubTaskRepositoryTest();
     }
 
     @Override

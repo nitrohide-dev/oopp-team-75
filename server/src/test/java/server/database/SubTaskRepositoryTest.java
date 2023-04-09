@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -228,7 +229,7 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
     }
 
     @Override
-    public List<SubTask> getSubTasksOfTask(long task_id) {
+    public Collection<SubTask> getSubTasksOfTask(long task_id) {
         List<SubTask> querySubTasks = new ArrayList<>();
         for(SubTask subTask : subTasks) {
             if(subTask.getTask().getId() == task_id) {
