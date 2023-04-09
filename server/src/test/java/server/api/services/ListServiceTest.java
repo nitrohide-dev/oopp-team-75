@@ -75,15 +75,15 @@ class ListServiceTest {
     @Test
     void getAllCreate2(){
         boardService.createList(board1);
-        boardService.createList(board1);
+        boardService.createList(board1, 1);
         assertEquals(2, listService.getAll().size());
     }
 
     @Test
     void getAllCreate3(){
         boardService.createList(board1);
-        boardService.createList(board1);
-        boardService.createList(board1);
+        boardService.createList(board1, 2);
+        boardService.createList(board1, 3);
         assertEquals(3, listService.getAll().size());
     }
 
@@ -91,20 +91,20 @@ class ListServiceTest {
     @Test
     void getAllInDifferentBoards(){
         boardService.createList(board1);
-        boardService.createList(board2);
-        boardService.createList(board3);
+        boardService.createList(board2, 10);
+        boardService.createList(board3, 11);
         assertEquals(3, listService.getAll().size());
     }
 
     @Test
     void getAllMultipleInDifferentBoards(){
-        boardService.createList(board1);
-        boardService.createList(board1);
-        boardService.createList(board2);
-        boardService.createList(board2);
-        boardService.createList(board3);
-        boardService.createList(board3);
-        boardService.createList(board3);
+        boardService.createList(board1, 0);
+        boardService.createList(board1 ,2);
+        boardService.createList(board2, 1);
+        boardService.createList(board2, 3);
+        boardService.createList(board3, 4);
+        boardService.createList(board3, 5);
+        boardService.createList(board3, 6);
         assertEquals(7, listService.getAll().size());
     }
     @Test

@@ -114,8 +114,6 @@ public class Board {
      */
     public TaskList createTaskList() {
         TaskList list = new TaskList(this);
-        long random = (long) (Math.random() * 1000000);
-        list.setId(random);
         this.taskLists.add(list);
         return list;
     }
