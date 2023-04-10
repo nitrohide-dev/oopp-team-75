@@ -27,9 +27,15 @@ import javafx.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.*;
-import java.net.URLDecoder;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -170,8 +176,9 @@ public class MainCtrl {
      * @throws IOException exception for input
      */
     public void writeToCsv(List<String> boardKeys, String server) throws UnsupportedEncodingException {
+        System.out.println("writing to csv");
         File dir = new File(System.getProperty("user.dir") + "/client/src/main/resources/servers/");
-        String encodedUrl = URLEncoder.encode(server, "UTF-8");
+        String encodedUrl = URLEncoder.encode(server, StandardCharsets.UTF_8);
 
         if (!dir.exists()) {
             dir.mkdirs();
@@ -179,6 +186,8 @@ public class MainCtrl {
         File file = new File(dir, encodedUrl+".csv");
         if(file.exists()){file.delete();}
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            System.out.println("writing...");
+
             writer.write(boardKeys.toString());
         } catch (Exception e) {}
 
@@ -193,11 +202,7 @@ public class MainCtrl {
      */
     public List<String> readFromCsv(String server) {
         String encodedUrl;
-        try {
-            encodedUrl = URLEncoder.encode(server, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        encodedUrl = URLEncoder.encode(server, StandardCharsets.UTF_8);
 
         List<String> boardKeys = new ArrayList<>();
         File dir = new File(System.getProperty("user.dir") +

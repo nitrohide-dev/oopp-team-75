@@ -24,7 +24,7 @@ import javafx.scene.paint.Paint;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 
@@ -75,10 +75,12 @@ public class UserMenuCtrl {
      */
     public void saveVisitedBoards() {
         // remove duplicate keys
-        visitedBoards = new ArrayList<>(new HashSet<>(visitedBoards));
+        visitedBoards = new ArrayList<>(new LinkedHashSet<>(visitedBoards));
         // store keys in a csv file
         try {
+
             mainCtrl.writeToCsv(visitedBoards,server.getSERVER());
+
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -194,7 +196,9 @@ public class UserMenuCtrl {
             removeBoard(key);
             return;
         }
-        visitedBoards.add(key);
+        visitedBoards.remove(key);
+        visitedBoards.add(0,key);
+        System.out.println(visitedBoards);
         saveVisitedBoards();
         mainCtrl.showBoard(board);
     }
