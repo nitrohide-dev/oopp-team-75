@@ -21,9 +21,9 @@
                   </Label>
                </children>
             </Pane>
-            <ScrollPane prefHeight="426.0" prefWidth="300.0">
+            <ScrollPane prefHeight="425.0" prefWidth="330.0">
                <content>
-                  <ListView fx:id="tagList" prefHeight="425.0" prefWidth="300.0" />
+                  <ListView fx:id="tagList" prefHeight="425.0" prefWidth="285.0" />
                </content>
             </ScrollPane>
          </children>
