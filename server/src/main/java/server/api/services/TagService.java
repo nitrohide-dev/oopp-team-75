@@ -19,16 +19,6 @@ public class TagService {
     }
 
 
-    /**
-     * Creates a tag in the database from a title string
-     * @param title - the name of the tag to be created
-     * @param board - the board the tag belongs to
-     * @return The newly created tag
-     */
-    public Tag createTag(String title, Board board){
-        var tag = new Tag(title, board);
-        return repo.save(tag);
-    }
 
 
     /**
@@ -88,6 +78,9 @@ public class TagService {
     public void deleteById(long id) throws TagDoesNotExist {
         if (!repo.existsById(id))
             throw new TagDoesNotExist("There is no tag with the provided id.");
-        repo.deleteById(id);
+        Tag tag = getById(id);
+        Board board = tag.getBoard();
+        board.getTags().remove(tag);
+        boardRepo.save(board);
     }
 }

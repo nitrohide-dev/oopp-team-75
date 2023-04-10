@@ -183,6 +183,7 @@ public class MainCtrl {
         tagOverviewCtrl.load(board);
         stage.setScene(tagOverview);
         stage.initModality(Modality.APPLICATION_MODAL);
+        tagOverviewCtrl.connect();
         stage.showAndWait();
     }
     /**

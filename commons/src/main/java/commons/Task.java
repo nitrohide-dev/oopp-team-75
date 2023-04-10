@@ -63,7 +63,6 @@ public class Task {
     @ManyToOne
     @Getter
     @Setter
-    @Column(nullable=false)
     private TaskList taskList;
 
 //    constructors
