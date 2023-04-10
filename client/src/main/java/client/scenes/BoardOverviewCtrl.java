@@ -14,7 +14,15 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
@@ -35,6 +43,7 @@ import lombok.Setter;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -154,7 +163,7 @@ public class BoardOverviewCtrl {
             List<Task> listOfTasks = taskList.getTasks();
             for (int i = 0; i < listOfTasks.size(); i++) {
                 Task task = listOfTasks.get(i);
-                 addTask(task.getTitle(), ourList, task);
+                addTask(task.getTitle(), ourList, task);
                 taskOrderMap.put(task.getId(),i);
             }
         }
@@ -375,14 +384,13 @@ public class BoardOverviewCtrl {
         listView.getItems().add(box);
 
         addTaskButton.setOnAction(e -> {
-            System.out.println("it works?");
-                TextField textField = new TextField();
-        textField.setOnAction(actionEvent -> {
-            // Submit the text when Enter is pressed
-            String text = textField.getText();
-            createTask(text,listView);
+            TextField textField = new TextField();
+            textField.setOnAction(actionEvent -> {
+                // Submit the text when Enter is pressed
+                String text = textField.getText();
+                createTask(text,listView);
 
-        });
+            });
 
             textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue) {
@@ -395,7 +403,7 @@ public class BoardOverviewCtrl {
             box.getChildren().add(textField);
             textField.requestFocus();
 
-    });
+        });
 
 
     }
@@ -457,7 +465,7 @@ public class BoardOverviewCtrl {
         list.getItems().remove(list.getItems().get(list.getItems().size()-1));
 
         Label task = new Label(name);
-        task.setPrefWidth(135);
+        task.setPrefWidth(130);
         task.setPadding(new Insets(6, 1, 6, 1));
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
@@ -465,6 +473,13 @@ public class BoardOverviewCtrl {
         Button editButton = buttonBuilder(path);
 
         HBox box = new HBox(task, editButton, removeButton);
+        box.setSpacing(5);
+
+        // just for testing - delete when fully implemented
+      // addDescriptionIndicator(box);
+      // addProgressIndicator(box,0.7);
+
+
         dragHandler(box,task,list);
         removeButton.setOnAction(e -> deleteTask(box));
         editButton.setOnAction(e -> System.out.println("holder"));
@@ -701,26 +716,83 @@ public class BoardOverviewCtrl {
 
 
     /**
-     * adds progress indicator to the task box - should be called when nested tasks are added
+     * adds and sets progress indicator to the task box - should be called when nested tasks are added
      *
      * @param box task box
      */
-    public void addProgressIndicator(HBox box){
+    public void addProgressIndicator(HBox box, double percentage){
         ProgressIndicator progressIndicator = new ProgressIndicator();
-        progressIndicator.setProgress(0.5); // set for the respective parameter
-        progressIndicator.getStylesheets().add(
-                Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
-        box.getChildren().add(progressIndicator);
+        progressIndicator.setProgress(percentage); // set for the respective parameter
+        progressIndicator.getStylesheets()
+                .add(getClass().getResource("styles.css").toExternalForm());
+        Label l  = (Label) box.getChildren().get(0);
+        l.setPrefWidth(l.getPrefWidth()-30);
+
+        VBox vbox= new VBox(progressIndicator);
+        vbox.setAlignment(Pos.CENTER);
+
+        box.getChildren().add(vbox);
 
     }
 
     /**
      *
-     * removes progress indicator - to be called when no nested tasks are set
+     * removes progress indicator if exists - to be called when no nested tasks are set
      * @param box task box
      */
     public void removeProgressIndicator(HBox box){
-        box.getChildren().remove(3);
+        for (Iterator<Node> it = box.getChildren().iterator(); it.hasNext(); ) {
+            Node childNode = it.next();
+            if (childNode instanceof VBox) {
+                if(((VBox) childNode).getChildren().get(0) instanceof ProgressIndicator){
+                    it.remove();
+                    Label l  = (Label) box.getChildren().get(0);
+                    l.setPrefWidth(l.getPrefWidth()+30);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    /**
+     *
+     * adds description indicator to the task HBox
+     * @param box task HBox
+     */
+    public void addDescriptionIndicator(HBox box){
+
+        ImageView image = new ImageView(new Image(Path.of("",
+                "client", "images", "description.png").toString()));
+        image.setFitHeight(18);
+        image.setFitWidth(18);
+        VBox vbox= new VBox(image);
+        vbox.setAlignment(Pos.CENTER);
+
+        Label l  = (Label) box.getChildren().get(0);
+        l.setPrefWidth(l.getPrefWidth()-25);
+
+        box.getChildren().add(vbox);
+
+    }
+
+    /**
+     *
+     * removes the indicator if there's one
+     * @param box task HBox
+     */
+    public void removeDescriptionIndicator(HBox box){
+        for (Iterator<Node> it = box.getChildren().iterator(); it.hasNext(); ) {
+            Node childNode = it.next();
+            if (childNode instanceof VBox) {
+                if(((VBox) childNode).getChildren().get(0) instanceof ImageView){
+                    Label l  = (Label) box.getChildren().get(0);
+                    l.setPrefWidth(l.getPrefWidth()+25);
+                    it.remove();
+                    break;
+                }
+            }
+        }
 
     }
 }

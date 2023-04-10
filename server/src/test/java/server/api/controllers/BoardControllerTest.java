@@ -57,8 +57,11 @@ class BoardControllerTest {
         boardController.create(new CreateBoardModel("key", "name"));
         boardController.create(new CreateBoardModel("key2", "name2"));
         boardController.create(new CreateBoardModel("key3", "name3"));
-        clearDirectoryContent(tempDir);
-
+        try {
+            clearDirectoryContent(tempDir);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
 
     }
