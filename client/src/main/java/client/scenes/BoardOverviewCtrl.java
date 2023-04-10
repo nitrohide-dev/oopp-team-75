@@ -308,7 +308,7 @@ public class BoardOverviewCtrl {
         textField.focusedProperty().addListener((obs,oldVal,newVal) -> {
             if(newVal == false)
             {
-                server.renameList(taskList.getid(),textField.getText());
+                server.renameList(taskList.getId(),textField.getText());
             }
         });
         ListView<HBox> listView = new ListView<>();
