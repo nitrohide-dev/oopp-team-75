@@ -130,7 +130,7 @@ class TagTest {
 
     @Test
     void createTag(){
-        Tag tag = Tag.createTag("a");
+        Tag tag = Tag.createTag("a", 3L);
         assertNotNull(tag);
         assertEquals("a", tag.getTitle());
         assertEquals(null, tag.getTasks());

@@ -372,7 +372,7 @@ public class ServerUtils {
      * @param tagTitle - the title of the tag to be created
      */
     public void createTag(String boardKey, String tagTitle) {
-        send("/app/tag/create/" + tagTitle, boardKey);
+        send("/app/tag/create/" + boardKey, tagTitle);
     }
 
     /**

@@ -62,6 +62,7 @@ public class Task {
     @ManyToOne
     @Getter
     @Setter
+    @Column(nullable=false)
     private TaskList taskList;
 
 //    constructors
@@ -74,16 +75,11 @@ public class Task {
     }
 
     public Task(TaskList taskList, String title, String desc) {
-        this.taskList = taskList;
-        this.title = title;
-        this.desc = desc;
+        this(taskList, title, desc, null, new ArrayList());
     }
 
     public Task(TaskList taskList, String title, String desc, Set<Tag> tags) {
-        this.taskList = taskList;
-        this.title = title;
-        this.desc = desc;
-        this.tags = tags;
+        this(taskList, title, desc, tags, new ArrayList());
     }
 
     public Task(TaskList taskList, String title, String desc, Set<Tag> tags, List<SubTask> subtasks) {
@@ -113,7 +109,7 @@ public class Task {
         if (subTask == null)
             throw new NullPointerException("Subtask cannot be null");
         if (!this.subtasks.remove(subTask))
-            throw new IllegalArgumentException("Subtask does not belong to this task");
+            throw new IllegalArgumentException("Task does not contain subtask");
         subTask.setTask(null);
     }
 
@@ -152,6 +148,19 @@ public class Task {
         if (tag == null) {
             throw new IllegalArgumentException("Tag cannot be null");
         }
+        if (!tag.isChildOfBoard(taskList.getBoard().getKey()))
+            throw new IllegalArgumentException("Tag is not a child of the board");
         tags.add(tag);
+        tag.addTask(this);
+    }
+
+    public void removeTag(Tag tag) {
+        if (tag == null) {
+            throw new IllegalArgumentException("Tag cannot be null");
+        }
+        if (!tags.contains(tag))
+            throw new IllegalArgumentException("Task does not contain tag");
+        tags.remove(tag);
+        tag.removeTask(this);
     }
 }

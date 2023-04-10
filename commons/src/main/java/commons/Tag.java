@@ -90,9 +90,7 @@ public class Tag {
     }
 
     public static Tag createTag(String title) {
-        long random = (long) (Math.random() * 1000000L);
         Tag tag = new Tag(title);
-        tag.setId(random);
         return tag;
     }
 
@@ -100,5 +98,16 @@ public class Tag {
         Tag tag = new Tag(title);
         tag.setId(id);
         return tag;
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
+
+    public void removeTask(Task task) {
+        if (!tasks.contains(task)){
+            throw new IllegalArgumentException("Task does not contain this tag");
+        }
+        tasks.remove(task);
     }
 }

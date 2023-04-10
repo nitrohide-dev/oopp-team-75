@@ -161,7 +161,7 @@ class BoardTest {
     }
     @Test
     void getPassword(){
-        assertEquals(null, board.getPassword());
+        assertEquals("", board.getPassword());
         assertNotEquals("123", board.getPassword());
     }
     @Test

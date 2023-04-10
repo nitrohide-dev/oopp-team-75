@@ -149,7 +149,7 @@ class TaskTest {
 
     @Test
     void getSubTasks() {
-        assertEquals( null, task.getSubtasks());
+        assertEquals( new ArrayList<>(), task.getSubtasks());
         assertNotEquals( new HashSet<>(), task.getSubtasks());
     }
 
@@ -175,12 +175,23 @@ class TaskTest {
     void setTag() {
         assertEquals( null, task.getTags());
         Tag tag = new Tag();
+        tag.setTasks(new HashSet<>());
         task.setTags(new HashSet<>());
         assertEquals(0, task.getTags().size());
+        Board board = new Board("1", "a", "", new ArrayList<>(), new HashSet<>());
+        TaskList taskList = new TaskList();
+        taskList.setBoard(board);
+        taskList.setBoard(board);
+        Set tags = new HashSet<>();
+        tags.add(tag);
+        board.setTags(tags);
+        task.setTaskList(taskList);
+        tag.setBoard(board);
         task.addTag(tag);
         assertEquals(1, task.getTags().size());
-        task.addTag(tag);
+        task.addTag(tag); //should not add
         assertEquals(1, task.getTags().size());
+        //help my brain melts
     }
 
     @Test

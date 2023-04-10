@@ -175,14 +175,15 @@ class TaskServiceTest {
         task1.setId(120L);
         taskService.save(task1);
         Tag tag1 = new Tag("tag1");
-        Tag tag2 = new Tag("tag2");
         Set<Tag> tags = new HashSet<>();
+        tag1.setBoard(board1);
+        tag1.setTasks(new HashSet<>());
         task1.setTags(tags);
         taskService.addTag(120L, tag1);
         assertEquals(1, taskService.getById(120L).getTags().size());
         assertEquals(tag1, taskService.getById(120L).getTags().iterator().next());
-        assertEquals("1", taskService.addTag(120L, tag2));
-        assertEquals(2, taskService.getById(120L).getTags().size());
+        assertEquals("1", taskService.addTag(120L, tag1));
+        assertEquals(1, taskService.getById(120L).getTags().size());
     }
 
     @Test

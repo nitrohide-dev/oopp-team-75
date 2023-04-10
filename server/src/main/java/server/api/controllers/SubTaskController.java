@@ -1,4 +1,5 @@
 package server.api.controllers;
+
 import commons.Board;
 import commons.SubTask;
 import org.springframework.http.HttpStatus;
@@ -8,7 +9,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,7 +36,7 @@ public class SubTaskController {
      * @param id the subtask key
      * @return the stored subtask
      */
-    @PostMapping("/getById/{id}")
+    @GetMapping("/getById/{id}")
     public SubTask getById(@PathVariable("id") String id) throws SubTaskDoesNotExist {
         try {
             return SubtaskService.getById(Long.parseLong(id));

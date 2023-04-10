@@ -60,7 +60,7 @@ class TagServiceTest {
     }
     @Test
     void createTag2() {
-        tagService.createTag("3");
+        tagService.createTag("3", 3L);
         assertEquals(2, tagRepository.count());
     }
     @Test
@@ -140,6 +140,7 @@ class TagServiceTest {
         Set<Task> tasks = new HashSet<>();
         tasks.add(new Task());
         tag1.setTasks(tasks);
+        tag1.setBoard(boardRepository.getById("1"));
         Set tags = new HashSet();
         boardService.createList(boardRepository.getById("1"));
         Task task1 = new Task(boardRepository.getById("1").getTaskLists().get(0), "1", "desc", tags);

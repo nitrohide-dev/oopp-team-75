@@ -7,30 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.TagService;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -142,6 +126,8 @@ public class BoardController {
      * @return the hashed password
      */
     public static String hashPassword(String password) {
+        if (password == null || password.isEmpty())
+            throw new IllegalArgumentException("Password cannot be null or empty");
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
@@ -229,9 +215,9 @@ public class BoardController {
      * @param boardKey the key of the board in which the tag should be added
      * @return the board with the key sent
      */
-    @MessageMapping("/tag/create/{title}")
+    @MessageMapping("/tag/create/{key}")
     @SendTo("/topic/boards")
-    public Board createTag(@DestinationVariable String title, String boardKey) {
+    public Board createTag(@DestinationVariable String boardKey, String title) {
         boardService.createTag(boardKey, title);
         return boardService.findByKey(boardKey);
     }

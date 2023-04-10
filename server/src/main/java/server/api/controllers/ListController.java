@@ -62,8 +62,8 @@ public class ListController {
      * Deletes a taskList, including its children from the database by its id. If
      * the id does not exist in the database or has a wrong format, the method will respond with a
      * bad request.
-     * @param id - the id of the task list
-     * @return the board the task list belongs to
+     * @param id - the id of the tasklist
+     * @return the board the tasklist belongs to
      */
     @MessageMapping("/list/delete")
     @SendTo("/topic/boards")

@@ -76,6 +76,7 @@ public class Board {
         this.title = title;
         this.taskLists = taskLists;
         this.tags = tags;
+        this.password = password;
     }
 
 //    equals and hashcode
