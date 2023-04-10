@@ -110,6 +110,7 @@ public class MainCtrl {
 
         this.tagOverviewCtrl = tagOverview.getKey();
         this.tagOverview = new Scene(tagOverview.getValue());
+        this.tagOverview.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
 
         this.adminOverviewCtrl = adminOverview.getKey();
         this.adminOverview = new Scene(adminOverview.getValue());

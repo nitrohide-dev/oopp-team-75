@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Objects;
 
 public class TagOverviewCtrl {
     private final MainCtrl mainCtrl;
@@ -103,6 +104,8 @@ public class TagOverviewCtrl {
         input.setContentText("Please enter a name for the tag:");
         input.setTitle("Input tag name");
         input.getDialogPane().setPrefSize(400, 200);
+        input.getDialogPane().getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
         String path = Path.of("", "client", "images", "Logo.png").toString();
         Stage stage = (Stage) input.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(path));
