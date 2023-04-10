@@ -188,3 +188,10 @@
     -fx-touch-action: manipulation;
     -fx-width: 100%;
 }
+<<<<<<< HEAD:client/src/main/resources/client/scenes/styles.css
+=======
+
+.progress-indicator {
+    -fx-progress-color: green;
+}
+>>>>>>> 49-advanced-cards-task-button:client/src/main/resources/client/scenes/css/BoardOverview.css

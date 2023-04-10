@@ -14,14 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
@@ -452,12 +445,19 @@ public class BoardOverviewCtrl {
         task.setPadding(new Insets(6, 1, 6, 1));
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
-        path = Path.of("", "client", "images", "eye.png").toString();
-        Button viewButton = buttonBuilder(path);
-        HBox box = new HBox(task, viewButton, removeButton);
+        dragDtHandler(box,task,list);
+        path = Path.of("", "client", "images", "pencil.png").toString();
+        Button editButton = buttonBuilder(path);
+
+        HBox box = new HBox(task, editButton, removeButton);
         dragHandler(box,task,list);
-        removeButton.setOnAction(e -> deleteTask(box));
-        viewButton.setOnAction(e -> viewTask(box));
+        removeButton.setOnAction(e -> deleteTask(list, box));
+        editButton.setOnAction(e -> editTask(box));
+        box.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                viewTask(box); // changed view button for double click
+            }
+        });
         disableTaskButtons(box);
         HBox.setHgrow(task, Priority.NEVER);
         list.getItems().add(box);
@@ -569,11 +569,12 @@ public class BoardOverviewCtrl {
      */
     private void disableTaskButtons(HBox box) {
         Button removeButton = (Button) box.getChildren().get(1);
-        Button viewButton = (Button) box.getChildren().get(2);
+        Button editButton = (Button) box.getChildren().get(2);
         removeButton.setDisable(true);
         removeButton.setVisible(false);
-        viewButton.setDisable(true);
-        viewButton.setVisible(false);
+        editButton.setDisable(true);
+        editButton.setVisible(false);
+
     }
 
     /**
@@ -582,11 +583,12 @@ public class BoardOverviewCtrl {
      */
     private void enableTaskButtons(HBox box) {
         Button removeButton = (Button) box.getChildren().get(1);
-        Button viewButton = (Button) box.getChildren().get(2);
+        Button editButton = (Button) box.getChildren().get(2);
         removeButton.setDisable(false);
         removeButton.setVisible(true);
-        viewButton.setDisable(false);
-        viewButton.setVisible(true);
+        editButton.setDisable(false);
+        editButton.setVisible(true);
+
     }
 
     /**
@@ -679,6 +681,36 @@ public class BoardOverviewCtrl {
     public void exit() {
         borderPane.setRight(null);
         mainCtrl.showUserMenu();
+    }
+
+    public void changeImageUrl() {
+        // Set the image URL of ImageView
+        String path = Path.of("", "client", "images", "Logo.png").toString();
+        logo1.setImage(new Image(path));
+    }
+
+    /**
+     * adds progress indicator to the task box - should be called when nested tasks are added
+     *
+     * @param box task box
+     */
+    public void addProgressIndicator(HBox box){
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setProgress(0.5); // set for the respective parameter
+        progressIndicator.getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("css/BoardOverview.css")).toExternalForm());
+        box.getChildren().add(progressIndicator);
+
+    }
+
+    /**
+     *
+     * removes progress indicator - to be called when no nested tasks are set
+     * @param box task box
+     */
+    public void removeProgressIndicator(HBox box){
+        box.getChildren().remove(3);
+
     }
 }
 
