@@ -2,6 +2,8 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.Board;
+import commons.Tag;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,6 +22,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class TagOverviewCtrl {
     private final MainCtrl mainCtrl;
@@ -28,37 +32,32 @@ public class TagOverviewCtrl {
     private Button exitButton;
     @FXML
     private ListView<HBox> tagList;
+    private HashMap<HBox,Long> tagMap;
     @Inject
     public TagOverviewCtrl(MainCtrl mainCtrl, ServerUtils server) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        this.tagMap = new HashMap<>();
     }
 
-
+    public void connect() {
+        server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
+    }
+    public void refresh(Board board) {
+        if(mainCtrl.getCurrBoard().getKey().equals(board.getKey())) {
+            mainCtrl.setCurrBoard(board);
+            load(board);
+        }
+    }
     public void load(Board board){
 
         tagList.getItems().clear();
-        String path = Path.of("", "client", "images", "cancel.png").toString();
-        Button removeButton = buttonBuilder(path);
-        Label tag1Label = new Label("tag 1");
-        tag1Label.setBackground(new Background(new BackgroundFill(Color.RED,null,null)));
-        HBox box1 = new HBox();
-        box1.getChildren().addAll(tag1Label, removeButton);
-        box1.setAlignment(Pos.CENTER);
-        Label tag2Label = new Label("tag 2");
-        tag2Label.setBackground(new Background(new BackgroundFill(Color.BLUE,null,null)));
-        HBox box2 = new HBox();
-        box2.getChildren().addAll(tag2Label, removeButton);
-        box2.setAlignment(Pos.CENTER);
-        Label tag3Label = new Label("tag 3");
-        tag3Label.setBackground(new Background(new BackgroundFill(Color.YELLOW,null,null)));
-        HBox box3 = new HBox();
-        box3.getChildren().addAll(tag3Label, removeButton);
-        box3.setAlignment(Pos.CENTER);
-        tagList.getItems().add(box1);
-        tagList.getItems().add(box2);
-        tagList.getItems().add(box3);
         addTagButton(tagList);
+        Iterator<Tag> iterator = board.getTags().iterator();
+        while(iterator.hasNext())
+        {
+            addTag(iterator.next());
+        }
     }
     public void addTagButton(ListView<HBox> list){
         Button addTagButton = new Button("ADD TAG");
@@ -72,11 +71,22 @@ public class TagOverviewCtrl {
         list.getItems().add(box);
         addTagButton.setOnAction(e -> createTag());
     }
-    public void createTag(){
-
+    public void addTag(Tag tag){
+        tagList.getItems().remove(tagList.getItems().get(tagList.getItems().size()-1));
+        String path = Path.of("", "client", "images", "cancel.png").toString();
+        Button removeButton = buttonBuilder(path);
+        removeButton.setOnAction(e -> server.deleteTag(Long.toString(tag.getId()),mainCtrl.getCurrBoard().getKey()));
+        Label label = new Label(tag.getTitle());
+        label.setBackground(new Background(new BackgroundFill(Color.RED,null,null)));
+        HBox box = new HBox();
+        box.getChildren().addAll(label, removeButton);
+        box.setAlignment(Pos.CENTER);
+        tagMap.put(box,tag.getId());
+        tagList.getItems().add(box);
+        addTagButton(tagList);
     }
-    public void removeTag(){
-
+    public void createTag(){
+      server.createTag(mainCtrl.getCurrBoard().getKey(),"Test title");
     }
     private Button buttonBuilder(String path) {
         String url = getClass().getClassLoader().getResource(path.replace("\\", "/")).toString();

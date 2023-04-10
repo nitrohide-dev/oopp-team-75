@@ -28,6 +28,7 @@ public class TagService {
         return repo.save(tag);
     }
 
+    //ONLY FOR TESTING PURPOSES
     public Tag createTag(String title, Long Id){
         var tag = Tag.createTag(title, Id);
         return repo.save(tag);
