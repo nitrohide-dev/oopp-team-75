@@ -12,7 +12,6 @@ dependencies {
 	implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '2.2.3'
 	implementation group: 'org.springframework', name: 'spring-websocket', version: '5.3.24'
 	implementation group: 'org.springframework', name: 'spring-messaging', version: '5.3.24'
-
 	compileOnly 'org.projectlombok:lombok:1.18.26'
 	annotationProcessor 'org.projectlombok:lombok:1.18.26'
 

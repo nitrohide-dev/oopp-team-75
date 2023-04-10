@@ -1,10 +1,10 @@
 package server.api.controllers;
 
 import commons.Board;
-import commons.CreateBoardModel;
 import commons.Task;
 import commons.TaskList;
-import commons.TaskMoveModel;
+import commons.models.CreateBoardModel;
+import commons.models.TaskMoveModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,6 +15,8 @@ import server.database.BoardRepository;
 import server.database.BoardRepositoryTest;
 import server.database.ListRepository;
 import server.database.ListRepositoryTest;
+import server.database.SubTaskRepository;
+import server.database.SubTaskRepositoryTest;
 import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
 import server.exceptions.BoardDoesNotExist;
@@ -55,9 +57,12 @@ class TaskControllerTest {
     private TaskList list2;
     private TaskList list3;
 
+    private SubTaskRepository subTaskRepository;
+
     @BeforeEach
     void setUp() throws IOException, ListDoesNotExist, BoardDoesNotExist {
-        taskRepository = new TaskRepositoryTest();
+        subTaskRepository = new SubTaskRepositoryTest();
+        taskRepository = new TaskRepositoryTest(subTaskRepository);
         listRepository = new ListRepositoryTest(taskRepository);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
         listService = new ListService(listRepository, taskRepository, boardRepository);
@@ -90,9 +95,9 @@ class TaskControllerTest {
         Task task2 = listService.getById(1L).getTasks().get(1);
         Task task3 = listService.getById(3L).getTasks().get(0);
 
-        task1.setid(10L);
-        task2.setid(20L);
-        task3.setid(30L);
+        task1.setId(10L);
+        task2.setId(20L);
+        task3.setId(30L);
 
 
         boardService.save(board1);
@@ -109,7 +114,8 @@ class TaskControllerTest {
 
     @Test
     void getAllEmpty() throws IOException {
-        taskRepository = new TaskRepositoryTest();
+        subTaskRepository = new SubTaskRepositoryTest();
+        taskRepository = new TaskRepositoryTest(subTaskRepository);
         listRepository = new ListRepositoryTest(taskRepository);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
         listService = new ListService(listRepository, taskRepository, boardRepository);
@@ -123,14 +129,14 @@ class TaskControllerTest {
     @Test
     void getAllCorrectly(){
         assertEquals(3, taskController.getAll().size());
-        assertEquals(10L, taskController.getAll().get(0).getid());
-        assertEquals(20L, taskController.getAll().get(1).getid());
-        assertEquals(30L, taskController.getAll().get(2).getid());
+        assertEquals(10L, taskController.getAll().get(0).getId());
+        assertEquals(20L, taskController.getAll().get(1).getId());
+        assertEquals(30L, taskController.getAll().get(2).getId());
     }
 
     @Test
     void getById() {
-        assertEquals(10L, taskController.getById(10L).getid());
+        assertEquals(10L, taskController.getById(10L).getId());
     }
 
     @Test
@@ -166,9 +172,38 @@ class TaskControllerTest {
         TaskMoveModel taskMoveModel = new TaskMoveModel(10L, 1L, 0);
         taskController.moveTask(taskMoveModel, board1.getKey());
         assertEquals(2, list1.getTasks().size());
-        assertEquals(20, list1.getTasks().get(1).getid());
+        assertEquals(20, list1.getTasks().get(1).getId());
         TaskMoveModel taskMoveModel1= new TaskMoveModel(20L, 1l, Integer.MAX_VALUE);
         taskController.moveTask(taskMoveModel1, board1.getKey());
-        assertEquals(20, list1.getTasks().get(1).getid());
+        assertEquals(20, list1.getTasks().get(1).getId());
+    }
+
+    @Test
+    void findById() {
+        assertEquals(10L, taskController.findById(10L).getBody().getId());
+        assertThrows(ResponseStatusException.class, () -> taskController.findById(100L));
+    }
+
+    @Test
+    void changeTaskDescription() throws TaskDoesNotExist, ListDoesNotExist {
+        taskController.changeTaskDesc(10L, "wubba-lubba-dub-dub", board1.getKey());
+        assertEquals("wubba-lubba-dub-dub", taskService.getById(10L).getDesc());
+        assertThrows(ResponseStatusException.class, () -> taskController.changeTaskDesc(100L
+                , "wubba-lubba-dub-dub", board1.getKey()));
+    }
+//
+//    @Test
+//    void addTag() throws TaskDoesNotExist {
+//        Tag tag = new Tag("tag");
+//        taskController.addTag(tag, "10");
+//        assertEquals(1, taskService.getById(10L).getTags().size());
+//        assertEquals("tag", taskService.getById(10L).getTags().iterator().next().getTitle());
+//    }
+
+    @Test
+    void createSubTask() throws TaskDoesNotExist, ListDoesNotExist {
+        taskController.createSubTask(10L, "10");
+        assertEquals(1, taskService.getById(10L).getSubtasks().size());
+        assertEquals("10", taskService.getById(10L).getSubtasks().get(0).getTitle());
     }
 }

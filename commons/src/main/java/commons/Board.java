@@ -2,6 +2,9 @@ package commons;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import commons.models.CreateBoardModel;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,8 +14,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OrderColumn;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @SuppressWarnings("SpellCheckingInspection")
 @Entity
@@ -23,61 +28,55 @@ public class Board {
 
     @Id
     @Column(nullable=false, unique=true)
+    @Getter
+    @Setter
     private String key;
 
     @Column(nullable=false)
+    @Getter
+    @Setter
     private String title;
 
-
+    @Column(nullable=true)
+    @Getter
+    @Setter
+    private String password;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @OrderColumn(name="taskLists")
+    @OrderColumn
+    @Getter
+    @Setter
     private List<TaskList> taskLists;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @Getter
+    @Setter
+    private Set<Tag> tags;
 
 //    constructors
 
     public Board() {} // for object mappers, please don't use.
 
     public Board(String key) {
-        this(key, "",  new ArrayList<>());
+        this(key, "", "", new ArrayList<>(),new HashSet<>());
     }
 
     public Board(CreateBoardModel model) {
-        this(model.getKey(), model.getTitle(), new ArrayList<>());
+        this(model.getKey(), model.getTitle(), model.getPassword(), new ArrayList<>(),new HashSet<>());
     }
 
     public Board(String key, String title, List<TaskList> taskLists) {
+        this(key, title, "", taskLists,new HashSet<>());
+    }
+
+    public Board(String key, String title, String password, List<TaskList> taskLists,Set<Tag> tags) {
         this.key = key;
         this.title = title;
         this.taskLists = taskLists;
-    }
-
-//    getters and setters
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-
-    public List<TaskList> getTaskLists() {
-        return taskLists;
-    }
-
-    public void setTaskLists(List<TaskList> taskLists) {
-        this.taskLists = taskLists;
+        this.tags = tags;
+        this.password = password;
     }
 
 //    equals and hashcode
@@ -90,13 +89,11 @@ public class Board {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Board)) return false;
-
+        if (o == null || getClass() != o.getClass()) return false;
         Board board = (Board) o;
-
-        if (!Objects.equals(key, board.key)) return false;
-        if (!Objects.equals(title, board.title)) return false;
-        return Objects.equals(taskLists, board.taskLists);
+        return Objects.equals(key, board.key) && Objects.equals(title, board.title)
+                && Objects.equals(password, board.password) && Objects.equals(taskLists, board.taskLists)
+                && Objects.equals(tags, board.tags);
     }
 
     /**
@@ -105,10 +102,7 @@ public class Board {
      */
     @Override
     public int hashCode() {
-        int result = key != null ? key.hashCode() : 0;
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (taskLists != null ? taskLists.hashCode() : 0);
-        return result;
+        return Objects.hash(key, title, password, taskLists, tags);
     }
 
 //    actual methods
@@ -121,8 +115,6 @@ public class Board {
      */
     public TaskList createTaskList() {
         TaskList list = new TaskList(this);
-        long random = (long) (Math.random() * 1000000);
-        list.setid(random);
         this.taskLists.add(list);
         return list;
     }
@@ -136,7 +128,7 @@ public class Board {
      */
     public TaskList createTaskList(long id) throws IllegalArgumentException{
         TaskList list = new TaskList(this);
-        list.setid(id);
+        list.setId(id);
         if(this.taskLists.contains(list)){
             throw new IllegalArgumentException("TaskList already exists");
         }
@@ -153,11 +145,11 @@ public class Board {
      */
     public TaskList createTaskList(long id, String title) throws IllegalArgumentException{
         TaskList list = new TaskList(this);
+        list.setId(id);
+        list.setTitle(title);
         if(this.taskLists.contains(list)){
             throw new IllegalArgumentException("TaskList already exists");
         }
-        list.setid(id);
-        list.setTitle(title);
         this.taskLists.add(list);
         return list;
     }
@@ -171,5 +163,11 @@ public class Board {
             throw new IllegalArgumentException("TaskList cannot be null");
         this.taskLists.remove(taskList);
         taskList.setBoard(null);
+    }
+
+    public Tag createTag(String name) {
+        Tag tag = new Tag(name, this);
+        this.tags.add(tag);
+        return tag;
     }
 }
