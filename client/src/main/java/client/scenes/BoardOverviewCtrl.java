@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
-import commons.TaskMoveModel;
+import commons.models.TaskMoveModel;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -37,6 +37,8 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -82,7 +84,8 @@ public class BoardOverviewCtrl {
     @FXML
     private BorderPane borderPane;
     private UserMenuCtrl usermenuCtrl;
-
+    @Getter
+    @Setter
     private boolean adminPresence=false;
 
     @Inject
@@ -159,7 +162,7 @@ public class BoardOverviewCtrl {
             for (int i = 0; i < listOfTasks.size(); i++) {
                 Task task = listOfTasks.get(i);
                 addTask(task.getTitle(), ourList, task);
-                taskOrderMap.put(task.getid(),i);
+                taskOrderMap.put(task.getId(),i);
             }
         }
 
@@ -332,7 +335,7 @@ public class BoardOverviewCtrl {
         dragOverHandler(listView);
         dragDroppedHandler(listView);
         allLists.put(listView, textField.getText());
-        listMap.put(listView,taskList.getid());
+        listMap.put(listView,taskList.getId());
         return listView;
     }
 
@@ -460,7 +463,7 @@ public class BoardOverviewCtrl {
         list.getItems().add(box);
         //Re-adds the button to the end of the list
         addTaskButton(list);
-        taskMap.put(box,task1.getid());
+        taskMap.put(box,task1.getId());
 
         return box;
     }

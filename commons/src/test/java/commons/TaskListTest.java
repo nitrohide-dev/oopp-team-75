@@ -24,7 +24,7 @@ class TaskListTest {
     @Test
     void constructor1() {
         TaskList taskList = new TaskList();
-        assertNotNull(taskList.getid());
+        assertNotNull(taskList.getId());
         assertNull(taskList.getTasks());
         assertNull(taskList.getTitle());
         assertNull(taskList.getBoard());
@@ -33,7 +33,7 @@ class TaskListTest {
     @Test
     void constructor2() {
         TaskList taskList = new TaskList(new Board());
-        assertNotNull(taskList.getid());
+        assertNotNull(taskList.getId());
         assertNotNull(taskList.getTasks());
         assertNotNull(taskList.getTitle());
         assertEquals(new Board(), taskList.getBoard());
@@ -42,7 +42,7 @@ class TaskListTest {
     @Test
     void constructor3() {
         TaskList taskList = new TaskList(new Board(), "a", new ArrayList<>());
-        assertNotNull(taskList.getid());
+        assertNotNull(taskList.getId());
         assertEquals(new ArrayList<>(), taskList.getTasks());
         assertEquals("a", taskList.getTitle());
         assertEquals(new Board(), taskList.getBoard());
@@ -50,13 +50,13 @@ class TaskListTest {
 
     @Test
     void getId() {
-        assertNotNull(taskList.getid());
+        assertNotNull(taskList.getId());
     }
 
     @Test
     void setId() {
-        taskList.setid(999);
-        assertEquals(999, taskList.getid());
+        taskList.setId(999);
+        assertEquals(999, taskList.getId());
     }
 
     @Test
@@ -196,5 +196,15 @@ class TaskListTest {
         assertEquals(taskList2, task11.getTaskList());
         assertThrows(NullPointerException.class, () -> taskList.insertTask(new Task(), null));
         assertThrows(IllegalArgumentException.class, () -> taskList.insertTask(new Task(), new Task()));
+    }
+
+    @Test
+    void addTask(){
+        assertEquals(0, taskList.getTasks().size());
+        Task task1 = taskList.createTask();
+        taskList.removeTask(task1);
+        assertEquals(0, taskList.getTasks().size());
+        taskList.addTask(task1);
+        assertEquals(1, taskList.getTasks().size());
     }
 }

@@ -122,7 +122,6 @@ public class MainCtrl {
         primaryStage.show();
 
     }
-
     public void showLanding(){
 //        primaryStage.setMinWidth(600);
 //        primaryStage.setMinHeight(400);
@@ -131,6 +130,10 @@ public class MainCtrl {
         primaryStage.setScene(landing);
     }
 
+    /**
+     * Starts the main scene with the board
+     * @param board board to show
+     */
     public void showBoard(Board board) {
         currBoard = board;
         primaryStage.setTitle("Board: Your Board");
@@ -147,8 +150,12 @@ public class MainCtrl {
         primaryStage.setScene(boardOverview);
         boardOverviewCtrl.load(board);
         boardOverviewCtrl.connect(); // connects to /topic/boards
+
     }
 
+    /**
+     * show the user menu
+     */
     public void showUserMenu() {
         userMenuCtrl.loadVisitedBoards();
         primaryStage.setScene(userMenu);
@@ -204,6 +211,9 @@ public class MainCtrl {
         return boardKeys;
     }
 
+    /**
+     * Used to log in as admin
+     */
     public void showAdminLogin() {
         if (!adminPresence) {
             Stage create = new Stage();
@@ -213,12 +223,18 @@ public class MainCtrl {
         } else showAdminOverview();
     }
 
+    /**
+     * Starts the admin overview
+     */
     public void showAdminOverview(){
         setAdminPresence(true);
         primaryStage.setScene(adminOverview);
         adminOverviewCtrl.init();
     }
 
+    /**
+     * Used to change password
+     */
     public void showChangePassword(){
         Stage create = new Stage();
         create.setScene(passwordChange);
@@ -231,7 +247,15 @@ public class MainCtrl {
      * @param newName - the new task name
      */
     public void renameTask(String newName) {
-        server.renameTask(this.currBoard.getKey(), this.currTask.getid(), newName);
+        server.renameTask(this.currBoard.getKey(), this.currTask.getId(), newName);
+    }
+
+    /**
+     * check if admin is logged in
+     * @param adminPresence true if admin is logged in
+     */
+    public void setAdminPresence(boolean adminPresence) {
+        boardOverviewCtrl.setAdminPresence(adminPresence);
     }
 
     /**
@@ -239,7 +263,7 @@ public class MainCtrl {
      * @param newDesc - the new description
      */
     public void changeTaskDesc(String newDesc) {
-        server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getid(), newDesc);
+        server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getId(), newDesc);
     }
 
 }

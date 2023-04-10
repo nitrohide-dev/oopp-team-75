@@ -1,8 +1,9 @@
 package server.api.controllers;
 
 
+
 import commons.Board;
-import commons.CreateBoardModel;
+import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,8 @@ import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.database.BoardRepository;
 import server.database.BoardRepositoryTest;
+import server.database.TagRepository;
+import server.database.TagRepositoryTest;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 
@@ -42,9 +45,10 @@ class BoardControllerTest {
     private BoardController boardController;
     private BoardRepository boardRepository;
     private BoardService boardService;
-
+    private TagRepository tagRepository;
     @BeforeEach
-    private void setup() throws CannotCreateBoard, IOException {
+    public void setup() {
+        tagRepository = new TagRepositoryTest();
         boardRepository = new BoardRepositoryTest();
         boardService = new BoardService(boardRepository);
         this.boardController = new BoardController(boardService);

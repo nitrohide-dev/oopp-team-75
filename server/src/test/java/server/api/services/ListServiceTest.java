@@ -1,7 +1,7 @@
 package server.api.services;
 
 import commons.Board;
-import commons.CreateBoardModel;
+import commons.models.CreateBoardModel;
 import commons.TaskList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +9,8 @@ import server.database.BoardRepository;
 import server.database.BoardRepositoryTest;
 import server.database.ListRepository;
 import server.database.ListRepositoryTest;
+import server.database.SubTaskRepository;
+import server.database.SubTaskRepositoryTest;
 import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
 import server.exceptions.CannotCreateBoard;
@@ -33,10 +35,12 @@ class ListServiceTest {
     private Board board2;
     private Board board3;
 
+    private SubTaskRepository subTaskRepository;
 
     @BeforeEach
     public void setup() throws CannotCreateBoard {
-        taskRepo = new TaskRepositoryTest();
+        subTaskRepository = new SubTaskRepositoryTest();
+        taskRepo = new TaskRepositoryTest(subTaskRepository);
         listRepository = new ListRepositoryTest(taskRepo);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
 
@@ -71,15 +75,15 @@ class ListServiceTest {
     @Test
     void getAllCreate2(){
         boardService.createList(board1);
-        boardService.createList(board1);
+        boardService.createList(board1, 1);
         assertEquals(2, listService.getAll().size());
     }
 
     @Test
     void getAllCreate3(){
         boardService.createList(board1);
-        boardService.createList(board1);
-        boardService.createList(board1);
+        boardService.createList(board1, 2);
+        boardService.createList(board1, 3);
         assertEquals(3, listService.getAll().size());
     }
 
@@ -87,20 +91,20 @@ class ListServiceTest {
     @Test
     void getAllInDifferentBoards(){
         boardService.createList(board1);
-        boardService.createList(board2);
-        boardService.createList(board3);
+        boardService.createList(board2, 10);
+        boardService.createList(board3, 11);
         assertEquals(3, listService.getAll().size());
     }
 
     @Test
     void getAllMultipleInDifferentBoards(){
-        boardService.createList(board1);
-        boardService.createList(board1);
-        boardService.createList(board2);
-        boardService.createList(board2);
-        boardService.createList(board3);
-        boardService.createList(board3);
-        boardService.createList(board3);
+        boardService.createList(board1, 0);
+        boardService.createList(board1 ,2);
+        boardService.createList(board2, 1);
+        boardService.createList(board2, 3);
+        boardService.createList(board3, 4);
+        boardService.createList(board3, 5);
+        boardService.createList(board3, 6);
         assertEquals(7, listService.getAll().size());
     }
     @Test
@@ -191,7 +195,7 @@ class ListServiceTest {
         listRepository = new ListRepositoryTest(taskRepo);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
         TaskList list = new TaskList();
-        list.setid(1000L);
+        list.setId(1000L);
         listService.save(list);
         assertEquals(list, listService.getById(1000L));
     }
@@ -200,7 +204,7 @@ class ListServiceTest {
     void saveCreate1() throws ListDoesNotExist {
         boardService.createList(board1, 1000L);
         TaskList list = new TaskList();
-        list.setid(1001L);
+        list.setId(1001L);
         listService.save(list);
         assertEquals(list, listService.getById(1001L));
         assertEquals(listRepository.findById(1000L), Optional.of(listService.getById(1000L)));
@@ -211,7 +215,7 @@ class ListServiceTest {
     void saveCreate2() throws ListDoesNotExist {
         boardService.createList(board1, 1001L);
         TaskList list = new TaskList();
-        list.setid(1001L);
+        list.setId(1001L);
         listService.save(list);
         assertEquals(list, listService.getById(1001L));
         assertEquals(1, listService.getAll().size());
@@ -220,10 +224,10 @@ class ListServiceTest {
     @Test
     void saveCreate3() throws ListDoesNotExist {
         TaskList list = new TaskList();
-        list.setid(1001L);
+        list.setId(1001L);
         listService.save(list);
         TaskList list2 = new TaskList();
-        list2.setid(1002L);
+        list2.setId(1002L);
         listService.save(list2);
         assertEquals(list, listService.getById(1001L));
         assertEquals(list2, listService.getById(1002L));

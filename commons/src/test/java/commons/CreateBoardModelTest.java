@@ -1,5 +1,6 @@
 package commons;
 
+import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -68,5 +69,12 @@ class CreateBoardModelTest {
         assertFalse(model2.isValid());
         assertFalse(model3.isValid());
         assertTrue(model4.isValid());
+    }
+
+    @Test
+    void setPassword(){
+        assertEquals(null, model.getPassword());
+        model.setPassword("a");
+        assertEquals("a", model.getPassword());
     }
 }
