@@ -32,7 +32,8 @@ public class Main {
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
         try {
-            BoardController.readPassword("password");
+            BoardController.readPassword("password",System.getProperty("user.dir")
+                    + "/server/src/main/java/server/api/configs/pwd.txt");
         } catch (IOException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }

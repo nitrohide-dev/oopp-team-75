@@ -127,8 +127,10 @@ public class BoardOverviewCtrl {
      * @param board the board to refresh to.
      */
     public void refresh(Board board) {
-        mainCtrl.setCurrBoard(board);
-        load(board);
+        if(getBoard().getKey().equals(board.getKey())) {
+            mainCtrl.setCurrBoard(board);
+            load(board);
+        }
     }
 
     /**
@@ -229,7 +231,7 @@ public class BoardOverviewCtrl {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Delete Confirmation Dialog");
             alert.setHeaderText("Delete Board");
-            alert.setContentText("Are you sure you want to delete '"+getBoard().getTitle()+"'?");
+            alert.setContentText("Are you sure you want to delete this board?");
             //add css to dialog pane
             alert.getDialogPane().getStylesheets().add(
                     Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
@@ -389,7 +391,7 @@ public class BoardOverviewCtrl {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Delete Confirmation Dialog");
             alert.setHeaderText("Delete TaskList");
-            alert.setContentText("Are you sure you want to delete '"+taskListName+"'?");
+            alert.setContentText("Are you sure you want to delete this tasklist ?");
             //add css to dialog pane
             alert.getDialogPane().getStylesheets().add(
                     Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
@@ -505,7 +507,8 @@ public class BoardOverviewCtrl {
             label.setText(input.getEditor().getText());
         });
         input.showAndWait();
-
+        if(label.getText()==null)
+            return "task name";
         return label.getText();
 
     }

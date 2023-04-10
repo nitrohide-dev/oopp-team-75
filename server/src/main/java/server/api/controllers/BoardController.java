@@ -157,8 +157,8 @@ public class BoardController {
      * @param password the password to be hashed and saved
      * @throws IOException if the file cannot be created
      */
-    public static void readPassword(String password) throws IOException, NoSuchAlgorithmException {
-        File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
+    public static void readPassword(String password, String directory) throws IOException, NoSuchAlgorithmException {
+        File dir = new File(directory);
         if(!dir.exists()) {
             System.out.println("Your initial password is: "+password+"\nChange it for increased security");
             dir.createNewFile();
@@ -179,9 +179,13 @@ public class BoardController {
         }
     }
     @GetMapping("/changePassword")
-    public ResponseEntity<Boolean> changePassword(@RequestHeader String passwordHashed){
+    public ResponseEntity<Boolean> changePassword(@RequestHeader String passwordHashed,String path){
         hashedPassword = passwordHashed;
         File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
+        if(!path.equals("")){
+            dir = new File(path);
+        }
+
         if(dir.exists()){dir.delete();}
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir))) {
             writer.write(passwordHashed);
