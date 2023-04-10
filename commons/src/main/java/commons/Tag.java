@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 @Entity
@@ -44,8 +45,24 @@ public class Tag {
     @Setter
     private Board board;
 
+    /**
+     * ONLY FOR TESTING
+     * @param title the title of the tag
+     */
     public Tag(String title) {
         this.title = title;
+        this.tasks = new HashSet<>();
+    }
+
+    /**
+     * Default Constructor which should be used
+     * @param title the title of the tag
+     * @param board the board the tag belongs to
+     */
+    public Tag(String title, Board board) {
+        this.title = title;
+        this.tasks = new HashSet<>();
+        this.board = board;
     }
 
     public Tag() {} // for JPA
@@ -89,11 +106,6 @@ public class Tag {
         return board.getKey() == board_key;
     }
 
-    public static Tag createTag(String title) {
-        Tag tag = new Tag(title);
-        return tag;
-    }
-
     public static Tag createTag(String title, long id) {
         Tag tag = new Tag(title);
         tag.setId(id);
@@ -105,6 +117,9 @@ public class Tag {
     }
 
     public void removeTask(Task task) {
+        if (task == null) {
+            throw new IllegalArgumentException("Task is null");
+        }
         if (!tasks.contains(task)){
             throw new IllegalArgumentException("Task does not contain this tag");
         }

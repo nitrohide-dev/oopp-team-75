@@ -166,7 +166,7 @@ public class Board {
     }
 
     public Tag createTag(String name) {
-        Tag tag = new Tag(name);
+        Tag tag = new Tag(name, this);
         this.tags.add(tag);
         return tag;
     }

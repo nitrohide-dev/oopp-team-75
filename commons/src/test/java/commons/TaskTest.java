@@ -133,7 +133,7 @@ class TaskTest {
 
     @Test
     void getTags() {
-        assertEquals( null, task.getTags());
+        assertEquals( new HashSet<>(), task.getTags());
     }
 
     @Test
@@ -173,7 +173,7 @@ class TaskTest {
 
     @Test
     void setTag() {
-        assertEquals( null, task.getTags());
+        assertEquals( new HashSet<>(), task.getTags());
         Tag tag = new Tag();
         tag.setTasks(new HashSet<>());
         task.setTags(new HashSet<>());
@@ -230,5 +230,55 @@ class TaskTest {
         assertEquals(0, task.getSubtasks().size());
         assertThrows(NullPointerException.class, () -> task.removeSubTask(null));
         assertThrows(IllegalArgumentException.class, () -> task.removeSubTask(new SubTask()));
+    }
+
+    @Test
+    void addTagException() {
+        assertThrows(IllegalArgumentException.class, () -> task.addTag(null));
+        assertEquals( new HashSet<>(), task.getTags());
+        Tag tag = new Tag();
+        tag.setTasks(new HashSet<>());
+        task.setTags(new HashSet<>());
+        assertEquals(0, task.getTags().size());
+        Board board = new Board("1", "a", "", new ArrayList<>(), new HashSet<>());
+        TaskList taskList = new TaskList();
+        taskList.setBoard(board);
+        taskList.setBoard(board);
+        Set tags = new HashSet<>();
+        tags.add(tag);
+        board.setTags(tags);
+        task.setTaskList(taskList);
+        Board board1 = new Board("2", "b", "", new ArrayList<>(), new HashSet<>());
+        tag.setBoard(board1);
+        assertThrows(IllegalArgumentException.class, () -> task.addTag(tag));
+        assertEquals(0, task.getTags().size());
+    }
+
+    @Test
+    void removeTag() {
+        assertEquals( new HashSet<>(), task.getTags());
+        Tag tag = new Tag();
+        Set tasks = new HashSet<>();
+        tasks.add(task);
+        tag.setTasks(tasks);
+        task.setTags(new HashSet<>());
+        assertEquals(0, task.getTags().size());
+        Board board = new Board("1", "a", "", new ArrayList<>(), new HashSet<>());
+        TaskList taskList = new TaskList();
+        taskList.setBoard(board);
+        taskList.setBoard(board);
+        Set tags = new HashSet<>();
+        tags.add(tag);
+        board.setTags(tags);
+        task.setTaskList(taskList);
+        tag.setBoard(board);
+        task.addTag(tag);
+        assertEquals(1, task.getTags().size());
+        task.removeTag(tag);
+        assertEquals(0, task.getTags().size());
+        assertThrows(IllegalArgumentException.class, () -> task.removeTag(null));
+        assertThrows(IllegalArgumentException.class, () -> task.removeTag(new Tag()));
+        assertThrows(IllegalArgumentException.class, () -> tag.removeTask(null));
+        assertThrows(IllegalArgumentException.class, () -> tag.removeTask(new Task()));
     }
 }

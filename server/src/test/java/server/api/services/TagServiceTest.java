@@ -146,7 +146,6 @@ class TagServiceTest {
         Task task1 = new Task(boardRepository.getById("1").getTaskLists().get(0), "1", "desc", tags);
         task1.addTag(tag1);
         tagRepository.save(tag1);
-        assertThrows(NullPointerException.class, () -> tagService.getAllTagsByTask(1L));
-//        assertEquals(0, tagService.getAllTagsByTask(1L).size()); dont know that the error is
+        assertEquals(new HashSet<>() ,tagService.getAllTagsByTask(1L));
     }
 }

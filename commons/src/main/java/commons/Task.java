@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -71,11 +72,11 @@ public class Task {
 
     // TODO: pass tags correctly
     public Task(TaskList taskList,String name) {
-        this(taskList, name, "", null, new ArrayList());
+        this(taskList, name, "", new HashSet<>(), new ArrayList());
     }
 
     public Task(TaskList taskList, String title, String desc) {
-        this(taskList, title, desc, null, new ArrayList());
+        this(taskList, title, desc, new HashSet<>(), new ArrayList());
     }
 
     public Task(TaskList taskList, String title, String desc, Set<Tag> tags) {

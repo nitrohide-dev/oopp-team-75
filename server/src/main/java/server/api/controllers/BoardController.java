@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
-import server.api.services.TagService;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 
@@ -40,12 +39,10 @@ public class BoardController {
     private boolean authentication;
     private static String hashedPassword;
     private final BoardService boardService;
-    private final TagService tagService;
 
-    public BoardController(BoardService boardService, TagService tagService) {
+    public BoardController(BoardService boardService) {
         this.boardService = boardService;
         this.authentication= false;
-        this.tagService = tagService;
     }
 
     /**
