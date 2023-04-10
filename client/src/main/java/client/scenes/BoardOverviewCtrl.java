@@ -373,22 +373,31 @@ public class BoardOverviewCtrl {
         HBox box = new HBox(addTaskButton);
         box.setPadding(new Insets(4, 16, 4, 16));
         listView.getItems().add(box);
+
         addTaskButton.setOnAction(e -> {
+            System.out.println("it works?");
                 TextField textField = new TextField();
         textField.setOnAction(actionEvent -> {
-            // Submit the text when "Enter" is pressed
+            // Submit the text when Enter is pressed
             String text = textField.getText();
-            System.out.println("Submitted text: " + text);
+            createTask(text,listView);
 
-            // Replace the TextField with the original HBox
-            box.getChildren().clear();
-           // box.getChildren().add(/* add original HBox nodes */);
         });
 
-        box.getChildren().clear();
-        box.getChildren().add(textField);
-        textField.requestFocus();
+            textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue) {
+                    // If the text field loses focus, go back to the label
+                    box.getChildren().clear();
+                    box.getChildren().add(addTaskButton);
+                }
+            });
+            box.getChildren().clear();
+            box.getChildren().add(textField);
+            textField.requestFocus();
+
     });
+
+
     }
 
     /**
@@ -425,14 +434,6 @@ public class BoardOverviewCtrl {
 
         deleteTaskListsButton.setOnMouseExited(e -> deleteTaskListsButton.setStyle("-fx-background-color: transparent;"));
     }
-
-    /**
-     * task creation method caused by the user's manual task addition.
-     */
-    public void createTask(ListView<HBox> list) {
-        createTask(inputTaskName(), list);
-    }
-
 
     /**
      * creates a task in the given list with the given name
