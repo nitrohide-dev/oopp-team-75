@@ -176,7 +176,6 @@ public class MainCtrl {
      * @throws IOException exception for input
      */
     public void writeToCsv(List<String> boardKeys, String server) throws UnsupportedEncodingException {
-        System.out.println("writing to csv");
         File dir = new File(System.getProperty("user.dir") + "/client/src/main/resources/servers/");
         String encodedUrl = URLEncoder.encode(server, StandardCharsets.UTF_8);
 
@@ -186,7 +185,6 @@ public class MainCtrl {
         File file = new File(dir, encodedUrl+".csv");
         if(file.exists()){file.delete();}
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            System.out.println("writing...");
 
             writer.write(boardKeys.toString());
         } catch (Exception e) {}

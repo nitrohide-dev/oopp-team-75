@@ -198,7 +198,6 @@ public class UserMenuCtrl {
         }
         visitedBoards.remove(key);
         visitedBoards.add(0,key);
-        System.out.println(visitedBoards);
         saveVisitedBoards();
         mainCtrl.showBoard(board);
     }
