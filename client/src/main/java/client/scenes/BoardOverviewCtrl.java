@@ -154,7 +154,7 @@ public class BoardOverviewCtrl {
             List<Task> listOfTasks = taskList.getTasks();
             for (int i = 0; i < listOfTasks.size(); i++) {
                 Task task = listOfTasks.get(i);
-                addTask(task.getTitle(), ourList, task);
+                 addTask(task.getTitle(), ourList, task);
                 taskOrderMap.put(task.getId(),i);
             }
         }
@@ -373,7 +373,22 @@ public class BoardOverviewCtrl {
         HBox box = new HBox(addTaskButton);
         box.setPadding(new Insets(4, 16, 4, 16));
         listView.getItems().add(box);
-        addTaskButton.setOnAction(e -> createTask(listView));
+        addTaskButton.setOnAction(e -> {
+                TextField textField = new TextField();
+        textField.setOnAction(actionEvent -> {
+            // Submit the text when "Enter" is pressed
+            String text = textField.getText();
+            System.out.println("Submitted text: " + text);
+
+            // Replace the TextField with the original HBox
+            box.getChildren().clear();
+           // box.getChildren().add(/* add original HBox nodes */);
+        });
+
+        box.getChildren().clear();
+        box.getChildren().add(textField);
+        textField.requestFocus();
+    });
     }
 
     /**
@@ -445,14 +460,13 @@ public class BoardOverviewCtrl {
         task.setPadding(new Insets(6, 1, 6, 1));
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
-        dragDtHandler(box,task,list);
         path = Path.of("", "client", "images", "pencil.png").toString();
         Button editButton = buttonBuilder(path);
 
         HBox box = new HBox(task, editButton, removeButton);
         dragHandler(box,task,list);
-        removeButton.setOnAction(e -> deleteTask(list, box));
-        editButton.setOnAction(e -> editTask(box));
+        removeButton.setOnAction(e -> deleteTask(box));
+        editButton.setOnAction(e -> System.out.println("holder"));
         box.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 viewTask(box); // changed view button for double click
@@ -683,11 +697,7 @@ public class BoardOverviewCtrl {
         mainCtrl.showUserMenu();
     }
 
-    public void changeImageUrl() {
-        // Set the image URL of ImageView
-        String path = Path.of("", "client", "images", "Logo.png").toString();
-        logo1.setImage(new Image(path));
-    }
+
 
     /**
      * adds progress indicator to the task box - should be called when nested tasks are added
