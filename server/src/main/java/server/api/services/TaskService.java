@@ -1,6 +1,5 @@
 package server.api.services;
 
-import commons.SubTask;
 import commons.Tag;
 import commons.Task;
 import commons.TaskList;
