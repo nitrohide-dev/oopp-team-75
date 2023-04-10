@@ -60,6 +60,11 @@
                </HBox.margin>
             </Label>
             <Region HBox.hgrow="ALWAYS" />
+            <ImageView fx:id="tags" fitHeight="25.0" fitWidth="25.0" onMouseClicked="#viewTags" pickOnBounds="true" preserveRatio="true" styleClass="header-btn" HBox.hgrow="NEVER">
+               <image>
+                  <Image url="@../images/tag.png" />
+               </image>
+            </ImageView>
             <ImageView fx:id="exit" fitHeight="25.0" fitWidth="25.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true" styleClass="header-btn" HBox.hgrow="NEVER">
                <image>
                   <Image url="@../images/ExitButton.png" />

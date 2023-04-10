@@ -76,7 +76,8 @@ public class MainCtrl {
 
     private TaskOverviewCtrl taskOverviewCtrl;
     private Scene taskOverview;
-
+    private TagOverviewCtrl tagOverviewCtrl;
+    private Scene tagOverview;
     @Inject
     public MainCtrl(ServerUtils server){
         this.server = server;
@@ -88,7 +89,7 @@ public class MainCtrl {
                             Pair<AdminOverviewCtrl, Parent> adminOverview,
                            Pair<AdminLoginCtrl, Parent> adminLogin,
                            Pair<PasswordChangeCtrl, Parent> passwordChange,
-                           Pair<TaskOverviewCtrl, Parent> taskOverview) throws IOException {
+                           Pair<TaskOverviewCtrl, Parent> taskOverview,Pair<TagOverviewCtrl,Parent> tagOverview) throws IOException {
         this.primaryStage = primaryStage;
 
         this.landingCtrl = landing.getKey();
@@ -105,6 +106,9 @@ public class MainCtrl {
 
         this.taskOverviewCtrl = taskOverview.getKey();
         this.taskOverview = new Scene(taskOverview.getValue());
+
+        this.tagOverviewCtrl = tagOverview.getKey();
+        this.tagOverview = new Scene(tagOverview.getValue());
 
         this.adminOverviewCtrl = adminOverview.getKey();
         this.adminOverview = new Scene(adminOverview.getValue());
@@ -165,7 +169,15 @@ public class MainCtrl {
         taskStage.initModality(Modality.APPLICATION_MODAL);
         taskStage.showAndWait();
     }
-
+    public void showTagOverview(String boardKey){
+        Board board = server.findBoard(boardKey);
+        Stage stage = new Stage();
+        stage.setTitle("Tag List");
+        tagOverviewCtrl.load(board);
+        stage.setScene(tagOverview);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
+    }
     /**
      * writes user's favorite boards and their hashed passwords to file on their computer
      * @throws IOException exception for input
