@@ -45,6 +45,7 @@ public class Task {
     @ManyToMany(mappedBy = "tasks", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Getter
     @Setter
+    @Column
     private Set<Tag> tags;
 
     @JsonManagedReference
@@ -63,7 +64,6 @@ public class Task {
     @ManyToOne
     @Getter
     @Setter
-    @Column(nullable=false)
     private TaskList taskList;
 
 //    constructors
