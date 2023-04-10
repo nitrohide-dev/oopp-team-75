@@ -21,6 +21,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -64,7 +65,7 @@ public class UserMenuCtrl {
         boardsListView.getChildren().clear();
 
         // start adding visited boards
-        for (String key : mainCtrl.readFromCsv())
+        for (String key : mainCtrl.readFromCsv(server.getSERVER()))
             if (server.findBoard(key) != null)
                 addBoard(key);
     }
@@ -75,9 +76,12 @@ public class UserMenuCtrl {
     public void saveVisitedBoards() {
         // remove duplicate keys
         visitedBoards = new ArrayList<>(new HashSet<>(visitedBoards));
-
         // store keys in a csv file
-        mainCtrl.writeToCsv(visitedBoards);
+        try {
+            mainCtrl.writeToCsv(visitedBoards,server.getSERVER());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -94,6 +98,10 @@ public class UserMenuCtrl {
      */
     public void createBoard() {
         String key = textBox.getText().trim();
+        if(key.contains(",")){
+            new Alert(Alert.AlertType.ERROR, "Please, do not use commas in a board identifier.").showAndWait();
+            return;
+        }
         if (key.isEmpty()) {
             new Alert(Alert.AlertType.ERROR, "Please enter a board key.").showAndWait();
             return;
