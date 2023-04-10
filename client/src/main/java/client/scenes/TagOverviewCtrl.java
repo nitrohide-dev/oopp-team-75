@@ -7,15 +7,17 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javax.inject.Inject;
-
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.stage.Stage;
@@ -79,7 +81,7 @@ public class TagOverviewCtrl {
         Button editButton = buttonBuilder(path);
         editButton.setOnAction(e-> renameTag(tag.getId(),mainCtrl.getCurrBoard().getKey()));
         Label label = new Label(tag.getTitle());
-        label.setBackground(new Background(new BackgroundFill(Color.RED,null,null)));
+        label.setBackground(new Background(new BackgroundFill(Color.rgb(55,205,155,0.7),null,null)));
         HBox box = new HBox();
         box.getChildren().addAll(label, editButton, removeButton);
         box.setAlignment(Pos.CENTER);
@@ -89,11 +91,11 @@ public class TagOverviewCtrl {
     }
     public void createTag(){
         String name = tagNameSetter();
-      server.createTag(mainCtrl.getCurrBoard().getKey(),name);
+        server.createTag(mainCtrl.getCurrBoard().getKey(),name);
     }
     public void renameTag(Long id, String key){
-         String newName = tagNameSetter();
-         server.renameTag(Long.toString(id),key,newName);
+        String newName = tagNameSetter();
+        server.renameTag(Long.toString(id),key,newName);
     }
     public String tagNameSetter(){
         TextInputDialog input = new TextInputDialog("tag name");
@@ -107,8 +109,8 @@ public class TagOverviewCtrl {
         Label label = new Label();
         ((Button)
                 input.getDialogPane().lookupButton(ButtonType.OK)).setOnAction(e -> {
-            label.setText(input.getEditor().getText());
-        });
+                    label.setText(input.getEditor().getText());
+                });
         input.showAndWait();
         return label.getText();
     }

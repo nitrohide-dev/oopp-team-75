@@ -89,7 +89,8 @@ public class MainCtrl {
                             Pair<AdminOverviewCtrl, Parent> adminOverview,
                            Pair<AdminLoginCtrl, Parent> adminLogin,
                            Pair<PasswordChangeCtrl, Parent> passwordChange,
-                           Pair<TaskOverviewCtrl, Parent> taskOverview,Pair<TagOverviewCtrl,Parent> tagOverview) throws IOException {
+                           Pair<TaskOverviewCtrl, Parent> taskOverview,
+                           Pair<TagOverviewCtrl,Parent> tagOverview) throws IOException {
         this.primaryStage = primaryStage;
 
         this.landingCtrl = landing.getKey();

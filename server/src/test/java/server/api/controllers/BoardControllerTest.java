@@ -47,7 +47,7 @@ class BoardControllerTest {
     private BoardService boardService;
     private TagRepository tagRepository;
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException {
         tagRepository = new TagRepositoryTest();
         boardRepository = new BoardRepositoryTest();
         boardService = new BoardService(boardRepository);

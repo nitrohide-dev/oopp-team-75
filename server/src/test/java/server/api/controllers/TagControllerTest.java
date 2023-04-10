@@ -89,7 +89,7 @@ class TagControllerTest {
     @Test
     void deleteById() throws TagDoesNotExist {
         assertEquals(1, tagRepository.count());
-        tagController.deleteById("1", "1");
+        tagController.deleteById("1L", "1");
         assertEquals(0, tagRepository.count());
         assertThrows(ResponseStatusException.class, () -> tagController.deleteById("1", "1"));
     }
