@@ -39,6 +39,7 @@ public class Main extends Application {
     private static final MyFXML FXML = new MyFXML(INJECTOR);
     private static MainCtrl mainCtrl;
 
+
     public static void main(String[] args) throws URISyntaxException, IOException {
         launch();
     }

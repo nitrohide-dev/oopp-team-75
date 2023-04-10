@@ -1,18 +1,28 @@
 package server.api.controllers;
 
 
+
 import commons.Board;
-import commons.CreateBoardModel;
+import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.database.BoardRepository;
 import server.database.BoardRepositoryTest;
+import server.database.TagRepository;
+import server.database.TagRepositoryTest;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,15 +34,21 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.io.TempDir;
 
 class BoardControllerTest {
+
+    @TempDir
+    static Path tempDir;
+
 
     private BoardController boardController;
     private BoardRepository boardRepository;
     private BoardService boardService;
-
+    private TagRepository tagRepository;
     @BeforeEach
-    private void setup() throws CannotCreateBoard, IOException {
+    public void setup() {
+        tagRepository = new TagRepositoryTest();
         boardRepository = new BoardRepositoryTest();
         boardService = new BoardService(boardRepository);
         this.boardController = new BoardController(boardService);
@@ -41,6 +57,10 @@ class BoardControllerTest {
         boardController.create(new CreateBoardModel("key", "name"));
         boardController.create(new CreateBoardModel("key2", "name2"));
         boardController.create(new CreateBoardModel("key3", "name3"));
+        clearDirectoryContent(tempDir);
+
+
+
     }
 
     @Test
@@ -226,4 +246,50 @@ class BoardControllerTest {
         assertFalse(boardController.isAuthentication());
     }
 
+
+
+    @Test
+    public void testReadPassword() throws IOException, NoSuchAlgorithmException {
+        String testPassword = "testPassword";
+        File dir = new File(tempDir.toString() + "/pwd.txt");
+
+        BoardController.readPassword(testPassword,tempDir.toString()+"/pwd.txt");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
+            String hashedPassword = reader.readLine();
+            assertEquals(BoardController.hashPassword(testPassword), hashedPassword);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void testChangePassword() throws IOException, NoSuchAlgorithmException {
+        String newPasswordHashed = "newPasswordHashed";
+        File dir = new File(tempDir.toString() + "/pwd.txt");
+        System.setProperty("user.dir", tempDir.toString());
+
+        ResponseEntity<Boolean> response = boardController.changePassword(BoardController
+                .hashPassword(newPasswordHashed),tempDir.toString()+"/pwd.txt");
+
+        assertTrue(response.getBody());
+        try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
+            String newPasswordFromFile = reader.readLine();
+            assertEquals(BoardController.hashPassword(newPasswordHashed), newPasswordFromFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void clearDirectoryContent(Path tempDir) throws IOException {
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(tempDir)) {
+            for (Path path : directoryStream) {
+                if (Files.isDirectory(path)) {
+                    clearDirectoryContent(path);
+                }
+                Files.delete(path);
+            }
+        }
+    }
 }
+
