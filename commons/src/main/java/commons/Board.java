@@ -76,6 +76,7 @@ public class Board {
         this.title = title;
         this.taskLists = taskLists;
         this.tags = tags;
+        this.password = password;
     }
 
 //    equals and hashcode
@@ -165,7 +166,7 @@ public class Board {
     }
 
     public Tag createTag(String name) {
-        Tag tag = new Tag(name);
+        Tag tag = new Tag(name, this);
         this.tags.add(tag);
         return tag;
     }

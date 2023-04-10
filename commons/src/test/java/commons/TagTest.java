@@ -36,7 +36,7 @@ class TagTest {
         Tag tag = new Tag("a");
         assertNotNull(tag.getId());
         assertEquals("a", tag.getTitle());
-        assertNull(tag.getTasks());
+        assertEquals(new HashSet<>(), tag.getTasks());
         assertNull(tag.getBoard());
     }
 
@@ -130,10 +130,10 @@ class TagTest {
 
     @Test
     void createTag(){
-        Tag tag = Tag.createTag("a");
+        Tag tag = Tag.createTag("a", 3L);
         assertNotNull(tag);
         assertEquals("a", tag.getTitle());
-        assertEquals(null, tag.getTasks());
+        assertEquals(new HashSet<>(), tag.getTasks());
         assertNull(tag.getBoard());
     }
 
@@ -142,9 +142,8 @@ class TagTest {
         Tag tag = Tag.createTag("a", 100);
         assertNotNull(tag);
         assertEquals("a", tag.getTitle());
-        assertEquals(null, tag.getTasks());
+        assertEquals(new HashSet<>(), tag.getTasks());
         assertNull(tag.getBoard());
         assertEquals(100, tag.getId());
     }
-
 }

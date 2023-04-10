@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.ListService;
-import server.api.services.TagService;
 import server.api.services.TaskService;
 import server.database.BoardRepository;
 import server.database.BoardRepositoryTest;
@@ -18,7 +17,6 @@ import server.database.ListRepository;
 import server.database.ListRepositoryTest;
 import server.database.SubTaskRepository;
 import server.database.SubTaskRepositoryTest;
-import server.database.TagRepositoryTest;
 import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
 import server.exceptions.BoardDoesNotExist;
@@ -71,7 +69,7 @@ class TaskControllerTest {
         boardService = new BoardService(boardRepository);
         taskService = new TaskService(taskRepository, listRepository);
         taskController = new TaskController(taskService, boardService, listService);
-        boardController = new BoardController(boardService, new TagService(new TagRepositoryTest(), boardRepository));
+        boardController = new BoardController(boardService);
 
         boardController.create(new CreateBoardModel("key", "name"));
         boardController.create(new CreateBoardModel("key2", "name2"));
@@ -124,7 +122,7 @@ class TaskControllerTest {
         boardService = new BoardService(boardRepository);
         taskService = new TaskService(taskRepository, listRepository);
         taskController = new TaskController(taskService, boardService, listService);
-        boardController = new BoardController(boardService,   new TagService(new TagRepositoryTest(), boardRepository));
+        boardController = new BoardController(boardService);
         assertEquals(0, taskController.getAll().size());
     }
 

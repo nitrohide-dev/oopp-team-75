@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
-import server.api.services.TagService;
 import server.database.BoardRepository;
 import server.database.BoardRepositoryTest;
 import server.database.TagRepository;
@@ -52,7 +51,7 @@ class BoardControllerTest {
         tagRepository = new TagRepositoryTest();
         boardRepository = new BoardRepositoryTest();
         boardService = new BoardService(boardRepository);
-        this.boardController = new BoardController(boardService, new TagService(tagRepository, boardRepository));
+        this.boardController = new BoardController(boardService);
         boardController.authenticate("testing");
 
         boardController.create(new CreateBoardModel("key", "name"));
@@ -76,7 +75,7 @@ class BoardControllerTest {
     @Test
     void testGetAll1() throws CannotCreateBoard, IOException {
         var boardService = new BoardService(new BoardRepositoryTest());
-        var boardController2 = new BoardController(boardService, new TagService(tagRepository, boardRepository));
+        var boardController2 = new BoardController(boardService);
         boardController2.authenticate("testing");
         List<Board> boards = boardController2.getAll();
         assertEquals( new ArrayList<>(), boards);
@@ -84,7 +83,7 @@ class BoardControllerTest {
 
     @Test
     public void testGetAllNotAuthenticated() throws IOException {
-        var boardController2 = new BoardController(boardService, new TagService(tagRepository, boardRepository));
+        var boardController2 = new BoardController(boardService);
         boardController2.authenticate("wrong password");
         boardController2.create(new CreateBoardModel("key11", "name"));
         List<Board> result = boardController2.getAll();

@@ -52,10 +52,6 @@ class SubTaskControllerTest {
 
     private TaskList taskList;
 
-    private TaskList taskList2;
-
-    private TaskList taskList3;
-
     private Task[]  tasks;
     private SubTask[] subTasks;
 
@@ -73,43 +69,35 @@ class SubTaskControllerTest {
         taskService = new TaskService(taskRepository, listRepository);
         subTaskService = new SubTaskService(subTaskRepository);
         subTaskController = new SubTaskController(subTaskService, boardService);
+
         board1 =boardService.create(new CreateBoardModel("1", "1"));
 
         boardService.createList(board1, 1L, "1");
-        boardService.createList(board1, 2L, "2");
-        boardService.createList(board1, 3L, "3");
 
         listService.save(board1.getTaskLists().get(0));
-        listService.save(board1.getTaskLists().get(1));
-        listService.save(board1.getTaskLists().get(2));
 
         taskList = listService.getById(1L);
-        taskList2 = listService.getById(2L);
-        taskList3 = listService.getById(3L);
 
-        tasks = new Task[3];
+        tasks = new Task[2];
 
         listService.createTask(taskList, "task1");
         listService.createTask(taskList, "task2");
-        listService.createTask(taskList3, "task3");
 
         tasks[0] = listService.getById(1L).getTasks().get(0);
         tasks[1] = listService.getById(1L).getTasks().get(1);
-        tasks[2] = listService.getById(3L).getTasks().get(0);
 
         tasks[0].setId(1L);
         tasks[1].setId(2L);
-        tasks[2].setId(3L);
 
         subTasks = new SubTask[3];
 
         taskService.createSubTask(tasks[0], "subtask1");
         taskService.createSubTask(tasks[0], "subtask2");
-        taskService.createSubTask(tasks[2], "subtask3");
+        taskService.createSubTask(tasks[1], "subtask3");
 
         subTasks[0] = taskService.getById(1L).getSubtasks().get(0);
         subTasks[1] = taskService.getById(1L).getSubtasks().get(1);
-        subTasks[2] = taskService.getById(3L).getSubtasks().get(0);
+        subTasks[2] = taskService.getById(2L).getSubtasks().get(0);
 
         subTasks[0].setId(10L);
         subTasks[1].setId(20L);

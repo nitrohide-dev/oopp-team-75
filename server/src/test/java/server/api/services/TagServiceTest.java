@@ -60,7 +60,7 @@ class TagServiceTest {
     }
     @Test
     void createTag2() {
-        tagService.createTag("3");
+        tagService.createTag("3", 3L);
         assertEquals(2, tagRepository.count());
     }
     @Test
@@ -140,12 +140,12 @@ class TagServiceTest {
         Set<Task> tasks = new HashSet<>();
         tasks.add(new Task());
         tag1.setTasks(tasks);
+        tag1.setBoard(boardRepository.getById("1"));
         Set tags = new HashSet();
         boardService.createList(boardRepository.getById("1"));
         Task task1 = new Task(boardRepository.getById("1").getTaskLists().get(0), "1", "desc", tags);
         task1.addTag(tag1);
         tagRepository.save(tag1);
-        assertThrows(NullPointerException.class, () -> tagService.getAllTagsByTask(1L));
-//        assertEquals(0, tagService.getAllTagsByTask(1L).size()); dont know that the error is
+        assertEquals(new HashSet<>() ,tagService.getAllTagsByTask(1L));
     }
 }

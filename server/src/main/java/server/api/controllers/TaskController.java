@@ -90,7 +90,7 @@ public class TaskController {
      * if the task does not exist in the database, the method responds with a bad request
      * @param id - the id of the task
      * @param newDesc - the new description of the task
-     * @boardKey - the key of the board in which the task is
+     * @param boardKey - the key of the board in which the task is
      * @return the board the task is in
      */
     @MessageMapping("/task/desc/{boardKey}/{name}")
@@ -118,7 +118,6 @@ public class TaskController {
         Task task =  getById(model.getTask_id());
         TaskList list = listService.getById(model.getTasklist_id());
         int order = model.getNew_task_order();
-
         if(order==Integer.MAX_VALUE) {
             order = list.getTasks().size();
             if (list.getId() == task.getTaskList().getId())

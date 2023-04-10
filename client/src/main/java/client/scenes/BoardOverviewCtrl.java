@@ -37,6 +37,8 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -83,7 +85,8 @@ public class BoardOverviewCtrl {
     @FXML
     private BorderPane borderPane;
     private UserMenuCtrl usermenuCtrl;
-
+    @Getter
+    @Setter
     private boolean adminPresence=false;
 
     @Inject

@@ -1,5 +1,6 @@
 package server.api.services;
 
+import commons.Board;
 import commons.Tag;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
@@ -21,14 +22,18 @@ public class TagService {
     /**
      * Creates a tag in the database from a title string
      * @param title - the name of the tag to be created
+     * @param board - the board the tag belongs to
      * @return The newly created tag
      */
-    public Tag createTag(String title){
-        var tag = Tag.createTag(title);
+    public Tag createTag(String title, Board board){
+        var tag = new Tag(title, board);
         return repo.save(tag);
     }
 
-    //ONLY FOR TESTING PURPOSES
+
+    /**
+     * ONLY FOR TESTING
+     */
     public Tag createTag(String title, Long Id){
         var tag = Tag.createTag(title, Id);
         return repo.save(tag);
