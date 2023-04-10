@@ -167,7 +167,7 @@ class TaskTest {
     @Test
     void createSubTask() {
         task.setSubtasks(new ArrayList<>());
-        task.createSubTask();
+        task.createSubTask("");
         assertEquals(1, task.getSubtasks().size());
     }
 

@@ -96,8 +96,8 @@ public class Task {
      * @return the newly created subtask
      */
 
-    public SubTask createSubTask() {
-        SubTask subTask = new SubTask(this, "");
+    public SubTask createSubTask(String title) {
+        SubTask subTask = new SubTask(this, title);
         subtasks.add(subTask);
         return subTask;
     }

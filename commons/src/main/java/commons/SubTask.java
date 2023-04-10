@@ -42,7 +42,7 @@ public class SubTask {
     }
 
 
-    public SubTask() {} // for JPA
+    public SubTask() {} // for jackson
 
     // equals and hashcode
 
