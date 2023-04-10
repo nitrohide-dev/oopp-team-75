@@ -157,11 +157,11 @@ public class TaskController {
      * @param title the subtask title
      * @return the stored subtask
      */
-    @MessageMapping("/task/create/{title}")
+    @MessageMapping("/subtask/create/{title}")
     @SendTo("/topic/boards")
-    public Board createSubTask(Long taskID,@DestinationVariable("title") String title) throws TaskDoesNotExist {
+    public Board createSubTask(Long taskID, @DestinationVariable("title") String title) throws TaskDoesNotExist {
         Task task = taskService.getById(taskID);
-        String id = taskService.createSubTask(task,title);
+        String id = taskService.createSubTask(task, title);
         return boardService.findByKey(id);
     }
 }

@@ -1,19 +1,31 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import commons.SubTask;
 import commons.Task;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 import javax.inject.Inject;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -38,11 +50,16 @@ public class TaskOverviewCtrl {
 	private Button cancelDesc;
 	@FXML
 	private TextField newName;
+	@FXML
+	private ListView<HBox> taskList;
+
+	private Map<HBox, Long> taskMap;
 
 	@Inject
 	public TaskOverviewCtrl(MainCtrl mainCtrl, ServerUtils server) {
 		this.mainCtrl = mainCtrl;
 		this.server = server;
+		this.taskMap = new HashMap<>();
 	}
 
 	@FXML
@@ -56,12 +73,71 @@ public class TaskOverviewCtrl {
 
 	/**
 	 * sets the fields dependent on the task and restarts the other objects to default
-	 * @param task - the task which is showed
 	 */
-	public void load(Task task) {
+	public void load() {
+		Task task = mainCtrl.getCurrTask();
+		taskMap.clear();
 		taskName.setText(task.getTitle());
 		description.setText(task.getDesc());
 		resetFields();
+		initializeSubTasks(task.getSubtasks());
+	}
+
+
+	/**
+	 * Connects to the server for automatic refreshing.
+	 */
+	public void connect() {
+		server.subscribe("/topic/bo", Task.class, t -> Platform.runLater(() -> this.refresh(t)));
+	}
+
+	/**
+	 * Updates the board to a new board, and regenerates the boardOverview,
+	 * only if the new boards key is equal to the previous boards key (i.e.
+	 * only new versions of the same board are accepted).
+	 * @param task the board to refresh to.
+	 */
+	public void refresh(Task task) {
+		if(mainCtrl.getCurrTask().getId() == task.getId()) {
+			mainCtrl.setCurrTask(task);
+			load();
+		}
+	}
+
+	private void initializeSubTasks(List<SubTask> subtasks) {
+		this.taskList.getItems().clear();
+		List<HBox> tasks = new ArrayList<>();
+		for (SubTask task : subtasks) {
+			HBox box = taskHolder(task);
+			tasks.add(box);
+			this.taskMap.put(box, task.getId());
+		}
+		this.taskList.getItems().addAll(tasks);
+	}
+
+	private HBox taskHolder(SubTask task) {
+		System.out.println("pishki");
+		if (task == null) return null;
+		CheckBox check = new CheckBox();
+		check.setPadding(new Insets(4, 1, 4, 2));
+		Label taskName = new Label(task.getTitle());
+		taskName.setPrefSize(160, 25);
+		taskName.setPadding(new Insets(5,1,5,2));
+		String path = Path.of("", "client", "images", "cancel.png").toString();
+		Button removeButton = new Button();
+		importPicture(removeButton, path);
+		HBox box = new HBox(check, taskName, removeButton);
+		removeButton.setOnAction(e -> deleteTask(box));
+		return box;
+	}
+
+
+	/**
+	 * Deletes given subtask
+	 * @param task - a HBox, containing the task
+	 */
+	public void deleteTask(HBox task) {
+		mainCtrl.deleteSubTask(taskMap.remove(task));
 	}
 
 	/**
@@ -141,7 +217,7 @@ public class TaskOverviewCtrl {
 		((Button) confirm.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("No");
 		if (result.isPresent() && result.get() == ButtonType.OK) {
 			mainCtrl.renameTask(this.newName.getText());
-			load(this.mainCtrl.getCurrTask());
+			load();
 			//there should be some method for refreshing the scene for everyone here, maybe with long polling
 		}
 	}
@@ -159,7 +235,7 @@ public class TaskOverviewCtrl {
 		Optional<ButtonType> result = confirm.showAndWait();
 		if (result.isPresent() && result.get() == ButtonType.OK) {
 			mainCtrl.changeTaskDesc(this.description.getText());
-			load(this.mainCtrl.getCurrTask());
+			load();
 			//there should be some method for refreshing the scene for everyone here, maybe with long polling
 		}
 	}
@@ -176,8 +252,29 @@ public class TaskOverviewCtrl {
 		((Button) cancel.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("No");
 		Optional<ButtonType> result = cancel.showAndWait();
 		if (result.isPresent() && result.get() == ButtonType.OK){
-			load(this.mainCtrl.getCurrTask());
+			load();
 		}
+	}
+
+	public void createSubTask() {
+		TextInputDialog input = new TextInputDialog("task name");
+		input.setHeaderText("Task name");
+		input.setContentText("Please enter a name for the task:");
+		input.setTitle("Input Task Name");
+		//add css to dialog pane
+		input.getDialogPane().getStylesheets().add(
+			Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+		//make preferred size bigger
+		input.getDialogPane().setPrefSize(400, 200);
+		//trying to add icon to dialog
+		String path = Path.of("", "client", "images", "Logo.png").toString();
+		Stage stage = (Stage) input.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image(path));
+		((Button) input.getDialogPane().lookupButton(ButtonType.OK)).setOnAction(e -> {
+			mainCtrl.createSubTask(input.getEditor().getText());
+			load();
+		});
+		input.showAndWait();
 	}
 
 }

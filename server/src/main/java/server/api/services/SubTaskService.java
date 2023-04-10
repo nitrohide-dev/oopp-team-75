@@ -1,6 +1,7 @@
 package server.api.services;
 
 import commons.SubTask;
+import commons.Task;
 import org.springframework.stereotype.Service;
 import server.database.SubTaskRepository;
 import server.exceptions.SubTaskDoesNotExist;
@@ -47,6 +48,9 @@ public class SubTaskService {
     public void deleteById(long id) throws SubTaskDoesNotExist {
         if (!repo.existsById(id))
             throw new SubTaskDoesNotExist("There is no subtask with the provided id.");
+        SubTask subTask = repo.getById(id);
+        Task task = subTask.getTask();
+        task.getSubtasks().remove(subTask);
         repo.deleteById(id);
     }
     /**

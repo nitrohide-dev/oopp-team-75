@@ -432,8 +432,8 @@ public class BoardOverviewCtrl {
      * @param name the name of the task to be created
      * @param list the list in which the task should be created
      */
-    public void createTask(String name,ListView<HBox> list) {
-        server.createTask(listMap.get(list),name);
+    public void createTask(String name, ListView<HBox> list) {
+        server.createTask(listMap.get(list), name);
     }
 
     /**
@@ -443,7 +443,7 @@ public class BoardOverviewCtrl {
      * @param task1 the Task common data type to map to the task for frontend-backend communication
      * @return the created task
      */
-    public HBox addTask(String name, ListView<HBox> list,Task task1) {
+    public HBox addTask(String name, ListView<HBox> list, Task task1) {
 
         //Removes the addTask button
         list.getItems().remove(list.getItems().get(list.getItems().size()-1));
@@ -464,7 +464,7 @@ public class BoardOverviewCtrl {
         list.getItems().add(box);
         //Re-adds the button to the end of the list
         addTaskButton(list);
-        taskMap.put(box,task1.getId());
+        taskMap.put(box, task1.getId());
 
         return box;
     }

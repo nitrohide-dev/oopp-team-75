@@ -400,32 +400,13 @@ public class ServerUtils {
             .get(Set.class);
     }
 
-    public Set getSubTasksByBoard(String boardKey) {
-        return ClientBuilder.newClient(new ClientConfig())
-            .target(SERVER).path("api/subtask/getByBoard/" + boardKey)
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .get(Set.class);
+    public void createSubTask(Long taskKey, String subTaskTitle) {
+        send("/app/subtask/create/" + subTaskTitle, taskKey);
     }
 
-    public void renameSubTask(String subTaskKey, String taskKey, String newTitle) {
-        send("/app/subtask/rename/" + taskKey + "/" + subTaskKey, newTitle);
+    public void deleteSubTask(Long subTaskKey) {
+        send("/app/subtask/delete/", subTaskKey);
     }
 
-    public void createSubTask(String taskKey, String subTaskTitle) {
-        send("/app/subtask/create/" + taskKey, subTaskTitle);
-    }
-
-    public void deleteSubTask(String subTaskKey, String taskKey) {
-        send("/app/subtask/delete/" + subTaskKey, taskKey);
-    }
-
-    public void editSubTask(String subTaskKey, String taskKey, String newTitle) {
-        send("/app/subtask/edit/" + taskKey + "/" + subTaskKey, newTitle);
-    }
-
-    public void setSubTask(String taskKey, SubTask subTask) {
-        send("/app/task/addSubTask/" + taskKey, subTask);
-    }
 
 }

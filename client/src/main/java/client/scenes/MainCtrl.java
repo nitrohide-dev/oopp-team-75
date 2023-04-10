@@ -18,6 +18,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.SubTask;
 import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -125,7 +126,7 @@ public class MainCtrl {
         primaryStage.show();
 
     }
-    public void showLanding(){
+    public void showLanding() {
 //        primaryStage.setMinWidth(600);
 //        primaryStage.setMinHeight(400);
 //        landingCtrl.changeImageUrl();
@@ -170,7 +171,7 @@ public class MainCtrl {
         currTask = task;
         Stage taskStage = new Stage();
         taskStage.setTitle("Task: " + task.getTitle());
-        taskOverviewCtrl.load(task);
+        taskOverviewCtrl.load();
         taskStage.setScene(taskOverview);
         taskStage.initModality(Modality.APPLICATION_MODAL);
         taskStage.showAndWait();
@@ -243,8 +244,9 @@ public class MainCtrl {
     /**
      * Starts the admin overview
      */
-    public void showAdminOverview(){
+    public void showAdminOverview() {
         setAdminPresence(true);
+        boardOverviewCtrl.setAdminPresence(adminPresence);
         primaryStage.setScene(adminOverview);
         adminOverviewCtrl.init();
     }
@@ -252,7 +254,7 @@ public class MainCtrl {
     /**
      * Used to change password
      */
-    public void showChangePassword(){
+    public void showChangePassword() {
         Stage create = new Stage();
         create.setScene(passwordChange);
         create.initModality(Modality.APPLICATION_MODAL);
@@ -265,14 +267,7 @@ public class MainCtrl {
      */
     public void renameTask(String newName) {
         server.renameTask(this.currBoard.getKey(), this.currTask.getId(), newName);
-    }
-
-    /**
-     * check if admin is logged in
-     * @param adminPresence true if admin is logged in
-     */
-    public void setAdminPresence(boolean adminPresence) {
-        boardOverviewCtrl.setAdminPresence(adminPresence);
+        taskOverviewCtrl.load();
     }
 
     /**
@@ -281,6 +276,17 @@ public class MainCtrl {
      */
     public void changeTaskDesc(String newDesc) {
         server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getId(), newDesc);
+        taskOverviewCtrl.load();
+    }
+
+    public void createSubTask(String name) {
+        server.createSubTask(currTask.getId(), name);
+        taskOverviewCtrl.load();
+    }
+
+    public void deleteSubTask(Long id) {
+        server.deleteSubTask(id);
+        taskOverviewCtrl.load();
     }
 
 }
