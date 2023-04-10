@@ -1,11 +1,11 @@
 package server.api.controllers;
 
 
-
 import commons.Board;
 import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
@@ -34,8 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.io.TempDir;
-
 class BoardControllerTest {
 
     @TempDir
@@ -47,7 +45,7 @@ class BoardControllerTest {
     private BoardService boardService;
     private TagRepository tagRepository;
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException {
         tagRepository = new TagRepositoryTest();
         boardRepository = new BoardRepositoryTest();
         boardService = new BoardService(boardRepository);
@@ -232,7 +230,7 @@ class BoardControllerTest {
     void testAuthenticate() throws IOException {
         assertTrue(boardController.isAuthentication());
     }
-//TODO: fix test
+    //TODO: fix test
 //    @Test
 //    void testAuthenticateWrongPassword() throws IOException {
 //        var boardController2 = new BoardController(boardService);
