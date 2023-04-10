@@ -1,16 +1,20 @@
 package server.api.controllers;
 
-import commons.CreateBoardModel;
+import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.ListService;
+import server.api.services.TagService;
 import server.api.services.TaskService;
 import server.database.BoardRepository;
 import server.database.BoardRepositoryTest;
 import server.database.ListRepository;
 import server.database.ListRepositoryTest;
+import server.database.SubTaskRepository;
+import server.database.SubTaskRepositoryTest;
+import server.database.TagRepositoryTest;
 import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
 import server.exceptions.CannotCreateBoard;
@@ -32,15 +36,17 @@ class ListControllerTest {
     private TaskRepository taskRepository;
     private TaskController taskController;
     private TaskService taskService;
+
+    private SubTaskRepository subTaskRepository;
     @BeforeEach
     private void setup() throws CannotCreateBoard, IOException {
-
-        taskRepository = new TaskRepositoryTest();
+        subTaskRepository = new SubTaskRepositoryTest();
+        taskRepository = new TaskRepositoryTest(subTaskRepository);
         listRepository = new ListRepositoryTest(taskRepository);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
         listService = new ListService(listRepository, taskRepository, boardRepository);
         boardService = new BoardService(boardRepository);
-        this.boardController = new BoardController(boardService);
+        this.boardController = new BoardController(boardService, new TagService(new TagRepositoryTest(),boardRepository));
         listController = new ListController(listService, boardService);
         taskController = new TaskController(taskService, boardService, listService);
         boardController.authenticate("testing");

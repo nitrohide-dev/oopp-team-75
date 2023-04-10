@@ -18,6 +18,8 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+//import javafx.geometry.Rectangle2D;
+import commons.models.CreateBoardModel;
 import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -127,6 +129,14 @@ public class MainCtrl {
 
     }
 
+    public Board getCurrBoard() {
+        return currBoard;
+    }
+
+    public void setCurrBoard(Board board) {
+        currBoard = board;
+    }
+
     public void showLanding(){
 //        primaryStage.setMinWidth(600);
 //        primaryStage.setMinHeight(400);
@@ -135,6 +145,10 @@ public class MainCtrl {
         primaryStage.setScene(landing);
     }
 
+    /**
+     * Starts the main scene with the board
+     * @param board board to show
+     */
     public void showBoard(Board board) {
         currBoard = board;
         primaryStage.setTitle("Board: Your Board");
@@ -151,11 +165,50 @@ public class MainCtrl {
         primaryStage.setScene(boardOverview);
         boardOverviewCtrl.load(board);
         boardOverviewCtrl.connect(); // connects to /topic/boards
+
     }
 
+    /**
+     * shows user menu the first time
+     * @throws IOException exception for input
+     */
+    public void showUserMenuFirstTime() throws IOException {
+        List<String> boardNames=readFromCsv();
+        for(String board : boardNames){
+            userMenuCtrl.addBoard(board);
+        }
+        primaryStage.setScene(userMenu);
+    }
+
+    /**
+     * show the user menu
+     */
     public void showUserMenu() {
         userMenuCtrl.loadVisitedBoards();
         primaryStage.setScene(userMenu);
+    }
+
+    /**
+     * shows the board creation page
+     */
+    public void showBoardCreate(){
+        Stage create = new Stage();
+        create.setScene(boardCreate);
+        create.initModality(Modality.APPLICATION_MODAL);
+        create.showAndWait();
+
+    }
+
+    /**
+     * Creates a new board
+     * @param name name of the board
+     * @param title title of the board
+     */
+    public void createBoard(String name,String title) {
+        server.createBoard(new CreateBoardModel(name, title));
+        Board b = new Board(new CreateBoardModel(name, title));
+        userMenuCtrl.addBoard(name);
+        showUserMenu();
     }
 
     public void showTaskOverview(Long taskId) {
@@ -216,6 +269,9 @@ public class MainCtrl {
         return boardKeys;
     }
 
+    /**
+     * Used to log in as admin
+     */
     public void showAdminLogin() {
         if (!adminPresence) {
             Stage create = new Stage();
@@ -225,12 +281,18 @@ public class MainCtrl {
         } else showAdminOverview();
     }
 
+    /**
+     * Starts the admin overview
+     */
     public void showAdminOverview(){
         setAdminPresence(true);
         primaryStage.setScene(adminOverview);
         adminOverviewCtrl.init();
     }
 
+    /**
+     * Used to change password
+     */
     public void showChangePassword(){
         Stage create = new Stage();
         create.setScene(passwordChange);
@@ -243,7 +305,15 @@ public class MainCtrl {
      * @param newName - the new task name
      */
     public void renameTask(String newName) {
-        server.renameTask(this.currBoard.getKey(), this.currTask.getid(), newName);
+        server.renameTask(this.currBoard.getKey(), this.currTask.getId(), newName);
+    }
+
+    /**
+     * check if admin is logged in
+     * @param adminPresence true if admin is logged in
+     */
+    public void setAdminPresence(boolean adminPresence) {
+        boardOverviewCtrl.setAdminPresence(adminPresence);
     }
 
     /**
@@ -251,7 +321,7 @@ public class MainCtrl {
      * @param newDesc - the new description
      */
     public void changeTaskDesc(String newDesc) {
-        server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getid(), newDesc);
+        server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getId(), newDesc);
     }
 
 }

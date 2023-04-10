@@ -47,7 +47,7 @@ public class ListRepositoryTest implements ListRepository{
         List<TaskList> queryLists = new ArrayList<>();
         for(Long i : (Iterable<Long>) longs) {
             for(TaskList list : lists) {
-                if(list.getid() == i) {
+                if(list.getId() == i) {
                     queryLists.add(list);
                 }
             }
@@ -62,7 +62,7 @@ public class ListRepositoryTest implements ListRepository{
     @Override
     public void deleteById(Long aLong) {
         for(TaskList list : lists) {
-            if(list.getid() == aLong) {
+            if(list.getId() == aLong) {
                 lists.remove(list);
                 taskRepo.deleteAll(list.getTasks());
             }
@@ -78,7 +78,7 @@ public class ListRepositoryTest implements ListRepository{
     public void deleteAllById(Iterable<? extends Long> longs) {
         for(Long i : (Iterable<Long>) longs) {
             for(TaskList list : lists) {
-                if(list.getid() == i) {
+                if(list.getId() == i) {
                     lists.remove(list);
                 }
             }
@@ -104,7 +104,7 @@ public class ListRepositoryTest implements ListRepository{
             return null;
         }
         for(TaskList list : lists) {
-            if(list.getid() == entity.getid()) {
+            if(list.getId() == entity.getId()) {
                 lists.remove(list);
                 break;
             }
@@ -116,7 +116,7 @@ public class ListRepositoryTest implements ListRepository{
 
     public void add(TaskList entity) throws Exception {
         for(TaskList list : lists) {
-            if(list.getid() == entity.getid()) {
+            if(list.getId() == entity.getId()) {
                 throw new Exception("List already exists");
             }
         }
@@ -137,7 +137,7 @@ public class ListRepositoryTest implements ListRepository{
     @Override
     public Optional<TaskList> findById(Long aLong) {
         for(TaskList list : lists) {
-            if(list.getid() == aLong) {
+            if(list.getId() == aLong) {
                 return Optional.of(list);
             }
         }
@@ -147,7 +147,7 @@ public class ListRepositoryTest implements ListRepository{
     @Override
     public boolean existsById(Long aLong) {
         for(TaskList list : lists) {
-            if(list.getid() == aLong) {
+            if(list.getId() == aLong) {
                 return true;
             }
         }
@@ -192,7 +192,7 @@ public class ListRepositoryTest implements ListRepository{
     @Override
     public TaskList getById(Long aLong) {
         for(TaskList list : lists) {
-            if(list.getid() == aLong) {
+            if(list.getId() == aLong) {
                 return list;
             }
         }
@@ -227,7 +227,7 @@ public class ListRepositoryTest implements ListRepository{
     @Override
     public <S extends TaskList> boolean exists(Example<S> example) {
         for(TaskList list : lists) {
-            if(list.getid() == example.getProbe().getid()) {
+            if(list.getId() == example.getProbe().getId()) {
                 return true;
             }
         }
@@ -241,7 +241,7 @@ public class ListRepositoryTest implements ListRepository{
     @Override
     public String getBoardByListID(long id){
         for(TaskList list : lists) {
-            if(list.getid() == id) {
+            if(list.getId() == id) {
                 return list.getBoard().getKey();
             }
         }

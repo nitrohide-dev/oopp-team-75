@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Task;
 import commons.TaskList;
-import commons.TaskMoveModel;
+import commons.models.TaskMoveModel;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -161,7 +161,7 @@ public class BoardOverviewCtrl {
             for (int i = 0; i < listOfTasks.size(); i++) {
                 Task task = listOfTasks.get(i);
                 addTask(task.getTitle(), ourList, task);
-                taskOrderMap.put(task.getid(),i);
+                taskOrderMap.put(task.getId(),i);
             }
         }
 
@@ -334,7 +334,7 @@ public class BoardOverviewCtrl {
         dragOverHandler(listView);
         dragDroppedHandler(listView);
         allLists.put(listView, textField.getText());
-        listMap.put(listView,taskList.getid());
+        listMap.put(listView,taskList.getId());
         return listView;
     }
 
@@ -462,7 +462,7 @@ public class BoardOverviewCtrl {
         list.getItems().add(box);
         //Re-adds the button to the end of the list
         addTaskButton(list);
-        taskMap.put(box,task1.getid());
+        taskMap.put(box,task1.getId());
 
         return box;
     }
@@ -685,6 +685,10 @@ public class BoardOverviewCtrl {
      */
     public void viewTags() {
         mainCtrl.showTagOverview(getBoard().getKey());
+    }
+
+    public void setAdminPresence(boolean adminPresence) {
+        this.adminPresence = adminPresence;
     }
 }
 

@@ -1,21 +1,27 @@
 package server.api.services;
 
 import commons.Board;
-import commons.CreateBoardModel;
+import commons.Tag;
 import commons.Task;
 import commons.TaskList;
+import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.database.BoardRepository;
 import server.database.BoardRepositoryTest;
 import server.database.ListRepository;
 import server.database.ListRepositoryTest;
+import server.database.SubTaskRepository;
+import server.database.SubTaskRepositoryTest;
 import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 import server.exceptions.ListDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,9 +43,11 @@ class TaskServiceTest {
     private TaskList list2;
     private TaskList list3;
 
+    private SubTaskRepository subTaskRepository;
     @BeforeEach
     public void setup() throws CannotCreateBoard, BoardDoesNotExist, ListDoesNotExist, TaskDoesNotExist {
-        taskRepo = new TaskRepositoryTest();
+        subTaskRepository = new SubTaskRepositoryTest();
+        taskRepo = new TaskRepositoryTest(subTaskRepository);
         listRepository = new ListRepositoryTest(taskRepo);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
 
@@ -71,9 +79,9 @@ class TaskServiceTest {
         Task task2 = listService.getById(1L).getTasks().get(1);
         Task task3 = listService.getById(3L).getTasks().get(0);
 
-        task1.setid(10L);
-        task2.setid(20L);
-        task3.setid(30L);
+        task1.setId(10L);
+        task2.setId(20L);
+        task3.setId(30L);
 
         boardService.save(board1);
         boardService.save(board2);
@@ -83,7 +91,8 @@ class TaskServiceTest {
 
     @Test
     void getAllNew() throws CannotCreateBoard {
-        taskRepo = new TaskRepositoryTest();
+        subTaskRepository = new SubTaskRepositoryTest();
+        taskRepo = new TaskRepositoryTest(subTaskRepository);
         listRepository = new ListRepositoryTest(taskRepo);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
 
@@ -136,7 +145,7 @@ class TaskServiceTest {
     @Test
     void save() {
         Task task = new Task(list1,"task 4");
-        task.setid(40L);
+        task.setId(40L);
         taskService.save(task);
         assertEquals(4, taskService.getAll().size());
     }
@@ -151,14 +160,38 @@ class TaskServiceTest {
     @Test
     void moveTask() throws TaskDoesNotExist, ListDoesNotExist {
         Task task1 = new Task(list1,"1");
-        task1.setid(10L);
+        task1.setId(10L);
         System.out.println(board1.getTaskLists());
         taskService.moveTask(task1, list1, 1);
         assertEquals(2, listService.getById(1L).getTasks().size());
-        assertEquals(10L, listService.getById(1L).getTasks().get(0).getid());
+        assertEquals(10L, listService.getById(1L).getTasks().get(0).getId());
         Task task300 = new Task(list3,"3");
         assertThrows(TaskDoesNotExist.class, () -> taskService.moveTask(task300, list1, 1));
     }
 
+    @Test
+    void addTag() throws TaskDoesNotExist {
+        Task task1 = new Task(list1,"1");
+        task1.setId(120L);
+        taskService.save(task1);
+        Tag tag1 = new Tag("tag1");
+        Tag tag2 = new Tag("tag2");
+        Set<Tag> tags = new HashSet<>();
+        task1.setTags(tags);
+        taskService.addTag(120L, tag1);
+        assertEquals(1, taskService.getById(120L).getTags().size());
+        assertEquals(tag1, taskService.getById(120L).getTags().iterator().next());
+        assertEquals("1", taskService.addTag(120L, tag2));
+        assertEquals(2, taskService.getById(120L).getTags().size());
+    }
 
+    @Test
+    void changeTaskDesc() throws TaskDoesNotExist {
+        Task task1 = new Task(list1,"1");
+        task1.setId(120L);
+        taskService.save(task1);
+        taskService.changeTaskDesc(120L, "new desc");
+        assertEquals("new desc", taskService.getById(120L).getDesc());
+        assertThrows(TaskDoesNotExist.class, () -> taskService.changeTaskDesc(100L, "new desc"));
+    }
 }

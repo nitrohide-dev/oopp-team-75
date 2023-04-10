@@ -1,7 +1,7 @@
 package server.api.services;
 
 import commons.Board;
-import commons.CreateBoardModel;
+import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.database.BoardRepository;

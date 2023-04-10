@@ -1,9 +1,10 @@
 package server.api.controllers;
 
 import commons.Board;
+import commons.Tag;
 import commons.Task;
 import commons.TaskList;
-import commons.TaskMoveModel;
+import commons.models.TaskMoveModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -70,7 +71,7 @@ public class TaskController {
      * if the task does not exist in the database, the method responds with a bad request
      * @param id - the id of the task
      * @param name - the new name of the task
-     * @boardKey - the key of the board in which the task is
+     * @param boardKey - the key of the board in which the task is
      * @return the board the task is in
      */
     @MessageMapping("/task/rename/{boardKey}/{name}")
@@ -105,8 +106,8 @@ public class TaskController {
     }
 
     /**
-     * method used to move a task from one tasklist to another.
-     * @param model the TaskMoveModel with the parameters needed to move a task inbetween lists
+     * method used to move a task from one task list to another.
+     * @param model the TaskMoveModel with the parameters needed to move a task between lists
      * @param boardKey - the key of the board the task is in
      * @return the board the task is in
      */
@@ -117,9 +118,10 @@ public class TaskController {
         Task task =  getById(model.getTask_id());
         TaskList list = listService.getById(model.getTasklist_id());
         int order = model.getNew_task_order();
+
         if(order==Integer.MAX_VALUE) {
             order = list.getTasks().size();
-            if (list.getid() == task.getTaskList().getid())
+            if (list.getId() == task.getTaskList().getId())
                 order--;
         } else{
             order--;
@@ -142,5 +144,25 @@ public class TaskController {
         } catch (TaskDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
+    }
+
+    @MessageMapping("/task/addTag/{key}")
+    @SendTo("/topic/boards")
+    public Board addTag(Tag tag, @DestinationVariable("key") String taskId) {
+        var boardKey =  taskService.addTag(Long.valueOf(taskId),tag);
+        return boardService.findByKey(boardKey);
+    }
+
+    /**
+     * creates a subtask in the database with a given title
+     * @param title the subtask title
+     * @return the stored subtask
+     */
+    @MessageMapping("/task/create/{title}")
+    @SendTo("/topic/boards")
+    public Board createSubTask(Long taskID,@DestinationVariable("title") String title) throws TaskDoesNotExist {
+        Task task = taskService.getById(taskID);
+        String id = taskService.createSubTask(task,title);
+        return boardService.findByKey(id);
     }
 }

@@ -1,10 +1,13 @@
 package commons;
 
+import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -155,5 +158,73 @@ class BoardTest {
         assertEquals(0, board.getTaskLists().size());
         assertEquals(null, tl2.getBoard());
         assertThrows(IllegalArgumentException.class, () -> board.removeTaskList(null));
+    }
+    @Test
+    void getPassword(){
+        assertEquals(null, board.getPassword());
+        assertNotEquals("123", board.getPassword());
+    }
+    @Test
+    void setPassword(){
+        board.setPassword("123");
+        assertEquals("123", board.getPassword());
+        assertNotEquals(null, board.getPassword());
+    }
+
+    @Test
+    void getTags() {
+        Set<Tag> goodList = new HashSet<>();
+        Set<Tag> naughtyList = new HashSet<>();
+        naughtyList.add(null);
+        assertEquals(goodList, board.getTags());
+        assertNotEquals(naughtyList, board.getTags());
+    }
+
+    @Test
+    void setTags() {
+        Set<Tag> goodList = new HashSet<>();
+        Set<Tag> naughtyList = new HashSet<>();
+        goodList.add(null);
+        board.setTags(goodList);
+        assertEquals(goodList, board.getTags());
+        assertNotEquals(naughtyList, board.getTags());
+    }
+
+    @Test
+    void createTag() {
+        Tag tag1 = board.createTag("name");
+        assertEquals(1, board.getTags().size());
+        assertEquals(tag1, board.getTags().iterator().next());
+        Tag tag2 = board.createTag("name2");
+        assertEquals(2, board.getTags().size());
+        assertEquals(tag2, board.getTags().iterator().next());
+    }
+
+    @Test
+    void createTaskList2(){
+        TaskList tl1 = board.createTaskList(1L);
+        assertEquals(1, board.getTaskLists().size());
+        assertEquals(board, tl1.getBoard());
+        assertEquals(1, tl1.getId());
+        TaskList tl2 = board.createTaskList(2L);
+        assertEquals(2, board.getTaskLists().size());
+        assertEquals(board, tl2.getBoard());
+        assertEquals(2, tl2.getId());
+        assertThrows(IllegalArgumentException.class, () -> board.createTaskList(1L));
+    }
+
+    @Test
+    void createTaskList4(){
+        TaskList tl1 = board.createTaskList(1L, "name");
+        assertEquals(1, board.getTaskLists().size());
+        assertEquals(board, tl1.getBoard());
+        assertEquals(1, tl1.getId());
+        assertEquals("name", tl1.getTitle());
+        TaskList tl2 = board.createTaskList(2L, "name2");
+        assertEquals(2, board.getTaskLists().size());
+        assertEquals(board, tl2.getBoard());
+        assertEquals(2, tl2.getId());
+        assertEquals("name2", tl2.getTitle());
+        assertThrows(IllegalArgumentException.class, () -> board.createTaskList(1L, "name"));
     }
 }

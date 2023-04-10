@@ -1,14 +1,25 @@
 package commons;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Getter;
+import lombok.Setter;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Column;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -20,24 +31,46 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique=true, nullable=false)
+    @Getter
+    @Setter
     private long id;
 
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
+    @Getter
+    @Setter
     private String title;
 
+    @ManyToMany(mappedBy = "tasks", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Getter
+    @Setter
+    private Set<Tag> tags;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @Getter
+    @Setter
+    @OrderColumn
+    private List<SubTask> subtasks;
+
     @Column(nullable=false)
+    @Getter
+    @Setter
     private String desc;
 
     @JsonBackReference
     @ManyToOne
+    @Getter
+    @Setter
     private TaskList taskList;
 
 //    constructors
 
     public Task() {} // for object mappers, please don't use.
 
+    // TODO: pass tags correctly
     public Task(TaskList taskList,String name) {
-        this(taskList, name, "");
+        this(taskList, name, "", null, new ArrayList());
     }
 
     public Task(TaskList taskList, String title, String desc) {
@@ -46,38 +79,42 @@ public class Task {
         this.desc = desc;
     }
 
-//    getters and setters
-
-    public long getid() {
-        return id;
-    }
-
-    public void setid(long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public TaskList getTaskList() {
-        return taskList;
-    }
-
-    public void setTaskList(TaskList taskList) {
+    public Task(TaskList taskList, String title, String desc, Set<Tag> tags) {
         this.taskList = taskList;
+        this.title = title;
+        this.desc = desc;
+        this.tags = tags;
+    }
+
+    public Task(TaskList taskList, String title, String desc, Set<Tag> tags, List<SubTask> subtasks) {
+        this.taskList = taskList;
+        this.title = title;
+        this.desc = desc;
+        this.tags = tags;
+        this.subtasks = subtasks;
+    }
+
+    /**
+     * Creates a new subtask and adds it to this task.
+     * @return the newly created subtask
+     */
+
+    public SubTask createSubTask() {
+        SubTask subTask = new SubTask(this, "");
+        subtasks.add(subTask);
+        return subTask;
+    }
+
+    /**
+     * Removes a subtask from this task.
+     * @param subTask the subtask to remove
+     */
+    public void removeSubTask(SubTask subTask) {
+        if (subTask == null)
+            throw new NullPointerException("Subtask cannot be null");
+        if (!this.subtasks.remove(subTask))
+            throw new IllegalArgumentException("Subtask does not belong to this task");
+        subTask.setTask(null);
     }
 
 //    equals and hashcode
@@ -91,13 +128,10 @@ public class Task {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Task)) return false;
-
+        if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-
-        if (id != task.id) return false;
-        if (!Objects.equals(title, task.title)) return false;
-        return Objects.equals(desc, task.desc);
+        return id == task.id && Objects.equals(title, task.title)
+                && Objects.equals(tags, task.tags) && Objects.equals(subtasks, task.subtasks) && Objects.equals(desc, task.desc);
     }
 
     /**
@@ -107,9 +141,17 @@ public class Task {
      */
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (desc != null ? desc.hashCode() : 0);
-        return result;
+        return Objects.hash(id, title, tags, subtasks, desc);
+    }
+
+
+    /**
+     * @param tag the tag to add to this task
+     */
+    public void addTag(Tag tag) {
+        if (tag == null) {
+            throw new IllegalArgumentException("Tag cannot be null");
+        }
+        tags.add(tag);
     }
 }
