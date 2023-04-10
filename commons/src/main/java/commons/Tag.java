@@ -106,6 +106,9 @@ public class Tag {
         return board.getKey() == board_key;
     }
 
+    /**
+     * Only for testing
+     */
     public static Tag createTag(String title, long id) {
         Tag tag = new Tag(title);
         tag.setId(id);
