@@ -1,9 +1,6 @@
 package server.api.controllers;
 
-import commons.Board;
-import commons.Tag;
-import commons.Task;
-import commons.TaskList;
+import commons.*;
 import commons.models.TaskMoveModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.ListService;
@@ -21,6 +19,8 @@ import server.api.services.TaskService;
 import server.exceptions.ListDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -30,11 +30,14 @@ public class TaskController {
     private final TaskService taskService;
     private final BoardService boardService;
     private final ListService listService;
+    private final HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers;
 
-    public TaskController(TaskService taskService, BoardService boardService,ListService listService) {
+    public TaskController(TaskService taskService, BoardService boardService,
+                          ListService listService, HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers) {
         this.taskService = taskService;
         this.boardService = boardService;
         this.listService = listService;
+        this.pollConsumers = pollConsumers;
     }
 
     @GetMapping(path = { "", "/" })
@@ -160,16 +163,20 @@ public class TaskController {
     }
 
 
-    /**
-     * creates a subtask in the database with a given title
-     * @param title the subtask title
-     * @return the stored subtask
-     */
     @MessageMapping("/subtask/create/{title}")
     @SendTo("/topic/boards")
-    public Board createSubTask(Long taskID, @DestinationVariable("title") String title) throws TaskDoesNotExist {
+    public Board createSubTask(Long taskID,@DestinationVariable("title") String title) throws TaskDoesNotExist {
         Task task = taskService.getById(taskID);
-        String id = taskService.createSubTask(task, title);
+        String id = taskService.createSubTask(task,title);
+        task.getSubtasks().add(new SubTask(task,title));
+
+        if(pollConsumers.containsKey(task.getId()))
+        {
+            for(DeferredResult<List<SubTask>> dr  : pollConsumers.get(task.getId())){
+                dr.setResult(task.getSubtasks());
+            }
+            pollConsumers.get(task.getId()).clear();
+        }
         return boardService.findByKey(id);
     }
 }

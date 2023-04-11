@@ -24,6 +24,7 @@ import commons.models.TaskMoveModel;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import lombok.Getter;
 import lombok.Setter;
 import org.glassfish.jersey.client.ClientConfig;
@@ -38,9 +39,12 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -57,7 +61,7 @@ public class ServerUtils {
     @Getter
     @Setter
     private StompSession session;
-
+    private List<ExecutorService> EXECUTORS = new LinkedList<>();
     //REST API
 
     /**
@@ -433,4 +437,40 @@ public class ServerUtils {
         send("app/task/tags/" + boardKey + "/" + id, values);
         System.out.println("esrver");
     }
+
+
+
+    public void subTaskSubscribe(Long taskId, Consumer<List<SubTask>> subtaskUpdater){
+        ExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+        EXECUTORS.add(executor);
+
+        executor.submit(() -> {
+            while (true) {
+                Response response = ClientBuilder.newClient(new ClientConfig())
+                        .target(SERVER).path(String.format("api/subtasks/%d/poll", taskId))
+                        .request(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON)
+                        .get();
+
+                if(response.getStatus() == 200 && response.getLength() > 7){
+
+                    String string = response.toString();
+                    System.out.println(string);
+                    System.out.println(response.getLength());
+                    List<SubTask> subtasks = response.readEntity(new GenericType<List<SubTask>>() {});
+                    // TODO : update the subtasks view with the new subtasks
+                    subtaskUpdater.accept(subtasks);
+                }
+            }
+        });
+    }
+
+    public void subTaskUnsubscribe(){
+        for (ExecutorService executor : EXECUTORS) {
+            executor.shutdown();
+        }
+        EXECUTORS.clear();
+    }
+
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.SubTaskService;
@@ -21,6 +22,9 @@ import server.exceptions.ListDoesNotExist;
 import server.exceptions.SubTaskDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -28,9 +32,13 @@ import java.util.List;
 public class SubTaskController {
     private final SubTaskService subtaskService;
 
+    private final HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers;
     private final BoardService boardService;
-    public SubTaskController(SubTaskService SubtaskService, BoardService boardService) {
-        this.subtaskService = SubtaskService;
+    private final long TIMEOUT_MS = 5000L;
+
+    public SubTaskController(SubTaskService subtaskService, BoardService boardService, HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers) {
+        this.subtaskService = subtaskService;
+        this.pollConsumers = pollConsumers;
         this.boardService = boardService;
     }
 
@@ -125,5 +133,27 @@ public class SubTaskController {
     {
 
         return subtaskService.movesubTaskDown(order,subTaskId);
+    }
+    /**
+     * Updates a subtask in the database. If the subtask does not exist in the
+     * database, the method will respond with a bad request.
+     * @param id of the subtask to be updated
+     * @return the updated subtask
+     */
+    @GetMapping("/{id}/poll")
+    public DeferredResult<List<SubTask>> longPoll(@PathVariable Long id) {
+        DeferredResult<List<SubTask>> output = new DeferredResult<>(TIMEOUT_MS);
+        try {
+            if(!pollConsumers.containsKey(id))
+                pollConsumers.put(id, Collections.synchronizedList(new ArrayList<>()));
+            pollConsumers.get(id).add(output);
+            output.onTimeout(() -> {
+                pollConsumers.get(id).remove(output);
+                output.setErrorResult("Timeout");
+            });
+        } catch (Exception e) {
+            output.setErrorResult("OOPS!");
+        }
+        return output;
     }
 }

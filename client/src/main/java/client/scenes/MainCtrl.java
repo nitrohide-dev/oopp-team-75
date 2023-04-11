@@ -187,6 +187,7 @@ public class MainCtrl {
         taskOverviewCtrl.connect();
         taskStage.initModality(Modality.APPLICATION_MODAL);
         taskStage.showAndWait();
+        taskOverviewCtrl.unsubscribe();
     }
 
     public void showTagOverview(String boardKey){
