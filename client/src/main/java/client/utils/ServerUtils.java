@@ -362,7 +362,7 @@ public class ServerUtils {
      * @param boardKey - the key of the board to be edited from
      * @param newTitle - the new title of the tag
      */
-    public void editTag(String tagKey, String boardKey, String newTitle) {
+    public void renameTag(String tagKey, String boardKey, String newTitle) {
         send("/app/tag/edit/" + boardKey + "/" + tagKey, newTitle);
     }
 
