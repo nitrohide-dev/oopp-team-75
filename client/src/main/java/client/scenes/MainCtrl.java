@@ -33,6 +33,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -190,39 +193,53 @@ public class MainCtrl {
     }
     /**
      * writes user's favorite boards and their hashed passwords to file on their computer
+     * @param boardKeys board keys to write
+     * @param server server on which the boards exist
      * @throws IOException exception for input
      */
-    public void writeToCsv(List<String> boardKeys) {
-        File dir = new File(System.getProperty("user.dir") + "/client/src/main/resources/");
+    public void writeToCsv(List<String> boardKeys, String server) throws UnsupportedEncodingException {
+        File dir = new File(System.getProperty("user.dir") + "/client/src/main/resources/servers/");
+        String encodedUrl = URLEncoder.encode(server, StandardCharsets.UTF_8);
+
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        File file = new File(dir, "data.csv");
+        File file = new File(dir, encodedUrl+".csv");
         if(file.exists()){file.delete();}
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+
             writer.write(boardKeys.toString());
         } catch (Exception e) {}
+
+
     }
 
     /**
-     * reads user's saved data(if they exist) from the local file
+     * reads user's saved data(if they exist) from the local file of the given server
+     * @param server current server
      * @return list of names of baords
      * @throws IOException shouldn't happen
      */
-    public List<String> readFromCsv() {
+    public List<String> readFromCsv(String server) {
+        String encodedUrl;
+        encodedUrl = URLEncoder.encode(server, StandardCharsets.UTF_8);
+
         List<String> boardKeys = new ArrayList<>();
-        File dir = new File(System.getProperty("user.dir") + "/client/src/main/resources/data.csv");
-        if(!dir.exists()) {
+        File dir = new File(System.getProperty("user.dir") +
+                "/client/src/main/resources/servers/" + encodedUrl + ".csv");
+        if (!dir.exists()) {
+
             return boardKeys;
         }
         try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
             String line = reader.readLine();
-            line = line.substring(1,line.length()-1);
+            line = line.substring(1, line.length() - 1);
             String[] boards = line.split(", ");
-            for(String key : boards)
+            for (String key : boards)
                 if (!key.isEmpty())
                     boardKeys.add(key);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return boardKeys;
     }
 
