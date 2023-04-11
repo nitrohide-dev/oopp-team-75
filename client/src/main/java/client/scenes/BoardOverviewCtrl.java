@@ -63,7 +63,7 @@ public class BoardOverviewCtrl {
 
     @FXML private TextField listName1;
 
-    @FXML private Button deleteTaskListsButton;two variable function maximum minimum
+    @FXML private Button deleteTaskListsButton;
 
     @FXML private HBox listContainer;
 
@@ -795,7 +795,7 @@ public class BoardOverviewCtrl {
                     break;
                 }
             }
-        }
+        }}
 
     /**
      * shows the tag list associated with the current board
