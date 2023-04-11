@@ -134,7 +134,7 @@ public class BoardOverviewCtrl {
      * @param board the board to refresh to.
      */
     public void refresh(Board board) {
-        if(getBoard().getKey().equals(board.getKey())) {
+        if (getBoard().getKey().equals(board.getKey())) {
             mainCtrl.setCurrBoard(board);
             load(board);
         }
@@ -240,8 +240,7 @@ public class BoardOverviewCtrl {
             alert.setHeaderText("Delete Board");
             alert.setContentText("Are you sure you want to delete this board?");
             //add css to dialog pane
-            alert.getDialogPane().getStylesheets().add(
-                    Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
             //make preferred size bigger
             alert.getDialogPane().setPrefSize(400, 200);
             Optional<ButtonType> result = alert.showAndWait();

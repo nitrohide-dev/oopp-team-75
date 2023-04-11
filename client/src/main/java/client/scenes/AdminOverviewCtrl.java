@@ -26,14 +26,7 @@ public class AdminOverviewCtrl{
     @FXML private ImageView exit;
     @FXML private ImageView password;
 
-    public void initialize() {
-        logo.setImage(new Image(Path.of("", "client", "images", "Logo.png").toString()));
-        exit.setImage(new Image(Path.of("", "client", "images", "ExitButton.png").toString()));
-        password.setImage(new Image(Path.of("", "client", "images", "password.png").toString()));
-    }
-
     private List<Board> boards;
-
     public ListView<HBox> boardsListView;
 
     @Inject
@@ -42,15 +35,20 @@ public class AdminOverviewCtrl{
         this.mainCtrl = mainCtrl;
     }
 
+    public void initialize() {
+        logo.setImage(new Image(Path.of("", "client", "images", "Logo.png").toString()));
+        exit.setImage(new Image(Path.of("", "client", "images", "ExitButton.png").toString()));
+        password.setImage(new Image(Path.of("", "client", "images", "password.png").toString()));
+    }
+
     /**
      * initializes admin overview
      */
-    public void init(){
+    public void refresh(){
         boardsListView.getItems().clear();
         boards = server.getAllBoards();
         for(Board b : boards)
             this.addBoardToListView(b.getKey());
-
     }
 
 
@@ -59,7 +57,7 @@ public class AdminOverviewCtrl{
      */
     @FXML
     private void exit(){
-        boards= new ArrayList<>();
+        boards = new ArrayList<>();
         boardsListView.getItems().clear();
         mainCtrl.showUserMenu();
         server.logout();
@@ -109,7 +107,6 @@ public class AdminOverviewCtrl{
     private void removeBoard(HBox itemBox) {
         boardsListView.getItems().remove(itemBox);
         server.deleteBoard(((Label) itemBox.getChildren().get(0)).getText());
-
     }
 
 

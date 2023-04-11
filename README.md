@@ -1,17 +1,13 @@
-# Starting template
 
-This README will need to contain a description of your project, how to run it, how to set up the development environment, and who worked on it.
-This information can be added throughout the course, except for the names of the group members.
-Add your own name (do not add the names for others!) to the section below.
 
 ## Description of project
-
+Talio is a task management app designed to help people keep track of their to-do lists and stay organized. With Talio, users can easily create and manage tasks, set due dates and reminders, and categorize tasks by project or priority. The app features a clean and intuitive user interface, making it easy to use for both personal and professional tasks. Talio also offers collaboration features, allowing users to share tasks and work together on projects. With its powerful features and user-friendly design, Talio is an excellent tool for anyone looking to increase their productivity and stay on top of their to-do lists.
 ## Group members
 
 | Profile Picture                                                                                                                                      | Name           | Email                          |
 |------------------------------------------------------------------------------------------------------------------------------------------------------|----------------|--------------------------------|
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Jimmy Zheng    | j.b.y.zheng@student.tudelft.nl |
-| ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Konrad Gniaz   | K.Gniaz@student.tudelft.nl     |
+| ![](https://secure.gravatar.com/avatar/7e42389823b907e457f9e4a3fc482a1d?s=800&d=identicon&length=4&size=50&color=DDD&background=777&font-size=0.325 )                                             | Konrad Gniaz   | K.Gniaz@student.tudelft.nl     |
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Robert Mertens | r.h.mertens@student.tudelft.nl |
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Arpad Jakab    | a.jakab@student.tudelft.nl     |
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Matus Leng     | m.leng@student.tudelft.nl      |
@@ -23,7 +19,7 @@ Add your own name (do not add the names for others!) to the section below.
 <!-- - (please make sure the photos have the same size) --> 
 
 ## How to run it
-
+the initial password for the admin panel is "password"
 ## How to contribute to it
 
 ## Copyright / License (opt.)

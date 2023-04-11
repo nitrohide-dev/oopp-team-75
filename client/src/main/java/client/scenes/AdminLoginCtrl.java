@@ -16,8 +16,9 @@ public class AdminLoginCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
 
-    @FXML
-    private PasswordField password;
+    @FXML private PasswordField passwordField;
+    private Alert emptyPasswordAlert = new Alert(Alert.AlertType.ERROR, "Please enter a password.");
+    private Alert incorrectPasswordAlert = new Alert(Alert.AlertType.ERROR, "Please enter a password.");
 
     @Inject
     public AdminLoginCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -29,30 +30,32 @@ public class AdminLoginCtrl {
      * logs you in as an admin
      */
     public void login(){
-        if(!password.getText().equals("") && server.authenticate(hashPassword(password.getText())) ){ // TBD
-            password.clear();
-            Stage stage = (Stage) password.getScene().getWindow();
+        if (passwordField.getText().isEmpty())
+            emptyPasswordAlert.showAndWait();
+        else if (!server.authenticate(hashPassword(passwordField.getText())) )
+            incorrectPasswordAlert.showAndWait();
+        else {
+            passwordField.clear();
+            Stage stage = (Stage) passwordField.getScene().getWindow();
             stage.close();
             mainCtrl.showAdminOverview();
-        }
-        else{
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a correct password.");
-            password.clear();
-            alert.showAndWait();
         }
     }
 
     /**
      * for security
-     *
-     * @param password unhashed password
+     * @param password string to be hashed
      * @return hashed password
      */
     public String hashPassword(String password) {
+        if (password == null)
+            throw new IllegalArgumentException();
+
         // use a hash function to hash the password
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            byte[] hash = MessageDigest
+                    .getInstance("SHA-256")
+                    .digest(password.getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(hash);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Hash function not available", e);
