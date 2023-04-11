@@ -186,10 +186,10 @@ class TaskControllerTest {
 
     @Test
     void changeTaskDescription() throws TaskDoesNotExist, ListDoesNotExist {
-        taskController.changeTaskDesc(10L, "wubba-lubba-dub-dub", board1.getKey());
+        taskController.changeTaskDesc("wubba-lubba-dub-dub", 10L, board1.getKey());
         assertEquals("wubba-lubba-dub-dub", taskService.getById(10L).getDesc());
-        assertThrows(ResponseStatusException.class, () -> taskController.changeTaskDesc(100L
-                , "wubba-lubba-dub-dub", board1.getKey()));
+        assertThrows(ResponseStatusException.class, () -> taskController.changeTaskDesc("wubba-lubba-dub-dub", 100L
+                , board1.getKey()));
     }
 //
 //    @Test

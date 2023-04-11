@@ -18,6 +18,8 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.SubTask;
+import commons.Tag;
 import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -38,8 +40,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-
+import java.util.Objects;
+import java.util.Set;
 public class MainCtrl {
     private ServerUtils server;
 
@@ -112,7 +116,8 @@ public class MainCtrl {
 
         this.taskOverviewCtrl = taskOverview.getKey();
         this.taskOverview = new Scene(taskOverview.getValue());
-        this.taskOverview.getStylesheets().add(styleSheet);
+        this.taskOverview.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+
 
         this.tagOverviewCtrl = tagOverview.getKey();
         this.tagOverview = new Scene(tagOverview.getValue());
@@ -130,10 +135,12 @@ public class MainCtrl {
         this.passwordChange = new Scene(passwordChange.getValue());
         this.passwordChange.getStylesheets().add(styleSheet);
 
+
         showLanding();
         primaryStage.show();
 
     }
+
 
     /**
      * Shows the landing scene
@@ -175,10 +182,12 @@ public class MainCtrl {
         currTask = task;
         Stage taskStage = new Stage();
         taskStage.setTitle("Task: " + task.getTitle());
-        taskOverviewCtrl.load(task);
+        taskOverviewCtrl.load();
         taskStage.setScene(taskOverview);
+        taskOverviewCtrl.connect();
         taskStage.initModality(Modality.APPLICATION_MODAL);
         taskStage.showAndWait();
+        taskOverviewCtrl.unsubscribe();
     }
 
     /**
@@ -294,6 +303,61 @@ public class MainCtrl {
     }
 
     /**
+<<<<<<< client/src/main/java/client/scenes/MainCtrl.java
+     * Used to log in as admin
+     */
+    public void showAdminLogin() {
+        if (!adminPresence) {
+            Stage create = new Stage();
+            create.setScene(adminLogin);
+            create.initModality(Modality.APPLICATION_MODAL);
+            create.showAndWait();
+        } else showAdminOverview();
+    }
+
+    /**
+     * Starts the admin overview
+     */
+    public void showAdminOverview() {
+        setAdminPresence(true);
+        boardOverviewCtrl.setAdminPresence(adminPresence);
+        primaryStage.setScene(adminOverview);
+        adminOverviewCtrl.init();
+    }
+
+    /**
+     * Used to change password
+     */
+    public void showChangePassword() {
+        Stage create = new Stage();
+        create.setScene(passwordChange);
+        create.initModality(Modality.APPLICATION_MODAL);
+        create.showAndWait();
+    }
+
+
+    public void deleteTask(Long taskId) {
+        server.deleteTask(taskId);
+        if (currTask.getId() == taskId) {
+            currTask = null;
+        }
+    }
+
+    /**
+     * Renames a task
+     * @param newName - the new task name
+     */
+    public void renameTask(String newName) {
+        server.renameTask(this.currBoard.getKey(), this.currTask.getId(), newName);
+    }
+
+    /**
+     * Changes the description of a task
+     * @param newDesc - the new description
+     */
+    public void changeTaskDesc(String newDesc) {
+        server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getId(), newDesc);
+
      * Changes the description of a task
      * @param newDesc - the new description
      */
@@ -322,4 +386,23 @@ public class MainCtrl {
         return alert;
     }
 
+    public void createSubTask(String name) {
+        server.createSubTask(currTask.getId(), name);
+    }
+
+    public void deleteSubTask(Long id) {
+        server.deleteSubTask(currBoard.getKey(), id);
+    }
+
+    public void checkSubTask(SubTask task) {
+        server.checkSubTask(currBoard.getKey(), task.getId());
+    }
+
+    public void removeTag(Tag tag) {
+        this.server.removeTag(currTask.getId(), tag.getId());
+    }
+
+    public void addTag(Tag tag) {
+        this.server.addTag(currTask.getId(), tag.getId());
+    }
 }
