@@ -198,9 +198,9 @@ public class BoardController {
     public ResponseEntity<Boolean> changePassword(@RequestHeader String passwordHashed,String path){
         hashedPassword = passwordHashed;
         File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
-        if(!path.equals("")){
-            dir = new File(path);
-        }
+//        if(!path.equals("")){
+//            dir = new File(path);
+//        }
 
         if(dir.exists()){dir.delete();}
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir))) {
