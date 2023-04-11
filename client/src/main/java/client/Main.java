@@ -38,7 +38,7 @@ public class Main extends Application {
 
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
-    private static MainCtrl mainCtrl;
+    private static MainCtrl mainCtrl = INJECTOR.getInstance(MainCtrl.class);
 
 
     public static void main(String[] args) throws URISyntaxException, IOException {
@@ -56,7 +56,6 @@ public class Main extends Application {
         var passwordChange = FXML.load(PasswordChangeCtrl.class,"client","scenes","PasswordChange.fxml");
         var taskOverview = FXML.load(TaskOverviewCtrl.class, "client", "scenes", "TaskOverview.fxml");
         var tagOverview = FXML.load(TagOverviewCtrl.class, "client", "scenes", "TagOverview.fxml");
-        mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, landing, board, userMenu,
                                 adminOverview, adminLogin, passwordChange, taskOverview,tagOverview);
 

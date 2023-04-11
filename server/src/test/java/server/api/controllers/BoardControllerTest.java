@@ -246,8 +246,6 @@ class BoardControllerTest {
         assertFalse(boardController.isAuthentication());
     }
 
-
-
     @Test
     public void testReadPassword() throws IOException, NoSuchAlgorithmException {
         String testPassword = "testPassword";
@@ -262,7 +260,7 @@ class BoardControllerTest {
             throw new RuntimeException(e);
         }
     }
- // TO-DO this method shouldn't even exist
+// TO-DO this method shouldn't even exist
 //    @Test
 //    public void testChangePassword() throws IOException, NoSuchAlgorithmException {
 //        String newPasswordHashed = "newPasswordHashed";

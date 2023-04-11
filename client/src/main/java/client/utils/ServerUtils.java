@@ -164,7 +164,6 @@ public class ServerUtils {
 
     /**
      * initial authentication on the side of the server
-     *
      * @param password password hashed
      * @return whether it was successful or not
      */
@@ -180,7 +179,6 @@ public class ServerUtils {
 
     /**
      * Changes the password of the admin
-     *
      * @param passwordHashed the new password hashed
      */
     public void changePassword(String passwordHashed) {
@@ -241,13 +239,13 @@ public class ServerUtils {
                 .get(List.class);
     }
 
-    //STOMP API (Websockets)
+    // STOMP API (Websockets)
     public void send(String dest, Object o) {
         session.send(dest, o);
     }
+
     /**
      * Sends a request to the server to update the board
-     *
      * @param board - the board to be updated
      */
     public void updateBoard(Board board) {
@@ -282,7 +280,6 @@ public class ServerUtils {
 
     /**
      * Sends a request to the server to get a list from the database
-     *
      * @param listId - the id of the list
      */
     public void getList(Long listId) {
@@ -291,7 +288,6 @@ public class ServerUtils {
 
     /**
      * Sends a request to the server to delete a list from the database
-     *
      * @param listId - the id of the list
      */
     public void deleteList(Long listId) {
@@ -300,7 +296,6 @@ public class ServerUtils {
 
     /**
      * Sends a request to the server to create a list in the database
-     *
      * @param boardKey - the Board that is to contain the list
      */
     public void createList(String boardKey) {
@@ -309,7 +304,6 @@ public class ServerUtils {
 
     /**
      * Sends a request to the server to rename a list in the database
-     *
      * @param listId    - the id of the list
      * @param listTitle - the new list name
      */
@@ -319,7 +313,6 @@ public class ServerUtils {
 
     /**
      * Sends a request to create a task in the database
-     *
      * @param listID    - the ID of the list that is supposed to contain the task
      * @param taskTitle - the title of the created task
      */
@@ -329,7 +322,6 @@ public class ServerUtils {
 
     /**
      * Sends a request to the server to rename a task in the database
-     *
      * @param taskId    - the id of the task
      * @param taskTitle - the new task name
      */
