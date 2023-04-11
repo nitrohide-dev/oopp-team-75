@@ -102,7 +102,11 @@ public class TagOverviewCtrl {
         Button editButton = buttonBuilder(path);
         editButton.setOnAction(e-> renameTag(tag.getId(),mainCtrl.getCurrBoard().getKey()));
         Label label = new Label(tag.getTitle());
-        label.setBackground(new Background(new BackgroundFill(Color.rgb(55,205,155,0.7),null,null)));
+        String color = tag.getColor();
+        int red  = Integer.parseInt(color.substring(0,2),16);
+        int blue = Integer.parseInt(color.substring(2,4),16);
+        int green = Integer.parseInt(color.substring(4,6),16);
+        label.setBackground(new Background(new BackgroundFill(Color.rgb(red,blue,green),null,null)));
         HBox box = new HBox();
         box.getChildren().addAll(label, editButton, removeButton);
         box.setAlignment(Pos.CENTER);
