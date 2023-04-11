@@ -351,22 +351,6 @@ public class TaskOverviewCtrl {
 		});
 		input.showAndWait();
 	}
-
-	/**
-	 * Shows a popup that asks the user if he wants to change the task's name
-	 */
-	public void confirmTagChange() {
-		Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-		confirm.setHeaderText("Confirm change");
-		confirm.setTitle("Save changes");
-		confirm.setContentText("Are you sure you want to change the task's tags?");
-		Optional<ButtonType> result = confirm.showAndWait();
-		((Button) confirm.getDialogPane().lookupButton(ButtonType.OK)).setText("Yes");
-		((Button) confirm.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("No");
-		if (result.isPresent() && result.get() == ButtonType.OK) {
-			mainCtrl.changeTaskTags(this.currTagsMap.values());
-		}
-
-	}
+	
 
 }
