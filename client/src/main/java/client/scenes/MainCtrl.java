@@ -111,6 +111,7 @@ public class MainCtrl {
 
         this.taskOverviewCtrl = taskOverview.getKey();
         this.taskOverview = new Scene(taskOverview.getValue());
+        this.taskOverview.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
 
         this.tagOverviewCtrl = tagOverview.getKey();
         this.tagOverview = new Scene(tagOverview.getValue());
@@ -127,6 +128,7 @@ public class MainCtrl {
         this.passwordChangeCtrl = passwordChange.getKey();
         this.passwordChange = new Scene(passwordChange.getValue());
         this.passwordChange.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+
 
         showLanding();
         primaryStage.show();
@@ -183,6 +185,7 @@ public class MainCtrl {
         taskStage.initModality(Modality.APPLICATION_MODAL);
         taskStage.showAndWait();
     }
+
     public void showTagOverview(String boardKey){
         Board board = server.findBoard(boardKey);
         Stage stage = new Stage();
@@ -277,6 +280,14 @@ public class MainCtrl {
         create.showAndWait();
     }
 
+
+    public void deleteTask(Long taskId) {
+        server.deleteTask(taskId);
+        if (currTask.getId() == taskId) {
+            currTask = null;
+        }
+    }
+
     /**
      * Renames a task
      * @param newName - the new task name
@@ -304,4 +315,5 @@ public class MainCtrl {
     public void checkSubTask(SubTask task) {
         server.checkSubTask(currBoard.getKey(), task.getId());
     }
+
 }

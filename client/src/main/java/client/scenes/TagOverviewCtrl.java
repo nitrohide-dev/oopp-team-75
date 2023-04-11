@@ -93,7 +93,7 @@ public class TagOverviewCtrl {
      * adds a tag to the tag list
      * @param tag - the tag common object to be used for the added tag's properties
      */
-    public void addTag(Tag tag){
+    private void addTag(Tag tag){
         tagList.getItems().remove(tagList.getItems().get(tagList.getItems().size()-1));
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);

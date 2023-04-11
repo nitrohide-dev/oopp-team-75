@@ -485,7 +485,7 @@ public class BoardOverviewCtrl {
 
         dragHandler(box,task,list);
         removeButton.setOnAction(e -> deleteTask(box));
-        editButton.setOnAction(e -> System.out.println("holder"));
+        editButton.setOnAction(e -> viewTask(box));
         box.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 viewTask(box); // changed view button for double click
@@ -637,7 +637,7 @@ public class BoardOverviewCtrl {
      * @param task - a HBox, containing the task
      */
     public void deleteTask(HBox task) {
-        server.deleteTask(taskMap.get(task));
+        mainCtrl.deleteTask(taskMap.get(task));
     }
 
     /**

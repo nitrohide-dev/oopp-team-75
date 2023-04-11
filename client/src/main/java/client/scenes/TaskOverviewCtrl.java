@@ -3,10 +3,13 @@ package client.scenes;
 import client.utils.ServerUtils;
 import commons.Board;
 import commons.SubTask;
+import commons.Tag;
 import commons.Task;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -18,7 +21,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import javax.inject.Inject;
@@ -29,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class TaskOverviewCtrl {
 
@@ -53,14 +60,25 @@ public class TaskOverviewCtrl {
 	private TextField newName;
 	@FXML
 	private ListView<HBox> taskList;
+	@FXML
+	private Button editTags;
+	@FXML
+	private ListView<HBox> currTags;
+	@FXML
+	private ListView<HBox> availableTags;
+	@FXML
+	private Group allTags;
 
 	private Map<HBox, Long> taskMap;
+	private Map<HBox, Long> currTagsMap;
+
 
 	@Inject
 	public TaskOverviewCtrl(MainCtrl mainCtrl, ServerUtils server) {
 		this.mainCtrl = mainCtrl;
 		this.server = server;
 		this.taskMap = new HashMap<>();
+		this.currTagsMap = new HashMap<>();
 	}
 
 	@FXML
@@ -70,6 +88,7 @@ public class TaskOverviewCtrl {
 		importPicture(this.confirmName, Path.of("", "client", "images", "check-mark-black-outline.png").toString());
 		importPicture(this.cancelDesc, Path.of("", "client", "images", "close.png").toString());
 		importPicture(this.confirmDesc, Path.of("", "client", "images", "check-mark-black-outline.png").toString());
+		importPicture(this.editTags, Path.of("", "client", "images", "pencil.png").toString());
 	}
 
 	/**
@@ -78,10 +97,12 @@ public class TaskOverviewCtrl {
 	public void load() {
 		Task task = mainCtrl.getCurrTask();
 		taskMap.clear();
+		currTagsMap.clear();
 		taskName.setText(task.getTitle());
 		description.setText(task.getDesc());
 		resetFields();
 		initializeSubTasks(task.getSubtasks());
+		initializeCurrTags(task.getTags());
 	}
 
 
@@ -118,6 +139,39 @@ public class TaskOverviewCtrl {
 		this.taskList.getItems().addAll(tasks);
 	}
 
+	private void initializeCurrTags(Set<Tag> tags) {
+		this.currTags.getItems().clear();
+		List<HBox> currTags = new ArrayList<>();
+		for (Tag tag : tags) {
+			HBox box = tagBox(tag);
+			currTags.add(box);
+			this.currTagsMap.put(box, tag.getId());
+		}
+		this.currTags.getItems().addAll(currTags);
+	}
+
+	private HBox tagBox(Tag tag) {
+		if (tag == null) return null;
+		Label tagName = new Label(tag.getTitle());
+		tagName.setPrefSize(100, 25);
+		String color = tag.getColor();
+		int red  = Integer.parseInt(color.substring(0, 2), 16);
+		int blue = Integer.parseInt(color.substring(2, 4), 16);
+		int green = Integer.parseInt(color.substring(4, 6), 16);
+		tagName.setBackground(new Background(new BackgroundFill(Color.rgb(red, blue, green), null, null)));
+		tagName.setPadding(new Insets(5,1,5,2));
+		String path = Path.of("", "client", "images", "cancel.png").toString();
+		Button removeButton = new Button();
+		importPicture(removeButton, path);
+		HBox box = new HBox(tagName, removeButton);
+		removeButton.setVisible(false);
+		//removeButton.setOnAction(e -> mainCtrl.deleteSubTask(taskMap.get(box)));
+		return box;
+	}
+
+	private void initializeRestTags() {}
+
+
 	private HBox taskHolder(SubTask task) {
 		if (task == null) return null;
 		CheckBox check = new CheckBox();
@@ -126,13 +180,13 @@ public class TaskOverviewCtrl {
 			mainCtrl.checkSubTask(task);
 		});
 		check.setPadding(new Insets(4, 1, 4, 2));
-		Label taskName = new Label(task.getTitle());
-		taskName.setPrefSize(160, 25);
-		taskName.setPadding(new Insets(5,1,5,2));
+		Label subTaskName = new Label(task.getTitle());
+		subTaskName.setPrefSize(160, 25);
+		subTaskName.setPadding(new Insets(5,1,5,2));
 		String path = Path.of("", "client", "images", "cancel.png").toString();
 		Button removeButton = new Button();
 		importPicture(removeButton, path);
-		HBox box = new HBox(check, taskName, removeButton);
+		HBox box = new HBox(check, subTaskName, removeButton);
 		removeButton.setDisable(false);
 		removeButton.setOnAction(e -> mainCtrl.deleteSubTask(taskMap.get(box)));
 		return box;
@@ -174,6 +228,7 @@ public class TaskOverviewCtrl {
 		this.newName.setVisible(true);
 		this.newName.setDisable(false);
 		this.newName.setText(this.taskName.getText());
+		this.newName.requestFocus();
 	}
 
 	/**
@@ -232,7 +287,6 @@ public class TaskOverviewCtrl {
 		Optional<ButtonType> result = confirm.showAndWait();
 		if (result.isPresent() && result.get() == ButtonType.OK) {
 			mainCtrl.changeTaskDesc(this.description.getText());
-			//there should be some method for refreshing the scene for everyone here, maybe with long polling
 		}
 	}
 
@@ -270,6 +324,17 @@ public class TaskOverviewCtrl {
 			mainCtrl.createSubTask(input.getEditor().getText());
 		});
 		input.showAndWait();
+	}
+
+	public void editTags() {
+		initializeRestTags();
+		allTags.setLayoutX(0);
+		for (Node n : allTags.getChildren()) {
+			n.setVisible(true);
+		}
+		for (HBox tag : this.currTags.getItems()) {
+			tag.getChildren().get(1).setVisible(true);
+		}
 	}
 
 }
