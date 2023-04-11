@@ -51,6 +51,8 @@ public class Tag {
      */
     public Tag(String title) {
         this.title = title;
+        this.board = new Board("a");
+        board.getTags().add(this);
         this.tasks = new HashSet<>();
     }
 

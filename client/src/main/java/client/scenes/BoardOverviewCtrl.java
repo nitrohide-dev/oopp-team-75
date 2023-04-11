@@ -79,6 +79,7 @@ public class BoardOverviewCtrl {
     @FXML private ImageView logo;
     @FXML private ImageView exit;
     @FXML private ImageView menu;
+    @FXML private ImageView tags;
     @FXML private Label titleLabel;
 
     @FXML
@@ -107,6 +108,7 @@ public class BoardOverviewCtrl {
         logo.setImage(new Image(Path.of("", "client", "images", "Logo.png").toString()));
         exit.setImage(new Image(Path.of("", "client", "images", "ExitButton.png").toString()));
         menu.setImage(new Image(Path.of("", "client", "images", "Dots.png").toString()));
+        tags.setImage(new Image(Path.of("", "client", "images", "tag.png").toString()));
         ObservableList<Node> children = listContainer.getChildren();
         sampleGroup = (Group) children.get(0);
         // Sets ScrollPane size, so it's slightly bigger than AnchorPane
@@ -680,6 +682,17 @@ public class BoardOverviewCtrl {
     public void exit() {
         borderPane.setRight(null);
         mainCtrl.showUserMenu();
+    }
+    /**
+     * shows the tag list associated with the current board
+     * this method is called by the user clicking on the tag button at the top of the board overview
+     */
+    public void viewTags() {
+        mainCtrl.showTagOverview(getBoard().getKey());
+    }
+
+    public void setAdminPresence(boolean adminPresence) {
+        this.adminPresence = adminPresence;
     }
 }
 
