@@ -1,7 +1,8 @@
 package server.api.services;
 
 import commons.Board;
-import commons.CreateBoardModel;
+import commons.Tag;
+import commons.models.CreateBoardModel;
 import org.springframework.stereotype.Service;
 import server.database.BoardRepository;
 import server.exceptions.BoardDoesNotExist;
@@ -14,7 +15,6 @@ import java.util.Optional;
 public class 	BoardService {
 
 	private final BoardRepository repo;
-
 	public BoardService(BoardRepository repo) {
 		this.repo = repo;
 	}
@@ -24,7 +24,7 @@ public class 	BoardService {
 	 * @return list of all boards
 	 */
 	public List<Board> getAll() {
-		return (List<Board>)  repo.findAll();
+		return repo.findAll();
 	}
 
 	/**
@@ -74,8 +74,33 @@ public class 	BoardService {
 		board.createTaskList();
 		repo.save(board);
 		return repo.findById(board.getKey()).get();
-
 	}
+
+	/**
+	 * Creates a list in the database with a given id
+	 * @param board - the board the list is in
+	 * @param id - the id of the list
+	 * @return the board the list is in
+	 */
+	public Board createList(Board board, long id){
+		board.createTaskList(id);
+		repo.save(board);
+		return repo.findById(board.getKey()).get();
+	}
+
+	/**
+	 * Creates a list in the database with a given id and name
+	 * @param board - the board the list is in
+	 * @param id - the id of the list
+	 * @param name - the name of the list
+	 * @return
+	 */
+	public Board createList(Board board, long id, String name){
+		board.createTaskList(id, name);
+		repo.save(board);
+		return repo.findById(board.getKey()).get();
+	}
+
 	/**
 	 * Saves a board to the database.
 	 * @param board the board to save
@@ -85,5 +110,12 @@ public class 	BoardService {
 		if (board == null)
 			throw new BoardDoesNotExist("There is no board to be saved");
 		return repo.save(board);
+	}
+
+	public Tag createTag(String boardKey, String name) {
+		Board board = findByKey(boardKey);
+		Tag tag = board.createTag(name);
+		repo.save(board);
+		return tag;
 	}
 }

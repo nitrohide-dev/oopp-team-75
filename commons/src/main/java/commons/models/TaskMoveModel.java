@@ -1,4 +1,4 @@
-package commons;
+package commons.models;
 
 import lombok.Getter;
 import lombok.Setter;

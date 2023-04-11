@@ -22,6 +22,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import server.api.controllers.BoardController;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 @SpringBootApplication
 @EnableScheduling
@@ -31,8 +32,9 @@ public class Main {
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
         try {
-            BoardController.readPassword("password");
-        } catch (IOException e) {
+            BoardController.readPassword("password",System.getProperty("user.dir")
+                    + "/server/src/main/java/server/api/configs/pwd.txt");
+        } catch (IOException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }

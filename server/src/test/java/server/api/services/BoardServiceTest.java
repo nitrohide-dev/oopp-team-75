@@ -1,11 +1,13 @@
 package server.api.services;
 
 import commons.Board;
-import commons.CreateBoardModel;
+import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.database.BoardRepository;
 import server.database.BoardRepositoryTest;
+import server.database.ListRepository;
+import server.database.TaskRepository;
 import server.exceptions.BoardDoesNotExist;
 import server.exceptions.CannotCreateBoard;
 
@@ -16,6 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class BoardServiceTest {
     private BoardRepository boardRepository;
     private BoardService boardService;
+    private TaskRepository taskRepo;
+    private ListRepository listRepo;
+
     @BeforeEach
     private void setup() throws CannotCreateBoard {
         boardRepository = new BoardRepositoryTest();
@@ -53,6 +58,7 @@ class BoardServiceTest {
     @Test
     void findByKeyNotExisting() {
         assertEquals(null, boardService.findByKey("imaginary"));
+        assertThrows(IllegalArgumentException.class, () -> boardService.findByKey(null));
     }
 
     @Test
@@ -108,4 +114,19 @@ class BoardServiceTest {
         assertThrows(BoardDoesNotExist.class, () -> boardService.save(null));
     }
 
+    @Test
+    void createOneList() throws CannotCreateBoard {
+        boardService.createList(boardService.findByKey("key2"));
+        assertEquals(1, boardService.findByKey("key2").getTaskLists().size());
+    }
+
+    @Test
+    void createList(){
+        assertThrows(NullPointerException.class, () -> boardService.createList(null));
+    }
+
+    @Test
+    void noList() throws CannotCreateBoard {
+        assertEquals(0, boardService.findByKey("key2").getTaskLists().size());
+    }
 }

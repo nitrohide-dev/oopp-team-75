@@ -30,27 +30,25 @@ public class PasswordChangeCtrl {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
-    @FXML
-    public void initialize(){
-        confirmButton.setOnAction(event ->{
 
-            if (!(password.getText().equals("")||password1.getText().equals(""))) {
-                if(!password.getText().equals(password1.getText())){
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "Passwords don't match.");
-                    alert.showAndWait();
-                }
-                else{
-                    server.changePassword(hashPassword(password.getText()));
-                    password.clear();
-                    password1.clear();
-                    Stage stage = (Stage) password.getScene().getWindow();
-                    stage.close();
-                }
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Please fill out both fields.");
+    @FXML
+    public void changePassword() {
+        if (!(password.getText().equals("")||password1.getText().equals(""))) {
+            if(!password.getText().equals(password1.getText())){
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Passwords don't match.");
                 alert.showAndWait();
             }
-        });
+            else{
+                server.changePassword(hashPassword(password.getText()));
+                password.clear();
+                password1.clear();
+                Stage stage = (Stage) password.getScene().getWindow();
+                stage.close();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please fill out both fields.");
+            alert.showAndWait();
+        }
     }
 
     /**

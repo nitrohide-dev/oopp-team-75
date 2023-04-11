@@ -1,3 +1,86 @@
+.header {
+    -fx-background-color: #2f58cd;
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: white;
+    -fx-padding: 10 20 10 20;
+    -fx-spacing: 10;
+    -fx-alignment: center;
+}
+
+.background {
+    -fx-background-color: #3795bd;
+}
+
+.header-btn{
+    -fx-transition: all .3s linear;
+    -fx-cursor: hand;
+}
+
+.header-btn:hover{
+    -fx-opacity: .7;
+}
+.visitedBoard:hover{
+ -fx-opacity: .7;
+}
+.header-logo{
+
+}
+
+.tasklist {
+    -fx-border-color: white;
+    -fx-border-width: 3;
+}
+
+/* .button {
+    -fx-color: #fff;
+    -fx-cursor: hand;
+} */
+
+.button-9 {
+    -fx-background-color: #405cf5;
+    -fx-text-fill: #e1e1e1;
+ /* -fx-box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0; */
+    /* -fx-box-sizing: border-box; */
+ /* -fx-transition: all .2s,box-shadow .08s ease-in; */
+ /* -fx-touch-action: manipulation; */
+    -fx-background-radius: 3.0;
+    -fx-cursor: hand;
+ /* -fx-transition: 0.1s linear; */
+}
+
+.button-9:hover {
+    -fx-text-fill: #ffffff;
+}
+
+.text-field{
+ /* -fx-effect: dropshadow( three-pass-box, blue , 10.0, 0.0,0.0,0.0); */
+ /* -fx-background-insets: 3.0; */
+ -fx-background-radius: 3.0;
+ -fx-background-color: #ffffff;
+}
+
+
+
+/* SCROLL PANE STYLING  */
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:horizontal,
+.scroll-bar:vertical{
+    -fx-background-color:transparent;
+}
+
+
+
+
+/* BOARD OVERVIEW */
+
 /*css for task name input dialog*/
 /*noinspection ALL,CssUnusedSymbol*/
 .dialog-pane {
@@ -49,6 +132,12 @@
     -fx-border-color: #0a58ca;
 }
 
+#addButton {
+    -fx-background-color: #2f58cd;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
 #listName1 {
     -fx-background-color: transparent;
     -fx-text-fill: white;
@@ -70,17 +159,21 @@
     -fx-background-color: transparent;
 }
 
-#sideMenu .list-cell { -fx-text-fill: white; }
-#sideMenu .list-cell:odd {
-    -fx-background-color:#2f58cd ;
-    fx-border-width: 0;
-}
-#sideMenu .list-cell:even {
-    -fx-background-color: #2f58cd;
-    fx-border-width: 0;
+#sideMenu {
+    -fx-border-color: white;
+    -fx-border-width: 0 0 0 2;
+    -fx-background-color: #2D7FC6;
 }
 
-#smButton {
+#sideMenu .label {
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-font-weight: BOLD;
+    -fx-font-size: 14px;
+    -fx-font-family: Verdana;
+}
+
+.smButton {
     -fx-color: #fff;
     -fx-cursor: pointer;
     -fx-font-family: -apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif;
@@ -88,14 +181,21 @@
     -fx-height: 44px;
     -fx-line-height: 1.15;
     -fx-text-align: center;
-}
-
-
-#smButton {
-    -fx-text-fill: black;
-    -fx-background-color: #8da1ff;
+    -fx-text-fill: white;
+    -fx-background-color: #3795bd;
     -fx-border-radius: 6px;
     -fx-transition: all .2s,box-shadow .08s ease-in;
     -fx-touch-action: manipulation;
     -fx-width: 100%;
 }
+
+.progress-indicator .percentage {
+    -fx-fill:null;
+}
+
+.progress-indicator  {
+    -fx-padding: 0 0 -16 0;
+    -fx-progress-color: green;
+
+}
+
