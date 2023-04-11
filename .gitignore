@@ -9,6 +9,7 @@ build/
 **/*.trace.db
 **/pwd.txt
 **/data.csv
+**/*.csv
 
 **/*.swp
 client/src/main/resources/data.csv
