@@ -53,7 +53,6 @@
                   <font>
                      <Font size="14.0" />
                   </font></Label>
-               <Button fx:id="editTags" layoutX="205.0" layoutY="2.0" mnemonicParsing="false" onAction="#editTags" prefHeight="25.0" prefWidth="25.0" styleClass="header-btn" />
                <Group fx:id="allTags" layoutY="30.0">
                   <children>
                      <ScrollPane fitToHeight="true" hbarPolicy="NEVER" prefHeight="97.0" prefWidth="123.0">
@@ -69,8 +68,6 @@
                      </ScrollPane>
                   </children>
                </Group>
-               <Button fx:id="confirmTag" disable="true" layoutX="193.0" layoutY="2.0" mnemonicParsing="false" onAction="#confirmTagChange" prefHeight="25.0" prefWidth="25.0" styleClass="header-btn" visible="false" />
-               <Button fx:id="cancelTag" disable="true" layoutX="218.0" layoutY="2.0" mnemonicParsing="false" onAction="#cancelChange" prefHeight="25.0" prefWidth="25.0" styleClass="header-btn" visible="false" />
             </Pane>
          </children>
       </VBox>
