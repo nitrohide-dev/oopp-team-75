@@ -319,23 +319,11 @@ public class MainCtrl {
         server.checkSubTask(currBoard.getKey(), task.getId());
     }
 
-    public void changeTaskTags(Collection<Long> values) {
-        server.changeTaskTag(currBoard.getKey(), currTask.getId(), values);
-    }
-
-    public Set<Tag> getRestTags() {
-        Set allTags = currBoard.getTags();
-        Set taskTags = currTask.getTags();
-        allTags.removeAll(taskTags);
-        return allTags;
-    }
-
     public void removeTag(Tag tag) {
         this.server.removeTag(currTask.getId(), tag.getId());
     }
 
     public void addTag(Tag tag) {
-        System.out.println("main");
         this.server.addTag(currTask.getId(), tag.getId());
     }
 }

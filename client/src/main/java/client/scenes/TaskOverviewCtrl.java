@@ -9,7 +9,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -64,8 +63,6 @@ public class TaskOverviewCtrl {
 	private ListView<HBox> currTags;
 	@FXML
 	private ListView<HBox> availableTags;
-	@FXML
-	private Group allTags;
 
 	private Map<HBox, Long> taskMap;
 	private Map<HBox, Long> currTagsMap;
@@ -93,16 +90,15 @@ public class TaskOverviewCtrl {
 	 */
 	public void load() {
 		Task task = mainCtrl.getCurrTask();
-		System.out.println("pishki");
+		Board board = mainCtrl.getCurrBoard();
 		taskMap.clear();
 		currTagsMap.clear();
 		taskName.setText(task.getTitle());
 		description.setText(task.getDesc());
 		resetFields();
 		initializeSubTasks(task.getSubtasks());
-		System.out.println("ref");
 		initializeCurrTags(task.getTags());
-		initializeRestTags(mainCtrl.getRestTags());
+		initializeRestTags(task.getTags(), board.getTags());
 	}
 
 	/**
@@ -186,16 +182,18 @@ public class TaskOverviewCtrl {
 		HBox box = new HBox(tagName, removeButton);
 		removeButton.setOnAction(e -> {
 			this.mainCtrl.removeTag(tag);
-			this.currTagsMap.remove(box);
 		});
 		return box;
 	}
 
-	private void initializeRestTags(Set<Tag> tags) {
+	private void initializeRestTags(Set<Tag> tags, Set<Tag> boardTags) {
+		this.availableTags.getItems().clear();
 		List<HBox> restTags = new ArrayList<>();
-		for (Tag tag : tags) {
-			HBox box = restTagBox(tag);
-			restTags.add(box);
+		for (Tag tag : boardTags) {
+			if (!tags.contains(tag)) {
+				HBox box = restTagBox(tag);
+				restTags.add(box);
+			}
 		}
 		this.availableTags.getItems().addAll(restTags);
 	}
@@ -211,6 +209,7 @@ public class TaskOverviewCtrl {
 		tagName.setBackground(new Background(new BackgroundFill(Color.rgb(red, blue, green), null, null)));
 		tagName.setPadding(new Insets(5,1,5,2));
 		Button addButton = new Button("+");
+		addButton.getStyleClass().add("header-btn");
 		HBox box = new HBox(tagName, addButton);
 		addButton.setOnAction(e -> {
 			this.mainCtrl.addTag(tag);
@@ -351,6 +350,6 @@ public class TaskOverviewCtrl {
 		});
 		input.showAndWait();
 	}
-	
+
 
 }
