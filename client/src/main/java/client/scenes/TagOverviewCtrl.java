@@ -9,19 +9,19 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
-import javax.inject.Inject;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Ellipse;
 import javafx.stage.Stage;
 
+import javax.inject.Inject;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -95,21 +95,29 @@ public class TagOverviewCtrl {
      */
     public void addTag(Tag tag){
         tagList.getItems().remove(tagList.getItems().get(tagList.getItems().size()-1));
-        String path = Path.of("", "client", "images", "cancel.png").toString();
-        Button removeButton = buttonBuilder(path);
-        path = Path.of("", "client", "images", "pencil.png").toString();
-        removeButton.setOnAction(e -> server.deleteTag(Long.toString(tag.getId()),mainCtrl.getCurrBoard().getKey()));
-        Button editButton = buttonBuilder(path);
-        editButton.setOnAction(e-> renameTag(tag.getId(),mainCtrl.getCurrBoard().getKey()));
+
+        Ellipse ellipse = new Ellipse();
+        ellipse.setRadiusX(8);
+        ellipse.setRadiusY(8);
+        ellipse.setFill(Paint.valueOf(tag.getColor()));
+
         Label label = new Label(tag.getTitle());
-        String color = tag.getColor();
-        int red  = Integer.parseInt(color.substring(0,2),16);
-        int blue = Integer.parseInt(color.substring(2,4),16);
-        int green = Integer.parseInt(color.substring(4,6),16);
-        label.setBackground(new Background(new BackgroundFill(Color.rgb(red,blue,green),null,null)));
+
+        Region region = new Region();
+        region.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        HBox.setHgrow(region, Priority.ALWAYS);
+
+        Button editButton = buttonBuilder(Path.of("", "client", "images", "pencil.png").toString());
+        editButton.setOnAction(e-> renameTag(tag.getId(),mainCtrl.getCurrBoard().getKey()));
+
+        Button removeButton = buttonBuilder(Path.of("", "client", "images", "cancel.png").toString());
+        removeButton.setOnAction(e -> server.deleteTag(Long.toString(tag.getId()),mainCtrl.getCurrBoard().getKey()));
+
         HBox box = new HBox();
-        box.getChildren().addAll(label, editButton, removeButton);
-        box.setAlignment(Pos.CENTER);
+        box.setSpacing(10);
+        box.getChildren().addAll(ellipse, label, region, editButton, removeButton);
+        box.setAlignment(Pos.CENTER_LEFT);
+
         tagMap.put(box,tag.getId());
         tagList.getItems().add(box);
         addTagButton();

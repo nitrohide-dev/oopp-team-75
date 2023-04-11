@@ -2,6 +2,7 @@ package server.api.controllers;
 
 import commons.Board;
 import commons.models.CreateBoardModel;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -36,13 +37,13 @@ import java.util.List;
 @RequestMapping("/api/boards")
 public class BoardController {
 
-    private boolean authentication;
+    @Getter
+    private boolean authentication = false;
     private static String hashedPassword;
     private final BoardService boardService;
 
     public BoardController(BoardService boardService) {
         this.boardService = boardService;
-        this.authentication= false;
     }
 
     /**
@@ -181,7 +182,7 @@ public class BoardController {
         }
         else{
             try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
-                hashedPassword= reader.readLine();
+                hashedPassword = reader.readLine();
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -198,9 +199,6 @@ public class BoardController {
     public ResponseEntity<Boolean> changePassword(@RequestHeader String passwordHashed,String path){
         hashedPassword = passwordHashed;
         File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
-//        if(!path.equals("")){
-//            dir = new File(path);
-//        }
 
         if(dir.exists()){dir.delete();}
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir))) {
@@ -233,16 +231,6 @@ public class BoardController {
     public Board createTag(@DestinationVariable("key") String boardKey, String title) {
         boardService.createTag(boardKey, title);
         return boardService.findByKey(boardKey);
-    }
-
-
-
-    /**
-     * Checks if the user is authenticated
-     * @return true if the user is authenticated
-     */
-    public boolean isAuthentication() {
-        return authentication;
     }
 }
 

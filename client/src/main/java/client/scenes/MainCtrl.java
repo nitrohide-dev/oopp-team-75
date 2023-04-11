@@ -21,6 +21,7 @@ import commons.Board;
 import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -38,14 +39,18 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class MainCtrl {
     private ServerUtils server;
 
     @Getter
     @Setter
+    private boolean adminPresence = false;
+
+    @Getter
+    @Setter
     private Board currBoard;
+
     @Getter
     @Setter
     private Task currTask;
@@ -62,12 +67,6 @@ public class MainCtrl {
     private UserMenuCtrl userMenuCtrl;
     private Scene userMenu;
 
-    private Scene boardCreate;
-
-    @Getter
-    @Setter
-    private boolean adminPresence = false;
-
     private AdminOverviewCtrl adminOverviewCtrl;
     private Scene adminOverview;
 
@@ -81,8 +80,11 @@ public class MainCtrl {
     private Scene taskOverview;
     private TagOverviewCtrl tagOverviewCtrl;
     private Scene tagOverview;
+
+    private String styleSheet = getClass().getResource("styles.css").toExternalForm();
+
     @Inject
-    public MainCtrl(ServerUtils server){
+    public MainCtrl(ServerUtils server) {
         this.server = server;
     }
 
@@ -93,73 +95,66 @@ public class MainCtrl {
                            Pair<AdminLoginCtrl, Parent> adminLogin,
                            Pair<PasswordChangeCtrl, Parent> passwordChange,
                            Pair<TaskOverviewCtrl, Parent> taskOverview,
-                           Pair<TagOverviewCtrl,Parent> tagOverview) throws IOException {
+                           Pair<TagOverviewCtrl,Parent> tagOverview) {
         this.primaryStage = primaryStage;
 
         this.landingCtrl = landing.getKey();
         this.landing = new Scene(landing.getValue());
-        this.landing.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+        this.landing.getStylesheets().add(styleSheet);
 
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
-        this.boardOverview.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+        this.boardOverview.getStylesheets().add(styleSheet);
 
         this.userMenuCtrl = userMenu.getKey();
         this.userMenu = new Scene(userMenu.getValue());
-        this.userMenu.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+        this.userMenu.getStylesheets().add(styleSheet);
 
         this.taskOverviewCtrl = taskOverview.getKey();
         this.taskOverview = new Scene(taskOverview.getValue());
+        this.taskOverview.getStylesheets().add(styleSheet);
 
         this.tagOverviewCtrl = tagOverview.getKey();
         this.tagOverview = new Scene(tagOverview.getValue());
-        this.tagOverview.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+        this.tagOverview.getStylesheets().add(styleSheet);
 
         this.adminOverviewCtrl = adminOverview.getKey();
         this.adminOverview = new Scene(adminOverview.getValue());
-        this.adminOverview.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+        this.adminOverview.getStylesheets().add(styleSheet);
 
         this.adminLoginCtrl = adminLogin.getKey();
         this.adminLogin = new Scene(adminLogin.getValue());
-        this.adminLogin.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+        this.adminLogin.getStylesheets().add(styleSheet);
 
         this.passwordChangeCtrl = passwordChange.getKey();
         this.passwordChange = new Scene(passwordChange.getValue());
-        this.passwordChange.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+        this.passwordChange.getStylesheets().add(styleSheet);
 
         showLanding();
         primaryStage.show();
 
     }
+
+    /**
+     * Shows the landing scene
+     */
     public void showLanding(){
-//        primaryStage.setMinWidth(600);
-//        primaryStage.setMinHeight(400);
-//        landingCtrl.changeImageUrl();
         primaryStage.setTitle("Welcome to Talio!");
         primaryStage.setScene(landing);
     }
 
     /**
-     * Starts the main scene with the board
+     * Shows the board overview scene
      * @param board board to show
      */
     public void showBoard(Board board) {
         currBoard = board;
         primaryStage.setTitle("Board: Your Board");
-        //primaryStage.setMaximized(true);
         primaryStage.setMinWidth(750);
         primaryStage.setMinHeight(600);
-        //this fixes a bug where the maximized window will be opened in pref size.
-        //but it causes a bug where the window is not properly set, so the buttons on the right side are not visible
-//        TODO fix this bug
-//        Screen screen = Screen.getPrimary();
-//        Rectangle2D bounds = screen.getVisualBounds();
-//        primaryStage.setWidth(bounds.getWidth());
-//        primaryStage.setHeight(bounds.getHeight());
         primaryStage.setScene(boardOverview);
         boardOverviewCtrl.load(board);
         boardOverviewCtrl.connect(); // connects to /topic/boards
-
     }
 
     /**
@@ -170,6 +165,10 @@ public class MainCtrl {
         primaryStage.setScene(userMenu);
     }
 
+    /**
+     * Shows task overview scene
+     * @param taskId key of the task to display the advanced features of.
+     */
     public void showTaskOverview(Long taskId) {
         Task task = server.getTask(taskId);
         if (task == null) return;
@@ -181,6 +180,11 @@ public class MainCtrl {
         taskStage.initModality(Modality.APPLICATION_MODAL);
         taskStage.showAndWait();
     }
+
+    /**
+     * Shows tag overview scene
+     * @param boardKey key of the board to display the tags of.
+     */
     public void showTagOverview(String boardKey){
         Board board = server.findBoard(boardKey);
         Stage stage = new Stage();
@@ -191,6 +195,54 @@ public class MainCtrl {
         tagOverviewCtrl.connect();
         stage.showAndWait();
     }
+
+    /**
+     * Shows admin login scene
+     */
+    public void showAdminLogin() {
+        if (!adminPresence) {
+            Stage create = new Stage();
+            create.setScene(adminLogin);
+            create.initModality(Modality.APPLICATION_MODAL);
+            create.showAndWait();
+        } else showAdminOverview();
+    }
+
+    /**
+     * Shows admin overview scene
+     */
+    public void showAdminOverview(){
+        setAdminPresence(true);
+        primaryStage.setScene(adminOverview);
+        adminOverviewCtrl.refresh();
+    }
+
+    /**
+     * Shows admin password change scene
+     */
+    public void showChangePassword(){
+        Stage create = new Stage();
+        create.setScene(passwordChange);
+        create.initModality(Modality.APPLICATION_MODAL);
+        create.showAndWait();
+    }
+
+    /**
+     * Renames a task
+     * @param newName - the new task name
+     */
+    public void renameTask(String newName) {
+        server.renameTask(this.currBoard.getKey(), this.currTask.getId(), newName);
+    }
+
+    /**
+     * check if admin is logged in
+     * @param adminPresence true if admin is logged in
+     */
+    public void setAdminPresence(boolean adminPresence) {
+        boardOverviewCtrl.setAdminPresence(adminPresence);
+    }
+
     /**
      * writes user's favorite boards and their hashed passwords to file on their computer
      * @param boardKeys board keys to write
@@ -210,8 +262,6 @@ public class MainCtrl {
 
             writer.write(boardKeys.toString());
         } catch (Exception e) {}
-
-
     }
 
     /**
@@ -244,58 +294,32 @@ public class MainCtrl {
     }
 
     /**
-     * Used to log in as admin
-     */
-    public void showAdminLogin() {
-        if (!adminPresence) {
-            Stage create = new Stage();
-            create.setScene(adminLogin);
-            create.initModality(Modality.APPLICATION_MODAL);
-            create.showAndWait();
-        } else showAdminOverview();
-    }
-
-    /**
-     * Starts the admin overview
-     */
-    public void showAdminOverview(){
-        setAdminPresence(true);
-        primaryStage.setScene(adminOverview);
-        adminOverviewCtrl.init();
-    }
-
-    /**
-     * Used to change password
-     */
-    public void showChangePassword(){
-        Stage create = new Stage();
-        create.setScene(passwordChange);
-        create.initModality(Modality.APPLICATION_MODAL);
-        create.showAndWait();
-    }
-
-    /**
-     * Renames a task
-     * @param newName - the new task name
-     */
-    public void renameTask(String newName) {
-        server.renameTask(this.currBoard.getKey(), this.currTask.getId(), newName);
-    }
-
-    /**
-     * check if admin is logged in
-     * @param adminPresence true if admin is logged in
-     */
-    public void setAdminPresence(boolean adminPresence) {
-        boardOverviewCtrl.setAdminPresence(adminPresence);
-    }
-
-    /**
      * Changes the description of a task
      * @param newDesc - the new description
      */
     public void changeTaskDesc(String newDesc) {
         server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getId(), newDesc);
+    }
+
+    public Alert createWarning(String content) {
+        Alert alert = new Alert(Alert.AlertType.WARNING, content);
+        alert.getDialogPane().getStylesheets().add(styleSheet);
+        alert.getDialogPane().setPrefSize(400, 200);
+        return alert;
+    }
+
+    public Alert createWarning(String title, String header, String content) {
+        Alert alert = createWarning(content);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        return alert;
+    }
+
+    public Alert createError(String text) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a password.");
+        alert.getDialogPane().getStylesheets().add(styleSheet);
+        alert.getDialogPane().setPrefSize(400, 200);
+        return alert;
     }
 
 }

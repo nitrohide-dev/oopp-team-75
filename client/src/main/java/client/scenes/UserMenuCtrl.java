@@ -34,9 +34,7 @@ public class UserMenuCtrl {
 
     @FXML public VBox boardsListView;
     @FXML public TextField textBox;
-
     @FXML private ImageView logo;
-
     @FXML private ImageView exit;
 
     private List<String> visitedBoards; // list of keys of visited boards
@@ -121,7 +119,6 @@ public class UserMenuCtrl {
         mainCtrl.showBoard(b);
     }
 
-
     /**
      * Adds a board to the list view for the user
      * @param key name/key of the board
@@ -150,12 +147,10 @@ public class UserMenuCtrl {
         removeButton.setFitWidth(20);
         removeButton.setPickOnBounds(true); // makes clicking button easier
         removeButton.setSmooth(true);
-//        removeButton.getStyleClass().add("header-btn"); //
-        itemBox.getStyleClass().add("visitedBoard");
-        removeButton.setOnMouseClicked(event -> {
-            removeBoard(key);
-        });
+
         itemBox.getChildren().addAll(itemLabel, region, removeButton);
+        itemBox.getStyleClass().add("visitedBoard");
+        removeButton.setOnMouseClicked(event -> removeBoard(key));
         itemBox.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2)
                 openBoard(itemBox);
@@ -174,10 +169,10 @@ public class UserMenuCtrl {
         visitedBoards.remove(key);
 
         // then remove it from the list of viewed boards
-        for(Node node : boardsListView.getChildren()) {
+        for (Node node : boardsListView.getChildren()) {
             HBox box = (HBox) node;
             String text = ((Label) box.getChildren().get(0)).getText();
-            if(text.equals(key)) {
+            if (text.equals(key)) {
                 boardsListView.getChildren().remove(box);
                 break;
             }

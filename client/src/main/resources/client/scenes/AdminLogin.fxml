@@ -14,7 +14,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <PasswordField fx:id="password" onAction="#login" promptText="password">
+      <PasswordField fx:id="passwordField" onAction="#login" promptText="password">
          <font>
             <Font size="20.0" />
          </font>
