@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Random;
 @Entity
 public class Tag {
     public static final int MAX_TITLE_LENGTH = 256;
@@ -33,6 +34,11 @@ public class Tag {
     @Setter
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
     private String title;
+
+    @Getter
+    @Setter
+    @Column(nullable=false, length=MAX_TITLE_LENGTH)
+    private String color;
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Getter
@@ -51,6 +57,8 @@ public class Tag {
      */
     public Tag(String title) {
         this.title = title;
+        this.board = new Board("a");
+        board.getTags().add(this);
         this.tasks = new HashSet<>();
     }
 
@@ -63,6 +71,11 @@ public class Tag {
         this.title = title;
         this.tasks = new HashSet<>();
         this.board = board;
+        Random random = new Random();
+        String color = Integer.toHexString(random.nextInt(170)+40);
+        color+= Integer.toHexString(random.nextInt(170)+40);
+        color+= Integer.toHexString(random.nextInt(170)+40);
+        this.color = color;
     }
 
     public Tag() {} // for JPA

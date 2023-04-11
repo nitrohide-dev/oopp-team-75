@@ -230,10 +230,12 @@ public class BoardController {
      */
     @MessageMapping("/tag/create/{key}")
     @SendTo("/topic/boards")
-    public Board createTag(@DestinationVariable String boardKey, String title) {
+    public Board createTag(@DestinationVariable("key") String boardKey, String title) {
         boardService.createTag(boardKey, title);
         return boardService.findByKey(boardKey);
     }
+
+
 
     /**
      * Checks if the user is authenticated
