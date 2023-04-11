@@ -89,6 +89,17 @@ class TagTest {
         tag.setBoard(board);
         assertEquals(board, tag.getBoard());
     }
+    @Test
+    void getColor() {
+        assertEquals(6,tag.getColor().length());
+    }
+
+    @Test
+    void setColor() {
+        String color = "FFFFFF";
+        tag.setColor(color);
+        assertEquals("FFFFFF", tag.getColor());
+    }
 
     @Test
     void equals() {
