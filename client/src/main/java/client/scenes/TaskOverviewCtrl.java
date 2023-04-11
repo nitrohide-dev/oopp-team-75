@@ -57,15 +57,9 @@ public class TaskOverviewCtrl {
 	@FXML
 	private Button cancelDesc;
 	@FXML
-	private Button confirmTag;
-	@FXML
-	private Button cancelTag;
-	@FXML
 	private TextField newName;
 	@FXML
 	private ListView<HBox> taskList;
-	@FXML
-	private Button editTags;
 	@FXML
 	private ListView<HBox> currTags;
 	@FXML
@@ -92,9 +86,6 @@ public class TaskOverviewCtrl {
 		importPicture(this.confirmName, Path.of("", "client", "images", "check-mark-black-outline.png").toString());
 		importPicture(this.cancelDesc, Path.of("", "client", "images", "close.png").toString());
 		importPicture(this.confirmDesc, Path.of("", "client", "images", "check-mark-black-outline.png").toString());
-		importPicture(this.editTags, Path.of("", "client", "images", "pencil.png").toString());
-		importPicture(this.confirmTag, Path.of("", "client", "images", "check-mark-black-outline.png").toString());
-		importPicture(this.cancelTag, Path.of("", "client", "images", "close.png").toString());
 	}
 
 	/**
@@ -133,12 +124,6 @@ public class TaskOverviewCtrl {
 		this.confirmName.setVisible(false);
 		this.confirmDesc.setDisable(true);
 		this.confirmDesc.setVisible(false);
-		this.editTags.setVisible(true);
-		this.editTags.setDisable(false);
-		this.cancelTag.setDisable(true);
-		this.cancelTag.setVisible(false);
-		this.confirmTag.setDisable(true);
-		this.confirmTag.setVisible(false);
 	}
 
 
@@ -366,46 +351,6 @@ public class TaskOverviewCtrl {
 		});
 		input.showAndWait();
 	}
-
-	public void editTags() {
-		resetFields();
-		initializeRestTags(mainCtrl.getRestTags());
-		allTags.setLayoutX(0);
-		for (Node n : allTags.getChildren()) {
-			n.setVisible(true);
-			n.setDisable(false);
-			System.out.println(n);
-		}
-		for (HBox tag : this.currTags.getItems()) {
-			tag.getChildren().get(1).setVisible(true);
-		}
-		editTags.setDisable(true);
-		editTags.setVisible(false);
-		showTagOptions();
-	}
-
-	private void showTagOptions() {
-		this.cancelTag.setVisible(true);
-		this.cancelTag.setDisable(false);
-		this.confirmTag.setVisible(true);
-		this.confirmTag.setDisable(false);
-	}
-
-	/**
-	 * Shows a popup that asks the user if he wants to change the task's name
-	 */
-	public void confirmTagChange() {
-		Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-		confirm.setHeaderText("Confirm change");
-		confirm.setTitle("Save changes");
-		confirm.setContentText("Are you sure you want to change the task's tags?");
-		Optional<ButtonType> result = confirm.showAndWait();
-		((Button) confirm.getDialogPane().lookupButton(ButtonType.OK)).setText("Yes");
-		((Button) confirm.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("No");
-		if (result.isPresent() && result.get() == ButtonType.OK) {
-			mainCtrl.changeTaskTags(this.currTagsMap.values());
-		}
-
-	}
+	
 
 }
