@@ -147,15 +147,15 @@ public class TaskController {
 
     @MessageMapping("/task/addTag/{key}")
     @SendTo("/topic/boards")
-    public Board addTag(Tag tag, @DestinationVariable("key") Long taskId) {
-        var boardKey =  taskService.addTag(taskId, tag);
+    public Board addTag(Long tagId, @DestinationVariable("key") Long taskId) {
+        var boardKey =  taskService.addTag(taskId, tagId);
         return boardService.findByKey(boardKey);
     }
 
     @MessageMapping("/task/removeTag/{key}")
     @SendTo("/topic/boards")
-    public Board removeTag(Tag tag, @DestinationVariable("key") Long taskId) {
-        var boardKey =  taskService.removeTag(taskId, tag);
+    public Board removeTag(Long tagId, @DestinationVariable("key") Long taskId) {
+        var boardKey =  taskService.removeTag(taskId, tagId);
         return boardService.findByKey(boardKey);
     }
 

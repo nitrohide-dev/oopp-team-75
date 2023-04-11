@@ -381,8 +381,8 @@ public class ServerUtils {
      * @param taskKey - the key of the task to be added to
      * @param tag - the tag to be added
      */
-    public void addTag(Long taskKey, Tag tag) {
-        send("/app/task/addTag/" + taskKey, tag);
+    public void addTag(Long taskKey, Long tagId) {
+        send("/app/task/addTag/" + taskKey, tagId);
     }
 
     /**
@@ -390,8 +390,8 @@ public class ServerUtils {
      * @param taskKey - the key of the task to be added to
      * @param tag - the tag to be added
      */
-    public void removeTag(Long taskKey, Tag tag) {
-        send("/app/task/removeTag/" + taskKey, tag);
+    public void removeTag(Long taskKey, Long id) {
+        send("/app/task/removeTag/" + taskKey, id);
     }
 
     public SubTask getSubTask(String id){

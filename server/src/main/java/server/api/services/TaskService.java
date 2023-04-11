@@ -5,6 +5,7 @@ import commons.Task;
 import commons.TaskList;
 import org.springframework.stereotype.Service;
 import server.database.ListRepository;
+import server.database.TagRepository;
 import server.database.TaskRepository;
 import server.exceptions.TaskDoesNotExist;
 
@@ -15,10 +16,12 @@ public class TaskService {
 
     private final ListRepository listRepo;
 	private final TaskRepository repo;
+	private final TagRepository tagRepo;
 
-	public TaskService(TaskRepository repo, ListRepository listRepo) {
+	public TaskService(TaskRepository repo, ListRepository listRepo,TagRepository tagRepo) {
 		this.repo = repo;
 		this.listRepo = listRepo;
+		this.tagRepo = tagRepo;
 	}
 
 	/**
@@ -104,12 +107,13 @@ public class TaskService {
 
 	/**
 	 * Adds a tag to a task
-	 * @param id the id of the task
-	 * @param tag the tag to add
+	 * @param taskId the id of the task
+	 * @param tagId the id of the tag to add
 	 * @return the key of the board in which the task is
 	 */
-	public String addTag(Long id, Tag tag) {
-		Task task = repo.findById(id).get();
+	public String addTag(Long taskId, Long tagId) {
+		Task task = repo.findById(taskId).get();
+		Tag tag = tagRepo.findById(tagId).get();
 		task.addTag(tag);
 		repo.save(task);
 		return listRepo.getBoardByListID(task.getTaskList().getId());
@@ -122,8 +126,9 @@ public class TaskService {
 	 * @param tag the tag to add
 	 * @return the key of the board in which the task is
 	 */
-	public String removeTag(Long id, Tag tag) {
-		Task task = repo.findById(id).get();
+	public String removeTag(Long taskId, Long tagId) {
+		Task task = repo.findById(taskId).get();
+		Tag tag = tagRepo.findById(tagId).get();
 		task.removeTag(tag);
 		repo.save(task);
 		return listRepo.getBoardByListID(task.getTaskList().getId());

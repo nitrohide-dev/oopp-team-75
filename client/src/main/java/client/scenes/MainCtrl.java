@@ -331,11 +331,11 @@ public class MainCtrl {
     }
 
     public void removeTag(Tag tag) {
-        this.server.removeTag(currTask.getId(), tag);
+        this.server.removeTag(currTask.getId(), tag.getId());
     }
 
     public void addTag(Tag tag) {
         System.out.println("main");
-        this.server.addTag(currTask.getId(), tag);
+        this.server.addTag(currTask.getId(), tag.getId());
     }
 }
