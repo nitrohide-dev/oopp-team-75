@@ -11,7 +11,7 @@ Add your own name (do not add the names for others!) to the section below.
 | Profile Picture                                                                                                                                      | Name           | Email                          |
 |------------------------------------------------------------------------------------------------------------------------------------------------------|----------------|--------------------------------|
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Jimmy Zheng    | j.b.y.zheng@student.tudelft.nl |
-| ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Konrad Gniaz   | K.Gniaz@student.tudelft.nl     |
+| https://secure.gravatar.com/avatar/7e42389823b907e457f9e4a3fc482a1d?s=800&d=identicon                                              | Konrad Gniaz   | K.Gniaz@student.tudelft.nl     |
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Robert Mertens | r.h.mertens@student.tudelft.nl |
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Arpad Jakab    | a.jakab@student.tudelft.nl     |
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Matus Leng     | m.leng@student.tudelft.nl      |
@@ -23,7 +23,7 @@ Add your own name (do not add the names for others!) to the section below.
 <!-- - (please make sure the photos have the same size) --> 
 
 ## How to run it
-
+the initial password for the admin panel is "password"
 ## How to contribute to it
 
 ## Copyright / License (opt.)
