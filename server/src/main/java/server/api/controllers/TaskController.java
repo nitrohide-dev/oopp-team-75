@@ -173,6 +173,7 @@ public class TaskController {
         if(pollConsumers.containsKey(task.getId()))
         {
             for(DeferredResult<List<SubTask>> dr  : pollConsumers.get(task.getId())){
+                System.out.println(task.getSubtasks().toString());
                 dr.setResult(task.getSubtasks());
             }
             pollConsumers.get(task.getId()).clear();

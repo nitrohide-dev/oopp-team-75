@@ -127,7 +127,7 @@ public class TaskOverviewCtrl {
 	 * Connects to the server for automatic refreshing.
 	 */
 	public void connect() {
-		// server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
+		server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
 		server.subTaskSubscribe( mainCtrl.getCurrTask().getId(), b -> Platform.runLater(() -> this.initializeSubTasks(b)));
 	}
 	public void unsubscribe(){

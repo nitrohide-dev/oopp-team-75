@@ -18,8 +18,8 @@ package client.utils;
 import commons.Board;
 import commons.SubTask;
 import commons.Tag;
-import commons.models.CreateBoardModel;
 import commons.Task;
+import commons.models.CreateBoardModel;
 import commons.models.TaskMoveModel;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -48,6 +48,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+
 public class ServerUtils {
 
     @Getter
@@ -61,7 +62,7 @@ public class ServerUtils {
     @Getter
     @Setter
     private StompSession session;
-    private List<ExecutorService> EXECUTORS = new LinkedList<>();
+    private final List<ExecutorService> EXECUTORS = new LinkedList<>();
     //REST API
 
     /**
@@ -71,10 +72,10 @@ public class ServerUtils {
      */
     public Board findBoard(String key) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/find/" + key)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(Board.class);
+            .target(SERVER).path("api/boards/find/" + key)
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .get(Board.class);
     }
 
     /**
@@ -82,10 +83,10 @@ public class ServerUtils {
      */
     public void deleteBoard(String key) {
         ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/delete/" + key)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .delete(Board.class);
+            .target(SERVER).path("api/boards/delete/" + key)
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .delete(Board.class);
     }
 
     /**
@@ -95,10 +96,11 @@ public class ServerUtils {
      */
     public List<Board> getAllBoards() {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(new GenericType<List<Board>>() {});
+            .target(SERVER).path("api/boards/")
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .get(new GenericType<List<Board>>() {
+            });
     }
 
     /**
@@ -106,10 +108,10 @@ public class ServerUtils {
      */
     public void createBoard(CreateBoardModel model) {
         ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/create")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .post(Entity.entity(model, APPLICATION_JSON), Board.class);
+            .target(SERVER).path("api/boards/create")
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .post(Entity.entity(model, APPLICATION_JSON), Board.class);
     }
 
     /**
@@ -137,7 +139,8 @@ public class ServerUtils {
         WebSocketStompClient stomp = new WebSocketStompClient(client);
         stomp.setMessageConverter(new MappingJackson2MessageConverter());
         try {
-            return stomp.connect(url, new StompSessionHandlerAdapter(){}).get();
+            return stomp.connect(url, new StompSessionHandlerAdapter() {
+            }).get();
         } catch (ExecutionException e) {
             Thread.currentThread().interrupt();
         } catch (InterruptedException e) {
@@ -148,10 +151,11 @@ public class ServerUtils {
 
     /**
      * Subscribes to a topic to get updates
-     * @param dest the destination to subscribe to
-     * @param type the type of the payload
+     *
+     * @param dest     the destination to subscribe to
+     * @param type     the type of the payload
      * @param consumer the consumer to handle the payload
-     * @param <T> the type of the payload
+     * @param <T>      the type of the payload
      */
     public <T> void subscribe(String dest, Class<T> type, Consumer<T> consumer) {
         session.subscribe(dest, new StompFrameHandler() {
@@ -175,11 +179,11 @@ public class ServerUtils {
      */
     public boolean authenticate(String password) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/login")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .header("password", password)
-                .get(Boolean.class);
+            .target(SERVER).path("api/boards/login")
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .header("password", password)
+            .get(Boolean.class);
     }
 
 
@@ -190,11 +194,11 @@ public class ServerUtils {
      */
     public void changePassword(String passwordHashed) {
         ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/changePassword")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .header("passwordHashed", passwordHashed)
-                .get(Boolean.class);
+            .target(SERVER).path("api/boards/changePassword")
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .header("passwordHashed", passwordHashed)
+            .get(Boolean.class);
     }
 
     /**
@@ -202,54 +206,58 @@ public class ServerUtils {
      */
     public void logout() {
         ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/logout")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON);
+            .target(SERVER).path("api/boards/logout")
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON);
     }
 
     /**
      * Gets a tag from the database by ID
+     *
      * @param id - the id of the tag
      * @return the tag with the given id
      */
     public Tag getTag(String id) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/tag/getById/" + id)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(Tag.class);
+            .target(SERVER).path("api/tag/getById/" + id)
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .get(Tag.class);
     }
 
     /**
      * Gets all tags by task from the database
+     *
      * @param taskKey the key of the task to get the tags from
      * @return a set of tags
      */
     public Set getTagsByTask(String taskKey) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/tag/getByTask/" + taskKey)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(Set.class);
+            .target(SERVER).path("api/tag/getByTask/" + taskKey)
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .get(Set.class);
     }
 
     /**
      * Gets all tags by board from the database
+     *
      * @param boardKey the key of the board to get the tags from
      * @return a list of tags
      */
     public List getTagsByBoard(String boardKey) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/tag/getByBoard/" + boardKey)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(List.class);
+            .target(SERVER).path("api/tag/getByBoard/" + boardKey)
+            .request(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
+            .get(List.class);
     }
 
     //STOMP API (Websockets)
     public void send(String dest, Object o) {
         session.send(dest, o);
     }
+
     /**
      * Sends a request to the server to update the board
      *
@@ -261,13 +269,16 @@ public class ServerUtils {
 
     /**
      * Sends a request to the server to move a task from one board to another
+     *
      * @param model - the model used for this operation
      */
     public void moveTask(TaskMoveModel model, String boardKey) {
         send("/app/task/move/" + boardKey, model);
     }
+
     /**
      * Sends a request to the server to get a task from the database
+     *
      * @param taskId - the id of the task
      */
     public Task getTask(Long taskId) {
@@ -277,12 +288,14 @@ public class ServerUtils {
             .accept(APPLICATION_JSON)
             .get(Task.class);
     }
+
     /**
      * Sends a request to the server to delete a task from the database
+     *
      * @param taskId - the id of the task
      */
     public void deleteTask(Long taskId) {
-        send("/app/task/delete" , taskId);
+        send("/app/task/delete", taskId);
     }
 
     /**
@@ -344,9 +357,10 @@ public class ServerUtils {
 
     /**
      * Sends a request to the server to change the description of a task
+     *
      * @param boardKey - the key of the board of the task
-     * @param taskId - the id of the task
-     * @param newDesc - the new description
+     * @param taskId   - the id of the task
+     * @param newDesc  - the new description
      */
     public void changeTaskDesc(String boardKey, long taskId, String newDesc) {
         send("/app/task/desc/" + boardKey + "/" + taskId, newDesc);
@@ -354,7 +368,8 @@ public class ServerUtils {
 
     /**
      * Sends a request to the server to delete a tag from the database
-     * @param tagKey - the key of the tag to be deleted
+     *
+     * @param tagKey   - the key of the tag to be deleted
      * @param boardKey - the key of the board to be deleted from
      */
     public void deleteTag(String tagKey, String boardKey) {
@@ -363,7 +378,8 @@ public class ServerUtils {
 
     /**
      * Sends a request to the server to edit a tag in the database
-     * @param tagKey - the key of the tag to be edited
+     *
+     * @param tagKey   - the key of the tag to be edited
      * @param boardKey - the key of the board to be edited from
      * @param newTitle - the new title of the tag
      */
@@ -373,6 +389,7 @@ public class ServerUtils {
 
     /**
      * Sends a request to the server to create a tag in the database
+     *
      * @param boardKey - the key of the board to be created from
      * @param tagTitle - the title of the tag to be created
      */
@@ -382,8 +399,9 @@ public class ServerUtils {
 
     /**
      * Sends a request to the server to add a tag to a task in the database
+     *
      * @param taskKey - the key of the task to be added to
-     * @param tag - the tag to be added
+     * @param tagId   - the tag to be added
      */
     public void addTag(Long taskKey, Long tagId) {
         send("/app/task/addTag/" + taskKey, tagId);
@@ -391,14 +409,15 @@ public class ServerUtils {
 
     /**
      * Sends a request to the server to add a tag to a task in the database
+     *
      * @param taskKey - the key of the task to be added to
-     * @param tag - the tag to be added
+     * @param id      - the tag to be added
      */
     public void removeTag(Long taskKey, Long id) {
         send("/app/task/removeTag/" + taskKey, id);
     }
 
-    public SubTask getSubTask(String id){
+    public SubTask getSubTask(String id) {
         return ClientBuilder.newClient(new ClientConfig())
             .target(SERVER).path("api/subtask/getById/" + id)
             .request(APPLICATION_JSON)
@@ -426,9 +445,11 @@ public class ServerUtils {
     public void checkSubTask(String boardKey, Long id) {
         send("/app/subtask/check/" + boardKey, id);
     }
+
     public void moveSubTaskUp(int order, Long id) {
         send("/app/subtask/moveup/" + id, order);
     }
+
     public void moveSubTaskDown(int order, Long id) {
         send("/app/subtask/movedown/" + id, order);
     }
@@ -439,34 +460,33 @@ public class ServerUtils {
     }
 
 
-
-    public void subTaskSubscribe(Long taskId, Consumer<List<SubTask>> subtaskUpdater){
+    public void subTaskSubscribe(Long taskId, Consumer<List<SubTask>> subtaskUpdater) {
         ExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
         EXECUTORS.add(executor);
 
         executor.submit(() -> {
             while (true) {
+                System.out.println("POLL");
                 Response response = ClientBuilder.newClient(new ClientConfig())
-                        .target(SERVER).path(String.format("api/subtasks/%d/poll", taskId))
-                        .request(APPLICATION_JSON)
-                        .accept(APPLICATION_JSON)
-                        .get();
+                    .target(SERVER).path(String.format("api/subtasks/%d/poll", taskId))
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get();
 
-                if(response.getStatus() == 200 && response.getLength() > 7){
-
-                    String string = response.toString();
-                    System.out.println(string);
-                    System.out.println(response.getLength());
-                    List<SubTask> subtasks = response.readEntity(new GenericType<List<SubTask>>() {});
-                    // TODO : update the subtasks view with the new subtasks
+                try {
+                    List<SubTask> subtasks = response.readEntity(new GenericType<List<SubTask>>() {
+                    });
                     subtaskUpdater.accept(subtasks);
+
+                } catch (Exception ex) {
+                    // Timeout continue
                 }
             }
         });
     }
 
-    public void subTaskUnsubscribe(){
+    public void subTaskUnsubscribe() {
         for (ExecutorService executor : EXECUTORS) {
             executor.shutdown();
         }
