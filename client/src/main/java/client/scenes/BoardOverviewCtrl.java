@@ -487,7 +487,7 @@ public class BoardOverviewCtrl {
         }
         if (task1.getSubtasks() != null && !task1.getSubtasks().isEmpty()) {
             long done = task1.getSubtasks().stream().filter(x -> x.getChecked()).count();
-            addProgressIndicator(box, done/task1.getSubtasks().size());
+            addProgressIndicator(box, (double) done / (double) task1.getSubtasks().size());
         }
         dragHandler(box,task,list);
         removeButton.setOnAction(e -> deleteTask(box));
