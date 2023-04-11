@@ -42,26 +42,41 @@ public class TagOverviewCtrl {
         this.tagMap = new HashMap<>();
     }
 
+    /**
+     * Connects to the server for automatic refreshing.
+     * same method as in boardOverview
+     */
     public void connect() {
         server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
     }
+    /**
+     * Updates the board to a new board, and regenerates the boardOverview
+     * same method as in boardOverview
+     */
     public void refresh(Board board) {
         if(mainCtrl.getCurrBoard().getKey().equals(board.getKey())) {
             mainCtrl.setCurrBoard(board);
             load(board);
         }
     }
+    /**
+     * (re-)loads all the tags in the tagList
+     * @param board - the board in which the tags that are to be shown are stored
+     */
     public void load(Board board){
 
         tagList.getItems().clear();
-        addTagButton(tagList);
+        addTagButton();
         Iterator<Tag> iterator = board.getTags().iterator();
         while(iterator.hasNext())
         {
             addTag(iterator.next());
         }
     }
-    public void addTagButton(ListView<HBox> list){
+    /**
+     * appends the "add tag" button to the end of the tag list
+     */
+    public void addTagButton(){
         Button addTagButton = new Button("ADD TAG");
         addTagButton.setId("addButton");
         addTagButton.setAlignment(Pos.CENTER);
@@ -70,9 +85,14 @@ public class TagOverviewCtrl {
         HBox box = new HBox(addTagButton);
         box.setAlignment(Pos.CENTER);
         box.setPadding(new Insets(4, 16, 4, 16));
-        list.getItems().add(box);
+        tagList.getItems().add(box);
         addTagButton.setOnAction(e -> createTag());
     }
+
+    /**
+     * adds a tag to the tag list
+     * @param tag - the tag common object to be used for the added tag's properties
+     */
     public void addTag(Tag tag){
         tagList.getItems().remove(tagList.getItems().get(tagList.getItems().size()-1));
         String path = Path.of("", "client", "images", "cancel.png").toString();
@@ -82,22 +102,36 @@ public class TagOverviewCtrl {
         Button editButton = buttonBuilder(path);
         editButton.setOnAction(e-> renameTag(tag.getId(),mainCtrl.getCurrBoard().getKey()));
         Label label = new Label(tag.getTitle());
-        label.setBackground(new Background(new BackgroundFill(Color.rgb(55,205,155,0.7),null,null)));
+        String color = tag.getColor();
+        int red  = Integer.parseInt(color.substring(0,2),16);
+        int blue = Integer.parseInt(color.substring(2,4),16);
+        int green = Integer.parseInt(color.substring(4,6),16);
+        label.setBackground(new Background(new BackgroundFill(Color.rgb(red,blue,green),null,null)));
         HBox box = new HBox();
         box.getChildren().addAll(label, editButton, removeButton);
         box.setAlignment(Pos.CENTER);
         tagMap.put(box,tag.getId());
         tagList.getItems().add(box);
-        addTagButton(tagList);
+        addTagButton();
     }
+
+    /**
+     * creates a tag with a name given by the user in the database
+     */
     public void createTag(){
         String name = tagNameSetter();
         server.createTag(mainCtrl.getCurrBoard().getKey(),name);
     }
+    /**
+     * renames a tag to a name given by the user in the database
+     */
     public void renameTag(Long id, String key){
         String newName = tagNameSetter();
         server.renameTag(Long.toString(id),key,newName);
     }
+    /**
+     * creates a popup for (re-)naming of the tag by the user
+     */
     public String tagNameSetter(){
         TextInputDialog input = new TextInputDialog("tag name");
         input.setHeaderText("Tag name");
@@ -117,6 +151,9 @@ public class TagOverviewCtrl {
         input.showAndWait();
         return label.getText();
     }
+    /**
+     * creates a button with the given image and gives it appropriate properties
+     */
     private Button buttonBuilder(String path) {
         String url = getClass().getClassLoader().getResource(path.replace("\\", "/")).toString();
         Image image = new Image(url);

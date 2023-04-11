@@ -19,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
@@ -42,6 +43,7 @@ import lombok.Setter;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -383,7 +385,30 @@ public class BoardOverviewCtrl {
         HBox box = new HBox(addTaskButton);
         box.setPadding(new Insets(4, 16, 4, 16));
         listView.getItems().add(box);
-        addTaskButton.setOnAction(e -> createTask(listView));
+
+        addTaskButton.setOnAction(e -> {
+            TextField textField = new TextField();
+            textField.setOnAction(actionEvent -> {
+                // Submit the text when Enter is pressed
+                String text = textField.getText();
+                createTask(text,listView);
+
+            });
+
+            textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue) {
+                    // If the text field loses focus, go back to the label
+                    box.getChildren().clear();
+                    box.getChildren().add(addTaskButton);
+                }
+            });
+            box.getChildren().clear();
+            box.getChildren().add(textField);
+            textField.requestFocus();
+
+        });
+
+
     }
 
     /**
@@ -422,14 +447,6 @@ public class BoardOverviewCtrl {
     }
 
     /**
-     * task creation method caused by the user's manual task addition.
-     */
-    public void createTask(ListView<HBox> list) {
-        createTask(inputTaskName(), list);
-    }
-
-
-    /**
      * creates a task in the given list with the given name
      * @param name the name of the task to be created
      * @param list the list in which the task should be created
@@ -451,16 +468,29 @@ public class BoardOverviewCtrl {
         list.getItems().remove(list.getItems().get(list.getItems().size()-1));
 
         Label task = new Label(name);
-        task.setPrefWidth(135);
+        task.setPrefWidth(130);
         task.setPadding(new Insets(6, 1, 6, 1));
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
-        path = Path.of("", "client", "images", "eye.png").toString();
-        Button viewButton = buttonBuilder(path);
-        HBox box = new HBox(task, viewButton, removeButton);
+        path = Path.of("", "client", "images", "pencil.png").toString();
+        Button editButton = buttonBuilder(path);
+
+        HBox box = new HBox(task, editButton, removeButton);
+        box.setSpacing(5);
+
+        // just for testing - delete when fully implemented
+      // addDescriptionIndicator(box);
+      // addProgressIndicator(box,0.7);
+
+
         dragHandler(box,task,list);
         removeButton.setOnAction(e -> deleteTask(box));
-        viewButton.setOnAction(e -> viewTask(box));
+        editButton.setOnAction(e -> System.out.println("holder"));
+        box.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                viewTask(box); // changed view button for double click
+            }
+        });
         disableTaskButtons(box);
         HBox.setHgrow(task, Priority.NEVER);
         list.getItems().add(box);
@@ -572,11 +602,12 @@ public class BoardOverviewCtrl {
      */
     private void disableTaskButtons(HBox box) {
         Button removeButton = (Button) box.getChildren().get(1);
-        Button viewButton = (Button) box.getChildren().get(2);
+        Button editButton = (Button) box.getChildren().get(2);
         removeButton.setDisable(true);
         removeButton.setVisible(false);
-        viewButton.setDisable(true);
-        viewButton.setVisible(false);
+        editButton.setDisable(true);
+        editButton.setVisible(false);
+
     }
 
     /**
@@ -585,11 +616,12 @@ public class BoardOverviewCtrl {
      */
     private void enableTaskButtons(HBox box) {
         Button removeButton = (Button) box.getChildren().get(1);
-        Button viewButton = (Button) box.getChildren().get(2);
+        Button editButton = (Button) box.getChildren().get(2);
         removeButton.setDisable(false);
         removeButton.setVisible(true);
-        viewButton.setDisable(false);
-        viewButton.setVisible(true);
+        editButton.setDisable(false);
+        editButton.setVisible(true);
+
     }
 
     /**
@@ -683,6 +715,88 @@ public class BoardOverviewCtrl {
         borderPane.setRight(null);
         mainCtrl.showUserMenu();
     }
+
+
+
+    /**
+     * adds and sets progress indicator to the task box - should be called when nested tasks are added
+     *
+     * @param box task box
+     */
+    public void addProgressIndicator(HBox box, double percentage){
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setProgress(percentage); // set for the respective parameter
+        progressIndicator.getStylesheets()
+                .add(getClass().getResource("styles.css").toExternalForm());
+        Label l  = (Label) box.getChildren().get(0);
+        l.setPrefWidth(l.getPrefWidth()-30);
+
+        VBox vbox= new VBox(progressIndicator);
+        vbox.setAlignment(Pos.CENTER);
+
+        box.getChildren().add(vbox);
+
+    }
+
+    /**
+     *
+     * removes progress indicator if exists - to be called when no nested tasks are set
+     * @param box task box
+     */
+    public void removeProgressIndicator(HBox box){
+        for (Iterator<Node> it = box.getChildren().iterator(); it.hasNext(); ) {
+            Node childNode = it.next();
+            if (childNode instanceof VBox) {
+                if(((VBox) childNode).getChildren().get(0) instanceof ProgressIndicator){
+                    it.remove();
+                    Label l  = (Label) box.getChildren().get(0);
+                    l.setPrefWidth(l.getPrefWidth()+30);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    /**
+     *
+     * adds description indicator to the task HBox
+     * @param box task HBox
+     */
+    public void addDescriptionIndicator(HBox box){
+
+        ImageView image = new ImageView(new Image(Path.of("",
+                "client", "images", "description.png").toString()));
+        image.setFitHeight(18);
+        image.setFitWidth(18);
+        VBox vbox= new VBox(image);
+        vbox.setAlignment(Pos.CENTER);
+
+        Label l  = (Label) box.getChildren().get(0);
+        l.setPrefWidth(l.getPrefWidth()-25);
+
+        box.getChildren().add(vbox);
+
+    }
+
+    /**
+     *
+     * removes the indicator if there's one
+     * @param box task HBox
+     */
+    public void removeDescriptionIndicator(HBox box){
+        for (Iterator<Node> it = box.getChildren().iterator(); it.hasNext(); ) {
+            Node childNode = it.next();
+            if (childNode instanceof VBox) {
+                if(((VBox) childNode).getChildren().get(0) instanceof ImageView){
+                    Label l  = (Label) box.getChildren().get(0);
+                    l.setPrefWidth(l.getPrefWidth()+25);
+                    it.remove();
+                    break;
+                }
+            }
+        }}
+
     /**
      * shows the tag list associated with the current board
      * this method is called by the user clicking on the tag button at the top of the board overview

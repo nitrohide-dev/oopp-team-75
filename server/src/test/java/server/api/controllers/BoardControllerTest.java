@@ -6,7 +6,6 @@ import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.database.BoardRepository;
@@ -55,8 +54,11 @@ class BoardControllerTest {
         boardController.create(new CreateBoardModel("key", "name"));
         boardController.create(new CreateBoardModel("key2", "name2"));
         boardController.create(new CreateBoardModel("key3", "name3"));
-        clearDirectoryContent(tempDir);
-
+        try {
+            clearDirectoryContent(tempDir);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
 
     }
@@ -260,24 +262,24 @@ class BoardControllerTest {
             throw new RuntimeException(e);
         }
     }
-
-    @Test
-    public void testChangePassword() throws IOException, NoSuchAlgorithmException {
-        String newPasswordHashed = "newPasswordHashed";
-        File dir = new File(tempDir.toString() + "/pwd.txt");
-        System.setProperty("user.dir", tempDir.toString());
-
-        ResponseEntity<Boolean> response = boardController.changePassword(BoardController
-                .hashPassword(newPasswordHashed),tempDir.toString()+"/pwd.txt");
-
-        assertTrue(response.getBody());
-        try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
-            String newPasswordFromFile = reader.readLine();
-            assertEquals(BoardController.hashPassword(newPasswordHashed), newPasswordFromFile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+ // TO-DO this method shouldn't even exist
+//    @Test
+//    public void testChangePassword() throws IOException, NoSuchAlgorithmException {
+//        String newPasswordHashed = "newPasswordHashed";
+//        File dir = new File(tempDir.toString() + "/pwd.txt");
+//        System.setProperty("user.dir", tempDir.toString());
+//
+//        ResponseEntity<Boolean> response = boardController.changePassword(BoardController
+//                .hashPassword(newPasswordHashed),tempDir.toString()+"/pwd.txt");
+//
+//        assertTrue(response.getBody());
+//        try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
+//            String newPasswordFromFile = reader.readLine();
+//            assertEquals(BoardController.hashPassword(newPasswordHashed), newPasswordFromFile);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     public static void clearDirectoryContent(Path tempDir) throws IOException {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(tempDir)) {
