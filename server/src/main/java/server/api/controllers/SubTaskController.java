@@ -22,11 +22,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/subtasks")
 public class SubTaskController {
-    private final SubTaskService SubtaskService;
+    private final SubTaskService subtaskService;
 
     private final BoardService boardService;
     public SubTaskController(SubTaskService SubtaskService, BoardService boardService) {
-        this.SubtaskService = SubtaskService;
+        this.subtaskService = SubtaskService;
         this.boardService = boardService;
     }
 
@@ -39,7 +39,7 @@ public class SubTaskController {
     @GetMapping("/getById/{id}")
     public SubTask getById(@PathVariable("id") String id) throws SubTaskDoesNotExist {
         try {
-            return SubtaskService.getById(Long.parseLong(id));
+            return subtaskService.getById(Long.parseLong(id));
 
         } catch (NumberFormatException | SubTaskDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
@@ -54,7 +54,7 @@ public class SubTaskController {
     @GetMapping("/getByTask/{id}")
     public ResponseEntity<List<SubTask>> getByTask(@PathVariable("id") String id) {
         try {
-            return ResponseEntity.ok(SubtaskService.getAllSubTasksOfTask(Long.parseLong(id)));
+            return ResponseEntity.ok(subtaskService.getAllSubTasksOfTask(Long.parseLong(id)));
         } catch (NumberFormatException | TaskDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
@@ -64,13 +64,13 @@ public class SubTaskController {
      * Deletes a subtask from the database by its id. If
      * the id does not exist in the database or has a wrong format, the method will respond with a
      * bad request.
-     * @param id the subtask id
+     * @param subTaskId the subtask id
      */
-    @MessageMapping("/subtask/delete/{id}")
+    @MessageMapping("/subtask/delete/{boardKey}")
     @SendTo("/topic/boards")
-    public Board deleteById(@DestinationVariable("id") String id, String boardKey) throws SubTaskDoesNotExist {
+    public Board deleteById(Long subTaskId, @DestinationVariable String boardKey) throws SubTaskDoesNotExist {
         try {
-            SubtaskService.deleteById(Long.parseLong(id));
+            subtaskService.deleteById(subTaskId);
             return boardService.findByKey(boardKey);
         } catch (NumberFormatException | SubTaskDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
@@ -87,9 +87,21 @@ public class SubTaskController {
      */
     @MessageMapping("/subtask/rename/{boardKey}/{name}")
     @SendTo("/topic/boards")
-    public Board renameSubTask(Long id,@DestinationVariable("name")String name,@DestinationVariable("boardKey") String boardKey) {
+    public Board renameSubTask(Long id, @DestinationVariable("name")String name,
+                               @DestinationVariable("boardKey") String boardKey) {
         try {
-            SubtaskService.renameSubTask(id, name);
+            subtaskService.renameSubTask(id, name);
+            return boardService.findByKey(boardKey);
+        } catch (SubTaskDoesNotExist e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
+    @MessageMapping("/subtask/check/{boardKey}")
+    @SendTo("/topic/boards")
+    public Board changeCheckSubTask(Long id, @DestinationVariable String boardKey) {
+        try {
+            subtaskService.changeCheckSubTask(id);
             return boardService.findByKey(boardKey);
         } catch (SubTaskDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);

@@ -18,6 +18,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.SubTask;
 import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -172,6 +173,7 @@ public class MainCtrl {
         taskStage.setTitle("Task: " + task.getTitle());
         taskOverviewCtrl.load();
         taskStage.setScene(taskOverview);
+        taskOverviewCtrl.connect();
         taskStage.initModality(Modality.APPLICATION_MODAL);
         taskStage.showAndWait();
     }
@@ -266,7 +268,6 @@ public class MainCtrl {
      */
     public void renameTask(String newName) {
         server.renameTask(this.currBoard.getKey(), this.currTask.getId(), newName);
-        taskOverviewCtrl.load();
     }
 
     /**
@@ -275,17 +276,17 @@ public class MainCtrl {
      */
     public void changeTaskDesc(String newDesc) {
         server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getId(), newDesc);
-        taskOverviewCtrl.load();
     }
 
     public void createSubTask(String name) {
         server.createSubTask(currTask.getId(), name);
-        taskOverviewCtrl.load();
     }
 
     public void deleteSubTask(Long id) {
-        server.deleteSubTask(id);
-        taskOverviewCtrl.load();
+        server.deleteSubTask(currBoard.getKey(), id);
     }
 
+    public void checkSubTask(SubTask task) {
+        server.checkSubTask(currBoard.getKey(), task.getId());
+    }
 }

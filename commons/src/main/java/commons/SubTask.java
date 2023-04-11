@@ -35,10 +35,17 @@ public class SubTask {
     @Setter
     private Task task;
 
+    @Getter
+    @Setter
+    @Column(nullable = false)
+    private Boolean checked;
+
+
     // constructor
     public SubTask(Task task, String title) {
         this.title = title;
         this.task = task;
+        this.checked = false;
     }
 
 
@@ -69,4 +76,5 @@ public class SubTask {
     public int hashCode() {
         return Objects.hash(id, title);
     }
+
 }

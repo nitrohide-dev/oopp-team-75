@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import commons.Board;
 import commons.SubTask;
 import commons.Task;
 import javafx.application.Platform;
@@ -84,22 +85,24 @@ public class TaskOverviewCtrl {
 	}
 
 
+
 	/**
 	 * Connects to the server for automatic refreshing.
 	 */
 	public void connect() {
-		server.subscribe("/topic/bo", Task.class, t -> Platform.runLater(() -> this.refresh(t)));
+		server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
 	}
 
 	/**
 	 * Updates the board to a new board, and regenerates the boardOverview,
 	 * only if the new boards key is equal to the previous boards key (i.e.
 	 * only new versions of the same board are accepted).
-	 * @param task the board to refresh to.
+	 * @param board the board to refresh to.
 	 */
-	public void refresh(Task task) {
-		if(mainCtrl.getCurrTask().getId() == task.getId()) {
-			mainCtrl.setCurrTask(task);
+	public void refresh(Board board) {
+		if(mainCtrl.getCurrBoard().getKey().equals(board.getKey())) {
+			mainCtrl.setCurrBoard(board);
+			mainCtrl.setCurrTask(server.getTask(mainCtrl.getCurrTask().getId()));
 			load();
 		}
 	}
@@ -116,9 +119,12 @@ public class TaskOverviewCtrl {
 	}
 
 	private HBox taskHolder(SubTask task) {
-		System.out.println("pishki");
 		if (task == null) return null;
 		CheckBox check = new CheckBox();
+		check.setSelected(task.getChecked());
+		check.setOnAction(e -> {
+			mainCtrl.checkSubTask(task);
+		});
 		check.setPadding(new Insets(4, 1, 4, 2));
 		Label taskName = new Label(task.getTitle());
 		taskName.setPrefSize(160, 25);
@@ -127,17 +133,9 @@ public class TaskOverviewCtrl {
 		Button removeButton = new Button();
 		importPicture(removeButton, path);
 		HBox box = new HBox(check, taskName, removeButton);
-		removeButton.setOnAction(e -> deleteTask(box));
+		removeButton.setDisable(false);
+		removeButton.setOnAction(e -> mainCtrl.deleteSubTask(taskMap.get(box)));
 		return box;
-	}
-
-
-	/**
-	 * Deletes given subtask
-	 * @param task - a HBox, containing the task
-	 */
-	public void deleteTask(HBox task) {
-		mainCtrl.deleteSubTask(taskMap.remove(task));
 	}
 
 	/**
@@ -217,7 +215,6 @@ public class TaskOverviewCtrl {
 		((Button) confirm.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("No");
 		if (result.isPresent() && result.get() == ButtonType.OK) {
 			mainCtrl.renameTask(this.newName.getText());
-			load();
 			//there should be some method for refreshing the scene for everyone here, maybe with long polling
 		}
 	}
@@ -235,7 +232,6 @@ public class TaskOverviewCtrl {
 		Optional<ButtonType> result = confirm.showAndWait();
 		if (result.isPresent() && result.get() == ButtonType.OK) {
 			mainCtrl.changeTaskDesc(this.description.getText());
-			load();
 			//there should be some method for refreshing the scene for everyone here, maybe with long polling
 		}
 	}
@@ -272,7 +268,6 @@ public class TaskOverviewCtrl {
 		stage.getIcons().add(new Image(path));
 		((Button) input.getDialogPane().lookupButton(ButtonType.OK)).setOnAction(e -> {
 			mainCtrl.createSubTask(input.getEditor().getText());
-			load();
 		});
 		input.showAndWait();
 	}
