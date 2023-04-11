@@ -37,6 +37,7 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -344,7 +345,7 @@ public class ServerUtils {
      * @param newDesc - the new description
      */
     public void changeTaskDesc(String boardKey, long taskId, String newDesc) {
-        send("/app/task/desc/" + boardKey + "/" + newDesc, taskId);
+        send("/app/task/desc/" + boardKey + "/" + taskId, newDesc);
     }
 
     /**
@@ -380,8 +381,17 @@ public class ServerUtils {
      * @param taskKey - the key of the task to be added to
      * @param tag - the tag to be added
      */
-    public void addTag(String taskKey, Tag tag) {
+    public void addTag(Long taskKey, Tag tag) {
         send("/app/task/addTag/" + taskKey, tag);
+    }
+
+    /**
+     * Sends a request to the server to add a tag to a task in the database
+     * @param taskKey - the key of the task to be added to
+     * @param tag - the tag to be added
+     */
+    public void removeTag(Long taskKey, Tag tag) {
+        send("/app/task/removeTag/" + taskKey, tag);
     }
 
     public SubTask getSubTask(String id){
@@ -411,5 +421,10 @@ public class ServerUtils {
 
     public void checkSubTask(String boardKey, Long id) {
         send("/app/subtask/check/" + boardKey, id);
+    }
+
+    public void changeTaskTag(String boardKey, Long id, Collection<Long> values) {
+        send("app/task/tags/" + boardKey + "/" + id, values);
+        System.out.println("esrver");
     }
 }

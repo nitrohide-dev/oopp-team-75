@@ -19,6 +19,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.SubTask;
+import commons.Tag;
 import commons.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -38,8 +39,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class MainCtrl {
     private ServerUtils server;
@@ -316,4 +319,23 @@ public class MainCtrl {
         server.checkSubTask(currBoard.getKey(), task.getId());
     }
 
+    public void changeTaskTags(Collection<Long> values) {
+        server.changeTaskTag(currBoard.getKey(), currTask.getId(), values);
+    }
+
+    public Set<Tag> getRestTags() {
+        Set allTags = currBoard.getTags();
+        Set taskTags = currTask.getTags();
+        allTags.removeAll(taskTags);
+        return allTags;
+    }
+
+    public void removeTag(Tag tag) {
+        this.server.removeTag(currTask.getId(), tag);
+    }
+
+    public void addTag(Tag tag) {
+        System.out.println("main");
+        this.server.addTag(currTask.getId(), tag);
+    }
 }

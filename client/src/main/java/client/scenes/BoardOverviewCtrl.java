@@ -482,7 +482,9 @@ public class BoardOverviewCtrl {
       // addDescriptionIndicator(box);
       // addProgressIndicator(box,0.7);
 
-
+        if (task1.getDesc() != null && !task1.getDesc().equals("")) {
+            addDescriptionIndicator(box);
+        }
         dragHandler(box,task,list);
         removeButton.setOnAction(e -> deleteTask(box));
         editButton.setOnAction(e -> viewTask(box));
@@ -763,7 +765,7 @@ public class BoardOverviewCtrl {
      * adds description indicator to the task HBox
      * @param box task HBox
      */
-    public void addDescriptionIndicator(HBox box){
+    private void addDescriptionIndicator(HBox box){
 
         ImageView image = new ImageView(new Image(Path.of("",
                 "client", "images", "description.png").toString()));

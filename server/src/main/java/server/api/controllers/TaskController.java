@@ -93,9 +93,9 @@ public class TaskController {
      * @param boardKey - the key of the board in which the task is
      * @return the board the task is in
      */
-    @MessageMapping("/task/desc/{boardKey}/{name}")
+    @MessageMapping("/task/desc/{boardKey}/{id}")
     @SendTo("/topic/boards")
-    public Board changeTaskDesc(Long id, @DestinationVariable("name")String newDesc,
+    public Board changeTaskDesc(String newDesc, @DestinationVariable("id") Long id,
                                 @DestinationVariable("boardKey") String boardKey) {
         try {
             taskService.changeTaskDesc(id, newDesc);
@@ -147,10 +147,18 @@ public class TaskController {
 
     @MessageMapping("/task/addTag/{key}")
     @SendTo("/topic/boards")
-    public Board addTag(Tag tag, @DestinationVariable("key") String taskId) {
-        var boardKey =  taskService.addTag(Long.valueOf(taskId),tag);
+    public Board addTag(Tag tag, @DestinationVariable("key") Long taskId) {
+        var boardKey =  taskService.addTag(taskId, tag);
         return boardService.findByKey(boardKey);
     }
+
+    @MessageMapping("/task/removeTag/{key}")
+    @SendTo("/topic/boards")
+    public Board removeTag(Tag tag, @DestinationVariable("key") Long taskId) {
+        var boardKey =  taskService.removeTag(taskId, tag);
+        return boardService.findByKey(boardKey);
+    }
+
 
     /**
      * creates a subtask in the database with a given title

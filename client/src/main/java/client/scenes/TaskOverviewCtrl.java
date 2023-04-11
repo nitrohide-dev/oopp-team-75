@@ -57,6 +57,10 @@ public class TaskOverviewCtrl {
 	@FXML
 	private Button cancelDesc;
 	@FXML
+	private Button confirmTag;
+	@FXML
+	private Button cancelTag;
+	@FXML
 	private TextField newName;
 	@FXML
 	private ListView<HBox> taskList;
@@ -89,6 +93,8 @@ public class TaskOverviewCtrl {
 		importPicture(this.cancelDesc, Path.of("", "client", "images", "close.png").toString());
 		importPicture(this.confirmDesc, Path.of("", "client", "images", "check-mark-black-outline.png").toString());
 		importPicture(this.editTags, Path.of("", "client", "images", "pencil.png").toString());
+		importPicture(this.confirmTag, Path.of("", "client", "images", "check-mark-black-outline.png").toString());
+		importPicture(this.cancelTag, Path.of("", "client", "images", "close.png").toString());
 	}
 
 	/**
@@ -96,15 +102,44 @@ public class TaskOverviewCtrl {
 	 */
 	public void load() {
 		Task task = mainCtrl.getCurrTask();
+		System.out.println("pishki");
 		taskMap.clear();
 		currTagsMap.clear();
 		taskName.setText(task.getTitle());
 		description.setText(task.getDesc());
 		resetFields();
 		initializeSubTasks(task.getSubtasks());
+		System.out.println("ref");
 		initializeCurrTags(task.getTags());
+		initializeRestTags(mainCtrl.getRestTags());
 	}
 
+	/**
+	 * Resets the buttons and the fields to their default values
+	 */
+	private void resetFields() {
+		taskName.setVisible(true);
+		taskName.setDisable(false);
+		newName.setVisible(false);
+		newName.setDisable(true);
+		newName.clear();
+		this.editName.setVisible(true);
+		this.editName.setDisable(false);
+		this.cancelName.setDisable(true);
+		this.cancelName.setVisible(false);
+		this.cancelDesc.setDisable(true);
+		this.cancelDesc.setVisible(false);
+		this.confirmName.setDisable(true);
+		this.confirmName.setVisible(false);
+		this.confirmDesc.setDisable(true);
+		this.confirmDesc.setVisible(false);
+		this.editTags.setVisible(true);
+		this.editTags.setDisable(false);
+		this.cancelTag.setDisable(true);
+		this.cancelTag.setVisible(false);
+		this.confirmTag.setDisable(true);
+		this.confirmTag.setVisible(false);
+	}
 
 
 	/**
@@ -153,7 +188,7 @@ public class TaskOverviewCtrl {
 	private HBox tagBox(Tag tag) {
 		if (tag == null) return null;
 		Label tagName = new Label(tag.getTitle());
-		tagName.setPrefSize(100, 25);
+		tagName.setPrefSize(80, 25);
 		String color = tag.getColor();
 		int red  = Integer.parseInt(color.substring(0, 2), 16);
 		int blue = Integer.parseInt(color.substring(2, 4), 16);
@@ -164,12 +199,39 @@ public class TaskOverviewCtrl {
 		Button removeButton = new Button();
 		importPicture(removeButton, path);
 		HBox box = new HBox(tagName, removeButton);
-		removeButton.setVisible(false);
-		//removeButton.setOnAction(e -> mainCtrl.deleteSubTask(taskMap.get(box)));
+		removeButton.setOnAction(e -> {
+			this.mainCtrl.removeTag(tag);
+			this.currTagsMap.remove(box);
+		});
 		return box;
 	}
 
-	private void initializeRestTags() {}
+	private void initializeRestTags(Set<Tag> tags) {
+		List<HBox> restTags = new ArrayList<>();
+		for (Tag tag : tags) {
+			HBox box = restTagBox(tag);
+			restTags.add(box);
+		}
+		this.availableTags.getItems().addAll(restTags);
+	}
+
+	private HBox restTagBox(Tag tag) {
+		if (tag == null) return null;
+		Label tagName = new Label(tag.getTitle());
+		tagName.setPrefSize(80, 25);
+		String color = tag.getColor();
+		int red  = Integer.parseInt(color.substring(0, 2), 16);
+		int blue = Integer.parseInt(color.substring(2, 4), 16);
+		int green = Integer.parseInt(color.substring(4, 6), 16);
+		tagName.setBackground(new Background(new BackgroundFill(Color.rgb(red, blue, green), null, null)));
+		tagName.setPadding(new Insets(5,1,5,2));
+		Button addButton = new Button("+");
+		HBox box = new HBox(tagName, addButton);
+		addButton.setOnAction(e -> {
+			this.mainCtrl.addTag(tag);
+		});
+		return box;
+	}
 
 
 	private HBox taskHolder(SubTask task) {
@@ -192,26 +254,6 @@ public class TaskOverviewCtrl {
 		return box;
 	}
 
-	/**
-	 * Resets the buttons and the fields to their default values
-	 */
-	private void resetFields() {
-		taskName.setVisible(true);
-		taskName.setDisable(false);
-		newName.setVisible(false);
-		newName.setDisable(true);
-		newName.clear();
-		this.editName.setVisible(true);
-		this.editName.setDisable(false);
-		this.cancelName.setDisable(true);
-		this.cancelName.setVisible(false);
-		this.cancelDesc.setDisable(true);
-		this.cancelDesc.setVisible(false);
-		this.confirmName.setDisable(true);
-		this.confirmName.setVisible(false);
-		this.confirmDesc.setDisable(true);
-		this.confirmDesc.setVisible(false);
-	}
 
 	/**
 	 * Shows a textField where the user can input a new name for the task
@@ -270,7 +312,6 @@ public class TaskOverviewCtrl {
 		((Button) confirm.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("No");
 		if (result.isPresent() && result.get() == ButtonType.OK) {
 			mainCtrl.renameTask(this.newName.getText());
-			//there should be some method for refreshing the scene for everyone here, maybe with long polling
 		}
 	}
 
@@ -327,14 +368,44 @@ public class TaskOverviewCtrl {
 	}
 
 	public void editTags() {
-		initializeRestTags();
+		resetFields();
+		initializeRestTags(mainCtrl.getRestTags());
 		allTags.setLayoutX(0);
 		for (Node n : allTags.getChildren()) {
 			n.setVisible(true);
+			n.setDisable(false);
+			System.out.println(n);
 		}
 		for (HBox tag : this.currTags.getItems()) {
 			tag.getChildren().get(1).setVisible(true);
 		}
+		editTags.setDisable(true);
+		editTags.setVisible(false);
+		showTagOptions();
+	}
+
+	private void showTagOptions() {
+		this.cancelTag.setVisible(true);
+		this.cancelTag.setDisable(false);
+		this.confirmTag.setVisible(true);
+		this.confirmTag.setDisable(false);
+	}
+
+	/**
+	 * Shows a popup that asks the user if he wants to change the task's name
+	 */
+	public void confirmTagChange() {
+		Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+		confirm.setHeaderText("Confirm change");
+		confirm.setTitle("Save changes");
+		confirm.setContentText("Are you sure you want to change the task's tags?");
+		Optional<ButtonType> result = confirm.showAndWait();
+		((Button) confirm.getDialogPane().lookupButton(ButtonType.OK)).setText("Yes");
+		((Button) confirm.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("No");
+		if (result.isPresent() && result.get() == ButtonType.OK) {
+			mainCtrl.changeTaskTags(this.currTagsMap.values());
+		}
+
 	}
 
 }

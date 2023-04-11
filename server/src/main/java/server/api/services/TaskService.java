@@ -115,6 +115,20 @@ public class TaskService {
 		return listRepo.getBoardByListID(task.getTaskList().getId());
 	}
 
+
+	/**
+	 * Adds a tag to a task
+	 * @param id the id of the task
+	 * @param tag the tag to add
+	 * @return the key of the board in which the task is
+	 */
+	public String removeTag(Long id, Tag tag) {
+		Task task = repo.findById(id).get();
+		task.removeTag(tag);
+		repo.save(task);
+		return listRepo.getBoardByListID(task.getTaskList().getId());
+	}
+
 	/**
 	 * Saves a task to the database.
 	 * @param task the task to save

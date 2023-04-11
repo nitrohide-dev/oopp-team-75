@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Random;
+
 @Entity
 public class Tag {
     public static final int MAX_TITLE_LENGTH = 256;
