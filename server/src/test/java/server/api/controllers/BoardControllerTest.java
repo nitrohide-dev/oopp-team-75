@@ -1,11 +1,11 @@
 package server.api.controllers;
 
 
-
 import commons.Board;
 import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
@@ -33,8 +33,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.io.TempDir;
 
 class BoardControllerTest {
 
@@ -194,14 +192,14 @@ class BoardControllerTest {
         assertNotEquals(password, hashedPassword);
         assertNotEquals(password2, hashedPassword2);
     }
-// Todo: fix this test
-//    @Test
-//    void hashPasswordEmpty() {
-//        String password = "";
-//        String password1 = null;
-//        assertThrows(IllegalArgumentException.class, () -> BoardController.hashPassword(password));
-//        assertThrows(IllegalArgumentException.class, () -> BoardController.hashPassword(password1));
-//    }
+
+    @Test
+    void hashPasswordEmpty() {
+        String password = "";
+        String password1 = null;
+        assertThrows(IllegalArgumentException.class, () -> BoardController.hashPassword(password));
+        assertThrows(IllegalArgumentException.class, () -> BoardController.hashPassword(password1));
+    }
 
     @Test
     void hashPasswordSame() throws NoSuchAlgorithmException {
@@ -232,7 +230,7 @@ class BoardControllerTest {
     void testAuthenticate() throws IOException {
         assertTrue(boardController.isAuthentication());
     }
-//TODO: fix test
+    //TODO: fix test
 //    @Test
 //    void testAuthenticateWrongPassword() throws IOException {
 //        var boardController2 = new BoardController(boardService);

@@ -45,6 +45,7 @@ public class Task {
     @ManyToMany(mappedBy = "tasks", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Getter
     @Setter
+    @Column
     private Set<Tag> tags;
 
     @JsonManagedReference

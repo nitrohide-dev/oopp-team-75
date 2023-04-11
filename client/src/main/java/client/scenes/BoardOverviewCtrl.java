@@ -305,12 +305,14 @@ public class BoardOverviewCtrl {
     public ListView<HBox> addTaskList(TaskList taskList) {
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
         ListView<HBox> sampleList = (ListView<HBox>) samplePane.getContent();
-        TextField textField = new TextField();
+        TextField textField = new TextField(taskList.getTitle());
         textField.setId("listName1");
-      //  textField.setOnAction(e->{
- //           if(!(textField.getText().equals(taskList.getTitle())))
-   //             server.renameList(taskList.getid(), textField.getText());
-       // });
+        textField.focusedProperty().addListener((obs,oldVal,newVal) -> {
+            if(newVal == false)
+            {
+                server.renameList(taskList.getId(),textField.getText());
+            }
+        });
         ListView<HBox> listView = new ListView<>();
         listView.setOnMouseClicked(e -> taskOperations(listView));
         listView.setPrefSize(sampleList.getPrefWidth(), sampleList.getPrefHeight());
@@ -353,13 +355,12 @@ public class BoardOverviewCtrl {
         deleteTaskListsButton.setPrefSize(25, 25);
         deleteTaskListsButton.setFont(new Font(19));
         deleteTaskListsButton.setId("deleteTaskListsButton");
-
         textField.setPrefSize(180, 25);
         textField.setLayoutX(0);
         textField.setLayoutY(0);
         textField.setAlignment(javafx.geometry.Pos.CENTER);
         textField.setFont(new Font(19));
-        textField.setPromptText("Name your list");
+        textField.setPromptText("Name your list!");
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
         scrollPane.setPrefSize(samplePane.getPrefWidth(), samplePane.getPrefHeight());
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
