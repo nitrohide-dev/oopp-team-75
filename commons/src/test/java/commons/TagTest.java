@@ -37,7 +37,7 @@ class TagTest {
         assertNotNull(tag.getId());
         assertEquals("a", tag.getTitle());
         assertEquals(new HashSet<>(), tag.getTasks());
-        assertNull(tag.getBoard());
+        assertNotNull(tag.getBoard());
     }
 
     @Test
@@ -89,6 +89,18 @@ class TagTest {
         tag.setBoard(board);
         assertEquals(board, tag.getBoard());
     }
+    @Test
+    void getColor() {
+        // TO-DO create this test
+       // assertEquals(6,tag.getColor().length());
+    }
+
+    @Test
+    void setColor() {
+        String color = "FFFFFF";
+        tag.setColor(color);
+        assertEquals("FFFFFF", tag.getColor());
+    }
 
     @Test
     void equals() {
@@ -134,7 +146,7 @@ class TagTest {
         assertNotNull(tag);
         assertEquals("a", tag.getTitle());
         assertEquals(new HashSet<>(), tag.getTasks());
-        assertNull(tag.getBoard());
+        assertNotNull(tag.getBoard());
     }
 
     @Test
@@ -143,7 +155,7 @@ class TagTest {
         assertNotNull(tag);
         assertEquals("a", tag.getTitle());
         assertEquals(new HashSet<>(), tag.getTasks());
-        assertNull(tag.getBoard());
+        assertNotNull(tag.getBoard());
         assertEquals(100, tag.getId());
     }
 }

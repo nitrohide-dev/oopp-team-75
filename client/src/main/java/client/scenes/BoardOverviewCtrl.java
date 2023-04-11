@@ -63,7 +63,7 @@ public class BoardOverviewCtrl {
 
     @FXML private TextField listName1;
 
-    @FXML private Button deleteTaskListsButton;
+    @FXML private Button deleteTaskListsButton;two variable function maximum minimum
 
     @FXML private HBox listContainer;
 
@@ -81,6 +81,7 @@ public class BoardOverviewCtrl {
     @FXML private ImageView logo;
     @FXML private ImageView exit;
     @FXML private ImageView menu;
+    @FXML private ImageView tags;
     @FXML private Label titleLabel;
 
     @FXML
@@ -109,6 +110,7 @@ public class BoardOverviewCtrl {
         logo.setImage(new Image(Path.of("", "client", "images", "Logo.png").toString()));
         exit.setImage(new Image(Path.of("", "client", "images", "ExitButton.png").toString()));
         menu.setImage(new Image(Path.of("", "client", "images", "Dots.png").toString()));
+        tags.setImage(new Image(Path.of("", "client", "images", "tag.png").toString()));
         ObservableList<Node> children = listContainer.getChildren();
         sampleGroup = (Group) children.get(0);
         // Sets ScrollPane size, so it's slightly bigger than AnchorPane
@@ -305,12 +307,14 @@ public class BoardOverviewCtrl {
     public ListView<HBox> addTaskList(TaskList taskList) {
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
         ListView<HBox> sampleList = (ListView<HBox>) samplePane.getContent();
-        TextField textField = new TextField();
+        TextField textField = new TextField(taskList.getTitle());
         textField.setId("listName1");
-      //  textField.setOnAction(e->{
- //           if(!(textField.getText().equals(taskList.getTitle())))
-   //             server.renameList(taskList.getid(), textField.getText());
-       // });
+        textField.focusedProperty().addListener((obs,oldVal,newVal) -> {
+            if(newVal == false)
+            {
+                server.renameList(taskList.getId(),textField.getText());
+            }
+        });
         ListView<HBox> listView = new ListView<>();
         listView.setOnMouseClicked(e -> taskOperations(listView));
         listView.setPrefSize(sampleList.getPrefWidth(), sampleList.getPrefHeight());
@@ -353,13 +357,12 @@ public class BoardOverviewCtrl {
         deleteTaskListsButton.setPrefSize(25, 25);
         deleteTaskListsButton.setFont(new Font(19));
         deleteTaskListsButton.setId("deleteTaskListsButton");
-
         textField.setPrefSize(180, 25);
         textField.setLayoutX(0);
         textField.setLayoutY(0);
         textField.setAlignment(javafx.geometry.Pos.CENTER);
         textField.setFont(new Font(19));
-        textField.setPromptText("Name your list");
+        textField.setPromptText("Name your list!");
         ScrollPane samplePane = (ScrollPane) sampleGroup.getChildren().get(1);
         scrollPane.setPrefSize(samplePane.getPrefWidth(), samplePane.getPrefHeight());
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -794,6 +797,16 @@ public class BoardOverviewCtrl {
             }
         }
 
+    /**
+     * shows the tag list associated with the current board
+     * this method is called by the user clicking on the tag button at the top of the board overview
+     */
+    public void viewTags() {
+        mainCtrl.showTagOverview(getBoard().getKey());
+    }
+
+    public void setAdminPresence(boolean adminPresence) {
+        this.adminPresence = adminPresence;
     }
 }
 
