@@ -1,8 +1,10 @@
 package server.api.services;
 
+import commons.Board;
 import commons.SubTask;
 import commons.Task;
 import org.springframework.stereotype.Service;
+import server.database.BoardRepository;
 import server.database.SubTaskRepository;
 import server.database.TaskRepository;
 import server.exceptions.SubTaskDoesNotExist;
@@ -15,10 +17,12 @@ public class SubTaskService {
 
     private final SubTaskRepository repo;
     private final TaskRepository taskRepo;
+    private final BoardRepository boardRepo;
 
-    public SubTaskService(SubTaskRepository repo, TaskRepository taskRepo) {
+    public SubTaskService(SubTaskRepository repo, TaskRepository taskRepo, BoardRepository boardRepo) {
         this.repo = repo;
         this.taskRepo = taskRepo;
+        this.boardRepo = boardRepo;
     }
 
     /**
@@ -84,5 +88,19 @@ public class SubTaskService {
         SubTask subTask = getById(id);
         subTask.setChecked(!subTask.getChecked());
         repo.save(subTask);
+    }
+    public Board movesubTaskUp(int order, long subtaskId){
+        SubTask subTask = repo.findById(subtaskId).get();
+        if(order!=0) {
+            repo.movesubTaskUp1(order-1);
+            repo.movesubTaskUp2(subtaskId);
+        }
+        return boardRepo.findById(subTask.getTask().getTaskList().getBoard().getKey()).get();
+    }
+    public Board movesubTaskDown(int order, long subtaskId){
+        SubTask subTask = repo.findById(subtaskId).get();
+        repo.movesubTaskDown1(order+1);
+        repo.movesubTaskDown2(subtaskId);
+        return boardRepo.findById(subTask.getTask().getTaskList().getBoard().getKey()).get();
     }
 }

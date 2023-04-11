@@ -2,6 +2,9 @@ package server.api.controllers;
 
 import commons.Board;
 import commons.SubTask;
+import commons.Task;
+import commons.TaskList;
+import commons.models.TaskMoveModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.SubTaskService;
+import server.exceptions.ListDoesNotExist;
 import server.exceptions.SubTaskDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
 
@@ -108,4 +112,18 @@ public class SubTaskController {
         }
     }
 
+    @MessageMapping("/subtask/moveup/{id}")
+    @SendTo("/topic/boards")
+    public Board movesubTaskUp(int order, @DestinationVariable("id")long subTaskId) throws TaskDoesNotExist, ListDoesNotExist
+    {
+
+        return subtaskService.movesubTaskUp(order,subTaskId);
+    }
+    @MessageMapping("/subtask/movedown/{id}")
+    @SendTo("/topic/boards")
+    public Board movesubTaskDown(int order, @DestinationVariable("id")long subTaskId) throws TaskDoesNotExist, ListDoesNotExist
+    {
+
+        return subtaskService.movesubTaskDown(order,subTaskId);
+    }
 }

@@ -147,8 +147,9 @@ public class TaskOverviewCtrl {
 	private void initializeSubTasks(List<SubTask> subtasks) {
 		this.taskList.getItems().clear();
 		List<HBox> tasks = new ArrayList<>();
-		for (SubTask task : subtasks) {
-			HBox box = taskHolder(task);
+		for (int i=0;i<subtasks.size();i++) {
+			SubTask task = subtasks.get(i);
+			HBox box = taskHolder(task,i);
 			tasks.add(box);
 			this.taskMap.put(box, task.getId());
 		}
@@ -218,7 +219,7 @@ public class TaskOverviewCtrl {
 	}
 
 
-	private HBox taskHolder(SubTask task) {
+	private HBox taskHolder(SubTask task,int order) {
 		if (task == null) return null;
 		CheckBox check = new CheckBox();
 		check.setSelected(task.getChecked());
@@ -227,14 +228,24 @@ public class TaskOverviewCtrl {
 		});
 		check.setPadding(new Insets(4, 1, 4, 2));
 		Label subTaskName = new Label(task.getTitle());
-		subTaskName.setPrefSize(160, 25);
+		subTaskName.setPrefSize(100, 25);
 		subTaskName.setPadding(new Insets(5,1,5,2));
 		String path = Path.of("", "client", "images", "cancel.png").toString();
 		Button removeButton = new Button();
 		importPicture(removeButton, path);
-		HBox box = new HBox(check, subTaskName, removeButton);
+		path = Path.of("", "client", "images", "up.png").toString();
+		Button upButton = new Button();
+		importPicture(upButton, path);
+		path = Path.of("", "client", "images", "down.png").toString();
+		Button downButton = new Button();
+		importPicture(downButton, path);
+		HBox box = new HBox(check, subTaskName,upButton, downButton, removeButton);
 		removeButton.setDisable(false);
 		removeButton.setOnAction(e -> mainCtrl.deleteSubTask(taskMap.get(box)));
+		upButton.setDisable(false);
+		upButton.setOnAction(e -> server.moveSubTaskUp(order,task.getId()));
+		downButton.setDisable(false);
+		downButton.setOnAction(e -> server.moveSubTaskDown(order,task.getId()));
 		return box;
 	}
 

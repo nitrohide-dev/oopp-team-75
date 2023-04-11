@@ -422,6 +422,12 @@ public class ServerUtils {
     public void checkSubTask(String boardKey, Long id) {
         send("/app/subtask/check/" + boardKey, id);
     }
+    public void moveSubTaskUp(int order, Long id) {
+        send("/app/subtask/moveup/" + id, order);
+    }
+    public void moveSubTaskDown(int order, Long id) {
+        send("/app/subtask/movedown/" + id, order);
+    }
 
     public void changeTaskTag(String boardKey, Long id, Collection<Long> values) {
         send("app/task/tags/" + boardKey + "/" + id, values);
