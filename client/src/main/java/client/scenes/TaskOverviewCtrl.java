@@ -76,7 +76,6 @@ public class TaskOverviewCtrl {
 	public TaskOverviewCtrl(MainCtrl mainCtrl, ServerUtils server) {
 		this.mainCtrl = mainCtrl;
 		this.server = server;
-//		this.taskMap = new HashMap<>();
 		this.currTagsMap = new HashMap<>();
 	}
 
