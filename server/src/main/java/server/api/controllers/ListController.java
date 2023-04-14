@@ -53,7 +53,7 @@ public class ListController {
      */
     @MessageMapping("/list/createTask/{name}")
     @SendTo("/topic/boards")
-    public Board createTask(Long listID,@DestinationVariable("name") String name) throws ListDoesNotExist{
+    public Board createTask(Long listID,@DestinationVariable("name") String name) throws ListDoesNotExist {
         TaskList list = (listService.getById(listID));
         String id = listService.createTask(list,name);
         return boardService.findByKey(id);

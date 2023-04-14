@@ -27,17 +27,17 @@ public class Board {
 //    attributes
 
     @Id
-    @Column(nullable=false, unique=true)
+    @Column(nullable = false, unique = true)
     @Getter
     @Setter
     private String key;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Getter
     @Setter
     private String title;
 
-    @Column(nullable=true)
+    @Column(nullable = true)
     @Getter
     @Setter
     private String password;
@@ -57,7 +57,7 @@ public class Board {
 
 //    constructors
 
-    public Board() {} // for object mappers, please don't use.
+    public Board() { } // for object mappers, please don't use.
 
     public Board(String key) {
         this(key, "", "", new ArrayList<>(),new HashSet<>());
@@ -126,10 +126,10 @@ public class Board {
      * @return the created task list
      * @throws IllegalArgumentException
      */
-    public TaskList createTaskList(long id) throws IllegalArgumentException{
+    public TaskList createTaskList(long id) throws IllegalArgumentException {
         TaskList list = new TaskList(this);
         list.setId(id);
-        if(this.taskLists.contains(list)){
+        if (this.taskLists.contains(list)) {
             throw new IllegalArgumentException("TaskList already exists");
         }
         this.taskLists.add(list);
@@ -143,11 +143,11 @@ public class Board {
      * @return the created task list
      * @throws IllegalArgumentException
      */
-    public TaskList createTaskList(long id, String title) throws IllegalArgumentException{
+    public TaskList createTaskList(long id, String title) throws IllegalArgumentException {
         TaskList list = new TaskList(this);
         list.setId(id);
         list.setTitle(title);
-        if(this.taskLists.contains(list)){
+        if (this.taskLists.contains(list)) {
             throw new IllegalArgumentException("TaskList already exists");
         }
         this.taskLists.add(list);

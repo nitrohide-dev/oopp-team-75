@@ -137,7 +137,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void getAllCorrectly(){
+    void getAllCorrectly() {
         assertEquals(3, taskController.getAll().size());
         assertEquals(10L, taskController.getAll().get(0).getId());
         assertEquals(20L, taskController.getAll().get(1).getId());
@@ -183,7 +183,7 @@ class TaskControllerTest {
         taskController.moveTask(taskMoveModel, board1.getKey());
         assertEquals(2, list1.getTasks().size());
         assertEquals(20, list1.getTasks().get(1).getId());
-        TaskMoveModel taskMoveModel1= new TaskMoveModel(20L, 1l, Integer.MAX_VALUE);
+        TaskMoveModel taskMoveModel1 = new TaskMoveModel(20L, 1l, Integer.MAX_VALUE);
         taskController.moveTask(taskMoveModel1, board1.getKey());
         assertEquals(20, list1.getTasks().get(1).getId());
     }

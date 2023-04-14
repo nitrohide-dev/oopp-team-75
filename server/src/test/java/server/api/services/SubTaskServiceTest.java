@@ -69,7 +69,7 @@ class SubTaskServiceTest {
         listService = new ListService(listRepository, taskRepository, boardRepository);
         taskService = new TaskService(taskRepository, listRepository, tagRepository);
         subTaskService = new SubTaskService(subTaskRepository, taskRepository, boardRepository);
-        board1 =boardService.create(new CreateBoardModel("1", "1"));
+        board1 = boardService.create(new CreateBoardModel("1", "1"));
 
         boardService.createList(board1, 1L, "1");
         boardService.createList(board1, 2L, "2");
@@ -179,7 +179,7 @@ class SubTaskServiceTest {
         listService = new ListService(listRepository, taskRepository, boardRepository);
         taskService = new TaskService(taskRepository, listRepository, tagRepository);
         subTaskService = new SubTaskService(subTaskRepository, taskRepository, boardRepository);
-        board1 =boardService.create(new CreateBoardModel("1", "1"));
+        board1 = boardService.create(new CreateBoardModel("1", "1"));
 
         boardService.createList(board1, 1L, "1");
         listService.save(board1.getTaskLists().get(0));

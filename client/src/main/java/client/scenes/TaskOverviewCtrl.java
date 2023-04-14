@@ -133,7 +133,7 @@ public class TaskOverviewCtrl {
 		server.subTaskSubscribe( mainCtrl.getCurrTask().getId(),
 				b -> Platform.runLater(() -> this.initializeSubTasks(b)));
 	}
-	public void unsubscribe(){
+	public void unsubscribe() {
 		server.subTaskUnsubscribe();
 	}
 
@@ -144,7 +144,7 @@ public class TaskOverviewCtrl {
 	 * @param board the board to refresh to.
 	 */
 	public void refresh(Board board) {
-		if(mainCtrl.getCurrBoard().getKey().equals(board.getKey())) {
+		if (mainCtrl.getCurrBoard().getKey().equals(board.getKey())) {
 			mainCtrl.setCurrBoard(board);
 			mainCtrl.setCurrTask(server.getTask(mainCtrl.getCurrTask().getId()));
 			load();
@@ -154,7 +154,7 @@ public class TaskOverviewCtrl {
 	private void initializeSubTasks(List<SubTask> subtasks) {
 		this.taskList.getItems().clear();
 		List<HBox> tasks = new ArrayList<>();
-		for (int i=0;i<subtasks.size();i++) {
+		for (int i = 0; i < subtasks.size(); i++) {
 			SubTask task = subtasks.get(i);
 			HBox box = taskHolder(task,i);
 			tasks.add(box);
@@ -344,7 +344,7 @@ public class TaskOverviewCtrl {
 		((Button) cancel.getDialogPane().lookupButton(ButtonType.OK)).setText("Yes");
 		((Button) cancel.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("No");
 		Optional<ButtonType> result = cancel.showAndWait();
-		if (result.isPresent() && result.get() == ButtonType.OK){
+		if (result.isPresent() && result.get() == ButtonType.OK) {
 			load();
 		}
 	}

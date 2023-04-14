@@ -153,19 +153,19 @@ class BoardTest {
         TaskList tl2 = board.createTaskList();
         board.removeTaskList(tl1);
         assertEquals(1, board.getTaskLists().size());
-        assertEquals(null, tl1.getBoard());
+        assertNull(tl1.getBoard());
         board.removeTaskList(tl2);
         assertEquals(0, board.getTaskLists().size());
-        assertEquals(null, tl2.getBoard());
+        assertNull(tl2.getBoard());
         assertThrows(IllegalArgumentException.class, () -> board.removeTaskList(null));
     }
     @Test
-    void getPassword(){
+    void getPassword() {
         assertEquals("", board.getPassword());
         assertNotEquals("123", board.getPassword());
     }
     @Test
-    void setPassword(){
+    void setPassword() {
         board.setPassword("123");
         assertEquals("123", board.getPassword());
         assertNotEquals(null, board.getPassword());
@@ -201,7 +201,7 @@ class BoardTest {
     }
 
     @Test
-    void createTaskList2(){
+    void createTaskList2() {
         TaskList tl1 = board.createTaskList(1L);
         assertEquals(1, board.getTaskLists().size());
         assertEquals(board, tl1.getBoard());
@@ -214,7 +214,7 @@ class BoardTest {
     }
 
     @Test
-    void createTaskList4(){
+    void createTaskList4() {
         TaskList tl1 = board.createTaskList(1L, "name");
         assertEquals(1, board.getTaskLists().size());
         assertEquals(board, tl1.getBoard());

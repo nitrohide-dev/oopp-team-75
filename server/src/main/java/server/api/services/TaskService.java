@@ -148,7 +148,7 @@ public class TaskService {
 	 * @param title - the name of the subtask
 	 * @return The key of the board in which the subtask is
 	 */
-	public String createSubTask(Task task, String title){
+	public String createSubTask(Task task, String title) {
 		task.createSubTask(title);
 		repo.save(task);
 		return listRepo.getBoardByListID(task.getTaskList().getId());

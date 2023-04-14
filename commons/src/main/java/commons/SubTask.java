@@ -21,12 +21,12 @@ public class SubTask {
     @Getter
     @Setter
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(unique=true, nullable=false)
+    @Column(unique = true, nullable = false)
     private long id;
 
     @Getter
     @Setter
-    @Column(nullable=false, length=MAX_TITLE_LENGTH)
+    @Column(nullable = false, length = MAX_TITLE_LENGTH)
     private String title;
 
     @JsonBackReference
@@ -49,7 +49,7 @@ public class SubTask {
     }
 
 
-    public SubTask() {} // for jackson
+    public SubTask() { } // for jackson
 
     // equals and hashcode
 

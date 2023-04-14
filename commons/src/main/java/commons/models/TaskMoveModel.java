@@ -18,7 +18,7 @@ public class TaskMoveModel {
     @Getter
     @Setter
     private int new_task_order;
-    public TaskMoveModel(){} // for object mappers, please don't use.
+    public TaskMoveModel() { } // for object mappers, please don't use.
 
     public TaskMoveModel(Long task_id,Long tasklist_id, int new_task_order) {
 

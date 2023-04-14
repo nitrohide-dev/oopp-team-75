@@ -78,7 +78,7 @@ public class SubTaskService {
         repo.save(subTask);
     }
 
-    public List<SubTask> getAll(){
+    public List<SubTask> getAll() {
         return repo.findAll();
     }
 
@@ -89,19 +89,19 @@ public class SubTaskService {
         subTask.setChecked(!subTask.getChecked());
         repo.save(subTask);
     }
-    public Board movesubTaskUp(int order, long subtaskId){
+    public Board movesubTaskUp(int order, long subtaskId) {
         SubTask subTask = repo.findById(subtaskId).get();
-        if(order!=0) {
-            repo.movesubTaskUp1(subTask.getTask().getId(), order-1);
+        if (order != 0) {
+            repo.movesubTaskUp1(subTask.getTask().getId(), order - 1);
             repo.movesubTaskUp2(subtaskId);
         }
         return boardRepo.findById(subTask.getTask().getTaskList().getBoard().getKey()).get();
     }
-    public Board movesubTaskDown(int order, long subtaskId){
+    public Board movesubTaskDown(int order, long subtaskId) {
         SubTask subTask = repo.findById(subtaskId).get();
         Task task = taskRepo.findById(subTask.getTask().getId()).get();
-        if (order < task.getSubtasks().size()-1) {
-            repo.movesubTaskDown1(task.getId(),order+1);
+        if (order < task.getSubtasks().size() - 1) {
+            repo.movesubTaskDown1(task.getId(),order + 1);
             repo.movesubTaskDown2(subtaskId);
         }
         return boardRepo.findById(subTask.getTask().getTaskList().getBoard().getKey()).get();

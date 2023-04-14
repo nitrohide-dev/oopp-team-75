@@ -142,7 +142,7 @@ public class SubTaskController {
     public DeferredResult<List<SubTask>> longPoll(@PathVariable Long id) {
         DeferredResult<List<SubTask>> output = new DeferredResult<>(TIMEOUT_MS);
         try {
-            if(!pollConsumers.containsKey(id))
+            if (!pollConsumers.containsKey(id))
                 pollConsumers.put(id, Collections.synchronizedList(new ArrayList<>()));
             pollConsumers.get(id).add(output);
             output.onTimeout(() -> {
