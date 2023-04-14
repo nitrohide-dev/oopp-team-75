@@ -171,11 +171,10 @@ public class TaskController {
         Task task = taskService.getById(taskID);
         String id = taskService.createSubTask(task,title);
        // task.getSubtasks().add(new SubTask(task,title));
-
-        if (pollConsumers.containsKey(task.getId()))
+        task = taskService.getById(taskID);
+        if(pollConsumers.containsKey(task.getId()))
         {
-            for (DeferredResult<List<SubTask>> dr  : pollConsumers.get(task.getId())) {
-                System.out.println(task.getSubtasks().toString());
+            for(DeferredResult<List<SubTask>> dr  : pollConsumers.get(task.getId())){
                 dr.setResult(task.getSubtasks());
             }
             pollConsumers.get(task.getId()).clear();

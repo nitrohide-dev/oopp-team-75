@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.Tag;
 import commons.Task;
 import commons.TaskList;
 import commons.models.TaskMoveModel;
@@ -29,23 +30,24 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Ellipse;
+import javafx.scene.layout.Priority;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.HashMap;
+import java.util.Optional;
+import java.util.Objects;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 
 public class BoardOverviewCtrl {
@@ -373,7 +375,10 @@ public class BoardOverviewCtrl {
         Button addTaskButton = new Button("ADD TASK");
         addTaskButton.setId("addButton");
         addTaskButton.setAlignment(Pos.CENTER);
-        addTaskButton.setShape(new Ellipse(150, 25));
+        Rectangle rect = new Rectangle(300, 50);
+        rect.setArcHeight(30);
+        rect.setArcWidth(30);
+        addTaskButton.setShape(rect);
         addTaskButton.setMinSize(150, 25);
         HBox box = new HBox(addTaskButton);
         box.setPadding(new Insets(4, 16, 4, 16));
@@ -482,6 +487,39 @@ public class BoardOverviewCtrl {
             long done = task1.getSubtasks().stream().filter(x -> x.getChecked()).count();
             addProgressIndicator(box, (double) done / (double) task1.getSubtasks().size());
         }
+        if (task1.getTags() != null && !task1.getTags().isEmpty()) {
+            VBox box2 = new VBox(2);
+            box2.setAlignment(Pos.TOP_CENTER);
+            int i = 1;
+            for (Tag tag : task1.getTags()) {
+                Circle circle = new Circle(3, Paint.valueOf(tag.getColor()));
+                circle.setStroke(Paint.valueOf("#000000"));
+                circle.setStrokeWidth(0.4);
+                box2.getChildren().add(circle);
+                if (i++ == 3) break;
+            }
+//            if (task1.getTags().size() > 3) {
+//
+//                Circle circle = new Circle(3, Paint.valueOf("#ffffff"));
+//                circle.setStroke(Paint.valueOf("#000000"));
+//                circle.setStrokeWidth(0.4);
+//
+//                Label label = new Label("+");
+//                label.setFont(new Font(10));
+//                label.setPrefSize(5, 5);
+//                label.setAlignment(Pos.CENTER);
+//
+//                StackPane pane = new StackPane();
+//                pane.setPrefSize(6, 6);
+//                pane.getChildren().addAll(circle, label);
+//
+//                box2.getChildren().remove(2);
+//                box2.getChildren().add(pane);
+//            }
+            box2.setPrefWidth(8);
+            task.setPrefWidth(task.getPrefWidth()-8);
+            box.getChildren().add(box2);
+        }
         dragHandler(box,task,list);
         removeButton.setOnAction(e -> deleteTask(box));
         editButton.setOnAction(e -> viewTask(box));
@@ -579,6 +617,7 @@ public class BoardOverviewCtrl {
      */
     public void taskOperations(ListView<HBox> list) {
         int index = list.getSelectionModel().getSelectedIndex();
+        if (index < 0) return;
         if (index >= list.getItems().size() - 1) return;
         resetOptionButtons();
         enableTaskButtons(list.getItems().get(index));

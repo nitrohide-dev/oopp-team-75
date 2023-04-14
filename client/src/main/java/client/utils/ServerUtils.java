@@ -432,6 +432,9 @@ public class ServerUtils {
         send("/app/subtask/delete/" + boardKey, subTaskId);
     }
 
+    public void renameSubTask(String boardKey, String name, Long subTaskId) {
+        send("/app/subtask/rename/" + boardKey + "/" + name, subTaskId);
+    }
 
     public void checkSubTask(String boardKey, Long id) {
         send("/app/subtask/check/" + boardKey, id);
@@ -447,7 +450,6 @@ public class ServerUtils {
 
     public void changeTaskTag(String boardKey, Long id, Collection<Long> values) {
         send("app/task/tags/" + boardKey + "/" + id, values);
-        System.out.println("esrver");
     }
 
 
@@ -465,8 +467,7 @@ public class ServerUtils {
                     .get();
 
                 try {
-                    List<SubTask> subtasks = response.readEntity(new GenericType<List<SubTask>>() {
-                    });
+                    List<SubTask> subtasks = response.readEntity(new GenericType<List<SubTask>>() { });
                     subtaskUpdater.accept(subtasks);
 
                 } catch (Exception ex) {

@@ -182,8 +182,8 @@ public class MainCtrl {
         taskStage.setTitle("Task: " + task.getTitle());
         taskStage.setResizable(false);
         taskOverviewCtrl.load();
-        taskStage.setScene(taskOverview);
         taskOverviewCtrl.connect();
+        taskStage.setScene(taskOverview);
         taskStage.initModality(Modality.APPLICATION_MODAL);
         taskStage.showAndWait();
         taskOverviewCtrl.unsubscribe();
@@ -289,7 +289,7 @@ public class MainCtrl {
 
     public void deleteTask(Long taskId) {
         server.deleteTask(taskId);
-        if (currTask.getId() == taskId) {
+        if (currTask!=null&&currTask.getId() == taskId) {
             currTask = null;
         }
     }
