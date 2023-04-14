@@ -157,8 +157,8 @@ public class ServerUtils {
      * @param consumer the consumer to handle the payload
      * @param <T>      the type of the payload
      */
-    public <T> void subscribe(String dest, Class<T> type, Consumer<T> consumer) {
-        session.subscribe(dest, new StompFrameHandler() {
+    public <T> StompSession.Subscription subscribe(String dest, Class<T> type, Consumer<T> consumer) {
+        return session.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
                 return type;

@@ -30,17 +30,20 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.springframework.messaging.simp.stomp.StompSession;
+
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.HashMap;
@@ -116,11 +119,17 @@ public class BoardOverviewCtrl {
         titleLabel.setCursor(Cursor.HAND);
     }
 
+    private StompSession.Subscription subscription;
+
     /**
      * Connects to the server for automatic refreshing.
      */
     public void connect() {
-        server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
+        subscription = server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
+    }
+
+    public void unsubscribe() {
+        subscription.unsubscribe();
     }
 
     /**
@@ -275,19 +284,6 @@ public class BoardOverviewCtrl {
         menuBar.setAlignment(Pos.TOP_LEFT);
         menuBar.setFillWidth(true);
         menuBar.setPadding(new Insets(8));
-//      TranslateTransition menuBarTranslation = new TranslateTransition(Duration.millis(400), menuBar);
-//
-//      menuBarTranslation.setFromX(772);
-//      menuBarTranslation.setToX(622);
-//
-//      menuBar.setOnMouseEntered(e -> {
-//          menuBarTranslation.setRate(1);
-//          menuTranslation.play();
-//      });
-//        menuBar.setOnMouseExited(e -> {
-//            menuBarTranslation.setRate(-1);
-//          menuBarTranslation.play();
-//      });
         borderPane.setRight(menuBar);
     }
 
@@ -385,7 +381,9 @@ public class BoardOverviewCtrl {
         addTaskButton.setShape(rect);
         addTaskButton.setMinSize(150, 25);
         HBox box = new HBox(addTaskButton);
-        box.setPadding(new Insets(4, 16, 4, 16));
+        box.setPadding(new Insets(4, 0, 4, 0));
+        HBox.setHgrow(box, Priority.ALWAYS);
+        box.setAlignment(Pos.CENTER);
         listView.getItems().add(box);
 
         addTaskButton.setOnAction(e -> {
@@ -470,19 +468,22 @@ public class BoardOverviewCtrl {
         list.getItems().remove(list.getItems().get(list.getItems().size() - 1));
 
         Label task = new Label(name);
-        task.setPrefWidth(130);
-        task.setPadding(new Insets(6, 1, 6, 1));
+//        task.setPrefWidth(130);
+//        task.setPadding(new Insets(6, 1, 6, 1));
         String path = Path.of("", "client", "images", "cancel.png").toString();
         Button removeButton = buttonBuilder(path);
         path = Path.of("", "client", "images", "pencil.png").toString();
         Button editButton = buttonBuilder(path);
 
-        HBox box = new HBox(task, editButton, removeButton);
-        box.setSpacing(5);
+        Region region = new Region();
+        region.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        HBox.setHgrow(region, Priority.ALWAYS);
 
-        // just for testing - delete when fully implemented
-      // addDescriptionIndicator(box);
-      // addProgressIndicator(box,0.7);
+        HBox box = new HBox(task, region, editButton, removeButton);
+        box.setSpacing(5);
+        box.setMaxWidth(204);
+//        if (scroll) box.setMaxWidth(190);
+        box.setAlignment(Pos.CENTER_LEFT);
 
         if (task1.getDesc() != null && !task1.getDesc().equals("")) {
             addDescriptionIndicator(box);
@@ -498,30 +499,12 @@ public class BoardOverviewCtrl {
             for (Tag tag : task1.getTags()) {
                 Circle circle = new Circle(3, Paint.valueOf(tag.getColor()));
                 circle.setStroke(Paint.valueOf("#000000"));
-                circle.setStrokeWidth(0.4);
+                circle.setStrokeWidth(0.3);
                 box2.getChildren().add(circle);
                 if (i++ == 3) break;
             }
-//            if (task1.getTags().size() > 3) {
-//
-//                Circle circle = new Circle(3, Paint.valueOf("#ffffff"));
-//                circle.setStroke(Paint.valueOf("#000000"));
-//                circle.setStrokeWidth(0.4);
-//
-//                Label label = new Label("+");
-//                label.setFont(new Font(10));
-//                label.setPrefSize(5, 5);
-//                label.setAlignment(Pos.CENTER);
-//
-//                StackPane pane = new StackPane();
-//                pane.setPrefSize(6, 6);
-//                pane.getChildren().addAll(circle, label);
-//
-//                box2.getChildren().remove(2);
-//                box2.getChildren().add(pane);
-//            }
             box2.setPrefWidth(8);
-            task.setPrefWidth(task.getPrefWidth()-8);
+//            task.setPrefWidth(task.getPrefWidth()-8);
             box.getChildren().add(box2);
         }
         dragHandler(box,task,list);
@@ -533,7 +516,7 @@ public class BoardOverviewCtrl {
             }
         });
         disableTaskButtons(box);
-        HBox.setHgrow(task, Priority.NEVER);
+//        HBox.setHgrow(task, Priority.NEVER);
         list.getItems().add(box);
         //Re-adds the button to the end of the list
         addTaskButton(list);
@@ -643,8 +626,8 @@ public class BoardOverviewCtrl {
      * @param box the task box
      */
     private void disableTaskButtons(HBox box) {
-        Button removeButton = (Button) box.getChildren().get(1);
-        Button editButton = (Button) box.getChildren().get(2);
+        Button removeButton = (Button) box.getChildren().get(2);
+        Button editButton = (Button) box.getChildren().get(3);
         removeButton.setDisable(true);
         removeButton.setVisible(false);
         editButton.setDisable(true);
@@ -657,8 +640,8 @@ public class BoardOverviewCtrl {
      * @param box the task box
      */
     private void enableTaskButtons(HBox box) {
-        Button removeButton = (Button) box.getChildren().get(1);
-        Button editButton = (Button) box.getChildren().get(2);
+        Button removeButton = (Button) box.getChildren().get(2);
+        Button editButton = (Button) box.getChildren().get(3);
         removeButton.setDisable(false);
         removeButton.setVisible(true);
         editButton.setDisable(false);
@@ -754,6 +737,7 @@ public class BoardOverviewCtrl {
         * sets the current scene to main menu
      */
     public void exit() {
+        unsubscribe();
         borderPane.setRight(null);
         mainCtrl.showUserMenu();
     }
@@ -770,8 +754,8 @@ public class BoardOverviewCtrl {
         progressIndicator.setProgress(percentage); // set for the respective parameter
         progressIndicator.getStylesheets()
                 .add(getClass().getResource("styles.css").toExternalForm());
-        Label l  = (Label) box.getChildren().get(0);
-        l.setPrefWidth(l.getPrefWidth() - 30);
+//        Label l  = (Label) box.getChildren().get(0);
+//        l.setPrefWidth(l.getPrefWidth() - 30);
 
         VBox vbox = new VBox(progressIndicator);
         vbox.setAlignment(Pos.CENTER);
@@ -814,8 +798,8 @@ public class BoardOverviewCtrl {
         VBox vbox = new VBox(image);
         vbox.setAlignment(Pos.CENTER);
 
-        Label l  = (Label) box.getChildren().get(0);
-        l.setPrefWidth(l.getPrefWidth() - 25);
+//        Label l  = (Label) box.getChildren().get(0);
+//        l.setPrefWidth(l.getPrefWidth() - 25);
 
         box.getChildren().add(vbox);
 
