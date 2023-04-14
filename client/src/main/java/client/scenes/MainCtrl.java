@@ -182,6 +182,7 @@ public class MainCtrl {
         currTask = task;
         Stage taskStage = new Stage();
         taskStage.setTitle("Task: " + task.getTitle());
+        taskStage.setResizable(false);
         taskOverviewCtrl.load();
         taskStage.setScene(taskOverview);
         taskOverviewCtrl.connect();
@@ -198,6 +199,7 @@ public class MainCtrl {
         Board board = server.findBoard(boardKey);
         Stage stage = new Stage();
         stage.setTitle("Tag List");
+        stage.setResizable(false);
         tagOverviewCtrl.load(board);
         stage.setScene(tagOverview);
         stage.initModality(Modality.APPLICATION_MODAL);
