@@ -121,9 +121,9 @@ public class TaskService {
 
 
 	/**
-	 * Adds a tag to a task
-	 * @param id the id of the task
-	 * @param tag the tag to add
+	 * removes a tag from a task
+	 * @param taskId the id of the task
+	 * @param tagId the id of the tag to add
 	 * @return the key of the board in which the task is
 	 */
 	public String removeTag(Long taskId, Long tagId) {

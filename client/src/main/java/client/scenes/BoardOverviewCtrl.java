@@ -214,6 +214,10 @@ public class BoardOverviewCtrl {
         return boardRenameButton;
     }
 
+    /**
+     * shows a popup that asks you for the new name of the board
+     * and updates the title of the board
+     */
     public void renameBoard() {
         String name = inputBoardName();
         if (name == null || name.equals("")) return;

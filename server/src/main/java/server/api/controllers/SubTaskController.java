@@ -133,24 +133,12 @@ public class SubTaskController {
         }
     }
 
-
-//    @MessageMapping("/subtask/create/{title}")
-//    @SendTo("/topic/boards")
-//    public Board createSubTask(Long taskID,@DestinationVariable("title") String title) throws TaskDoesNotExist {
-//        Task task = taskService.getById(taskID);
-//        String id = taskService.createSubTask(task,title);
-//        // task.getSubtasks().add(new SubTask(task,title));
-//        task = taskService.getById(taskID);
-//        if(pollConsumers.containsKey(task.getId()))
-//        {
-//            for(DeferredResult<List<SubTask>> dr  : pollConsumers.get(task.getId())){
-//                dr.setResult(task.getSubtasks());
-//            }
-//            pollConsumers.get(task.getId()).clear();
-//        }
-//        return boardService.findByKey(id);
-//    }
-
+    /**
+     * checks for change of the subtask
+     * @param id - the id of the subtask
+     * @param boardKey - the key of the board in which the subtask is
+     * @return the board the subtask is in
+     */
     @MessageMapping("/subtask/check/{boardKey}")
     @SendTo("/topic/boards")
     public Board changeCheckSubTask(Long id, @DestinationVariable String boardKey) {
@@ -162,6 +150,13 @@ public class SubTaskController {
         }
     }
 
+    /**
+     * moves a subtask up in the list
+     * @param order - the order of the subtask
+     * @param subTaskId - the id of the subtask
+     * @return the board the subtask is in
+     * @throws SubTaskDoesNotExist - if the subtask does not exist
+     */
     @MessageMapping("/subtask/moveup/{id}")
     @SendTo("/topic/boards")
     public Board movesubTaskUp(int order, @DestinationVariable("id")long subTaskId) throws TaskDoesNotExist,
@@ -178,6 +173,13 @@ public class SubTaskController {
         }
         return board;
     }
+
+    /**
+     * @param order - the order of the subtask
+     * @param subTaskId - the id of the subtask
+     * @return the board the subtask is in
+     * @throws SubTaskDoesNotExist - if the subtask does not exist
+     */
     @MessageMapping("/subtask/movedown/{id}")
     @SendTo("/topic/boards")
     public Board movesubTaskDown(int order, @DestinationVariable("id")long subTaskId) throws TaskDoesNotExist,

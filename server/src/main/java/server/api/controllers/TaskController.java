@@ -62,6 +62,11 @@ public class TaskController {
         }
     }
 
+    /**
+     * Gets a task from the database by id.
+     * @param id the id of the task to be deleted
+     * @return ResponseEntity with the task
+     */
     @GetMapping("/find/{id}")
     public ResponseEntity<Task> findById(@PathVariable("id") Long id) {
         try {
@@ -150,6 +155,12 @@ public class TaskController {
         }
     }
 
+    /**
+     * Adds a tag to a task
+     * @param tagId - the id of the tag to be added
+     * @param taskId - the id of the task to which the tag is to be added
+     * @return the board the task is in
+     */
     @MessageMapping("/task/addTag/{key}")
     @SendTo("/topic/boards")
     public Board addTag(Long tagId, @DestinationVariable("key") Long taskId) {
@@ -157,6 +168,12 @@ public class TaskController {
         return boardService.findByKey(boardKey);
     }
 
+    /**
+     * Removes a tag from a task
+     * @param tagId - the id of the tag to be removed
+     * @param taskId - the id of the task from which the tag is to be removed
+     * @return the board the task is in
+     */
     @MessageMapping("/task/removeTag/{key}")
     @SendTo("/topic/boards")
     public Board removeTag(Long tagId, @DestinationVariable("key") Long taskId) {
@@ -165,6 +182,13 @@ public class TaskController {
     }
 
 
+    /**
+     * creates a subtask, and adds to a task
+     * @param taskID - the id of the task to which the subtask is to be added
+     * @param title - the title of the subtask
+     * @return the board the task is in
+     * @throws TaskDoesNotExist - if the task does not exist in the database
+     */
     @MessageMapping("/subtask/create/{title}")
     @SendTo("/topic/boards")
     public Board createSubTask(Long taskID,@DestinationVariable("title") String title) throws TaskDoesNotExist {

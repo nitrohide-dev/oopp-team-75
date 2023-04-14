@@ -31,6 +31,9 @@ public class PasswordChangeCtrl {
         this.mainCtrl = mainCtrl;
     }
 
+    /**
+     * changes the admin password
+     */
     @FXML
     public void changePassword() {
         if (!(password.getText().equals("") || password1.getText().equals(""))) {
