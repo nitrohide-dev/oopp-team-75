@@ -10,7 +10,7 @@ Talio is a task management app designed to help people keep track of their to-do
 | ![](https://secure.gravatar.com/avatar/7e42389823b907e457f9e4a3fc482a1d?s=800&d=identicon&length=4&size=50&color=DDD&background=777&font-size=0.325 )                                             | Konrad Gniaz   | K.Gniaz@student.tudelft.nl     |
 | ![](https://0.gravatar.com/avatar/1d5885fae45281e8e0803a5adb46661a?s=800&d=identicon&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Robert Mertens | r.h.mertens@student.tudelft.nl |
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Arpad Jakab    | a.jakab@student.tudelft.nl     |
-| ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Matus Leng     | m.leng@student.tudelft.nl      |
+| ![](https://secure.gravatar.com/avatar/971a799eb71656c5fd01c91fa3f9baf0?s=800&d=identicon&length=4&size=50&color=DDD&background=777&font-size=0.325)                                              | Matus Leng     | m.leng@student.tudelft.nl      |
 | ![](https://secure.gravatar.com/avatar/741a20ea17fb4c39bacf9e91c96ec417?s=800&d=identicon&length=4&size=50&color=DDD&background=777&font-size=0.325) | Atanas Semov   | a.m.semov@student.tudelft.nl   |
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
