@@ -1,12 +1,14 @@
 package server.api.controllers;
 
 import commons.Board;
+import commons.SubTask;
 import commons.Task;
 import commons.TaskList;
 import commons.models.CreateBoardModel;
 import commons.models.TaskMoveModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.ListService;
@@ -17,6 +19,8 @@ import server.database.ListRepository;
 import server.database.ListRepositoryTest;
 import server.database.SubTaskRepository;
 import server.database.SubTaskRepositoryTest;
+import server.database.TagRepository;
+import server.database.TagRepositoryTest;
 import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
 import server.exceptions.BoardDoesNotExist;
@@ -24,6 +28,8 @@ import server.exceptions.ListDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -58,17 +64,20 @@ class TaskControllerTest {
     private TaskList list3;
 
     private SubTaskRepository subTaskRepository;
+    private TagRepository tagRepository;
 
     @BeforeEach
     void setUp() throws IOException, ListDoesNotExist, BoardDoesNotExist {
+        tagRepository = new TagRepositoryTest();
         subTaskRepository = new SubTaskRepositoryTest();
         taskRepository = new TaskRepositoryTest(subTaskRepository);
         listRepository = new ListRepositoryTest(taskRepository);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
         listService = new ListService(listRepository, taskRepository, boardRepository);
         boardService = new BoardService(boardRepository);
-        taskService = new TaskService(taskRepository, listRepository);
-        taskController = new TaskController(taskService, boardService, listService);
+        taskService = new TaskService(taskRepository, listRepository, tagRepository);
+        HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers = new HashMap<>();
+        taskController = new TaskController(taskService, boardService, listService, pollConsumers);
         boardController = new BoardController(boardService);
 
         boardController.create(new CreateBoardModel("key", "name"));
@@ -120,8 +129,9 @@ class TaskControllerTest {
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
         listService = new ListService(listRepository, taskRepository, boardRepository);
         boardService = new BoardService(boardRepository);
-        taskService = new TaskService(taskRepository, listRepository);
-        taskController = new TaskController(taskService, boardService, listService);
+        taskService = new TaskService(taskRepository, listRepository, tagRepository);
+        HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers = new HashMap<>();
+        taskController = new TaskController(taskService, boardService, listService, pollConsumers);
         boardController = new BoardController(boardService);
         assertEquals(0, taskController.getAll().size());
     }
@@ -203,7 +213,7 @@ class TaskControllerTest {
     @Test
     void createSubTask() throws TaskDoesNotExist, ListDoesNotExist {
         taskController.createSubTask(10L, "10");
-        assertEquals(1, taskService.getById(10L).getSubtasks().size());
+        assertEquals(2, taskService.getById(10L).getSubtasks().size());
         assertEquals("10", taskService.getById(10L).getSubtasks().get(0).getTitle());
     }
 }

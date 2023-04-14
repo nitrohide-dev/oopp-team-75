@@ -1,8 +1,10 @@
 package server.api.controllers;
 
+import commons.SubTask;
 import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.ListService;
@@ -19,6 +21,8 @@ import server.exceptions.CannotCreateBoard;
 import server.exceptions.ListDoesNotExist;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -46,7 +50,8 @@ class ListControllerTest {
         boardService = new BoardService(boardRepository);
         this.boardController = new BoardController(boardService);
         listController = new ListController(listService, boardService);
-        taskController = new TaskController(taskService, boardService, listService);
+        HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers = new HashMap<>();
+        taskController = new TaskController(taskService, boardService, listService, pollConsumers);
         boardController.authenticate("testing");
 
         boardController.create(new CreateBoardModel("key", "name"));

@@ -1,6 +1,9 @@
 package server.api.controllers;
 
-import commons.*;
+import commons.Board;
+import commons.SubTask;
+import commons.Task;
+import commons.TaskList;
 import commons.models.TaskMoveModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +21,7 @@ import server.api.services.ListService;
 import server.api.services.TaskService;
 import server.exceptions.ListDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
-
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 @RestController
