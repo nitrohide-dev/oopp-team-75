@@ -14,7 +14,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AdminOverviewCtrl{
