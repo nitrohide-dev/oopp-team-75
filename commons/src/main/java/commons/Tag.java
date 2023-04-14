@@ -28,21 +28,21 @@ public class Tag {
     @Getter
     @Setter
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(unique=true, nullable=false)
+    @Column(unique = true, nullable = false)
     private long id;
 
     @Getter
     @Setter
-    @Column(nullable=false, length=MAX_TITLE_LENGTH)
+    @Column(nullable = false, length = MAX_TITLE_LENGTH)
     private String title;
 
     @Getter
     @Setter
-    @Column(nullable=false, length=MAX_TITLE_LENGTH)
+    @Column(nullable = false, length = MAX_TITLE_LENGTH)
     private String color;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "tags", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "tags", cascade={CascadeType.PERSIST,CascadeType.REMOVE}, fetch = FetchType.EAGER)
     @Getter
     @Setter
     private Set<Task> tasks;
@@ -74,13 +74,13 @@ public class Tag {
         this.tasks = new HashSet<>();
         this.board = board;
         Random random = new Random();
-        String color = Integer.toHexString(random.nextInt(170)+40);
-        color+= Integer.toHexString(random.nextInt(170)+40);
-        color+= Integer.toHexString(random.nextInt(170)+40);
+        String color = Integer.toHexString(random.nextInt(170) + 40);
+        color += Integer.toHexString(random.nextInt(170) + 40);
+        color += Integer.toHexString(random.nextInt(170) + 40);
         this.color = color;
     }
 
-    public Tag() {} // for JPA
+    public Tag() { } // for JPA
 
     // equals and hashcode
 
@@ -138,7 +138,7 @@ public class Tag {
         if (task == null) {
             throw new IllegalArgumentException("Task is null");
         }
-        if (!tasks.contains(task)){
+        if (!tasks.contains(task)) {
             throw new IllegalArgumentException("Task does not contain this tag");
         }
         tasks.remove(task);

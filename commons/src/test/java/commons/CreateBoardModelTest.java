@@ -72,7 +72,7 @@ class CreateBoardModelTest {
     }
 
     @Test
-    void setPassword(){
+    void setPassword() {
         assertEquals(null, model.getPassword());
         model.setPassword("a");
         assertEquals("a", model.getPassword());

@@ -22,6 +22,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -65,7 +67,7 @@ public class TaskOverviewCtrl {
 	@FXML
 	private ListView<HBox> availableTags;
 
-	private Map<HBox, Long> taskMap;
+//	private Map<HBox, Long> taskMap;
 	private Map<HBox, Long> currTagsMap;
 
 
@@ -73,7 +75,7 @@ public class TaskOverviewCtrl {
 	public TaskOverviewCtrl(MainCtrl mainCtrl, ServerUtils server) {
 		this.mainCtrl = mainCtrl;
 		this.server = server;
-		this.taskMap = new HashMap<>();
+//		this.taskMap = new HashMap<>();
 		this.currTagsMap = new HashMap<>();
 	}
 
@@ -93,12 +95,12 @@ public class TaskOverviewCtrl {
 	public void load() {
 		Task task = mainCtrl.getCurrTask();
 		Board board = mainCtrl.getCurrBoard();
-		taskMap.clear();
+//		taskMap.clear();
 		currTagsMap.clear();
 		taskName.setText(task.getTitle());
 		description.setText(task.getDesc());
 		resetFields();
-		initializeSubTasks(mainCtrl.getCurrTask().getSubtasks());
+	//	initializeSubTasks(mainCtrl.getCurrTask().getSubtasks());
 		initializeCurrTags(task.getTags());
 		initializeRestTags(task.getTags(), board.getTags());
 	}
@@ -129,9 +131,10 @@ public class TaskOverviewCtrl {
 	 * Connects to the server for automatic refreshing.
 	 */
 	public void connect() {
+		initializeSubTasks(mainCtrl.getCurrTask().getSubtasks());
 		server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
 		server.subTaskSubscribe( mainCtrl.getCurrTask().getId(),
-				b -> Platform.runLater(() -> this.initializeSubTasks(b)));
+		    b -> Platform.runLater(() -> this.initializeSubTasks(b)));
 	}
 	public void unsubscribe(){
 		server.subTaskUnsubscribe();
@@ -144,7 +147,7 @@ public class TaskOverviewCtrl {
 	 * @param board the board to refresh to.
 	 */
 	public void refresh(Board board) {
-		if(mainCtrl.getCurrBoard().getKey().equals(board.getKey())) {
+		if (mainCtrl.getCurrBoard().getKey().equals(board.getKey())) {
 			mainCtrl.setCurrBoard(board);
 			mainCtrl.setCurrTask(server.getTask(mainCtrl.getCurrTask().getId()));
 			load();
@@ -152,15 +155,15 @@ public class TaskOverviewCtrl {
 	}
 
 	private void initializeSubTasks(List<SubTask> subtasks) {
+//		this.taskMap.clear();
 		this.taskList.getItems().clear();
-		List<HBox> tasks = new ArrayList<>();
 		for (int i=0;i<subtasks.size();i++) {
 			SubTask task = subtasks.get(i);
-			HBox box = taskHolder(task,i);
-			tasks.add(box);
-			this.taskMap.put(box, task.getId());
+			task.setTask(mainCtrl.getCurrTask());
+			HBox box = taskHolder(task, i);
+//			this.taskMap.put(box, task.getId());
+			this.taskList.getItems().add(box);
 		}
-		this.taskList.getItems().addAll(tasks);
 	}
 
 	private void initializeCurrTags(Set<Tag> tags) {
@@ -228,32 +231,52 @@ public class TaskOverviewCtrl {
 
 	private HBox taskHolder(SubTask task,int order) {
 		if (task == null) return null;
+
 		CheckBox check = new CheckBox();
 		check.setSelected(task.getChecked());
-		check.setOnAction(e -> {
-			mainCtrl.checkSubTask(task);
-		});
+		check.setOnAction(e -> mainCtrl.checkSubTask(task));
 		check.setPadding(new Insets(4, 1, 4, 2));
+
 		Label subTaskName = new Label(task.getTitle());
-		subTaskName.setPrefSize(100, 25);
+		subTaskName.setPrefSize(Label.USE_COMPUTED_SIZE, Label.USE_COMPUTED_SIZE);
 		subTaskName.setPadding(new Insets(5,1,5,2));
-		String path = Path.of("", "client", "images", "cancel.png").toString();
+
 		Button removeButton = new Button();
-		importPicture(removeButton, path);
-		path = Path.of("", "client", "images", "up.png").toString();
+		importPicture(removeButton, Path.of("", "client", "images", "cancel.png").toString());
+		removeButton.setOnAction(e -> mainCtrl.deleteSubTask(task.getId()));
+
 		Button upButton = new Button();
-		importPicture(upButton, path);
-		path = Path.of("", "client", "images", "down.png").toString();
-		Button downButton = new Button();
-		importPicture(downButton, path);
-		HBox box = new HBox(check, subTaskName,upButton, downButton, removeButton);
-		removeButton.setDisable(false);
-		removeButton.setOnAction(e -> mainCtrl.deleteSubTask(taskMap.get(box)));
-		upButton.setDisable(false);
+		importPicture(upButton, Path.of("", "client", "images", "up.png").toString());
 		upButton.setOnAction(e -> server.moveSubTaskUp(order,task.getId()));
-		downButton.setDisable(false);
+
+		Button downButton = new Button();
+		importPicture(downButton, Path.of("", "client", "images", "down.png").toString());
 		downButton.setOnAction(e -> server.moveSubTaskDown(order,task.getId()));
-		return box;
+
+		Region region = new Region();
+		region.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+		HBox.setHgrow(region, Priority.ALWAYS);
+
+		Button editButton = new Button();
+		importPicture(editButton, Path.of("", "client", "images", "pencil.png").toString());
+		editButton.setOnAction(e -> server.renameSubTask(
+				mainCtrl.getCurrBoard().getKey(), inputSubTaskName(subTaskName.getText()), task.getId()));
+
+		return new HBox(check, subTaskName, region, editButton, upButton, downButton, removeButton);
+	}
+
+	private String inputSubTaskName(String oldSubTaskName) {
+		TextInputDialog input = new TextInputDialog("SubTask name");
+		input.setHeaderText("SubTask name");
+		input.setContentText("Please enter a name for the subtask:");
+		input.setTitle("Input Subtask Name");
+		//add css to dialog pane
+		input.getDialogPane().getStylesheets().add(
+				Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+		//make preferred size bigger
+		input.getDialogPane().setPrefSize(400, 200);
+		Optional<String> res = input.showAndWait();
+		return res.isPresent() ? res.get() : oldSubTaskName;
 	}
 
 
@@ -344,7 +367,7 @@ public class TaskOverviewCtrl {
 		((Button) cancel.getDialogPane().lookupButton(ButtonType.OK)).setText("Yes");
 		((Button) cancel.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("No");
 		Optional<ButtonType> result = cancel.showAndWait();
-		if (result.isPresent() && result.get() == ButtonType.OK){
+		if (result.isPresent() && result.get() == ButtonType.OK) {
 			load();
 		}
 	}

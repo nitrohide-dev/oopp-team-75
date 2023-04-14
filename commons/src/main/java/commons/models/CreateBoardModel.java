@@ -21,7 +21,7 @@ public class CreateBoardModel {
 	public String password;
 
 
-	public CreateBoardModel(){} // for object mappers, please don't use.
+	public CreateBoardModel() { } // for object mappers, please don't use.
 
 	public CreateBoardModel(String key, String title) {
 		this.key = key;

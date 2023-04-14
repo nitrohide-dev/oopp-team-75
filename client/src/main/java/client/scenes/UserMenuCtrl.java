@@ -87,7 +87,7 @@ public class UserMenuCtrl {
     /**
      * admin panel button is pressed
      */
-    public void login(){
+    public void login() {
         saveVisitedBoards();
         mainCtrl.showAdminLogin();
     }
@@ -98,7 +98,7 @@ public class UserMenuCtrl {
      */
     public void createBoard() {
         String key = textBox.getText().trim();
-        if(key.contains(",")){
+        if (key.contains(",")) {
             new Alert(Alert.AlertType.ERROR, "Please, do not use commas in a board identifier.").showAndWait();
             return;
         }
@@ -106,7 +106,7 @@ public class UserMenuCtrl {
             new Alert(Alert.AlertType.ERROR, "Please enter a board key.").showAndWait();
             return;
         }
-        if (server.findBoard(key) != null){
+        if (server.findBoard(key) != null) {
             new Alert(Alert.AlertType.ERROR, "Board already exists.").showAndWait();
             return;
         }

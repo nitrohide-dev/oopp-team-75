@@ -123,11 +123,11 @@ public class TaskController {
         Task task =  getById(model.getTask_id());
         TaskList list = listService.getById(model.getTasklist_id());
         int order = model.getNew_task_order();
-        if(order==Integer.MAX_VALUE) {
+        if (order == Integer.MAX_VALUE) {
             order = list.getTasks().size();
             if (list.getId() == task.getTaskList().getId())
                 order--;
-        } else{
+        } else {
             order--;
         }
         taskService.moveTask(task,list,order);
@@ -171,11 +171,10 @@ public class TaskController {
         Task task = taskService.getById(taskID);
         String id = taskService.createSubTask(task,title);
        // task.getSubtasks().add(new SubTask(task,title));
-
+        task = taskService.getById(taskID);
         if(pollConsumers.containsKey(task.getId()))
         {
             for(DeferredResult<List<SubTask>> dr  : pollConsumers.get(task.getId())){
-                System.out.println(task.getSubtasks().toString());
                 dr.setResult(task.getSubtasks());
             }
             pollConsumers.get(task.getId()).clear();

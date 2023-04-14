@@ -16,7 +16,7 @@ import java.util.Base64;
 public class PasswordChangeCtrl {
 
     private ServerUtils server;
-    private  MainCtrl mainCtrl;
+    private MainCtrl mainCtrl;
     @FXML
     private Button confirmButton;
     @FXML
@@ -33,12 +33,12 @@ public class PasswordChangeCtrl {
 
     @FXML
     public void changePassword() {
-        if (!(password.getText().equals("")||password1.getText().equals(""))) {
-            if(!password.getText().equals(password1.getText())){
+        if (!(password.getText().equals("") || password1.getText().equals(""))) {
+            if (!password.getText().equals(password1.getText())) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Passwords don't match.");
                 alert.showAndWait();
             }
-            else{
+            else {
                 server.changePassword(hashPassword(password.getText()));
                 password.clear();
                 password1.clear();

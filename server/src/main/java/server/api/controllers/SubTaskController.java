@@ -2,6 +2,7 @@ package server.api.controllers;
 
 import commons.Board;
 import commons.SubTask;
+import commons.Task;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.SubTaskService;
+import server.api.services.TaskService;
 import server.exceptions.ListDoesNotExist;
 import server.exceptions.SubTaskDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
@@ -30,13 +32,15 @@ public class SubTaskController {
     private final SubTaskService subtaskService;
 
     private final HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers;
+    private final TaskService taskService;
     private final BoardService boardService;
     private final long TIMEOUT_MS = 5000L;
 
     public SubTaskController(SubTaskService subtaskService, BoardService boardService,
-                             HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers) {
+                             TaskService taskService, HashMap<Long,List<DeferredResult<List<SubTask>>>> pollConsumers) {
         this.subtaskService = subtaskService;
         this.pollConsumers = pollConsumers;
+        this.taskService = taskService;
         this.boardService = boardService;
     }
 
@@ -78,9 +82,20 @@ public class SubTaskController {
      */
     @MessageMapping("/subtask/delete/{boardKey}")
     @SendTo("/topic/boards")
-    public Board deleteById(Long subTaskId, @DestinationVariable String boardKey) throws SubTaskDoesNotExist {
+    public Board deleteById(Long subTaskId, @DestinationVariable String boardKey) throws SubTaskDoesNotExist,TaskDoesNotExist {
         try {
+            Task task = subtaskService.getById(subTaskId).getTask();
+            Long id = task.getId();
             subtaskService.deleteById(subTaskId);
+            task = taskService.getById(id);
+            if(pollConsumers.containsKey(task.getId()))
+            {
+                System.out.println("TESTING");
+                for(DeferredResult<List<SubTask>> dr  : pollConsumers.get(task.getId())){
+                    dr.setResult(task.getSubtasks());
+                }
+                pollConsumers.get(task.getId()).clear();
+            }
             return boardService.findByKey(boardKey);
         } catch (NumberFormatException | SubTaskDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
@@ -101,11 +116,40 @@ public class SubTaskController {
                                @DestinationVariable("boardKey") String boardKey) {
         try {
             subtaskService.renameSubTask(id, name);
+            SubTask subTask = subtaskService.getById(id);
+            Task task = taskService.getById(subTask.getTask().getId());
+            if(pollConsumers.containsKey(task.getId()))
+            {
+                for(DeferredResult<List<SubTask>> dr  : pollConsumers.get(task.getId())){
+                    dr.setResult(task.getSubtasks());
+                }
+                pollConsumers.get(task.getId()).clear();
+            }
             return boardService.findByKey(boardKey);
         } catch (SubTaskDoesNotExist e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (TaskDoesNotExist e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
+
+
+//    @MessageMapping("/subtask/create/{title}")
+//    @SendTo("/topic/boards")
+//    public Board createSubTask(Long taskID,@DestinationVariable("title") String title) throws TaskDoesNotExist {
+//        Task task = taskService.getById(taskID);
+//        String id = taskService.createSubTask(task,title);
+//        // task.getSubtasks().add(new SubTask(task,title));
+//        task = taskService.getById(taskID);
+//        if(pollConsumers.containsKey(task.getId()))
+//        {
+//            for(DeferredResult<List<SubTask>> dr  : pollConsumers.get(task.getId())){
+//                dr.setResult(task.getSubtasks());
+//            }
+//            pollConsumers.get(task.getId()).clear();
+//        }
+//        return boardService.findByKey(id);
+//    }
 
     @MessageMapping("/subtask/check/{boardKey}")
     @SendTo("/topic/boards")
@@ -120,17 +164,35 @@ public class SubTaskController {
 
     @MessageMapping("/subtask/moveup/{id}")
     @SendTo("/topic/boards")
-    public Board movesubTaskUp(int order, @DestinationVariable("id")long subTaskId) throws TaskDoesNotExist, ListDoesNotExist
-    {
+    public Board movesubTaskUp(int order, @DestinationVariable("id")long subTaskId) throws TaskDoesNotExist,
+            ListDoesNotExist, SubTaskDoesNotExist {
 
-        return subtaskService.movesubTaskUp(order,subTaskId);
+        Board board = subtaskService.movesubTaskUp(order,subTaskId);
+        Task task = subtaskService.getById(subTaskId).getTask();
+        if(pollConsumers.containsKey(task.getId()))
+        {
+            for(DeferredResult<List<SubTask>> dr  : pollConsumers.get(task.getId())){
+                dr.setResult(task.getSubtasks());
+            }
+            pollConsumers.get(task.getId()).clear();
+        }
+        return board;
     }
     @MessageMapping("/subtask/movedown/{id}")
     @SendTo("/topic/boards")
-    public Board movesubTaskDown(int order, @DestinationVariable("id")long subTaskId) throws TaskDoesNotExist, ListDoesNotExist
-    {
+    public Board movesubTaskDown(int order, @DestinationVariable("id")long subTaskId) throws TaskDoesNotExist,
+            ListDoesNotExist, SubTaskDoesNotExist {
 
-        return subtaskService.movesubTaskDown(order,subTaskId);
+        Board board = subtaskService.movesubTaskDown(order,subTaskId);
+        Task task = subtaskService.getById(subTaskId).getTask();
+        if(pollConsumers.containsKey(task.getId()))
+        {
+            for(DeferredResult<List<SubTask>> dr  : pollConsumers.get(task.getId())){
+                dr.setResult(task.getSubtasks());
+            }
+            pollConsumers.get(task.getId()).clear();
+        }
+        return board;
     }
     /**
      * Updates a subtask in the database. If the subtask does not exist in the
@@ -142,7 +204,7 @@ public class SubTaskController {
     public DeferredResult<List<SubTask>> longPoll(@PathVariable Long id) {
         DeferredResult<List<SubTask>> output = new DeferredResult<>(TIMEOUT_MS);
         try {
-            if(!pollConsumers.containsKey(id))
+            if (!pollConsumers.containsKey(id))
                 pollConsumers.put(id, Collections.synchronizedList(new ArrayList<>()));
             pollConsumers.get(id).add(output);
             output.onTimeout(() -> {

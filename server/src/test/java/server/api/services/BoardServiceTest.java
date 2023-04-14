@@ -110,7 +110,7 @@ class BoardServiceTest {
     }
 
     @Test
-    void saveNull(){
+    void saveNull() {
         assertThrows(BoardDoesNotExist.class, () -> boardService.save(null));
     }
 
@@ -121,7 +121,7 @@ class BoardServiceTest {
     }
 
     @Test
-    void createList(){
+    void createList() {
         assertThrows(NullPointerException.class, () -> boardService.createList(null));
     }
 
