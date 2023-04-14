@@ -63,6 +63,8 @@ public class TaskOverviewCtrl {
 	@FXML
 	private ListView<HBox> currTags;
 	@FXML
+	private ImageView deleteButton;
+	@FXML
 	private ListView<HBox> availableTags;
 
 //	private Map<HBox, Long> taskMap;
@@ -84,6 +86,7 @@ public class TaskOverviewCtrl {
 		importPicture(this.confirmName, Path.of("", "client", "images", "check-mark-black-outline.png").toString());
 		importPicture(this.cancelDesc, Path.of("", "client", "images", "close.png").toString());
 		importPicture(this.confirmDesc, Path.of("", "client", "images", "check-mark-black-outline.png").toString());
+		this.deleteButton.setImage(new Image(Path.of("", "client", "images", "trash.png").toString()));
 	}
 
 	/**
@@ -133,7 +136,6 @@ public class TaskOverviewCtrl {
 		server.subTaskSubscribe( mainCtrl.getCurrTask().getId(),
 		    b -> Platform.runLater(() -> this.initializeSubTasks(b)));
 	}
-
 	public void unsubscribe(){
 		server.subTaskUnsubscribe();
 	}
@@ -145,7 +147,7 @@ public class TaskOverviewCtrl {
 	 * @param board the board to refresh to.
 	 */
 	public void refresh(Board board) {
-		if(mainCtrl.getCurrBoard().getKey().equals(board.getKey())) {
+		if (mainCtrl.getCurrBoard().getKey().equals(board.getKey())) {
 			mainCtrl.setCurrBoard(board);
 			mainCtrl.setCurrTask(server.getTask(mainCtrl.getCurrTask().getId()));
 			load();
@@ -365,7 +367,7 @@ public class TaskOverviewCtrl {
 		((Button) cancel.getDialogPane().lookupButton(ButtonType.OK)).setText("Yes");
 		((Button) cancel.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("No");
 		Optional<ButtonType> result = cancel.showAndWait();
-		if (result.isPresent() && result.get() == ButtonType.OK){
+		if (result.isPresent() && result.get() == ButtonType.OK) {
 			load();
 		}
 	}
@@ -390,5 +392,10 @@ public class TaskOverviewCtrl {
 		input.showAndWait();
 	}
 
+	public void delete() {
+		server.deleteTask(mainCtrl.getCurrTask().getId());
+		Stage stage = (Stage) deleteButton.getScene().getWindow();
+		stage.close();
+	}
 
 }

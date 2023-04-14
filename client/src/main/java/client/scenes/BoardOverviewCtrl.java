@@ -41,8 +41,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import lombok.Getter;
-import lombok.Setter;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.HashMap;
@@ -88,10 +86,6 @@ public class BoardOverviewCtrl {
 
     @FXML
     private BorderPane borderPane;
-    private UserMenuCtrl usermenuCtrl;
-    @Getter
-    @Setter
-    private boolean adminPresence=false;
 
     @Inject
     public BoardOverviewCtrl(MainCtrl mainCtrl, ServerUtils server) {
@@ -194,7 +188,7 @@ public class BoardOverviewCtrl {
      * clicking on it will copy the board key to the user's clipboard
      * @return the key copy button
      */
-    public Button createCopyKeyButton(){
+    public Button createCopyKeyButton() {
         Button keyCopyButton = new Button();
         keyCopyButton.setText("Copy Board Key");
         keyCopyButton.setOnAction(e -> {
@@ -212,7 +206,7 @@ public class BoardOverviewCtrl {
      * clicking on it will show a popup that asks you for the new name of the board
      * @return the key rename button
      */
-    public Button createRenameBoardButton(){
+    public Button createRenameBoardButton() {
         Button boardRenameButton = new Button();
         boardRenameButton.setText("Rename board");
         boardRenameButton.setOnAction(e -> renameBoard());
@@ -233,10 +227,10 @@ public class BoardOverviewCtrl {
      * when clicked on, it will show a confirmation popup first to prevent accidental deletion
      * @return the key deletion button
      */
-    public Button createBoardDeletionButton(){
+    public Button createBoardDeletionButton() {
         Button boardDeletionButton = new Button();
         boardDeletionButton.setText("Delete Board");
-        boardDeletionButton.setOnAction(e->{
+        boardDeletionButton.setOnAction(e -> {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Delete Confirmation Dialog");
             alert.setHeaderText("Delete Board");
@@ -246,7 +240,7 @@ public class BoardOverviewCtrl {
             //make preferred size bigger
             alert.getDialogPane().setPrefSize(400, 200);
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK){
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 server.deleteBoard(getBoard().getKey());
                 exit();
             }
@@ -259,15 +253,15 @@ public class BoardOverviewCtrl {
      * creates the menu bar and appends the boards name and the buttons with functionalities to it
      * the menu is added to the right side of the scene
      */
-    public void addMenu(){
-        if(borderPane.getRight() != null) {
+    public void addMenu() {
+        if (borderPane.getRight() != null) {
             borderPane.setRight(null);
             return;
         }
         VBox menuBar = new VBox();
         menuBar.prefHeightProperty().bind(borderPane.heightProperty());
         menuBar.setTranslateX(0);
-        menuBar.getChildren().add(new Label("key: "+ getBoard().getKey()));
+        menuBar.getChildren().add(new Label("key: " + getBoard().getKey()));
         menuBar.setId("sideMenu");
         menuBar.setOnMouseClicked(null);
         menuBar.getChildren().add(createCopyKeyButton());;
@@ -311,7 +305,7 @@ public class BoardOverviewCtrl {
         TextField textField = new TextField(taskList.getTitle());
         textField.setId("listName1");
         textField.focusedProperty().addListener((obs,oldVal,newVal) -> {
-            if(newVal == false)
+            if (newVal == false)
             {
                 server.renameList(taskList.getId(),textField.getText());
             }
@@ -377,7 +371,7 @@ public class BoardOverviewCtrl {
      * Method for adding a TaskButton, used when creating a taskList, it creates new tasks
      * @param listView the listview
      */
-    public void addTaskButton(ListView<HBox> listView){
+    public void addTaskButton(ListView<HBox> listView) {
         Button addTaskButton = new Button("ADD TASK");
         addTaskButton.setId("addButton");
         addTaskButton.setAlignment(Pos.CENTER);
@@ -420,7 +414,7 @@ public class BoardOverviewCtrl {
      * @param button The delete button
      * @param taskListName the name of the task list
      */
-    public void setDeleteAction(Button button, String taskListName, ListView<HBox> list){
+    public void setDeleteAction(Button button, String taskListName, ListView<HBox> list) {
         button.setOnAction(e -> {
             Group parentGroup = (Group) button.getParent();
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -434,7 +428,7 @@ public class BoardOverviewCtrl {
             alert.getDialogPane().setPrefSize(400, 200);
 
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK){
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 server.deleteList(listMap.get(list));
             }
         });
@@ -444,7 +438,7 @@ public class BoardOverviewCtrl {
      *
      * @param deleteTaskListsButton the delete button
      */
-    public void hoverOverDeleteButton(Button deleteTaskListsButton){
+    public void hoverOverDeleteButton(Button deleteTaskListsButton) {
         deleteTaskListsButton.setOnMouseEntered(e -> deleteTaskListsButton.setStyle("-fx-background-color: pink;"));
 
         deleteTaskListsButton.setOnMouseExited(e -> deleteTaskListsButton.setStyle("-fx-background-color: transparent;"));
@@ -469,7 +463,7 @@ public class BoardOverviewCtrl {
     public HBox addTask(String name, ListView<HBox> list, Task task1) {
 
         //Removes the addTask button
-        list.getItems().remove(list.getItems().get(list.getItems().size()-1));
+        list.getItems().remove(list.getItems().get(list.getItems().size() - 1));
 
         Label task = new Label(name);
         task.setPrefWidth(130);
@@ -586,7 +580,7 @@ public class BoardOverviewCtrl {
             label.setText(input.getEditor().getText());
         });
         input.showAndWait();
-        if(label.getText()==null)
+        if (label.getText() == null)
             return "task name";
         return label.getText();
 
@@ -691,7 +685,7 @@ public class BoardOverviewCtrl {
     public void dragOverHandler(ListView<HBox> list) {
         list.setOnDragOver(event -> {
             Dragboard db = event.getDragboard();
-            if(db.hasString()) {
+            if (db.hasString()) {
                 event.acceptTransferModes(TransferMode.ANY);
                 event.consume();
             }
@@ -739,7 +733,7 @@ public class BoardOverviewCtrl {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-                int order = taskOrderMap.get(taskMap.get(box))+1;
+                int order = taskOrderMap.get(taskMap.get(box)) + 1;
                 TaskMoveModel model = new TaskMoveModel(Long.parseLong(db.getString()),listMap.get(list),order);
                 server.moveTask(model,getBoard().getKey());
                 success = true;
@@ -767,15 +761,15 @@ public class BoardOverviewCtrl {
      *
      * @param box task box
      */
-    public void addProgressIndicator(HBox box, double percentage){
+    public void addProgressIndicator(HBox box, double percentage) {
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setProgress(percentage); // set for the respective parameter
         progressIndicator.getStylesheets()
                 .add(getClass().getResource("styles.css").toExternalForm());
         Label l  = (Label) box.getChildren().get(0);
-        l.setPrefWidth(l.getPrefWidth()-30);
+        l.setPrefWidth(l.getPrefWidth() - 30);
 
-        VBox vbox= new VBox(progressIndicator);
+        VBox vbox = new VBox(progressIndicator);
         vbox.setAlignment(Pos.CENTER);
 
         box.getChildren().add(vbox);
@@ -787,14 +781,14 @@ public class BoardOverviewCtrl {
      * removes progress indicator if exists - to be called when no nested tasks are set
      * @param box task box
      */
-    public void removeProgressIndicator(HBox box){
+    public void removeProgressIndicator(HBox box) {
         for (Iterator<Node> it = box.getChildren().iterator(); it.hasNext(); ) {
             Node childNode = it.next();
             if (childNode instanceof VBox) {
-                if(((VBox) childNode).getChildren().get(0) instanceof ProgressIndicator){
+                if (((VBox) childNode).getChildren().get(0) instanceof ProgressIndicator) {
                     it.remove();
                     Label l  = (Label) box.getChildren().get(0);
-                    l.setPrefWidth(l.getPrefWidth()+30);
+                    l.setPrefWidth(l.getPrefWidth() + 30);
                     break;
                 }
             }
@@ -807,17 +801,17 @@ public class BoardOverviewCtrl {
      * adds description indicator to the task HBox
      * @param box task HBox
      */
-    private void addDescriptionIndicator(HBox box){
+    private void addDescriptionIndicator(HBox box) {
 
         ImageView image = new ImageView(new Image(Path.of("",
                 "client", "images", "description.png").toString()));
         image.setFitHeight(18);
         image.setFitWidth(18);
-        VBox vbox= new VBox(image);
+        VBox vbox = new VBox(image);
         vbox.setAlignment(Pos.CENTER);
 
         Label l  = (Label) box.getChildren().get(0);
-        l.setPrefWidth(l.getPrefWidth()-25);
+        l.setPrefWidth(l.getPrefWidth() - 25);
 
         box.getChildren().add(vbox);
 
@@ -828,18 +822,19 @@ public class BoardOverviewCtrl {
      * removes the indicator if there's one
      * @param box task HBox
      */
-    public void removeDescriptionIndicator(HBox box){
+    public void removeDescriptionIndicator(HBox box) {
         for (Iterator<Node> it = box.getChildren().iterator(); it.hasNext(); ) {
             Node childNode = it.next();
             if (childNode instanceof VBox) {
-                if(((VBox) childNode).getChildren().get(0) instanceof ImageView){
+                if (((VBox) childNode).getChildren().get(0) instanceof ImageView) {
                     Label l  = (Label) box.getChildren().get(0);
-                    l.setPrefWidth(l.getPrefWidth()+25);
+                    l.setPrefWidth(l.getPrefWidth() + 25);
                     it.remove();
                     break;
                 }
             }
-        }}
+        }
+    }
 
     /**
      * shows the tag list associated with the current board
@@ -849,8 +844,5 @@ public class BoardOverviewCtrl {
         mainCtrl.showTagOverview(getBoard().getKey());
     }
 
-    public void setAdminPresence(boolean adminPresence) {
-        this.adminPresence = adminPresence;
-    }
 }
 

@@ -75,14 +75,14 @@ class ListServiceTest {
     }
 
     @Test
-    void getAllCreate2(){
+    void getAllCreate2() {
         boardService.createList(board1);
         boardService.createList(board1, 1);
         assertEquals(2, listService.getAll().size());
     }
 
     @Test
-    void getAllCreate3(){
+    void getAllCreate3() {
         boardService.createList(board1);
         boardService.createList(board1, 2);
         boardService.createList(board1, 3);
@@ -91,7 +91,7 @@ class ListServiceTest {
 
 
     @Test
-    void getAllInDifferentBoards(){
+    void getAllInDifferentBoards() {
         boardService.createList(board1);
         boardService.createList(board2, 10);
         boardService.createList(board3, 11);
@@ -99,7 +99,7 @@ class ListServiceTest {
     }
 
     @Test
-    void getAllMultipleInDifferentBoards(){
+    void getAllMultipleInDifferentBoards() {
         boardService.createList(board1, 0);
         boardService.createList(board1 ,2);
         boardService.createList(board2, 1);
@@ -280,7 +280,7 @@ class ListServiceTest {
     }
 
     @Test
-    void createTask3() throws  ListDoesNotExist{
+    void createTask3() throws  ListDoesNotExist {
         boardService.createList(board1, 1000L);
         listService.createTask(board1.getTaskLists().get(0), "test");
         // tests if the taskrepository is called

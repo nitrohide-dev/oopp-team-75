@@ -52,7 +52,7 @@ public class BoardController {
      */
     @GetMapping(path = { "", "/" })
     public List<Board> getAll() {
-        if(!authentication) return null;
+        if (!authentication) return null;
         return boardService.getAll(); }
 
     /**
@@ -108,10 +108,10 @@ public class BoardController {
     @MessageMapping("/list/createList")
     @SendTo("/topic/boards")
     public Board createList(String boardKey) {
-        if (boardKey == null || boardKey.isEmpty()){
+        if (boardKey == null || boardKey.isEmpty()) {
             throw new IllegalArgumentException("Board key cannot be null");
         }
-        if (boardService.findByKey(boardKey)==null) {
+        if (boardService.findByKey(boardKey) == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Board does not exist");
         }
         return boardService.createList(boardService.findByKey(boardKey));
@@ -156,7 +156,7 @@ public class BoardController {
     public ResponseEntity<Boolean> authenticate(@RequestHeader String password) {
 
         if (password.equals(hashedPassword) || password.equals("testing")) { //only for tests
-            authentication=true;
+            authentication = true;
             return ResponseEntity.ok(true);
         } else {
             return ResponseEntity.ok(false);
@@ -170,8 +170,8 @@ public class BoardController {
      */
     public static void readPassword(String password, String directory) throws IOException, NoSuchAlgorithmException {
         File dir = new File(directory);
-        if(!dir.exists()) {
-            System.out.println("Your initial password is: "+password+"\nChange it for increased security");
+        if (!dir.exists()) {
+            System.out.println("Your initial password is: " + password + "\nChange it for increased security");
             dir.createNewFile();
             hashedPassword = hashPassword(password);
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir))) {
@@ -180,7 +180,7 @@ public class BoardController {
                 throw new RuntimeException(e);
             }
         }
-        else{
+        else {
             try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
                 hashedPassword = reader.readLine();
 
@@ -196,11 +196,11 @@ public class BoardController {
      * @return true if the password was changed, false otherwise
      */
     @GetMapping("/changePassword")
-    public ResponseEntity<Boolean> changePassword(@RequestHeader String passwordHashed,String path){
+    public ResponseEntity<Boolean> changePassword(@RequestHeader String passwordHashed, String path) {
         hashedPassword = passwordHashed;
         File dir = new File(System.getProperty("user.dir") + "/server/src/main/java/server/api/configs/pwd.txt");
 
-        if(dir.exists()){dir.delete();}
+        if (dir.exists()) { dir.delete(); }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir))) {
             writer.write(passwordHashed);
             return ResponseEntity.ok(true);
@@ -215,7 +215,7 @@ public class BoardController {
     @GetMapping("/logout")
     public ResponseEntity<Object> logOut() {
         if (authentication) {
-            authentication=false;
+            authentication = false;
         }
         return ResponseEntity.ok().build();
     }

@@ -17,21 +17,21 @@ class   TaskMoveModelTest {
     }
 
     @Test
-    void Constructor(){
+    void Constructor() {
         assertEquals(3,model.getTask_id());
         assertEquals(13,model.getTasklist_id());
         assertEquals(21,model.getNew_task_order());
     }
 
     @Test
-    void getTask_id(){
+    void getTask_id() {
         assertEquals(3,model.getTask_id());
         assertNotEquals(10,model.getTask_id());
 
     }
 
     @Test
-    void setTask_id(){
+    void setTask_id() {
         model.setTask_id(Integer.toUnsignedLong(5));
         assertEquals(5,model.getTask_id());
         model.setTask_id(Integer.toUnsignedLong(11));
@@ -39,14 +39,14 @@ class   TaskMoveModelTest {
     }
 
     @Test
-    void getTaskList_id(){
+    void getTaskList_id() {
         assertEquals(13,model.getTasklist_id());
         assertNotEquals(10,model.getTask_id());
 
     }
 
     @Test
-    void setTaskList_id(){
+    void setTaskList_id() {
         model.setTasklist_id(Integer.toUnsignedLong(12));
         assertEquals(12,model.getTasklist_id());
         model.setTasklist_id(Integer.toUnsignedLong(11));
@@ -54,13 +54,13 @@ class   TaskMoveModelTest {
     }
 
     @Test
-    void getNew_task_order(){
+    void getNew_task_order() {
         assertEquals(21,model.getNew_task_order());
         assertNotEquals(10,model.getNew_task_order());
     }
 
     @Test
-    void setNew_task_order(){
+    void setNew_task_order() {
         model.setNew_task_order(33);
         assertEquals(33,model.getNew_task_order());
         model.setNew_task_order(71);

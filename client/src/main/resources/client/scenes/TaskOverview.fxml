@@ -1,75 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Group?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="300.0" prefWidth="250.0" styleClass="background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TaskOverviewCtrl">
+<VBox alignment="CENTER" fillWidth="false" prefWidth="350.0" spacing="10.0" styleClass="background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.TaskOverviewCtrl">
    <children>
-      <VBox prefHeight="423.0" prefWidth="250.0">
+      <VBox spacing="8.0">
          <children>
-            <Pane prefHeight="51.0" prefWidth="200.0">
+            <HBox alignment="CENTER_LEFT">
                <children>
-                  <Label fx:id="taskName" layoutX="14.0" layoutY="9.0" prefHeight="34.0" prefWidth="184.0" textFill="WHITE">
+                  <Pane>
+                     <children>
+                        <Label fx:id="taskName" prefHeight="35.0" prefWidth="184.0" textFill="WHITE">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="cancelName" disable="true" layoutX="218.0" layoutY="5.0" mnemonicParsing="false" onAction="#cancelChange" prefHeight="25.0" prefWidth="25.0" visible="false" />
+                        <Button fx:id="editName" layoutX="205.0" layoutY="5.0" mnemonicParsing="false" onAction="#editName" prefHeight="25.0" prefWidth="25.0" styleClass="header-btn" />
+                        <Button fx:id="confirmName" disable="true" layoutX="193.0" layoutY="5.0" mnemonicParsing="false" onAction="#confirmNameChange" prefHeight="25.0" prefWidth="25.0" visible="false" />
+                        <TextField fx:id="newName" disable="true" prefHeight="35.0" prefWidth="184.0" visible="false" />
+                     </children>
+                  </Pane>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <ImageView fx:id="deleteButton" fitHeight="25.0" fitWidth="25.0" onMouseClicked="#delete" pickOnBounds="true" preserveRatio="true" styleClass="header-btn">
+                     <image>
+                        <Image url="@../images/trash.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT">
+               <children>
+                  <Label text="Description" textFill="WHITE">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Button fx:id="cancelName" disable="true" layoutX="218.0" layoutY="13.0" mnemonicParsing="false" onAction="#cancelChange" prefHeight="25.0" prefWidth="25.0" visible="false" />
-                  <Button fx:id="editName" layoutX="205.0" layoutY="13.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#editName" prefHeight="25.0" prefWidth="25.0" styleClass="header-btn" />
-                  <Button fx:id="confirmName" disable="true" layoutX="193.0" layoutY="13.0" mnemonicParsing="false" onAction="#confirmNameChange" prefHeight="25.0" prefWidth="25.0" visible="false" />
-                  <TextField fx:id="newName" disable="true" layoutX="14.0" layoutY="9.0" prefHeight="34.0" prefWidth="184.0" visible="false" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button fx:id="confirmDesc" disable="true" mnemonicParsing="false" onAction="#confirmDescChange" prefHeight="25.0" prefWidth="25.0" visible="false" />
+                  <Button fx:id="cancelDesc" disable="true" mnemonicParsing="false" onAction="#cancelChange" prefHeight="25.0" prefWidth="25.0" visible="false" />
                </children>
-            </Pane>
-            <Pane prefHeight="116.0" prefWidth="250.0">
+            </HBox>
+            <TextArea fx:id="description" onMouseClicked="#editDescription" prefHeight="100.0" />
+            <HBox alignment="CENTER_LEFT">
                <children>
-                  <TextArea fx:id="description" onMouseClicked="#editDescription" prefHeight="90.0" prefWidth="250.0" />
-                  <Button fx:id="confirmDesc" disable="true" layoutX="100.0" layoutY="90.0" mnemonicParsing="false" onAction="#confirmDescChange" prefHeight="25.0" prefWidth="25.0" visible="false" />
-                  <Button fx:id="cancelDesc" disable="true" layoutX="125.0" layoutY="90.0" mnemonicParsing="false" onAction="#cancelChange" prefHeight="25.0" prefWidth="25.0" visible="false" />
-               </children>
-            </Pane>
-            <Pane prefHeight="130.0" prefWidth="250.0">
-               <children>
-                  <Label layoutX="14.0" layoutY="5.0" text="Subtasks:" textFill="WHITE">
+                  <Label text="Subtasks" textFill="WHITE">
                      <font>
                         <Font size="14.0" />
-                     </font></Label>
-                  <ScrollPane fitToHeight="true" hbarPolicy="NEVER" layoutY="28.0" prefHeight="104.0" prefWidth="250.0">
-                     <ListView fx:id="taskList" editable="true" fixedCellSize="35.0" prefHeight="100.0" prefWidth="248.0" />
+                     </font>
+                  </Label>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#createSubTask" styleClass="button-9" text="Add" />
+               </children>
+            </HBox>
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="120.0">
+               <ListView fx:id="taskList" editable="true" fixedCellSize="35.0" />
+            </ScrollPane>
+            <Label text="Tags" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <HBox spacing="3.0">
+               <children>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="120.0" HBox.hgrow="ALWAYS">
+                     <content>
+                        <ListView fx:id="currTags" editable="true" fixedCellSize="35.0" />
+                     </content>
                   </ScrollPane>
-                  <Button layoutX="166.0" layoutY="3.0" mnemonicParsing="false" onAction="#createSubTask" styleClass="button-9" text="New subtask" />
-               </children></Pane>
-            <Pane prefHeight="125.0" prefWidth="250.0">
-               <Label layoutX="14.0" layoutY="4.0" text="Tags:" textFill="WHITE">
-                  <font>
-                     <Font size="14.0" />
-                  </font></Label>
-               <Group fx:id="allTags" layoutY="30.0">
-                  <children>
-                     <ScrollPane fitToHeight="true" hbarPolicy="NEVER" prefHeight="97.0" prefWidth="123.0">
-                        <content>
-                           <ListView fx:id="currTags" editable="true" fixedCellSize="35.0" prefHeight="96.0" prefWidth="121.0" />
-                        </content>
-                     </ScrollPane>
-                     <Line endX="123.00001525878906" endY="95.59998321533203" startX="123.00001525878906" startY="3.7999954223632812" stroke="#1820bc" strokeWidth="4.0" visible="false" />
-                     <ScrollPane fitToHeight="true" hbarPolicy="NEVER" layoutX="125.0" prefHeight="97.0" prefWidth="123.0">
-                        <content>
-                           <ListView fx:id="availableTags" editable="true" fixedCellSize="35.0" prefHeight="96.0" prefWidth="121.0" />
-                        </content>
-                     </ScrollPane>
-                  </children>
-               </Group>
-            </Pane>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="120.0" HBox.hgrow="ALWAYS">
+                     <content>
+                        <ListView fx:id="availableTags" editable="true" fixedCellSize="35.0" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </HBox>
          </children>
       </VBox>
    </children>
-</AnchorPane>
+   <padding>
+      <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+   </padding>
+</VBox>

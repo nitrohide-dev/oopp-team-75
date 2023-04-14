@@ -121,7 +121,7 @@ class TagTest {
     }
 
     @Test
-    void isChildOfTask(){
+    void isChildOfTask() {
         Task task = new Task();
         tag.setTasks(new HashSet<>());
         assertFalse(tag.isChildOfTask(task.getId()));
@@ -132,7 +132,7 @@ class TagTest {
     }
 
     @Test
-    void isChildOfBoard(){
+    void isChildOfBoard() {
         Board board = new Board("1");
         tag.setBoard(board);
         assertTrue(tag.isChildOfBoard("1"));
@@ -141,7 +141,7 @@ class TagTest {
     }
 
     @Test
-    void createTag(){
+    void createTag() {
         Tag tag = Tag.createTag("a", 3L);
         assertNotNull(tag);
         assertEquals("a", tag.getTitle());
@@ -150,7 +150,7 @@ class TagTest {
     }
 
     @Test
-    void createTag2(){
+    void createTag2() {
         Tag tag = Tag.createTag("a", 100);
         assertNotNull(tag);
         assertEquals("a", tag.getTitle());

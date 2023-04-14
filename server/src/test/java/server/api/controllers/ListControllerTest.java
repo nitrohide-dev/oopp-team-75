@@ -113,7 +113,7 @@ class ListControllerTest {
         listController.createTask(1000L, "task1");
         listController.createTask(1001L, "task");
         assertEquals(3, listRepository.findById(1000L).get().getTasks().size()
-                +listRepository.findById(1001L).get().getTasks().size());
+                + listRepository.findById(1001L).get().getTasks().size());
     }
     @Test
     void deleteById() {

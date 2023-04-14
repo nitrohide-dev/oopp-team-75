@@ -54,9 +54,9 @@ public class BoardRepositoryTest implements BoardRepository {
     @Override
     public List<Board> findAllById(Iterable<String> strings) {
         List<Board> queryBoards = new ArrayList<>();
-        for(String  i : (Iterable<String>) strings) {
-            for(Board board : boards) {
-                if(board.getKey().equals(i)) {
+        for (String  i : (Iterable<String>) strings) {
+            for (Board board : boards) {
+                if (board.getKey().equals(i)) {
                     queryBoards.add(board);
                 }
             }
@@ -99,7 +99,7 @@ public class BoardRepositoryTest implements BoardRepository {
 
     @Override
     public void deleteAll(Iterable<? extends Board> entities) {
-        for(Board board : entities) {
+        for (Board board : entities) {
             boards.remove(board);
         }
     }
@@ -113,8 +113,8 @@ public class BoardRepositoryTest implements BoardRepository {
     @Override
     public <S extends Board> S save(S entity) {
         //check if board already exists
-        for(Board board : boards) {
-            if(board.getKey().equals(entity.getKey())) {
+        for (Board board : boards) {
+            if (board.getKey().equals(entity.getKey())) {
                 boards.remove(board);
                 listRepo.deleteAll(board.getTaskLists());
                 listRepo.saveAll(entity.getTaskLists());
@@ -129,7 +129,7 @@ public class BoardRepositoryTest implements BoardRepository {
 
     @Override
     public <S extends Board> List<S> saveAll(Iterable<S> entities) {
-        for(S entity : entities) {
+        for (S entity : entities) {
             save(entity);
         }
         return (List<S>) boards;
@@ -137,8 +137,8 @@ public class BoardRepositoryTest implements BoardRepository {
 
     @Override
     public Optional<Board> findById(String s) {
-        for(Board board : boards) {
-            if(board.getKey().equals(s)) {
+        for (Board board : boards) {
+            if (board.getKey().equals(s)) {
                 return Optional.of(board);
             }
         }
@@ -147,8 +147,8 @@ public class BoardRepositoryTest implements BoardRepository {
 
     @Override
     public boolean existsById(String s) {
-        for(Board board : boards) {
-            if(board.getKey().equals(s)) {
+        for (Board board : boards) {
+            if (board.getKey().equals(s)) {
                 return true;
             }
         }
@@ -192,8 +192,8 @@ public class BoardRepositoryTest implements BoardRepository {
 
     @Override
     public Board getById(String s) {
-        for(Board board : boards) {
-            if(board.getKey().equals(s)) {
+        for (Board board : boards) {
+            if (board.getKey().equals(s)) {
                 return board;
             }
         }

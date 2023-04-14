@@ -59,7 +59,7 @@ class TagControllerTest {
     }
 
     @Test
-    void editTagEmpty(){
+    void editTagEmpty() {
         assertEquals(1, tagRepository.count());
         assertEquals("1", tagRepository.findById(1L).get().getTitle());
         assertThrows(ResponseStatusException.class, () -> tagController.editTag("2", "", "1"));

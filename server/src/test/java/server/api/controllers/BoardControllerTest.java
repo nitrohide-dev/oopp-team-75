@@ -251,7 +251,7 @@ class BoardControllerTest {
         String testPassword = "testPassword";
         File dir = new File(tempDir.toString() + "/pwd.txt");
 
-        BoardController.readPassword(testPassword,tempDir.toString()+"/pwd.txt");
+        BoardController.readPassword(testPassword,tempDir.toString() + "/pwd.txt");
 
         try (BufferedReader reader = new BufferedReader(new FileReader(dir))) {
             String hashedPassword = reader.readLine();

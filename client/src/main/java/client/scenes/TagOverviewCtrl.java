@@ -54,7 +54,7 @@ public class TagOverviewCtrl {
      * same method as in boardOverview
      */
     public void refresh(Board board) {
-        if(mainCtrl.getCurrBoard().getKey().equals(board.getKey())) {
+        if (mainCtrl.getCurrBoard().getKey().equals(board.getKey())) {
             mainCtrl.setCurrBoard(board);
             load(board);
         }
@@ -63,12 +63,12 @@ public class TagOverviewCtrl {
      * (re-)loads all the tags in the tagList
      * @param board - the board in which the tags that are to be shown are stored
      */
-    public void load(Board board){
+    public void load(Board board) {
 
         tagList.getItems().clear();
         addTagButton();
         Iterator<Tag> iterator = board.getTags().iterator();
-        while(iterator.hasNext())
+        while (iterator.hasNext())
         {
             addTag(iterator.next());
         }
@@ -76,7 +76,7 @@ public class TagOverviewCtrl {
     /**
      * appends the "add tag" button to the end of the tag list
      */
-    public void addTagButton(){
+    public void addTagButton() {
         Button addTagButton = new Button("ADD TAG");
         addTagButton.setId("addButton");
         addTagButton.setAlignment(Pos.CENTER);
@@ -93,8 +93,8 @@ public class TagOverviewCtrl {
      * adds a tag to the tag list
      * @param tag - the tag common object to be used for the added tag's properties
      */
-    private void addTag(Tag tag){
-        tagList.getItems().remove(tagList.getItems().get(tagList.getItems().size()-1));
+    private void addTag(Tag tag) {
+        tagList.getItems().remove(tagList.getItems().get(tagList.getItems().size() - 1));
 
         Ellipse ellipse = new Ellipse();
         ellipse.setRadiusX(8);
@@ -108,7 +108,7 @@ public class TagOverviewCtrl {
         HBox.setHgrow(region, Priority.ALWAYS);
 
         Button editButton = buttonBuilder(Path.of("", "client", "images", "pencil.png").toString());
-        editButton.setOnAction(e-> renameTag(tag.getId(),mainCtrl.getCurrBoard().getKey()));
+        editButton.setOnAction(e -> renameTag(tag.getId(),mainCtrl.getCurrBoard().getKey()));
 
         Button removeButton = buttonBuilder(Path.of("", "client", "images", "cancel.png").toString());
         removeButton.setOnAction(e -> server.deleteTag(Long.toString(tag.getId()),mainCtrl.getCurrBoard().getKey()));
@@ -126,21 +126,21 @@ public class TagOverviewCtrl {
     /**
      * creates a tag with a name given by the user in the database
      */
-    public void createTag(){
+    public void createTag() {
         String name = tagNameSetter();
         server.createTag(mainCtrl.getCurrBoard().getKey(),name);
     }
     /**
      * renames a tag to a name given by the user in the database
      */
-    public void renameTag(Long id, String key){
+    public void renameTag(Long id, String key) {
         String newName = tagNameSetter();
         server.renameTag(Long.toString(id),key,newName);
     }
     /**
      * creates a popup for (re-)naming of the tag by the user
      */
-    public String tagNameSetter(){
+    public String tagNameSetter() {
         TextInputDialog input = new TextInputDialog("tag name");
         input.setHeaderText("Tag name");
         input.setContentText("Please enter a name for the tag:");
