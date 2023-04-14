@@ -13,6 +13,8 @@ import server.database.ListRepository;
 import server.database.ListRepositoryTest;
 import server.database.SubTaskRepository;
 import server.database.SubTaskRepositoryTest;
+import server.database.TagRepository;
+import server.database.TagRepositoryTest;
 import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
 import server.exceptions.BoardDoesNotExist;
@@ -42,6 +44,7 @@ class TaskServiceTest {
     private TaskList list1;
     private TaskList list2;
     private TaskList list3;
+    private TagRepository tagRepository;
 
     private SubTaskRepository subTaskRepository;
     @BeforeEach
@@ -50,10 +53,10 @@ class TaskServiceTest {
         taskRepo = new TaskRepositoryTest(subTaskRepository);
         listRepository = new ListRepositoryTest(taskRepo);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
-
+        tagRepository = new TagRepositoryTest();
         boardService = new BoardService(boardRepository);
         listService = new ListService(listRepository, taskRepo, boardRepository);
-        taskService = new TaskService(taskRepo, listRepository);
+        taskService = new TaskService(taskRepo, listRepository, tagRepository);
 
         boardService.create(new CreateBoardModel("1", "1"));
         boardService.create(new CreateBoardModel("2", "2"));
@@ -98,7 +101,7 @@ class TaskServiceTest {
 
         boardService = new BoardService(boardRepository);
         listService = new ListService(listRepository, taskRepo, boardRepository);
-        taskService = new TaskService(taskRepo, listRepository);
+        taskService = new TaskService(taskRepo, listRepository, tagRepository);
 
         boardService.create(new CreateBoardModel("1", "1"));
         boardService.create(new CreateBoardModel("2", "2"));
@@ -179,10 +182,11 @@ class TaskServiceTest {
         tag1.setBoard(board1);
         tag1.setTasks(new HashSet<>());
         task1.setTags(tags);
-        taskService.addTag(120L, tag1);
+        tagRepository.save(tag1);
+        taskService.addTag(120L, tag1.getId());
         assertEquals(1, taskService.getById(120L).getTags().size());
         assertEquals(tag1, taskService.getById(120L).getTags().iterator().next());
-        assertEquals("1", taskService.addTag(120L, tag1));
+        assertEquals("1", taskService.addTag(120L, tag1.getId()));
         assertEquals(1, taskService.getById(120L).getTags().size());
     }
 

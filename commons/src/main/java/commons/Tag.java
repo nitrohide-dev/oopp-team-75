@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Random;
+
 @Entity
 public class Tag {
     public static final int MAX_TITLE_LENGTH = 256;
@@ -39,8 +40,9 @@ public class Tag {
     @Setter
     @Column(nullable=false, length=MAX_TITLE_LENGTH)
     private String color;
+
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "tags", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Getter
     @Setter
     private Set<Task> tasks;

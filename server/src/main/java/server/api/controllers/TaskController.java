@@ -1,8 +1,9 @@
 package server.api.controllers;
 
-import commons.Board;
-import commons.Tag;
+
+import commons.SubTask;
 import commons.Task;
+import commons.Board;
 import commons.TaskList;
 import commons.models.TaskMoveModel;
 import org.springframework.http.HttpStatus;
@@ -14,13 +15,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.ListService;
 import server.api.services.TaskService;
 import server.exceptions.ListDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
-
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -30,11 +32,14 @@ public class TaskController {
     private final TaskService taskService;
     private final BoardService boardService;
     private final ListService listService;
+    private final HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers;
 
-    public TaskController(TaskService taskService, BoardService boardService,ListService listService) {
+    public TaskController(TaskService taskService, BoardService boardService,
+                          ListService listService, HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers) {
         this.taskService = taskService;
         this.boardService = boardService;
         this.listService = listService;
+        this.pollConsumers = pollConsumers;
     }
 
     @GetMapping(path = { "", "/" })
@@ -93,9 +98,9 @@ public class TaskController {
      * @param boardKey - the key of the board in which the task is
      * @return the board the task is in
      */
-    @MessageMapping("/task/desc/{boardKey}/{name}")
+    @MessageMapping("/task/desc/{boardKey}/{id}")
     @SendTo("/topic/boards")
-    public Board changeTaskDesc(Long id, @DestinationVariable("name")String newDesc,
+    public Board changeTaskDesc(String newDesc, @DestinationVariable("id") Long id,
                                 @DestinationVariable("boardKey") String boardKey) {
         try {
             taskService.changeTaskDesc(id, newDesc);
@@ -147,21 +152,34 @@ public class TaskController {
 
     @MessageMapping("/task/addTag/{key}")
     @SendTo("/topic/boards")
-    public Board addTag(Tag tag, @DestinationVariable("key") String taskId) {
-        var boardKey =  taskService.addTag(Long.valueOf(taskId),tag);
+    public Board addTag(Long tagId, @DestinationVariable("key") Long taskId) {
+        var boardKey =  taskService.addTag(taskId, tagId);
         return boardService.findByKey(boardKey);
     }
 
-    /**
-     * creates a subtask in the database with a given title
-     * @param title the subtask title
-     * @return the stored subtask
-     */
-    @MessageMapping("/task/create/{title}")
+    @MessageMapping("/task/removeTag/{key}")
+    @SendTo("/topic/boards")
+    public Board removeTag(Long tagId, @DestinationVariable("key") Long taskId) {
+        var boardKey =  taskService.removeTag(taskId, tagId);
+        return boardService.findByKey(boardKey);
+    }
+
+
+    @MessageMapping("/subtask/create/{title}")
     @SendTo("/topic/boards")
     public Board createSubTask(Long taskID,@DestinationVariable("title") String title) throws TaskDoesNotExist {
         Task task = taskService.getById(taskID);
         String id = taskService.createSubTask(task,title);
+       // task.getSubtasks().add(new SubTask(task,title));
+
+        if(pollConsumers.containsKey(task.getId()))
+        {
+            for(DeferredResult<List<SubTask>> dr  : pollConsumers.get(task.getId())){
+                System.out.println(task.getSubtasks().toString());
+                dr.setResult(task.getSubtasks());
+            }
+            pollConsumers.get(task.getId()).clear();
+        }
         return boardService.findByKey(id);
     }
 }

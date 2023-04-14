@@ -237,4 +237,24 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
         }
         return querySubTasks;
     }
+
+    @Override
+    public void movesubTaskUp1(long id, int order) {
+
+    }
+
+    @Override
+    public void movesubTaskUp2(long id) {
+
+    }
+
+    @Override
+    public void movesubTaskDown1(long id, int order) {
+
+    }
+
+    @Override
+    public void movesubTaskDown2(long id) {
+
+    }
 }

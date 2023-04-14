@@ -38,8 +38,6 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -86,10 +84,6 @@ public class BoardOverviewCtrl {
 
     @FXML
     private BorderPane borderPane;
-    private UserMenuCtrl usermenuCtrl;
-    @Getter
-    @Setter
-    private boolean adminPresence=false;
 
     @Inject
     public BoardOverviewCtrl(MainCtrl mainCtrl, ServerUtils server) {
@@ -134,7 +128,7 @@ public class BoardOverviewCtrl {
      * @param board the board to refresh to.
      */
     public void refresh(Board board) {
-        if(getBoard().getKey().equals(board.getKey())) {
+        if (getBoard().getKey().equals(board.getKey())) {
             mainCtrl.setCurrBoard(board);
             load(board);
         }
@@ -240,8 +234,7 @@ public class BoardOverviewCtrl {
             alert.setHeaderText("Delete Board");
             alert.setContentText("Are you sure you want to delete this board?");
             //add css to dialog pane
-            alert.getDialogPane().getStylesheets().add(
-                    Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
             //make preferred size bigger
             alert.getDialogPane().setPrefSize(400, 200);
             Optional<ButtonType> result = alert.showAndWait();
@@ -451,8 +444,8 @@ public class BoardOverviewCtrl {
      * @param name the name of the task to be created
      * @param list the list in which the task should be created
      */
-    public void createTask(String name,ListView<HBox> list) {
-        server.createTask(listMap.get(list),name);
+    public void createTask(String name, ListView<HBox> list) {
+        server.createTask(listMap.get(list), name);
     }
 
     /**
@@ -462,7 +455,7 @@ public class BoardOverviewCtrl {
      * @param task1 the Task common data type to map to the task for frontend-backend communication
      * @return the created task
      */
-    public HBox addTask(String name, ListView<HBox> list,Task task1) {
+    public HBox addTask(String name, ListView<HBox> list, Task task1) {
 
         //Removes the addTask button
         list.getItems().remove(list.getItems().get(list.getItems().size()-1));
@@ -482,10 +475,16 @@ public class BoardOverviewCtrl {
       // addDescriptionIndicator(box);
       // addProgressIndicator(box,0.7);
 
-
+        if (task1.getDesc() != null && !task1.getDesc().equals("")) {
+            addDescriptionIndicator(box);
+        }
+        if (task1.getSubtasks() != null && !task1.getSubtasks().isEmpty()) {
+            long done = task1.getSubtasks().stream().filter(x -> x.getChecked()).count();
+            addProgressIndicator(box, (double) done / (double) task1.getSubtasks().size());
+        }
         dragHandler(box,task,list);
         removeButton.setOnAction(e -> deleteTask(box));
-        editButton.setOnAction(e -> System.out.println("holder"));
+        editButton.setOnAction(e -> viewTask(box));
         box.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 viewTask(box); // changed view button for double click
@@ -496,7 +495,7 @@ public class BoardOverviewCtrl {
         list.getItems().add(box);
         //Re-adds the button to the end of the list
         addTaskButton(list);
-        taskMap.put(box,task1.getId());
+        taskMap.put(box, task1.getId());
 
         return box;
     }
@@ -637,7 +636,7 @@ public class BoardOverviewCtrl {
      * @param task - a HBox, containing the task
      */
     public void deleteTask(HBox task) {
-        server.deleteTask(taskMap.get(task));
+        mainCtrl.deleteTask(taskMap.get(task));
     }
 
     /**
@@ -763,7 +762,7 @@ public class BoardOverviewCtrl {
      * adds description indicator to the task HBox
      * @param box task HBox
      */
-    public void addDescriptionIndicator(HBox box){
+    private void addDescriptionIndicator(HBox box){
 
         ImageView image = new ImageView(new Image(Path.of("",
                 "client", "images", "description.png").toString()));
@@ -805,8 +804,5 @@ public class BoardOverviewCtrl {
         mainCtrl.showTagOverview(getBoard().getKey());
     }
 
-    public void setAdminPresence(boolean adminPresence) {
-        this.adminPresence = adminPresence;
-    }
 }
 
