@@ -458,7 +458,6 @@ public class ServerUtils {
 
         executor.submit(() -> {
             while (!executor.isShutdown()) {
-                System.out.println("POLL");
                 Response response = ClientBuilder.newClient(new ClientConfig())
                     .target(SERVER).path(String.format("api/subtasks/%d/poll", taskId))
                     .request(APPLICATION_JSON)

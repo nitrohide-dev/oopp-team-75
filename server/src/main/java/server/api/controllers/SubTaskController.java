@@ -2,9 +2,6 @@ package server.api.controllers;
 
 import commons.Board;
 import commons.SubTask;
-import commons.Task;
-import commons.TaskList;
-import commons.models.TaskMoveModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;

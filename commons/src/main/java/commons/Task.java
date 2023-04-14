@@ -42,7 +42,7 @@ public class Task {
     @Setter
     private String title;
 
-    @ManyToMany(mappedBy = "tasks", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Getter
     @Setter
     @Column
@@ -162,6 +162,5 @@ public class Task {
         if (!tags.contains(tag))
             throw new IllegalArgumentException("Task does not contain tag");
         tags.remove(tag);
-        tag.removeTask(this);
     }
 }

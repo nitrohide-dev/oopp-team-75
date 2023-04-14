@@ -66,7 +66,7 @@ class SubTaskControllerTest {
         listRepository = new ListRepositoryTest(taskRepository);
         boardService = new BoardService(boardRepository);
         listService = new ListService(listRepository, taskRepository, boardRepository);
-        taskService = new TaskService(taskRepository, listRepository);
+        taskService = new TaskService(taskRepository, listRepository,tagRepository);
         subTaskService = new SubTaskService(subTaskRepository, taskRepository);
         subTaskController = new SubTaskController(subTaskService, boardService);
 

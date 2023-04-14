@@ -8,7 +8,6 @@ import commons.Task;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -96,6 +95,7 @@ public class TaskOverviewCtrl {
 		taskName.setText(task.getTitle());
 		description.setText(task.getDesc());
 		resetFields();
+		initializeSubTasks(mainCtrl.getCurrTask().getSubtasks());
 		initializeCurrTags(task.getTags());
 		initializeRestTags(task.getTags(), board.getTags());
 	}
@@ -126,9 +126,9 @@ public class TaskOverviewCtrl {
 	 * Connects to the server for automatic refreshing.
 	 */
 	public void connect() {
-		initializeSubTasks(mainCtrl.getCurrTask().getSubtasks());
 		server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
-		server.subTaskSubscribe( mainCtrl.getCurrTask().getId(), b -> Platform.runLater(() -> this.initializeSubTasks(b)));
+		server.subTaskSubscribe( mainCtrl.getCurrTask().getId(), b -> Platform.runLater(()
+				-> this.initializeSubTasks(b)));
 	}
 	public void unsubscribe(){
 		server.subTaskUnsubscribe();

@@ -1,6 +1,9 @@
 package server.api.controllers;
 
-import commons.*;
+import commons.SubTask;
+import commons.Task;
+import commons.Board;
+import commons.TaskList;
 import commons.models.TaskMoveModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +21,7 @@ import server.api.services.ListService;
 import server.api.services.TaskService;
 import server.exceptions.ListDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
-
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -168,7 +169,7 @@ public class TaskController {
     public Board createSubTask(Long taskID,@DestinationVariable("title") String title) throws TaskDoesNotExist {
         Task task = taskService.getById(taskID);
         String id = taskService.createSubTask(task,title);
-        task.getSubtasks().add(new SubTask(task,title));
+       // task.getSubtasks().add(new SubTask(task,title));
 
         if(pollConsumers.containsKey(task.getId()))
         {
