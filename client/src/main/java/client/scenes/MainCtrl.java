@@ -227,14 +227,6 @@ public class MainCtrl {
     }
 
     /**
-     * check if admin is logged in
-     * @param adminPresence true if admin is logged in
-     */
-    public void setAdminPresence(boolean adminPresence) {
-        boardOverviewCtrl.setAdminPresence(adminPresence);
-    }
-
-    /**
      * writes user's favorite boards and their hashed passwords to file on their computer
      * @param boardKeys board keys to write
      * @param server server on which the boards exist

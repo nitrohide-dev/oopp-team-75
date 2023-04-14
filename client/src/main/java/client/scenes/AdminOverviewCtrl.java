@@ -27,7 +27,7 @@ public class AdminOverviewCtrl{
     @FXML private ImageView password;
 
     private List<Board> boards;
-    public ListView<HBox> boardsListView;
+    @FXML public ListView<HBox> boardsListView;
 
     @Inject
     public AdminOverviewCtrl(ServerUtils server, MainCtrl mainCtrl){
@@ -57,8 +57,6 @@ public class AdminOverviewCtrl{
      */
     @FXML
     private void exit(){
-        boards = new ArrayList<>();
-        boardsListView.getItems().clear();
         mainCtrl.showUserMenu();
         server.logout();
     }

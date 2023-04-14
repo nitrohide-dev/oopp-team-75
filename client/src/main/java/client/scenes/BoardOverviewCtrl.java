@@ -86,10 +86,6 @@ public class BoardOverviewCtrl {
 
     @FXML
     private BorderPane borderPane;
-    private UserMenuCtrl usermenuCtrl;
-    @Getter
-    @Setter
-    private boolean adminPresence=false;
 
     @Inject
     public BoardOverviewCtrl(MainCtrl mainCtrl, ServerUtils server) {
@@ -810,8 +806,5 @@ public class BoardOverviewCtrl {
         mainCtrl.showTagOverview(getBoard().getKey());
     }
 
-    public void setAdminPresence(boolean adminPresence) {
-        this.adminPresence = adminPresence;
-    }
 }
 

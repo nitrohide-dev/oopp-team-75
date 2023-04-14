@@ -61,6 +61,8 @@ public class TaskOverviewCtrl {
 	@FXML
 	private ListView<HBox> currTags;
 	@FXML
+	private ImageView deleteButton;
+	@FXML
 	private ListView<HBox> availableTags;
 
 	private Map<HBox, Long> taskMap;
@@ -82,6 +84,7 @@ public class TaskOverviewCtrl {
 		importPicture(this.confirmName, Path.of("", "client", "images", "check-mark-black-outline.png").toString());
 		importPicture(this.cancelDesc, Path.of("", "client", "images", "close.png").toString());
 		importPicture(this.confirmDesc, Path.of("", "client", "images", "check-mark-black-outline.png").toString());
+		this.deleteButton.setImage(new Image(Path.of("", "client", "images", "trash.png").toString()));
 	}
 
 	/**
@@ -366,5 +369,10 @@ public class TaskOverviewCtrl {
 		input.showAndWait();
 	}
 
+	public void delete() {
+		server.deleteTask(mainCtrl.getCurrTask().getId());
+		Stage stage = (Stage) deleteButton.getScene().getWindow();
+		stage.close();
+	}
 
 }
