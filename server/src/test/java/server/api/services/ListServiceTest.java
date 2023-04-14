@@ -11,6 +11,8 @@ import server.database.ListRepository;
 import server.database.ListRepositoryTest;
 import server.database.SubTaskRepository;
 import server.database.SubTaskRepositoryTest;
+import server.database.TagRepository;
+import server.database.TagRepositoryTest;
 import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
 import server.exceptions.CannotCreateBoard;
@@ -34,7 +36,7 @@ class ListServiceTest {
     private Board board1;
     private Board board2;
     private Board board3;
-
+    private TagRepository tagRepository;
     private SubTaskRepository subTaskRepository;
 
     @BeforeEach
@@ -43,10 +45,10 @@ class ListServiceTest {
         taskRepo = new TaskRepositoryTest(subTaskRepository);
         listRepository = new ListRepositoryTest(taskRepo);
         boardRepository = new BoardRepositoryTest((ListRepositoryTest) listRepository);
-
+        tagRepository = new TagRepositoryTest();
         boardService = new BoardService(boardRepository);
         listService = new ListService(listRepository, taskRepo, boardRepository);
-        taskService = new TaskService(taskRepo, listRepository);
+        taskService = new TaskService(taskRepo, listRepository, tagRepository);
 
         boardService.create(new CreateBoardModel("1", "1"));
         boardService.create(new CreateBoardModel("2", "2"));

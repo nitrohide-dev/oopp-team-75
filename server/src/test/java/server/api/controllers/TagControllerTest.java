@@ -43,7 +43,7 @@ class TagControllerTest {
         boardService = new BoardService(boardRepository);
         tagService = new TagService(tagRepository, boardRepository);
         tagController = new TagController(tagService, boardService);
-        taskService = new TaskService(taskRepository, listRepository);
+        taskService = new TaskService(taskRepository, listRepository, tagRepository);
         listService = new ListService(listRepository, taskRepository, boardRepository);
 
         boardService.create(new CreateBoardModel("1", "1"));

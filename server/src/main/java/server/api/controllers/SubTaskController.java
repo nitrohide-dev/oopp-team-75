@@ -33,7 +33,8 @@ public class SubTaskController {
     private final BoardService boardService;
     private final long TIMEOUT_MS = 5000L;
 
-    public SubTaskController(SubTaskService subtaskService, BoardService boardService, HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers) {
+    public SubTaskController(SubTaskService subtaskService, BoardService boardService,
+                             HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers) {
         this.subtaskService = subtaskService;
         this.pollConsumers = pollConsumers;
         this.boardService = boardService;

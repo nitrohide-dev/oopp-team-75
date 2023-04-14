@@ -127,8 +127,8 @@ public class TaskOverviewCtrl {
 	 */
 	public void connect() {
 		server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
-		server.subTaskSubscribe( mainCtrl.getCurrTask().getId(), b -> Platform.runLater(()
-				-> this.initializeSubTasks(b)));
+		server.subTaskSubscribe( mainCtrl.getCurrTask().getId(),
+				b -> Platform.runLater(() -> this.initializeSubTasks(b)));
 	}
 	public void unsubscribe(){
 		server.subTaskUnsubscribe();

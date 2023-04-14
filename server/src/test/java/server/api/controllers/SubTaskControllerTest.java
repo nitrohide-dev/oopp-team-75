@@ -7,6 +7,7 @@ import commons.TaskList;
 import commons.models.CreateBoardModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 import server.api.services.BoardService;
 import server.api.services.ListService;
@@ -18,6 +19,8 @@ import server.database.ListRepository;
 import server.database.ListRepositoryTest;
 import server.database.SubTaskRepository;
 import server.database.SubTaskRepositoryTest;
+import server.database.TagRepository;
+import server.database.TagRepositoryTest;
 import server.database.TaskRepository;
 import server.database.TaskRepositoryTest;
 import server.exceptions.BoardDoesNotExist;
@@ -27,6 +30,8 @@ import server.exceptions.SubTaskDoesNotExist;
 import server.exceptions.TaskDoesNotExist;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -56,6 +61,7 @@ class SubTaskControllerTest {
     private SubTask[] subTasks;
 
     private Board board1;
+    private TagRepository tagRepository;
 
     private SubTaskController subTaskController;
     @BeforeEach
@@ -65,10 +71,13 @@ class SubTaskControllerTest {
         taskRepository = new TaskRepositoryTest(subTaskRepository);
         listRepository = new ListRepositoryTest(taskRepository);
         boardService = new BoardService(boardRepository);
+        tagRepository = new TagRepositoryTest();
         listService = new ListService(listRepository, taskRepository, boardRepository);
-        taskService = new TaskService(taskRepository, listRepository,tagRepository);
-        subTaskService = new SubTaskService(subTaskRepository, taskRepository);
-        subTaskController = new SubTaskController(subTaskService, boardService);
+        taskService = new TaskService(taskRepository, listRepository, tagRepository);
+        subTaskService = new SubTaskService(subTaskRepository, taskRepository, boardRepository);
+        HashMap<Long, List<DeferredResult<List<SubTask>>>> pollConsumers = new HashMap<>();
+        subTaskController = new SubTaskController(subTaskService, boardService, pollConsumers);
+
 
         board1 =boardService.create(new CreateBoardModel("1", "1"));
 
