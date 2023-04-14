@@ -137,7 +137,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void getAllCorrectly(){
+    void getAllCorrectly() {
         assertEquals(3, taskController.getAll().size());
         assertEquals(10L, taskController.getAll().get(0).getId());
         assertEquals(20L, taskController.getAll().get(1).getId());
@@ -183,7 +183,7 @@ class TaskControllerTest {
         taskController.moveTask(taskMoveModel, board1.getKey());
         assertEquals(2, list1.getTasks().size());
         assertEquals(20, list1.getTasks().get(1).getId());
-        TaskMoveModel taskMoveModel1= new TaskMoveModel(20L, 1l, Integer.MAX_VALUE);
+        TaskMoveModel taskMoveModel1 = new TaskMoveModel(20L, 1l, Integer.MAX_VALUE);
         taskController.moveTask(taskMoveModel1, board1.getKey());
         assertEquals(20, list1.getTasks().get(1).getId());
     }
@@ -201,19 +201,11 @@ class TaskControllerTest {
         assertThrows(ResponseStatusException.class, () -> taskController.changeTaskDesc("wubba-lubba-dub-dub", 100L
                 , board1.getKey()));
     }
-//
-//    @Test
-//    void addTag() throws TaskDoesNotExist {
-//        Tag tag = new Tag("tag");
-//        taskController.addTag(tag, "10");
-//        assertEquals(1, taskService.getById(10L).getTags().size());
-//        assertEquals("tag", taskService.getById(10L).getTags().iterator().next().getTitle());
-//    }
 
     @Test
     void createSubTask() throws TaskDoesNotExist, ListDoesNotExist {
         taskController.createSubTask(10L, "10");
-       // assertEquals(2, taskService.getById(10L).getSubtasks().size());
+        assertEquals(1, taskService.getById(10L).getSubtasks().size());
         assertEquals("10", taskService.getById(10L).getSubtasks().get(0).getTitle());
     }
 }

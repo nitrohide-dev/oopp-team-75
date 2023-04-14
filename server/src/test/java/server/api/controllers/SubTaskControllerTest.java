@@ -79,7 +79,7 @@ class SubTaskControllerTest {
         subTaskController = new SubTaskController(subTaskService, boardService, taskService, pollConsumers);
 
 
-        board1 =boardService.create(new CreateBoardModel("1", "1"));
+        board1 = boardService.create(new CreateBoardModel("1", "1"));
 
         boardService.createList(board1, 1L, "1");
 

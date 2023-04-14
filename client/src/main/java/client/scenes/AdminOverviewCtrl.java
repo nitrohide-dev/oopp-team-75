@@ -14,10 +14,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
-public class AdminOverviewCtrl{
+public class AdminOverviewCtrl {
 
     private ServerUtils server;
     private MainCtrl mainCtrl;
@@ -27,10 +26,10 @@ public class AdminOverviewCtrl{
     @FXML private ImageView password;
 
     private List<Board> boards;
-    public ListView<HBox> boardsListView;
+    @FXML public ListView<HBox> boardsListView;
 
     @Inject
-    public AdminOverviewCtrl(ServerUtils server, MainCtrl mainCtrl){
+    public AdminOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
@@ -44,10 +43,10 @@ public class AdminOverviewCtrl{
     /**
      * initializes admin overview
      */
-    public void refresh(){
+    public void refresh() {
         boardsListView.getItems().clear();
         boards = server.getAllBoards();
-        for(Board b : boards)
+        for (Board b : boards)
             this.addBoardToListView(b.getKey());
     }
 
@@ -56,9 +55,7 @@ public class AdminOverviewCtrl{
      * logs admin out
      */
     @FXML
-    private void exit(){
-        boards = new ArrayList<>();
-        boardsListView.getItems().clear();
+    private void exit() {
         mainCtrl.showUserMenu();
         server.logout();
     }
@@ -128,7 +125,7 @@ public class AdminOverviewCtrl{
      * password change
      */
     @FXML
-    private void changePassword(){
+    private void changePassword() {
         mainCtrl.showChangePassword();
     }
 

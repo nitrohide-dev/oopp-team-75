@@ -200,7 +200,7 @@ class TaskTest {
     }
 
     @Test
-    void constructor5(){
+    void constructor5() {
         Task task = new Task(new TaskList(), "a", "a", new HashSet<>(), new ArrayList<>());
         assertNotNull(task.getId());
         assertEquals("a", task.getDesc());
@@ -211,7 +211,7 @@ class TaskTest {
     }
 
     @Test
-    void constructor4(){
+    void constructor4() {
         Task task = new Task(new TaskList(), "a", "a", new HashSet<>());
         assertNotNull(task.getId());
         assertEquals("a", task.getDesc());

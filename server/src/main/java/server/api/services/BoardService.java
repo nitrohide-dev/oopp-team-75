@@ -70,7 +70,7 @@ public class 	BoardService {
 	 * @param board - the board the list is in
 	 * @return the board the list is in
 	 */
-	public Board createList(Board board){
+	public Board createList(Board board) {
 		board.createTaskList();
 		repo.save(board);
 		return repo.findById(board.getKey()).get();
@@ -82,7 +82,7 @@ public class 	BoardService {
 	 * @param id - the id of the list
 	 * @return the board the list is in
 	 */
-	public Board createList(Board board, long id){
+	public Board createList(Board board, long id) {
 		board.createTaskList(id);
 		repo.save(board);
 		return repo.findById(board.getKey()).get();
@@ -95,7 +95,7 @@ public class 	BoardService {
 	 * @param name - the name of the list
 	 * @return
 	 */
-	public Board createList(Board board, long id, String name){
+	public Board createList(Board board, long id, String name) {
 		board.createTaskList(id, name);
 		repo.save(board);
 		return repo.findById(board.getKey()).get();

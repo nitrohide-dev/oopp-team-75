@@ -28,12 +28,12 @@ public class TaskList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(unique=true, nullable=false)
+    @Column(unique = true, nullable = false)
     @Getter
     @Setter
     private long id;
 
-    @Column(nullable=false, length=MAX_TITLE_LENGTH)
+    @Column(nullable = false, length = MAX_TITLE_LENGTH)
     @Getter
     @Setter
     private String title;
@@ -53,7 +53,7 @@ public class TaskList {
 
 //    constructors
 
-    public TaskList() {} // for object mappers, please don't use.
+    public TaskList() { } // for object mappers, please don't use.
 
     public TaskList(Board board) {
         this(board, "", new ArrayList());

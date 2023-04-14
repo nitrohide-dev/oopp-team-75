@@ -11,7 +11,7 @@ import java.util.List;
 @Configuration
 public class ConsumerTracker {
     @Bean
-    public HashMap<Long, List<DeferredResult<List<SubTask>>>> consumers(){
+    public HashMap<Long, List<DeferredResult<List<SubTask>>>> consumers() {
         return new HashMap<>();
     }
 }

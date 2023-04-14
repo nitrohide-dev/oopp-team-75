@@ -143,7 +143,7 @@ public class MainCtrl {
     /**
      * Shows the landing scene
      */
-    public void showLanding(){
+    public void showLanding() {
         primaryStage.setTitle("Welcome to Talio!");
         primaryStage.setScene(landing);
     }
@@ -193,7 +193,7 @@ public class MainCtrl {
      * Shows tag overview scene
      * @param boardKey key of the board to display the tags of.
      */
-    public void showTagOverview(String boardKey){
+    public void showTagOverview(String boardKey) {
         Board board = server.findBoard(boardKey);
         Stage stage = new Stage();
         stage.setTitle("Tag List");
@@ -220,18 +220,10 @@ public class MainCtrl {
     /**
      * Shows admin overview scene
      */
-    public void showAdminOverview(){
+    public void showAdminOverview() {
         setAdminPresence(true);
         primaryStage.setScene(adminOverview);
         adminOverviewCtrl.refresh();
-    }
-
-    /**
-     * check if admin is logged in
-     * @param adminPresence true if admin is logged in
-     */
-    public void setAdminPresence(boolean adminPresence) {
-        boardOverviewCtrl.setAdminPresence(adminPresence);
     }
 
     /**
@@ -247,12 +239,12 @@ public class MainCtrl {
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        File file = new File(dir, encodedUrl+".csv");
-        if(file.exists()){file.delete();}
+        File file = new File(dir, encodedUrl + ".csv");
+        if (file.exists()) { file.delete(); }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 
             writer.write(boardKeys.toString());
-        } catch (Exception e) {}
+        } catch (Exception e) { }
     }
 
     /**

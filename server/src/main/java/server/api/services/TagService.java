@@ -24,7 +24,7 @@ public class TagService {
     /**
      * ONLY FOR TESTING
      */
-    public Tag createTag(String title, Long Id){
+    public Tag createTag(String title, Long Id) {
         var tag = Tag.createTag(title, Id);
         return repo.save(tag);
     }
@@ -33,7 +33,7 @@ public class TagService {
      * @param title - the new tag title
      * @throws TagDoesNotExist when the there is no tag for the given tag id in the database
      */
-    public void editTag(long id,String title)throws TagDoesNotExist{
+    public void editTag(long id,String title)throws TagDoesNotExist {
         if (!repo.existsById(id))
             throw new TagDoesNotExist("There exists no tag with the provided id.");
         Tag tag = repo.findById(id).get();
@@ -56,7 +56,7 @@ public class TagService {
      * @param task_id - the id of the task to look up tags for
      * @return a set of tags of the task
      */
-    public Set<Tag> getAllTagsByTask(long task_id){
+    public Set<Tag> getAllTagsByTask(long task_id) {
         Set<Tag> allTags = (Set<Tag>) repo.getTagsByTask(task_id);
         return allTags;
     }
@@ -65,7 +65,7 @@ public class TagService {
      * @param boardKey - the id of the task to look up tags for
      * @return a set of tags of the task
      */
-    public Set<Tag> getAllTagsByBoard(String boardKey){
+    public Set<Tag> getAllTagsByBoard(String boardKey) {
         var board = boardRepo.getById(boardKey);
         var tags = board.getTags();
         return tags;

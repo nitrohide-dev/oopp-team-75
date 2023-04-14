@@ -32,12 +32,12 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(unique=true, nullable=false)
+    @Column(unique = true, nullable = false)
     @Getter
     @Setter
     private long id;
 
-    @Column(nullable=false, length=MAX_TITLE_LENGTH)
+    @Column(nullable = false, length = MAX_TITLE_LENGTH)
     @Getter
     @Setter
     private String title;
@@ -55,7 +55,7 @@ public class Task {
     @OrderColumn
     private List<SubTask> subtasks;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Getter
     @Setter
     private String desc;
@@ -68,7 +68,7 @@ public class Task {
 
 //    constructors
 
-    public Task() {} // for object mappers, please don't use.
+    public Task() { } // for object mappers, please don't use.
 
     // TODO: pass tags correctly
     public Task(TaskList taskList,String name) {

@@ -53,7 +53,7 @@ public class TagController {
      * @return the stored tag
      */
     @GetMapping("/getById/{id}")
-    public Tag getById(@PathVariable("id") String id) throws TagDoesNotExist{
+    public Tag getById(@PathVariable("id") String id) throws TagDoesNotExist {
         try {
             return tagService.getById(Long.parseLong(id));
         } catch (NumberFormatException | TagDoesNotExist e) {

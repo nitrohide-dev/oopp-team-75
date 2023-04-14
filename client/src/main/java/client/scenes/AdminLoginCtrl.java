@@ -29,7 +29,7 @@ public class AdminLoginCtrl {
     /**
      * logs you in as an admin
      */
-    public void login(){
+    public void login() {
         if (passwordField.getText().isEmpty())
             emptyPasswordAlert.showAndWait();
         else if (!server.authenticate(hashPassword(passwordField.getText())) )

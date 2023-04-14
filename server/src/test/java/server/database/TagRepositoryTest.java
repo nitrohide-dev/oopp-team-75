@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class TagRepositoryTest implements TagRepository{
+public class TagRepositoryTest implements TagRepository {
     private List<Tag> tags;
     //TODO implement
     public TagRepositoryTest() {
@@ -43,9 +43,9 @@ public class TagRepositoryTest implements TagRepository{
     @Override
     public List<Tag> findAllById(Iterable<Long> longs) {
         List<Tag> queryTags = new ArrayList<>();
-        for(Long i : (Iterable<Long>) longs) {
-            for(Tag tag : tags) {
-                if(tag.getId() == i) {
+        for (Long i : (Iterable<Long>) longs) {
+            for (Tag tag : tags) {
+                if (tag.getId() == i) {
                     queryTags.add(tag);
                 }
             }
@@ -69,8 +69,8 @@ public class TagRepositoryTest implements TagRepository{
         if (findById(aLong).isEmpty()) {
             throw new IllegalArgumentException("id must exist");
         }
-        for(Tag tag : tags) {
-            if(tag.getId() == aLong) {
+        for (Tag tag : tags) {
+            if (tag.getId() == aLong) {
                 tags.remove(tag);
                 break;
             }
@@ -84,9 +84,9 @@ public class TagRepositoryTest implements TagRepository{
 
     @Override
     public void deleteAllById(Iterable<? extends Long> longs) {
-        for(Long i : longs) {
-            for(Tag tag : tags) {
-                if(tag.getId() == i) {
+        for (Long i : longs) {
+            for (Tag tag : tags) {
+                if (tag.getId() == i) {
                     tags.remove(tag);
                     break;
                 }
@@ -96,7 +96,7 @@ public class TagRepositoryTest implements TagRepository{
 
     @Override
     public void deleteAll(Iterable<? extends Tag> entities) {
-        for(Tag tag : entities) {
+        for (Tag tag : entities) {
             tags.remove(tag);
         }
     }
@@ -135,8 +135,8 @@ public class TagRepositoryTest implements TagRepository{
 
     @Override
     public Optional<Tag> findById(Long aLong) {
-        for(Tag tag : tags) {
-            if(tag.getId() == aLong) {
+        for (Tag tag : tags) {
+            if (tag.getId() == aLong) {
                 return Optional.of(tag);
             }
         }
@@ -241,11 +241,11 @@ public class TagRepositoryTest implements TagRepository{
     @Override
     public Collection<Tag> getTagsByTask(long task_id) {
         Collection<Tag> taskTags = new HashSet<>();
-        if (tags.size()==0){
+        if (tags.size() == 0) {
             return null;
         }
-        for(Tag tag : tags) {
-            if(tag.isChildOfTask(task_id)) {
+        for (Tag tag : tags) {
+            if (tag.isChildOfTask(task_id)) {
                 taskTags.add(tag);
             }
         }
@@ -264,8 +264,8 @@ public class TagRepositoryTest implements TagRepository{
     @Override
     public Collection<Tag> getTagsByBoard(String board_key) {
         Collection<Tag> boardTags = new ArrayList<>();
-        for(Tag tag : tags) {
-            if(tag.isChildOfBoard(board_key)) {
+        for (Tag tag : tags) {
+            if (tag.isChildOfBoard(board_key)) {
                 boardTags.add(tag);
             }
         }

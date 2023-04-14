@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class SubTaskRepositoryTest implements SubTaskRepository{
+public class SubTaskRepositoryTest implements SubTaskRepository {
 
     private List<SubTask> subTasks;
 
@@ -43,9 +43,9 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
     @Override
     public List<SubTask> findAllById(Iterable<Long> longs) {
         List<SubTask> querySubTasks = new ArrayList<>();
-        for(Long i : (Iterable<Long>) longs) {
-            for(SubTask subTask : subTasks) {
-                if(subTask.getId() == i) {
+        for (Long i : (Iterable<Long>) longs) {
+            for (SubTask subTask : subTasks) {
+                if (subTask.getId() == i) {
                     querySubTasks.add(subTask);
                 }
             }
@@ -70,8 +70,8 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
             throw new IllegalArgumentException("id must exist");
         }
 
-        for(SubTask subTask : subTasks) {
-            if(subTask.getId() == aLong) {
+        for (SubTask subTask : subTasks) {
+            if (subTask.getId() == aLong) {
                 subTasks.remove(subTask);
                 break;
             }
@@ -117,8 +117,8 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
 
     @Override
     public Optional<SubTask> findById(Long aLong) {
-        for(SubTask subTask : subTasks) {
-            if(subTask.getId() == aLong) {
+        for (SubTask subTask : subTasks) {
+            if (subTask.getId() == aLong) {
                 return Optional.of(subTask);
             }
         }
@@ -127,8 +127,8 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
 
     @Override
     public boolean existsById(Long aLong) {
-        for(SubTask subTask : subTasks) {
-            if(subTask.getId() == aLong) {
+        for (SubTask subTask : subTasks) {
+            if (subTask.getId() == aLong) {
                 return true;
             }
         }
@@ -167,8 +167,8 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
 
     @Override
     public SubTask getOne(Long aLong) {
-        for(SubTask subTask : subTasks) {
-            if(subTask.getId() == aLong) {
+        for (SubTask subTask : subTasks) {
+            if (subTask.getId() == aLong) {
                 return subTask;
             }
         }
@@ -177,8 +177,8 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
 
     @Override
     public SubTask getById(Long aLong) {
-        for(SubTask subTask : subTasks) {
-            if(subTask.getId() == aLong) {
+        for (SubTask subTask : subTasks) {
+            if (subTask.getId() == aLong) {
                 return subTask;
             }
         }
@@ -194,8 +194,8 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
     public <S extends SubTask> List<S> findAll(Example<S> example) {
         // find all subtasks that match the example
         List<S> querySubTasks = new ArrayList<>();
-        for(SubTask subTask : subTasks) {
-            if(subTask.equals(example)) {
+        for (SubTask subTask : subTasks) {
+            if (subTask.equals(example)) {
                 querySubTasks.add((S) subTask);
             }
         }
@@ -230,8 +230,8 @@ public class SubTaskRepositoryTest implements SubTaskRepository{
     @Override
     public List<SubTask> getSubTasksOfTask(long task_id) {
         List<SubTask> querySubTasks = new ArrayList<>();
-        for(SubTask subTask : subTasks) {
-            if(subTask.getTask().getId() == task_id) {
+        for (SubTask subTask : subTasks) {
+            if (subTask.getTask().getId() == task_id) {
                 querySubTasks.add(subTask);
             }
         }

@@ -199,7 +199,7 @@ class TaskListTest {
     }
 
     @Test
-    void addTask(){
+    void addTask() {
         assertEquals(0, taskList.getTasks().size());
         Task task1 = taskList.createTask();
         taskList.removeTask(task1);
