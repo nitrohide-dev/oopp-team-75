@@ -95,7 +95,7 @@ public class TaskOverviewCtrl {
 		taskName.setText(task.getTitle());
 		description.setText(task.getDesc());
 		resetFields();
-		initializeSubTasks(mainCtrl.getCurrTask().getSubtasks());
+	//	initializeSubTasks(mainCtrl.getCurrTask().getSubtasks());
 		initializeCurrTags(task.getTags());
 		initializeRestTags(task.getTags(), board.getTags());
 	}
@@ -126,9 +126,10 @@ public class TaskOverviewCtrl {
 	 * Connects to the server for automatic refreshing.
 	 */
 	public void connect() {
+		initializeSubTasks(mainCtrl.getCurrTask().getSubtasks());
 		server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
 		server.subTaskSubscribe( mainCtrl.getCurrTask().getId(),
-				b -> Platform.runLater(() -> this.initializeSubTasks(b)));
+		    b -> Platform.runLater(() -> this.initializeSubTasks(b)));
 	}
 	public void unsubscribe(){
 		server.subTaskUnsubscribe();
@@ -153,9 +154,11 @@ public class TaskOverviewCtrl {
 		List<HBox> tasks = new ArrayList<>();
 		for (int i=0;i<subtasks.size();i++) {
 			SubTask task = subtasks.get(i);
+			task.setTask(mainCtrl.getCurrTask());
 			HBox box = taskHolder(task,i);
 			tasks.add(box);
 			this.taskMap.put(box, task.getId());
+
 		}
 		this.taskList.getItems().addAll(tasks);
 	}
@@ -245,7 +248,10 @@ public class TaskOverviewCtrl {
 		importPicture(downButton, path);
 		HBox box = new HBox(check, subTaskName,upButton, downButton, removeButton);
 		removeButton.setDisable(false);
-		removeButton.setOnAction(e -> mainCtrl.deleteSubTask(taskMap.get(box)));
+		Long id = taskMap.get(box);
+		removeButton.setOnAction(e -> {
+			mainCtrl.deleteSubTask(taskMap.get(box));
+		});
 		upButton.setDisable(false);
 		upButton.setOnAction(e -> server.moveSubTaskUp(order,task.getId()));
 		downButton.setDisable(false);

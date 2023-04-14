@@ -447,7 +447,6 @@ public class ServerUtils {
 
     public void changeTaskTag(String boardKey, Long id, Collection<Long> values) {
         send("app/task/tags/" + boardKey + "/" + id, values);
-        System.out.println("esrver");
     }
 
 
