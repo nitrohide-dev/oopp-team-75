@@ -26,6 +26,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.springframework.messaging.simp.stomp.StompSession;
 
 import javax.inject.Inject;
 import java.nio.file.Path;
@@ -127,17 +128,20 @@ public class TaskOverviewCtrl {
 	}
 
 
+	private StompSession.Subscription subscription;
+
 	/**
 	 * Connects to the server for automatic refreshing.
 	 */
 	public void connect() {
 		initializeSubTasks(mainCtrl.getCurrTask().getSubtasks());
-		server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
+		subscription = server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
 		server.subTaskSubscribe( mainCtrl.getCurrTask().getId(),
 		    b -> Platform.runLater(() -> this.initializeSubTasks(b)));
 	}
 	public void unsubscribe(){
 		server.subTaskUnsubscribe();
+		subscription.unsubscribe();
 	}
 
 	/**
