@@ -41,7 +41,7 @@ public class AdminOverviewCtrl {
     }
 
     /**
-     * initializes admin overview
+     * refreshes admin overview
      */
     public void refresh() {
         boardsListView.getItems().clear();
@@ -52,7 +52,7 @@ public class AdminOverviewCtrl {
 
 
     /**
-     * logs admin out
+     * exits admin overview and server
      */
     @FXML
     private void exit() {
@@ -107,6 +107,11 @@ public class AdminOverviewCtrl {
     }
 
 
+    /**
+     * button builder
+     * @param path path to the image
+     * @return button with image
+     */
     private Button buttonBuilder(String path) {
         String url = getClass().getClassLoader().getResource(path.replace("\\", "/")).toString();
         Image image = new Image(url);

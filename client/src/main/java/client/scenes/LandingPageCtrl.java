@@ -34,6 +34,9 @@ public class LandingPageCtrl {
         exit.setImage(new Image(Path.of("", "client", "images", "ExitButton.png").toString()));
     }
 
+    /**
+     * connect method to server
+     */
     public void connect() {
         if (server_ip.getText().isEmpty())
             server_ip.setText("localhost:8080");
@@ -50,6 +53,9 @@ public class LandingPageCtrl {
         }).start();
     }
 
+    /**
+     * exits application
+     */
     public void exit() {
         Platform.exit();
         System.exit(0);

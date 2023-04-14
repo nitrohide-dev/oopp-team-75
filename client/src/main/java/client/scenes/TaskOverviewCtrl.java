@@ -157,6 +157,10 @@ public class TaskOverviewCtrl {
 		}
 	}
 
+	/**
+	 * Initializes the subtasks of the current task
+	 * @param subtasks the subtasks to initialize
+	 */
 	private void initializeSubTasks(List<SubTask> subtasks) {
 //		this.taskMap.clear();
 		this.taskList.getItems().clear();
@@ -169,6 +173,10 @@ public class TaskOverviewCtrl {
 		}
 	}
 
+	/**
+	 * Initializes the tags that are currently assigned to the task
+	 * @param tags the tags to initialize
+	 */
 	private void initializeCurrTags(Set<Tag> tags) {
 		this.currTags.getItems().clear();
 		List<HBox> currTags = new ArrayList<>();
@@ -180,6 +188,11 @@ public class TaskOverviewCtrl {
 		this.currTags.getItems().addAll(currTags);
 	}
 
+	/**
+	 * creates hbox with the tag
+	 * @param tag the tag to initialize
+	 * @return the HBox containing the tag
+	 */
 	private HBox tagBox(Tag tag) {
 		if (tag == null) return null;
 		Label tagName = new Label(tag.getTitle());
@@ -200,6 +213,11 @@ public class TaskOverviewCtrl {
 		return box;
 	}
 
+	/**
+	 * creates hbox with unassigned tags
+	 * @param tags the tags that are already assigned to the task
+	 * @param boardTags the tags that are available to the task
+	 */
 	private void initializeRestTags(Set<Tag> tags, Set<Tag> boardTags) {
 		this.availableTags.getItems().clear();
 		List<HBox> restTags = new ArrayList<>();
@@ -212,6 +230,11 @@ public class TaskOverviewCtrl {
 		this.availableTags.getItems().addAll(restTags);
 	}
 
+	/**
+	 * creates hbox with the tag
+	 * @param tag the tag to initialize
+	 * @return the HBox containing the tag
+	 */
 	private HBox restTagBox(Tag tag) {
 		if (tag == null) return null;
 		Label tagName = new Label(tag.getTitle());
@@ -232,6 +255,12 @@ public class TaskOverviewCtrl {
 	}
 
 
+	/**
+	 * creates hbox with the task and buttons
+	 * @param task the task to initialize
+	 * @param order the order of the task
+	 * @return the HBox containing the task
+	 */
 	private HBox taskHolder(SubTask task,int order) {
 		if (task == null) return null;
 
@@ -268,6 +297,11 @@ public class TaskOverviewCtrl {
 		return new HBox(check, subTaskName, region, editButton, upButton, downButton, removeButton);
 	}
 
+	/**
+	 * Shows a popup where the user can input a new name for the subtask
+	 * @param oldSubTaskName the old name of the subtask
+	 * @return the new name of the subtask
+	 */
 	private String inputSubTaskName(String oldSubTaskName) {
 		TextInputDialog input = new TextInputDialog("SubTask name");
 		input.setHeaderText("SubTask name");
@@ -284,7 +318,7 @@ public class TaskOverviewCtrl {
 
 
 	/**
-	 * Shows a textField where the user can input a new name for the task
+	 * for editing task
 	 */
 	public void editName() {
 		resetFields();
@@ -375,6 +409,9 @@ public class TaskOverviewCtrl {
 		}
 	}
 
+	/**
+	 * Shows a popup that asks the user for a name for the new subtask
+	 */
 	public void createSubTask() {
 		TextInputDialog input = new TextInputDialog("task name");
 		input.setHeaderText("Task name");
@@ -395,6 +432,9 @@ public class TaskOverviewCtrl {
 		input.showAndWait();
 	}
 
+	/**
+	 * for deleting task
+	 */
 	public void delete() {
 		server.deleteTask(mainCtrl.getCurrTask().getId());
 		Stage stage = (Stage) deleteButton.getScene().getWindow();

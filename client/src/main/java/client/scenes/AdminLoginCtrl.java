@@ -18,7 +18,7 @@ public class AdminLoginCtrl {
 
     @FXML private PasswordField passwordField;
     private Alert emptyPasswordAlert = new Alert(Alert.AlertType.ERROR, "Please enter a password.");
-    private Alert incorrectPasswordAlert = new Alert(Alert.AlertType.ERROR, "Please enter a password.");
+    private Alert incorrectPasswordAlert = new Alert(Alert.AlertType.ERROR, "Please enter the correct password.");
 
     @Inject
     public AdminLoginCtrl(ServerUtils server, MainCtrl mainCtrl) {

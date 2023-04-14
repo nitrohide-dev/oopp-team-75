@@ -155,6 +155,10 @@ public class Task {
         tag.addTask(this);
     }
 
+    /**
+     * removes tag from this task, and removes this task from the tag
+     * @param tag the tag to remove from this task
+     */
     public void removeTag(Tag tag) {
         if (tag == null) {
             throw new IllegalArgumentException("Tag cannot be null");
