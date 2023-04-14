@@ -107,6 +107,11 @@ public class Tag {
         return Objects.hash(id, title);
     }
 
+    /**
+     * Checks if the tag is a child of the given task
+     * @param task_id the id of the task
+     * @return true if the tag is a child of the given task, false otherwise
+     */
     public boolean isChildOfTask(long task_id) {
         for (Task task : tasks) {
             if (task.getId() == task_id) {
@@ -117,6 +122,11 @@ public class Tag {
         return false;
     }
 
+    /**
+     * Checks if the tag is a child of the given board
+     * @param board_key the key of the board
+     * @return true if the tag is a child of the given board, false otherwise
+     */
     public boolean isChildOfBoard(String board_key) {
         return board.getKey() == board_key;
     }
@@ -130,10 +140,18 @@ public class Tag {
         return tag;
     }
 
+    /**
+     * adds task to the set of tasks
+     * @param task the task to add
+     */
     public void addTask(Task task) {
         tasks.add(task);
     }
 
+    /**
+     * ONLY TESTING
+     * @param task the task to remove
+     */
     public void removeTask(Task task) {
         if (task == null) {
             throw new IllegalArgumentException("Task is null");

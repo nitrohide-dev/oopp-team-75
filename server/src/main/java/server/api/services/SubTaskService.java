@@ -69,7 +69,6 @@ public class SubTaskService {
      * @param name - the new name of the subtask
      * @throws SubTaskDoesNotExist when there is no subtask for the given subtask id already
      */
-
     public void renameSubTask(long id,String name) throws SubTaskDoesNotExist {
         if (!repo.existsById(id))
             throw new SubTaskDoesNotExist("There exists no subtask with the provided id.");
@@ -78,10 +77,18 @@ public class SubTaskService {
         repo.save(subTask);
     }
 
+    /**
+     * @return gets all subtasks from the database
+     */
     public List<SubTask> getAll() {
         return repo.findAll();
     }
 
+    /**
+     * checks for changes in order of subtasks
+     * @param id - the id of the subtask
+     * @throws SubTaskDoesNotExist when there is no subtask for the given subtask id
+     */
     public void changeCheckSubTask(Long id) throws SubTaskDoesNotExist {
         if (!repo.existsById(id))
             throw new SubTaskDoesNotExist("There exists no subtask with the provided id.");
@@ -89,6 +96,13 @@ public class SubTaskService {
         subTask.setChecked(!subTask.getChecked());
         repo.save(subTask);
     }
+
+    /**
+     * moves a subtask up
+     * @param order - the order of the subtask
+     * @param subtaskId - the id of the subtask
+     * @return the board of the subtask
+     */
     public Board movesubTaskUp(int order, long subtaskId) {
         SubTask subTask = repo.findById(subtaskId).get();
         if (order != 0) {
@@ -97,6 +111,13 @@ public class SubTaskService {
         }
         return boardRepo.findById(subTask.getTask().getTaskList().getBoard().getKey()).get();
     }
+
+    /**
+     * moves a subtask down, if possible
+     * @param order - the order of the subtask
+     * @param subtaskId - the id of the subtask
+     * @return the board of the subtask
+     */
     public Board movesubTaskDown(int order, long subtaskId) {
         SubTask subTask = repo.findById(subtaskId).get();
         Task task = taskRepo.findById(subTask.getTask().getId()).get();

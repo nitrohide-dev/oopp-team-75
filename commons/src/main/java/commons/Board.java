@@ -165,6 +165,11 @@ public class Board {
         taskList.setBoard(null);
     }
 
+    /**
+     * Creates a new tag with the given name
+     * @param name name of the tag
+     * @return the created tag
+     */
     public Tag createTag(String name) {
         Tag tag = new Tag(name, this);
         this.tags.add(tag);

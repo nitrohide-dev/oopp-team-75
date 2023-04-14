@@ -287,6 +287,10 @@ public class MainCtrl {
     }
 
 
+    /**
+     * deletes task from server
+     * @param taskId id of the task to delete
+     */
     public void deleteTask(Long taskId) {
         server.deleteTask(taskId);
         if (currTask!=null&&currTask.getId() == taskId) {
@@ -310,6 +314,11 @@ public class MainCtrl {
         server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getId(), newDesc);
     }
 
+    /**
+     * creates default alert
+     * @param content - the content of the alert
+     * @return an alert with the given content
+     */
     public Alert createWarning(String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING, content);
         alert.getDialogPane().getStylesheets().add(styleSheet);
@@ -331,6 +340,7 @@ public class MainCtrl {
         return alert;
     }
 
+    //server methods
     public void createSubTask(String name) {
         server.createSubTask(currTask.getId(), name);
     }

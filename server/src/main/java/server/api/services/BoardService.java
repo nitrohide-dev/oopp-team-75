@@ -112,6 +112,12 @@ public class 	BoardService {
 		return repo.save(board);
 	}
 
+	/**
+	 * Creates a tag in the database
+	 * @param boardKey the key of the board
+	 * @param name the name of the tag
+	 * @return the newly created tag
+	 */
 	public Tag createTag(String boardKey, String name) {
 		Board board = findByKey(boardKey);
 		Tag tag = board.createTag(name);
