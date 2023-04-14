@@ -21,16 +21,16 @@ public interface SubTaskRepository extends JpaRepository<SubTask, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE SUB_TASK SET SUBTASKS_ORDER = SUBTASKS_ORDER+1 WHERE SUBTASKS_ORDER = ?1 ", nativeQuery = true)
-    void movesubTaskUp1(int order);
+    @Query(value = "UPDATE SUB_TASK SET SUBTASKS_ORDER = SUBTASKS_ORDER+1 WHERE TASK_ID = ?1 AND SUBTASKS_ORDER = ?2 ", nativeQuery = true)
+    void movesubTaskUp1(long id, int order);
     @Modifying
     @Transactional
     @Query(value = "UPDATE SUB_TASK SET SUBTASKS_ORDER = SUBTASKS_ORDER-1 WHERE ID = ?1 ", nativeQuery = true)
     void movesubTaskUp2(long id);
     @Modifying
     @Transactional
-    @Query(value = "UPDATE SUB_TASK SET SUBTASKS_ORDER = SUBTASKS_ORDER-1 WHERE SUBTASKS_ORDER = ?1", nativeQuery = true)
-    void movesubTaskDown1(int order);
+    @Query(value = "UPDATE SUB_TASK SET SUBTASKS_ORDER = SUBTASKS_ORDER-1 WHERE TASK_ID = ?1 AND SUBTASKS_ORDER = ?2", nativeQuery = true)
+    void movesubTaskDown1(long id, int order);
     @Modifying
     @Transactional
     @Query(value = "UPDATE SUB_TASK SET SUBTASKS_ORDER = SUBTASKS_ORDER+1 WHERE ID = ?1", nativeQuery = true)

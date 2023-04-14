@@ -96,7 +96,6 @@ public class TaskOverviewCtrl {
 		taskName.setText(task.getTitle());
 		description.setText(task.getDesc());
 		resetFields();
-		initializeSubTasks(task.getSubtasks());
 		initializeCurrTags(task.getTags());
 		initializeRestTags(task.getTags(), board.getTags());
 	}
@@ -127,6 +126,7 @@ public class TaskOverviewCtrl {
 	 * Connects to the server for automatic refreshing.
 	 */
 	public void connect() {
+		initializeSubTasks(mainCtrl.getCurrTask().getSubtasks());
 		server.subscribe("/topic/boards", Board.class, b -> Platform.runLater(() -> this.refresh(b)));
 		server.subTaskSubscribe( mainCtrl.getCurrTask().getId(), b -> Platform.runLater(() -> this.initializeSubTasks(b)));
 	}

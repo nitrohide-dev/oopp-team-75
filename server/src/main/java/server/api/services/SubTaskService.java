@@ -92,15 +92,18 @@ public class SubTaskService {
     public Board movesubTaskUp(int order, long subtaskId){
         SubTask subTask = repo.findById(subtaskId).get();
         if(order!=0) {
-            repo.movesubTaskUp1(order-1);
+            repo.movesubTaskUp1(subTask.getTask().getId(), order-1);
             repo.movesubTaskUp2(subtaskId);
         }
         return boardRepo.findById(subTask.getTask().getTaskList().getBoard().getKey()).get();
     }
     public Board movesubTaskDown(int order, long subtaskId){
         SubTask subTask = repo.findById(subtaskId).get();
-        repo.movesubTaskDown1(order+1);
-        repo.movesubTaskDown2(subtaskId);
+        Task task = taskRepo.findById(subTask.getTask().getId()).get();
+        if (order < task.getSubtasks().size()-1) {
+            repo.movesubTaskDown1(task.getId(),order+1);
+            repo.movesubTaskDown2(subtaskId);
+        }
         return boardRepo.findById(subTask.getTask().getTaskList().getBoard().getKey()).get();
     }
 }

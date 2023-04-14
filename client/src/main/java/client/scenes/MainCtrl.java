@@ -227,24 +227,6 @@ public class MainCtrl {
     }
 
     /**
-     * Shows admin password change scene
-     */
-    public void showChangePassword(){
-        Stage create = new Stage();
-        create.setScene(passwordChange);
-        create.initModality(Modality.APPLICATION_MODAL);
-        create.showAndWait();
-    }
-
-    /**
-     * Renames a task
-     * @param newName - the new task name
-     */
-    public void renameTask(String newName) {
-        server.renameTask(this.currBoard.getKey(), this.currTask.getId(), newName);
-    }
-
-    /**
      * check if admin is logged in
      * @param adminPresence true if admin is logged in
      */
@@ -303,29 +285,6 @@ public class MainCtrl {
     }
 
     /**
-<<<<<<< client/src/main/java/client/scenes/MainCtrl.java
-     * Used to log in as admin
-     */
-    public void showAdminLogin() {
-        if (!adminPresence) {
-            Stage create = new Stage();
-            create.setScene(adminLogin);
-            create.initModality(Modality.APPLICATION_MODAL);
-            create.showAndWait();
-        } else showAdminOverview();
-    }
-
-    /**
-     * Starts the admin overview
-     */
-    public void showAdminOverview() {
-        setAdminPresence(true);
-        boardOverviewCtrl.setAdminPresence(adminPresence);
-        primaryStage.setScene(adminOverview);
-        adminOverviewCtrl.init();
-    }
-
-    /**
      * Used to change password
      */
     public void showChangePassword() {
@@ -352,12 +311,6 @@ public class MainCtrl {
     }
 
     /**
-     * Changes the description of a task
-     * @param newDesc - the new description
-     */
-    public void changeTaskDesc(String newDesc) {
-        server.changeTaskDesc(this.currBoard.getKey(), this.currTask.getId(), newDesc);
-
      * Changes the description of a task
      * @param newDesc - the new description
      */

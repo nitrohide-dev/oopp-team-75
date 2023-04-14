@@ -457,7 +457,7 @@ public class ServerUtils {
         EXECUTORS.add(executor);
 
         executor.submit(() -> {
-            while (true) {
+            while (!executor.isShutdown()) {
                 System.out.println("POLL");
                 Response response = ClientBuilder.newClient(new ClientConfig())
                     .target(SERVER).path(String.format("api/subtasks/%d/poll", taskId))
