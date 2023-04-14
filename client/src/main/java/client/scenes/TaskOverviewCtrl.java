@@ -19,9 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -131,6 +129,7 @@ public class TaskOverviewCtrl {
 		server.subTaskSubscribe( mainCtrl.getCurrTask().getId(),
 		    b -> Platform.runLater(() -> this.initializeSubTasks(b)));
 	}
+
 	public void unsubscribe(){
 		server.subTaskUnsubscribe();
 	}
@@ -226,32 +225,52 @@ public class TaskOverviewCtrl {
 
 	private HBox taskHolder(SubTask task,int order) {
 		if (task == null) return null;
+
 		CheckBox check = new CheckBox();
 		check.setSelected(task.getChecked());
-		check.setOnAction(e -> {
-			mainCtrl.checkSubTask(task);
-		});
+		check.setOnAction(e -> mainCtrl.checkSubTask(task));
 		check.setPadding(new Insets(4, 1, 4, 2));
+
 		Label subTaskName = new Label(task.getTitle());
-		subTaskName.setPrefSize(100, 25);
+		subTaskName.setPrefSize(Label.USE_COMPUTED_SIZE, Label.USE_COMPUTED_SIZE);
 		subTaskName.setPadding(new Insets(5,1,5,2));
-		String path = Path.of("", "client", "images", "cancel.png").toString();
+
 		Button removeButton = new Button();
-		importPicture(removeButton, path);
-		path = Path.of("", "client", "images", "up.png").toString();
-		Button upButton = new Button();
-		importPicture(upButton, path);
-		path = Path.of("", "client", "images", "down.png").toString();
-		Button downButton = new Button();
-		importPicture(downButton, path);
-		HBox box = new HBox(check, subTaskName,upButton, downButton, removeButton);
-		removeButton.setDisable(false);
+		importPicture(removeButton, Path.of("", "client", "images", "cancel.png").toString());
 		removeButton.setOnAction(e -> mainCtrl.deleteSubTask(task.getId()));
-		upButton.setDisable(false);
+
+		Button upButton = new Button();
+		importPicture(upButton, Path.of("", "client", "images", "up.png").toString());
 		upButton.setOnAction(e -> server.moveSubTaskUp(order,task.getId()));
-		downButton.setDisable(false);
+
+		Button downButton = new Button();
+		importPicture(downButton, Path.of("", "client", "images", "down.png").toString());
 		downButton.setOnAction(e -> server.moveSubTaskDown(order,task.getId()));
-		return box;
+
+		Region region = new Region();
+		region.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+		HBox.setHgrow(region, Priority.ALWAYS);
+
+		Button editButton = new Button();
+		importPicture(editButton, Path.of("", "client", "images", "pencil.png").toString());
+		editButton.setOnAction(e -> server.renameSubTask(
+				mainCtrl.getCurrBoard().getKey(), inputSubTaskName(subTaskName.getText()), task.getId()));
+
+		return new HBox(check, subTaskName, region, editButton, upButton, downButton, removeButton);
+	}
+
+	private String inputSubTaskName(String oldSubTaskName) {
+		TextInputDialog input = new TextInputDialog("SubTask name");
+		input.setHeaderText("SubTask name");
+		input.setContentText("Please enter a name for the subtask:");
+		input.setTitle("Input Subtask Name");
+		//add css to dialog pane
+		input.getDialogPane().getStylesheets().add(
+				Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
+		//make preferred size bigger
+		input.getDialogPane().setPrefSize(400, 200);
+		Optional<String> res = input.showAndWait();
+		return res.isPresent() ? res.get() : oldSubTaskName;
 	}
 
 

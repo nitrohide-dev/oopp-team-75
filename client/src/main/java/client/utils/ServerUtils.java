@@ -432,6 +432,9 @@ public class ServerUtils {
         send("/app/subtask/delete/" + boardKey, subTaskId);
     }
 
+    public void renameSubTask(String boardKey, String name, Long subTaskId) {
+        send("/app/subtask/rename/" + boardKey + "/" + name, subTaskId);
+    }
 
     public void checkSubTask(String boardKey, Long id) {
         send("/app/subtask/check/" + boardKey, id);
