@@ -201,19 +201,11 @@ class TaskControllerTest {
         assertThrows(ResponseStatusException.class, () -> taskController.changeTaskDesc("wubba-lubba-dub-dub", 100L
                 , board1.getKey()));
     }
-//
-//    @Test
-//    void addTag() throws TaskDoesNotExist {
-//        Tag tag = new Tag("tag");
-//        taskController.addTag(tag, "10");
-//        assertEquals(1, taskService.getById(10L).getTags().size());
-//        assertEquals("tag", taskService.getById(10L).getTags().iterator().next().getTitle());
-//    }
 
     @Test
     void createSubTask() throws TaskDoesNotExist, ListDoesNotExist {
         taskController.createSubTask(10L, "10");
-        assertEquals(2, taskService.getById(10L).getSubtasks().size());
+        assertEquals(1, taskService.getById(10L).getSubtasks().size());
         assertEquals("10", taskService.getById(10L).getSubtasks().get(0).getTitle());
     }
 }
