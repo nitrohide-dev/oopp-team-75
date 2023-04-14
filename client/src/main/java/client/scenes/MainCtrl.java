@@ -297,7 +297,7 @@ public class MainCtrl {
 
     public void deleteTask(Long taskId) {
         server.deleteTask(taskId);
-        if (currTask.getId() == taskId) {
+        if (currTask!=null&&currTask.getId() == taskId) {
             currTask = null;
         }
     }

@@ -42,7 +42,7 @@ public class Task {
     @Setter
     private String title;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade={CascadeType.PERSIST,CascadeType.REMOVE}, fetch = FetchType.EAGER)
     @Getter
     @Setter
     @Column
