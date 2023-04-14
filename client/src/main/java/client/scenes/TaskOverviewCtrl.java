@@ -63,7 +63,7 @@ public class TaskOverviewCtrl {
 	@FXML
 	private ListView<HBox> availableTags;
 
-	private Map<HBox, Long> taskMap;
+//	private Map<HBox, Long> taskMap;
 	private Map<HBox, Long> currTagsMap;
 
 
@@ -71,7 +71,7 @@ public class TaskOverviewCtrl {
 	public TaskOverviewCtrl(MainCtrl mainCtrl, ServerUtils server) {
 		this.mainCtrl = mainCtrl;
 		this.server = server;
-		this.taskMap = new HashMap<>();
+//		this.taskMap = new HashMap<>();
 		this.currTagsMap = new HashMap<>();
 	}
 
@@ -90,7 +90,7 @@ public class TaskOverviewCtrl {
 	public void load() {
 		Task task = mainCtrl.getCurrTask();
 		Board board = mainCtrl.getCurrBoard();
-		taskMap.clear();
+//		taskMap.clear();
 		currTagsMap.clear();
 		taskName.setText(task.getTitle());
 		description.setText(task.getDesc());
@@ -150,17 +150,15 @@ public class TaskOverviewCtrl {
 	}
 
 	private void initializeSubTasks(List<SubTask> subtasks) {
+//		this.taskMap.clear();
 		this.taskList.getItems().clear();
-		List<HBox> tasks = new ArrayList<>();
 		for (int i=0;i<subtasks.size();i++) {
 			SubTask task = subtasks.get(i);
 			task.setTask(mainCtrl.getCurrTask());
-			HBox box = taskHolder(task,i);
-			tasks.add(box);
-			this.taskMap.put(box, task.getId());
-
+			HBox box = taskHolder(task, i);
+//			this.taskMap.put(box, task.getId());
+			this.taskList.getItems().add(box);
 		}
-		this.taskList.getItems().addAll(tasks);
 	}
 
 	private void initializeCurrTags(Set<Tag> tags) {
@@ -248,10 +246,7 @@ public class TaskOverviewCtrl {
 		importPicture(downButton, path);
 		HBox box = new HBox(check, subTaskName,upButton, downButton, removeButton);
 		removeButton.setDisable(false);
-		Long id = taskMap.get(box);
-		removeButton.setOnAction(e -> {
-			mainCtrl.deleteSubTask(taskMap.get(box));
-		});
+		removeButton.setOnAction(e -> mainCtrl.deleteSubTask(task.getId()));
 		upButton.setDisable(false);
 		upButton.setOnAction(e -> server.moveSubTaskUp(order,task.getId()));
 		downButton.setDisable(false);

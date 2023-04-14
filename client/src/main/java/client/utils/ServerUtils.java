@@ -464,8 +464,7 @@ public class ServerUtils {
                     .get();
 
                 try {
-                    List<SubTask> subtasks = response.readEntity(new GenericType<List<SubTask>>() {
-                    });
+                    List<SubTask> subtasks = response.readEntity(new GenericType<List<SubTask>>() { });
                     subtaskUpdater.accept(subtasks);
 
                 } catch (Exception ex) {

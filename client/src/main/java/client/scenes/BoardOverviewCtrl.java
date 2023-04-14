@@ -585,6 +585,7 @@ public class BoardOverviewCtrl {
      */
     public void taskOperations(ListView<HBox> list) {
         int index = list.getSelectionModel().getSelectedIndex();
+        if (index < 0) return;
         if (index >= list.getItems().size() - 1) return;
         resetOptionButtons();
         enableTaskButtons(list.getItems().get(index));

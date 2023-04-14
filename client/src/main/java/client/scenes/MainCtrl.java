@@ -182,8 +182,8 @@ public class MainCtrl {
         taskStage.setTitle("Task: " + task.getTitle());
         taskStage.setResizable(false);
         taskOverviewCtrl.load();
-        taskStage.setScene(taskOverview);
         taskOverviewCtrl.connect();
+        taskStage.setScene(taskOverview);
         taskStage.initModality(Modality.APPLICATION_MODAL);
         taskStage.showAndWait();
         taskOverviewCtrl.unsubscribe();
